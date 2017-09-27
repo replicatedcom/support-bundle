@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/supportio/support-bundle/types"
+	"github.com/replicatedcom/support-bundle/types"
 
 	jww "github.com/spf13/jwalterweatherman"
 )

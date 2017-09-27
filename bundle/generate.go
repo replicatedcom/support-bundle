@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/supportio/support-bundle/types"
+	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/divolgin/archiver/compressor"
 	jww "github.com/spf13/jwalterweatherman"

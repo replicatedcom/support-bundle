@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"github.com/supportio/support-bundle/bundle"
+	"github.com/replicatedcom/support-bundle/bundle"
 
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"

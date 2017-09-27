@@ -8,6 +8,6 @@ docker run \
   --net-host \
    -v /:/host:ro \
   -v`pwd`:/out \
-  supportio/support-bundle generate
+  replicatedcom/support-bundle generate
 ```
 

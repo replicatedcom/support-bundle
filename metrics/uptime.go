@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/supportio/support-bundle/types"
-	"github.com/supportio/support-bundle/util"
+	"github.com/replicatedcom/support-bundle/types"
+	"github.com/replicatedcom/support-bundle/util"
 
 	jww "github.com/spf13/jwalterweatherman"
 )

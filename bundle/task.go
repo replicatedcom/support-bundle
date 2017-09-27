@@ -3,7 +3,7 @@ package bundle
 import (
 	"time"
 
-	"github.com/supportio/support-bundle/types"
+	"github.com/replicatedcom/support-bundle/types"
 )
 
 type Task struct {

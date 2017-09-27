@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/supportio/support-bundle/metrics"
-	"github.com/supportio/support-bundle/types"
+	"github.com/replicatedcom/support-bundle/metrics"
+	"github.com/replicatedcom/support-bundle/types"
 )
 
 func systemLogFiles(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration) error {

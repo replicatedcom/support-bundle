@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/supportio/support-bundle/cmd"
+import "github.com/replicatedcom/support-bundle/cmd"
 
 func main() {
 	cmd.Execute()
