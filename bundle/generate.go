@@ -43,6 +43,13 @@ func Generate() error {
 		},
 
 		Task{
+			Description: "Run Commands",
+			ExecFunc:    systemCommands,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"docker ps", "docker info"},
+		},
+
+		Task{
 			Description: "Docker Metrics",
 			ExecFunc:    dockerMetrics,
 			Timeout:     time.Duration(time.Second * 15),
