@@ -34,6 +34,19 @@ func Generate() error {
 			ExecFunc:    systemMetrics,
 			Timeout:     time.Duration(time.Second * 15),
 		},
+
+		Task{
+			Description: "Get Files",
+			ExecFunc:    systemFiles,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"C:/Go/VERSION", "C:/Go/README.md"},
+		},
+
+		Task{
+			Description: "Docker Metrics",
+			ExecFunc:    dockerMetrics,
+			Timeout:     time.Duration(time.Second * 15),
+		},
 	}
 	wg.Add(len(tasks))
 
@@ -85,7 +98,7 @@ func Generate() error {
 	}()
 
 	for _, task := range tasks {
-		_ = task.ExecFunc(dataCh, completeCh, resultsCh, task.Timeout)
+		_ = task.ExecFunc(dataCh, completeCh, resultsCh, task.Timeout, task.Args)
 	}
 
 	wg.Wait()

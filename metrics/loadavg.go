@@ -22,7 +22,7 @@ type LoadAverage struct {
 	processCountTotal   int
 }
 
-func LoadAvg(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration) error {
+func LoadAvg(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
 	filename := "/system/metrics/loadavg"
 
 	var rawError, jsonError, humanError error = nil, nil, nil

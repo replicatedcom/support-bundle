@@ -14,7 +14,7 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func Uptime(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration) error {
+func Uptime(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
 	filename := "/system/metrics/uptime"
 
 	var rawError, jsonError, humanError error = nil, nil, nil

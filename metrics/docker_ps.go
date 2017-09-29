@@ -13,14 +13,14 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func Hostname(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
-	filename := "/system/metrics/hostname"
+func Dockerps(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
+	filename := "/docker/metrics/ps"
 
 	var rawError, jsonError, humanError error = nil, nil, nil
 	defer func() {
 		resultsCh <- types.Result{
-			Name:        "hostname",
-			Description: "System Hostname",
+			Name:        "dockerps",
+			Description: "`docker ps` command outputs",
 			Filename:    filename,
 			RawError:    rawError,
 			JSONError:   jsonError,
@@ -29,7 +29,7 @@ func Hostname(dataCh chan types.Data, completeCh chan bool, resultsCh chan types
 		completeCh <- true
 	}()
 
-	b, err := exec.Command("hostname").Output()
+	b, err := exec.Command("docker", "ps").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,18 +40,18 @@ func Hostname(dataCh chan types.Data, completeCh chan bool, resultsCh chan types
 		Data:     b,
 	}
 
-	human := fmt.Sprintf("Hostname: %q", b)
+	human := fmt.Sprintf("Docker ps: %q", b)
 	// Convert to human readable
 	dataCh <- types.Data{
 		Filename: filepath.Join("/human/", filename),
 		Data:     []byte(human),
 	}
 
-	type hostname struct {
-		Hostname string `json:"hostname"`
+	type dockerPS struct {
+		Result string `json:"result"`
 	}
-	u := hostname{
-		Hostname: string(b),
+	u := dockerPS{
+		Result: string(b),
 	}
 	j, err := json.Marshal(u)
 	if err != nil {
