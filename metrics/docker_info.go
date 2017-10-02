@@ -1,16 +1,16 @@
 package metrics
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
-	"log"
-	"os/exec"
 	"path/filepath"
 	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 
 	jww "github.com/spf13/jwalterweatherman"
+
+	"github.com/docker/docker/client"
 )
 
 func DockerInfo(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
@@ -29,40 +29,47 @@ func DockerInfo(dataCh chan types.Data, completeCh chan bool, resultsCh chan typ
 		completeCh <- true
 	}()
 
-	b, err := exec.Command("docker", "info").Output()
+	cli, err := client.NewEnvClient()
 	if err != nil {
-		log.Fatal(err)
+		jww.ERROR.Print(err)
+	}
+
+	info, err := cli.Info(context.Background())
+	if err != nil {
+		jww.ERROR.Print(err)
+	}
+
+	infoJSON, err := json.Marshal(info)
+	if err != nil {
+		jww.ERROR.Print(err)
+		rawError = err
+		jsonError = err
+		return err
 	}
 
 	// Send the raw
 	dataCh <- types.Data{
 		Filename: filepath.Join("/raw/", filename),
-		Data:     b,
+		Data:     infoJSON,
 	}
 
-	human := fmt.Sprintf("Docker info: %q", b)
-	// Convert to human readable
+	// Send the json
 	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename),
-		Data:     []byte(human),
+		Filename: filepath.Join("/json/", filename+".json"),
+		Data:     infoJSON,
 	}
 
-	type dockerInfo struct {
-		Result string `json:"result"`
-	}
-	u := dockerInfo{
-		Result: string(b),
-	}
-	j, err := json.Marshal(u)
+	infoIndentJSON, err := json.MarshalIndent(info, "", "  ")
 	if err != nil {
 		jww.ERROR.Print(err)
-		jsonError = err
+		humanError = err
 		return err
 	}
 
+	// Human readable version
 	dataCh <- types.Data{
-		Filename: filepath.Join("/json/", filename),
-		Data:     j,
+		Filename: filepath.Join("/human/", filename+".json"),
+		Data:     infoIndentJSON,
 	}
 
 	return nil
