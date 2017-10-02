@@ -33,11 +33,19 @@ func Dockerps(dataCh chan types.Data, completeCh chan bool, resultsCh chan types
 	cli, err := client.NewEnvClient()
 	if err != nil {
 		jww.ERROR.Print(err)
+		rawError = err
+		jsonError = err
+		humanError = err
+		return err
 	}
 
 	containers, err := cli.ContainerList(context.Background(), dockertypes.ContainerListOptions{})
 	if err != nil {
 		jww.ERROR.Print(err)
+		rawError = err
+		jsonError = err
+		humanError = err
+		return err
 	}
 
 	containersJSON, err := json.Marshal(containers)

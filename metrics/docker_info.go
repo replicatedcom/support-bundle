@@ -32,11 +32,19 @@ func DockerInfo(dataCh chan types.Data, completeCh chan bool, resultsCh chan typ
 	cli, err := client.NewEnvClient()
 	if err != nil {
 		jww.ERROR.Print(err)
+		rawError = err
+		jsonError = err
+		humanError = err
+		return err
 	}
 
 	info, err := cli.Info(context.Background())
 	if err != nil {
 		jww.ERROR.Print(err)
+		rawError = err
+		jsonError = err
+		humanError = err
+		return err
 	}
 
 	infoJSON, err := json.Marshal(info)
