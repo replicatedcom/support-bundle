@@ -1,16 +1,17 @@
 package metrics
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
-	"log"
-	"os/exec"
 	"path/filepath"
 	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 
 	jww "github.com/spf13/jwalterweatherman"
+
+	dockertypes "github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 )
 
 func Dockerps(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
@@ -29,40 +30,47 @@ func Dockerps(dataCh chan types.Data, completeCh chan bool, resultsCh chan types
 		completeCh <- true
 	}()
 
-	b, err := exec.Command("docker", "ps").Output()
+	cli, err := client.NewEnvClient()
 	if err != nil {
-		log.Fatal(err)
+		jww.ERROR.Print(err)
+	}
+
+	containers, err := cli.ContainerList(context.Background(), dockertypes.ContainerListOptions{})
+	if err != nil {
+		jww.ERROR.Print(err)
+	}
+
+	containersJSON, err := json.Marshal(containers)
+	if err != nil {
+		jww.ERROR.Print(err)
+		rawError = err
+		jsonError = err
+		return err
 	}
 
 	// Send the raw
 	dataCh <- types.Data{
 		Filename: filepath.Join("/raw/", filename),
-		Data:     b,
+		Data:     containersJSON,
 	}
 
-	human := fmt.Sprintf("Docker ps: %q", b)
-	// Convert to human readable
+	// Send the json
 	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename),
-		Data:     []byte(human),
+		Filename: filepath.Join("/json/", filename+".json"),
+		Data:     containersJSON,
 	}
 
-	type dockerPS struct {
-		Result string `json:"result"`
-	}
-	u := dockerPS{
-		Result: string(b),
-	}
-	j, err := json.Marshal(u)
+	containerIndentJSON, err := json.MarshalIndent(containers, "", "  ")
 	if err != nil {
 		jww.ERROR.Print(err)
-		jsonError = err
+		humanError = err
 		return err
 	}
 
+	// Human readable version
 	dataCh <- types.Data{
-		Filename: filepath.Join("/json/", filename),
-		Data:     j,
+		Filename: filepath.Join("/human/", filename+".json"),
+		Data:     containerIndentJSON,
 	}
 
 	return nil
