@@ -8,6 +8,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/replicatedcom/support-bundle/metrics"
+
+	"github.com/replicatedcom/support-bundle/systemutil"
 	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/divolgin/archiver/compressor"
@@ -36,22 +39,42 @@ func Generate() error {
 		},
 
 		Task{
-			Description: "Get Files",
-			ExecFunc:    systemFiles,
+			Description: "Get File",
+			ExecFunc:    systemutil.ReadFile,
 			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"C:/Go/VERSION", "C:/Go/README.md"},
+			Args:        []string{"C:/Go/VERSION"},
 		},
 
 		Task{
-			Description: "Run Commands",
-			ExecFunc:    systemCommands,
+			Description: "Get Other File",
+			ExecFunc:    systemutil.ReadFile,
 			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"docker ps", "docker info"},
+			Args:        []string{"C:/Go/README.md"},
 		},
 
 		Task{
-			Description: "Docker Metrics",
-			ExecFunc:    dockerMetrics,
+			Description: "Run Command",
+			ExecFunc:    systemutil.RunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"docker", "ps"},
+		},
+
+		Task{
+			Description: "Run Other Command",
+			ExecFunc:    systemutil.RunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"docker", "info"},
+		},
+
+		Task{
+			Description: "Docker ps",
+			ExecFunc:    metrics.Dockerps,
+			Timeout:     time.Duration(time.Second * 15),
+		},
+
+		Task{
+			Description: "Docker info",
+			ExecFunc:    metrics.DockerInfo,
 			Timeout:     time.Duration(time.Second * 15),
 		},
 	}

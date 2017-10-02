@@ -19,7 +19,7 @@ func RunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh chan typ
 
 	// make a sanatized version of the filename we're searching for - replace forward slash, backslash colon and space with _
 	r, _ := regexp.Compile(`[^\w]`)
-	filename := "/system/runcommand/" + r.ReplaceAllString(command, "_") + r.ReplaceAllString(arg, "_")
+	filename := "/system/runcommand/" + r.ReplaceAllString(command, "_") + "_" + r.ReplaceAllString(arg, "_")
 
 	var rawError, jsonError, humanError error = nil, nil, nil
 	defer func() {

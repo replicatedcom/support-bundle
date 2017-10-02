@@ -17,7 +17,7 @@ func ReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan types
 	readFile := args[0]
 
 	// make a sanatized version of the filename we're searching for - replace forward slash, backslash colon and space with _
-	r, _ := regexp.Compile(`[\\\/:\s]`)
+	r, _ := regexp.Compile(`[^\w]`)
 	filename := "/system/readfile/" + r.ReplaceAllString(readFile, "_")
 
 	var rawError, jsonError, humanError error = nil, nil, nil
