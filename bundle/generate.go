@@ -77,6 +77,13 @@ func Generate() error {
 			ExecFunc:    metrics.DockerInfo,
 			Timeout:     time.Duration(time.Second * 15),
 		},
+
+		Task{
+			Description: "Docker run command in container",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "root", "ls", "-a"},
+		},
 	}
 	wg.Add(len(tasks))
 
