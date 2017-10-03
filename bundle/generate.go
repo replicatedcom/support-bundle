@@ -81,6 +81,13 @@ func Generate() error {
 		},
 
 		Task{
+			Description: "Docker read file from container",
+			ExecFunc:    systemutil.DockerReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "/usr/local/bin/"},
+		},
+
+		Task{
 			Description: "Docker ps",
 			ExecFunc:    metrics.Dockerps,
 			Timeout:     time.Duration(time.Second * 15),

@@ -1,8 +1,11 @@
 package systemutil
 
 import (
+	"archive/tar"
+	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"path/filepath"
 	"regexp"
@@ -73,28 +76,57 @@ func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan
 
 	// Send the raw
 	dataCh <- types.Data{
-		Filename: filepath.Join("/raw/", filename),
+		Filename: filepath.Join("/raw/", filename+".tar"),
 		Data:     response,
 	}
 
 	// Human readable version
 	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename),
+		Filename: filepath.Join("/human/", filename+".tar"),
 		Data:     response,
 	}
 
+	//make a new buffer of the read file
+	newReader := bytes.NewReader(response)
+
 	type readFileStruct struct {
-		File string                        `json:"file"`
-		Info dockertypes.ContainerPathStat `json:"info"`
+		FileContent string     `json:"filecontent"`
+		Header      tar.Header `json:"fileheader"`
 	}
-	u := readFileStruct{
-		File: string(response),
-		Info: fileinfo,
+	readFiles := []readFileStruct{}
+
+	//remove the tar header & store all files
+	tr := tar.NewReader(newReader)
+	for {
+		hdr, err := tr.Next()
+		if err == io.EOF {
+			//end of tar archive
+			break
+		} else if err != nil {
+			jww.ERROR.Print(err)
+			jsonError = err
+			return err
+		}
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(tr)
+
+		readFiles = append(readFiles, readFileStruct{
+			FileContent: buf.String(),
+			Header:      *hdr,
+		})
+	}
+
+	type readFilesStruct struct {
+		Files []readFileStruct              `json:"files"`
+		Info  dockertypes.ContainerPathStat `json:"info"`
+	}
+	u := readFilesStruct{
+		Files: readFiles,
+		Info:  fileinfo,
 	}
 	j, err := json.Marshal(u)
 	if err != nil {
 		jww.ERROR.Print(err)
-		rawError = err
 		jsonError = err
 		return err
 	}
