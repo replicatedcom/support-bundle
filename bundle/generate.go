@@ -67,6 +67,13 @@ func Generate() error {
 		},
 
 		Task{
+			Description: "Docker run command in container",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "root", "ls", "-a"},
+		},
+
+		Task{
 			Description: "Docker ps",
 			ExecFunc:    metrics.Dockerps,
 			Timeout:     time.Duration(time.Second * 15),
@@ -79,10 +86,10 @@ func Generate() error {
 		},
 
 		Task{
-			Description: "Docker run command in container",
-			ExecFunc:    systemutil.DockerRunCommand,
+			Description: "Docker logs",
+			ExecFunc:    metrics.DockerLogs,
 			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"7e47d28f0057", "root", "ls", "-a"},
+			Args:        []string{"7e47d28f0057"},
 		},
 	}
 	wg.Add(len(tasks))
