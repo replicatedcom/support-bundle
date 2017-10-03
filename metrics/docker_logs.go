@@ -52,8 +52,16 @@ func DockerLogs(dataCh chan types.Data, completeCh chan bool, resultsCh chan typ
 			ShowStderr: true,
 		}
 		logsReader, err := cli.ContainerLogs(context.Background(), args[0], options)
-		logs, err := ioutil.ReadAll(logsReader)
+		if err != nil {
+			jww.ERROR.Print(err)
+			rawError = err
+			jsonError = err
+			humanError = err
+			timeoutChan <- err
+			return
+		}
 
+		logs, err := ioutil.ReadAll(logsReader)
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError = err
