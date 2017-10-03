@@ -29,41 +29,58 @@ func Hostname(dataCh chan types.Data, completeCh chan bool, resultsCh chan types
 		completeCh <- true
 	}()
 
-	b, err := exec.Command("hostname").Output()
-	if err != nil {
-		log.Fatal(err)
-	}
+	timeoutChan := make(chan error, 1)
 
-	// Send the raw
-	dataCh <- types.Data{
-		Filename: filepath.Join("/raw/", filename),
-		Data:     b,
-	}
+	go func() {
+		b, err := exec.Command("hostname").Output()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	human := fmt.Sprintf("Hostname: %q", b)
-	// Convert to human readable
-	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename),
-		Data:     []byte(human),
-	}
+		// Send the raw
+		dataCh <- types.Data{
+			Filename: filepath.Join("/raw/", filename),
+			Data:     b,
+		}
 
-	type hostname struct {
-		Hostname string `json:"hostname"`
-	}
-	u := hostname{
-		Hostname: string(b),
-	}
-	j, err := json.Marshal(u)
-	if err != nil {
-		jww.ERROR.Print(err)
+		human := fmt.Sprintf("Hostname: %q", b)
+		// Convert to human readable
+		dataCh <- types.Data{
+			Filename: filepath.Join("/human/", filename),
+			Data:     []byte(human),
+		}
+
+		type hostname struct {
+			Hostname string `json:"hostname"`
+		}
+		u := hostname{
+			Hostname: string(b),
+		}
+		j, err := json.Marshal(u)
+		if err != nil {
+			jww.ERROR.Print(err)
+			jsonError = err
+			timeoutChan <- err
+			return
+		}
+
+		dataCh <- types.Data{
+			Filename: filepath.Join("/json/", filename),
+			Data:     j,
+		}
+		timeoutChan <- nil
+	}()
+
+	select {
+	case err := <-timeoutChan:
+		//completed on time
+		return err
+	case <-time.After(timeout):
+		//failed to complete on time
+		err := types.TimeoutError{Message: fmt.Sprintf(`Fetching hostname timed out after %s`, timeout.String())}
+		rawError = err
 		jsonError = err
+		humanError = err
 		return err
 	}
-
-	dataCh <- types.Data{
-		Filename: filepath.Join("/json/", filename),
-		Data:     j,
-	}
-
-	return nil
 }

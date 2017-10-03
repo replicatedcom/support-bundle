@@ -34,43 +34,62 @@ func RunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh chan typ
 		completeCh <- true
 	}()
 
-	b, err := exec.Command(command, arg).Output()
-	if err != nil {
-		jww.ERROR.Print(err)
-		rawError, jsonError, humanError = err, err, err
+	timeoutChan := make(chan error, 1)
+
+	go func() {
+		b, err := exec.Command(command, arg).Output()
+		if err != nil {
+			jww.ERROR.Print(err)
+			rawError, jsonError, humanError = err, err, err
+			timeoutChan <- err
+			return
+		}
+
+		// Send the raw
+		dataCh <- types.Data{
+			Filename: filepath.Join("/raw/", filename),
+			Data:     b,
+		}
+
+		human := fmt.Sprintf("Run command %q: %q", command, b)
+		// Convert to human readable
+		dataCh <- types.Data{
+			Filename: filepath.Join("/human/", filename),
+			Data:     []byte(human),
+		}
+
+		type runCommandStruct struct {
+			Output string `json:"output"`
+		}
+		u := runCommandStruct{
+			Output: string(b),
+		}
+		j, err := json.Marshal(u)
+		if err != nil {
+			jww.ERROR.Print(err)
+			jsonError = err
+			timeoutChan <- err
+			return
+		}
+
+		dataCh <- types.Data{
+			Filename: filepath.Join("/json/", filename),
+			Data:     j,
+		}
+
+		timeoutChan <- nil
+	}()
+
+	select {
+	case err := <-timeoutChan:
+		//completed on time
 		return err
-	}
-
-	// Send the raw
-	dataCh <- types.Data{
-		Filename: filepath.Join("/raw/", filename),
-		Data:     b,
-	}
-
-	human := fmt.Sprintf("Run command %q: %q", command, b)
-	// Convert to human readable
-	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename),
-		Data:     []byte(human),
-	}
-
-	type runCommandStruct struct {
-		Output string `json:"output"`
-	}
-	u := runCommandStruct{
-		Output: string(b),
-	}
-	j, err := json.Marshal(u)
-	if err != nil {
-		jww.ERROR.Print(err)
+	case <-time.After(timeout):
+		//failed to complete on time
+		err := types.TimeoutError{Message: fmt.Sprintf(`Command "%s" timed out after %s`, command+"_"+arg, timeout.String())}
+		rawError = err
 		jsonError = err
+		humanError = err
 		return err
 	}
-
-	dataCh <- types.Data{
-		Filename: filepath.Join("/json/", filename),
-		Data:     j,
-	}
-
-	return nil
 }

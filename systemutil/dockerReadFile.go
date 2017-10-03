@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"path/filepath"
@@ -43,99 +44,120 @@ func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan
 		completeCh <- true
 	}()
 
-	cli, err := client.NewEnvClient()
-	if err != nil {
-		jww.ERROR.Print(err)
-		rawError = err
-		jsonError = err
-		humanError = err
-		return err
-	}
+	timeoutChan := make(chan error, 1)
 
-	readcloser, fileinfo, err := cli.CopyFromContainer(context.Background(), args[0], args[1])
-	if err != nil {
-		jww.ERROR.Print(err)
-		rawError = err
-		jsonError = err
-		humanError = err
-		return err
-	}
+	go func() {
+		cli, err := client.NewEnvClient()
+		if err != nil {
+			jww.ERROR.Print(err)
+			rawError = err
+			jsonError = err
+			humanError = err
+			timeoutChan <- err
+			return
+		}
 
-	// read everything
-	response, err := ioutil.ReadAll(readcloser)
-	if err != nil {
-		jww.ERROR.Print(err)
-		rawError = err
-		jsonError = err
-		humanError = err
-		return err
-	}
+		readcloser, fileinfo, err := cli.CopyFromContainer(context.Background(), args[0], args[1])
+		if err != nil {
+			jww.ERROR.Print(err)
+			rawError = err
+			jsonError = err
+			humanError = err
+			timeoutChan <- err
+			return
+		}
 
-	//close connection
-	readcloser.Close()
+		// read everything
+		response, err := ioutil.ReadAll(readcloser)
+		if err != nil {
+			jww.ERROR.Print(err)
+			rawError = err
+			jsonError = err
+			humanError = err
+			timeoutChan <- err
+			return
+		}
 
-	// Send the raw
-	dataCh <- types.Data{
-		Filename: filepath.Join("/raw/", filename+".tar"),
-		Data:     response,
-	}
+		//close connection
+		readcloser.Close()
 
-	// Human readable version
-	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename+".tar"),
-		Data:     response,
-	}
+		// Send the raw
+		dataCh <- types.Data{
+			Filename: filepath.Join("/raw/", filename+".tar"),
+			Data:     response,
+		}
 
-	//make a new buffer of the read file
-	newReader := bytes.NewReader(response)
+		// Human readable version
+		dataCh <- types.Data{
+			Filename: filepath.Join("/human/", filename+".tar"),
+			Data:     response,
+		}
 
-	type readFileStruct struct {
-		FileContent string     `json:"filecontent"`
-		Header      tar.Header `json:"fileheader"`
-	}
-	readFiles := []readFileStruct{}
+		//make a new buffer of the read file
+		newReader := bytes.NewReader(response)
 
-	//remove the tar header & store all files
-	tr := tar.NewReader(newReader)
-	for {
-		hdr, err := tr.Next()
-		if err == io.EOF {
-			//end of tar archive
-			break
-		} else if err != nil {
+		type readFileStruct struct {
+			FileContent string     `json:"filecontent"`
+			Header      tar.Header `json:"fileheader"`
+		}
+		readFiles := []readFileStruct{}
+
+		//remove the tar header & store all files
+		tr := tar.NewReader(newReader)
+		for {
+			hdr, err := tr.Next()
+			if err == io.EOF {
+				//end of tar archive
+				break
+			} else if err != nil {
+				jww.ERROR.Print(err)
+				jsonError = err
+				timeoutChan <- err
+				return
+			}
+			buf := new(bytes.Buffer)
+			buf.ReadFrom(tr)
+
+			readFiles = append(readFiles, readFileStruct{
+				FileContent: buf.String(),
+				Header:      *hdr,
+			})
+		}
+
+		type readFilesStruct struct {
+			Files []readFileStruct              `json:"files"`
+			Info  dockertypes.ContainerPathStat `json:"info"`
+		}
+		u := readFilesStruct{
+			Files: readFiles,
+			Info:  fileinfo,
+		}
+		j, err := json.Marshal(u)
+		if err != nil {
 			jww.ERROR.Print(err)
 			jsonError = err
-			return err
+			timeoutChan <- err
+			return
 		}
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(tr)
 
-		readFiles = append(readFiles, readFileStruct{
-			FileContent: buf.String(),
-			Header:      *hdr,
-		})
-	}
+		// Send the json
+		dataCh <- types.Data{
+			Filename: filepath.Join("/json/", filename+".json"),
+			Data:     j,
+		}
+		timeoutChan <- nil
+	}()
 
-	type readFilesStruct struct {
-		Files []readFileStruct              `json:"files"`
-		Info  dockertypes.ContainerPathStat `json:"info"`
-	}
-	u := readFilesStruct{
-		Files: readFiles,
-		Info:  fileinfo,
-	}
-	j, err := json.Marshal(u)
-	if err != nil {
-		jww.ERROR.Print(err)
+	select {
+	case err := <-timeoutChan:
+		//completed on time
+		return err
+	case <-time.After(timeout):
+		//failed to complete on time
+		err := types.TimeoutError{Message: fmt.Sprintf(`Reading a docker file at from host:%s and path:%s timed out after %s`, args[0], args[1], timeout.String())}
+		rawError = err
 		jsonError = err
+		humanError = err
 		return err
 	}
-
-	// Send the json
-	dataCh <- types.Data{
-		Filename: filepath.Join("/json/", filename+".json"),
-		Data:     j,
-	}
-
-	return nil
 }

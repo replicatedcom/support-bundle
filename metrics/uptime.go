@@ -30,53 +30,71 @@ func Uptime(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.R
 		completeCh <- true
 	}()
 
-	b, err := util.ReadFile("/proc/uptime")
-	if err != nil {
-		jww.ERROR.Print(err)
-		rawError, jsonError, humanError = err, err, err
+	timeoutChan := make(chan error, 1)
+
+	go func() {
+		b, err := util.ReadFile("/proc/uptime")
+		if err != nil {
+			jww.ERROR.Print(err)
+			rawError, jsonError, humanError = err, err, err
+			timeoutChan <- err
+			return
+		}
+
+		// Send the raw
+		dataCh <- types.Data{
+			Filename: filepath.Join("/raw/", filename),
+			Data:     b,
+		}
+
+		uptimeSeconds, err := parseUptime(b)
+		if err != nil {
+			jsonError, humanError = err, err
+			timeoutChan <- err
+			return
+		}
+
+		human := fmt.Sprintf("Total Time (seconds): %f\nIdle Time (seconds): %f", uptimeSeconds[0], uptimeSeconds[1])
+		// Convert to human readable
+		dataCh <- types.Data{
+			Filename: filepath.Join("/human/", filename),
+			Data:     []byte(human),
+		}
+
+		type uptime struct {
+			TotalSeconds float64 `json:"total_seconds"`
+			IdleSeconds  float64 `json:"idle_seconds"`
+		}
+		u := uptime{
+			TotalSeconds: uptimeSeconds[0],
+			IdleSeconds:  uptimeSeconds[1],
+		}
+		j, err := json.Marshal(u)
+		if err != nil {
+			jww.ERROR.Print(err)
+			jsonError = err
+			timeoutChan <- err
+			return
+		}
+
+		dataCh <- types.Data{
+			Filename: filepath.Join("/json/", filename),
+			Data:     j,
+		}
+	}()
+
+	select {
+	case err := <-timeoutChan:
+		//completed on time
 		return err
-	}
-
-	// Send the raw
-	dataCh <- types.Data{
-		Filename: filepath.Join("/raw/", filename),
-		Data:     b,
-	}
-
-	uptimeSeconds, err := parseUptime(b)
-	if err != nil {
-		jsonError, humanError = err, err
-		return err
-	}
-
-	human := fmt.Sprintf("Total Time (seconds): %f\nIdle Time (seconds): %f", uptimeSeconds[0], uptimeSeconds[1])
-	// Convert to human readable
-	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename),
-		Data:     []byte(human),
-	}
-
-	type uptime struct {
-		TotalSeconds float64 `json:"total_seconds"`
-		IdleSeconds  float64 `json:"idle_seconds"`
-	}
-	u := uptime{
-		TotalSeconds: uptimeSeconds[0],
-		IdleSeconds:  uptimeSeconds[1],
-	}
-	j, err := json.Marshal(u)
-	if err != nil {
-		jww.ERROR.Print(err)
+	case <-time.After(timeout):
+		//failed to complete on time
+		err := types.TimeoutError{Message: fmt.Sprintf(`Fetching uptime timed out after %s`, timeout.String())}
+		rawError = err
 		jsonError = err
+		humanError = err
 		return err
 	}
-
-	dataCh <- types.Data{
-		Filename: filepath.Join("/json/", filename),
-		Data:     j,
-	}
-
-	return nil
 }
 
 func parseUptime(contents []byte) ([]float64, error) {
