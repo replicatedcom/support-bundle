@@ -90,7 +90,6 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 
 	// read everything
 	response, err := ioutil.ReadAll(att.Reader)
-	jww.FEEDBACK.Printf("%s\n", string(response))
 	if err != nil {
 		jww.ERROR.Print(err)
 		rawError = err
