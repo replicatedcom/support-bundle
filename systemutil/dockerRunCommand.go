@@ -1,10 +1,10 @@
 package systemutil
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"path/filepath"
 	"regexp"
 	"time"
@@ -15,6 +15,7 @@ import (
 
 	dockertypes "github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/stdcopy"
 )
 
 // DockerRunCommand Run a command on a specified docker instance.
@@ -99,8 +100,10 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 			return
 		}
 
-		// read everything
-		response, err := ioutil.ReadAll(att.Reader)
+		var dstdout, dstderr bytes.Buffer
+
+		//read and demultiplex
+		_, err = stdcopy.StdCopy(&dstdout, &dstderr, att.Reader)
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError = err
@@ -113,28 +116,37 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 		// close connection
 		att.Close()
 
-		// drop the first 8 bytes (TODO figure out why there is garbage here in the first place)
-		if len(response) > 8 {
-			response = response[8:]
-		}
+		// get stdout and stderr byte arrays
+		stdoutResult := dstdout.Bytes()
+		stderrResult := dstderr.Bytes()
 
-		// Send the raw
+		// Send the raw result
 		dataCh <- types.Data{
-			Filename: filepath.Join("/raw/", filename),
-			Data:     response,
+			Filename: filepath.Join("/raw/", filename+".out.txt"),
+			Data:     stdoutResult,
+		}
+		dataCh <- types.Data{
+			Filename: filepath.Join("/raw/", filename+".err.txt"),
+			Data:     stderrResult,
 		}
 
 		// Human readable version
 		dataCh <- types.Data{
-			Filename: filepath.Join("/human/", filename+".txt"),
-			Data:     response,
+			Filename: filepath.Join("/human/", filename+".out.txt"),
+			Data:     stdoutResult,
+		}
+		dataCh <- types.Data{
+			Filename: filepath.Join("/human/", filename+".err.txt"),
+			Data:     stderrResult,
 		}
 
 		type runCommandStruct struct {
-			Output string `json:"output"`
+			Out string `json:"stdout"`
+			Err string `json:"stderr"`
 		}
 		u := runCommandStruct{
-			Output: string(response),
+			Out: string(stdoutResult),
+			Err: string(stderrResult),
 		}
 		j, err := json.Marshal(u)
 		if err != nil {

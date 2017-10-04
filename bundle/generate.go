@@ -74,6 +74,13 @@ func Generate() error {
 		},
 
 		Task{
+			Description: "Docker run command in container with large output",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "root", "ls", "-a", "-R"},
+		},
+
+		Task{
 			Description: "Docker run command in container, timeout",
 			ExecFunc:    systemutil.DockerRunCommand,
 			Timeout:     time.Duration(time.Second * 1),
