@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	"regexp"
-	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 
@@ -22,7 +21,7 @@ import (
 
 // DockerReadFile Read a file from a docker instance
 // args: ["id", "path_to_file"]
-func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
+func DockerReadFile(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/docker/readfile/"
 
 	r, _ := regexp.Compile(`[^\w]`)
@@ -32,19 +31,10 @@ func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan
 	}
 
 	var rawError, jsonError, humanError error = nil, nil, nil
-	defer func() {
-		resultsCh <- types.Result{
-			Name:        "dockerReadFile",
-			Description: "A file from a docker container",
-			Filename:    filename,
-			RawError:    rawError,
-			JSONError:   jsonError,
-			HumanError:  humanError,
-		}
-		completeCh <- true
-	}()
 
-	timeoutChan := make(chan error, 1)
+	var datas []types.Data
+
+	completeChan := make(chan error, 1)
 
 	go func() {
 		cli, err := client.NewEnvClient()
@@ -53,17 +43,17 @@ func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan
 			rawError = err
 			jsonError = err
 			humanError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
-		readcloser, fileinfo, err := cli.CopyFromContainer(context.Background(), args[0], args[1])
+		readcloser, fileinfo, err := cli.CopyFromContainer(ctx, args[0], args[1])
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError = err
 			jsonError = err
 			humanError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
@@ -74,7 +64,7 @@ func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan
 			rawError = err
 			jsonError = err
 			humanError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
@@ -82,16 +72,16 @@ func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan
 		readcloser.Close()
 
 		// Send the raw
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/raw/", filename+".tar"),
 			Data:     response,
-		}
+		})
 
 		// Human readable version
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/human/", filename+".tar"),
 			Data:     response,
-		}
+		})
 
 		//make a new buffer of the read file
 		newReader := bytes.NewReader(response)
@@ -112,7 +102,7 @@ func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan
 			} else if err != nil {
 				jww.ERROR.Print(err)
 				jsonError = err
-				timeoutChan <- err
+				completeChan <- err
 				return
 			}
 			buf := new(bytes.Buffer)
@@ -136,28 +126,39 @@ func DockerReadFile(dataCh chan types.Data, completeCh chan bool, resultsCh chan
 		if err != nil {
 			jww.ERROR.Print(err)
 			jsonError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
 		// Send the json
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/json/", filename+".json"),
 			Data:     j,
-		}
-		timeoutChan <- nil
+		})
+		completeChan <- nil
 	}()
 
+	var err error
+
 	select {
-	case err := <-timeoutChan:
+	case err = <-completeChan:
 		//completed on time
-		return err
-	case <-time.After(timeout):
+	case <-ctx.Done():
 		//failed to complete on time
-		err := types.TimeoutError{Message: fmt.Sprintf(`Reading a docker file at from host:%s and path:%s timed out after %s`, args[0], args[1], timeout.String())}
+		err = types.TimeoutError{Message: fmt.Sprintf(`Reading a docker file at from host:%s and path:%s errored out with %s`, args[0], args[1], ctx.Err().Error())}
 		rawError = err
 		jsonError = err
 		humanError = err
-		return err
 	}
+
+	result := types.Result{
+		Name:        "dockerReadFile",
+		Description: "A file from a docker container",
+		Filename:    filename,
+		RawError:    rawError,
+		JSONError:   jsonError,
+		HumanError:  humanError,
+	}
+
+	return datas, result, err
 }

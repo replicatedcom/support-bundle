@@ -1,65 +1,41 @@
 package systemutil
 
 import (
+	"context"
 	"runtime"
 	"testing"
 	"time"
 
-	"github.com/replicatedcom/support-bundle/types"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestRunCommand(t *testing.T) {
-	resultsCh := make(chan types.Result)
-	dataCh := make(chan types.Data)
-	completeCh := make(chan bool, 1)
-
-	// accept and discard channel data
-	go func() {
-		for {
-			select {
-			case <-resultsCh:
-
-			case <-dataCh:
-			}
-		}
-	}()
 
 	// it's a command that is sure to be installed AND will be the same on both windows and linux
 	commandStrings := []string{"go", "help"}
 
-	err := RunCommand(dataCh, completeCh, resultsCh, time.Second*1, commandStrings)
+	datas, result, err := RunCommand(context.Background(), commandStrings)
 	require.NoError(t, err)
-
-	complete := <-completeCh
-	assert.Equal(t, true, complete)
+	require.Equal(t, 3, len(datas), "Expected 3 data structs to be returned")
+	require.NoError(t, result.HumanError)
+	require.NoError(t, result.RawError)
+	require.NoError(t, result.JSONError)
 }
 
 func TestRunCommandTimeout(t *testing.T) {
-	resultsCh := make(chan types.Result)
-	dataCh := make(chan types.Data)
-	completeCh := make(chan bool, 1)
-
-	// accept and discard channel data
-	go func() {
-		for {
-			select {
-			case <-resultsCh:
-			case <-dataCh:
-			}
-		}
-	}()
 
 	commandStrings := []string{"sleep", "10s"}
 	if runtime.GOOS == "windows" {
 		t.Skipf("This test is not yet compatible with windows")
 	}
 
-	err := RunCommand(dataCh, completeCh, resultsCh, time.Second*1, commandStrings)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "timed")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
+	defer cancel()
 
-	complete := <-completeCh
-	assert.Equal(t, true, complete)
+	datas, result, err := RunCommand(ctx, commandStrings)
+	require.Error(t, err)
+	require.Equal(t, 0, len(datas), "Expected no data structs to be returned due to timeout")
+	require.Error(t, result.HumanError)
+	require.Error(t, result.RawError)
+	require.Error(t, result.JSONError)
 }

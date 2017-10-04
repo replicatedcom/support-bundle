@@ -1,12 +1,12 @@
 package metrics
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 	"github.com/replicatedcom/support-bundle/util"
@@ -14,52 +14,43 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func Uptime(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
+func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/system/metrics/uptime"
 
 	var rawError, jsonError, humanError error = nil, nil, nil
-	defer func() {
-		resultsCh <- types.Result{
-			Name:        "uptime",
-			Description: "System Uptime",
-			Filename:    filename,
-			RawError:    rawError,
-			JSONError:   jsonError,
-			HumanError:  humanError,
-		}
-		completeCh <- true
-	}()
 
-	timeoutChan := make(chan error, 1)
+	var datas []types.Data
+
+	completeChan := make(chan error, 1)
 
 	go func() {
 		b, err := util.ReadFile("/proc/uptime")
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError, jsonError, humanError = err, err, err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
 		// Send the raw
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/raw/", filename),
 			Data:     b,
-		}
+		})
 
 		uptimeSeconds, err := parseUptime(b)
 		if err != nil {
 			jsonError, humanError = err, err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
 		human := fmt.Sprintf("Total Time (seconds): %f\nIdle Time (seconds): %f", uptimeSeconds[0], uptimeSeconds[1])
 		// Convert to human readable
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/human/", filename),
 			Data:     []byte(human),
-		}
+		})
 
 		type uptime struct {
 			TotalSeconds float64 `json:"total_seconds"`
@@ -73,28 +64,39 @@ func Uptime(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.R
 		if err != nil {
 			jww.ERROR.Print(err)
 			jsonError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/json/", filename),
 			Data:     j,
-		}
+		})
 	}()
 
+	var err error
+
 	select {
-	case err := <-timeoutChan:
+	case err = <-completeChan:
 		//completed on time
-		return err
-	case <-time.After(timeout):
+	case <-ctx.Done():
 		//failed to complete on time
-		err := types.TimeoutError{Message: fmt.Sprintf(`Fetching uptime timed out after %s`, timeout.String())}
+		err = types.TimeoutError{Message: fmt.Sprintf(`Fetching uptime failed due to: %s`, ctx.Err().Error())}
 		rawError = err
 		jsonError = err
 		humanError = err
-		return err
 	}
+
+	result := types.Result{
+		Name:        "uptime",
+		Description: "System Uptime",
+		Filename:    filename,
+		RawError:    rawError,
+		JSONError:   jsonError,
+		HumanError:  humanError,
+	}
+
+	return datas, result, err
 }
 
 func parseUptime(contents []byte) ([]float64, error) {

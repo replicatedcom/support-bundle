@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"path/filepath"
 	"regexp"
-	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 
@@ -20,7 +19,7 @@ import (
 
 // DockerRunCommand Run a command on a specified docker instance.
 // args: ["id", "user", "cmd", "arg1", "arg2"...]
-func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
+func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/docker/runcommand/"
 	commandString := ""
 	r, _ := regexp.Compile(`[^\w]`)
@@ -33,19 +32,10 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 	filename += r.ReplaceAllString(commandString, "_")
 
 	var rawError, jsonError, humanError error = nil, nil, nil
-	defer func() {
-		resultsCh <- types.Result{
-			Name:        "dockerRunCommand",
-			Description: "Results of running a command within a docker container",
-			Filename:    filename,
-			RawError:    rawError,
-			JSONError:   jsonError,
-			HumanError:  humanError,
-		}
-		completeCh <- true
-	}()
 
-	timeoutChan := make(chan error, 1)
+	var datas []types.Data
+
+	completeChan := make(chan error, 1)
 
 	go func() {
 		cli, err := client.NewEnvClient()
@@ -54,7 +44,7 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 			rawError = err
 			jsonError = err
 			humanError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
@@ -66,23 +56,23 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 			AttachStdin:  true,
 		}
 
-		execInstance, err := cli.ContainerExecCreate(context.Background(), args[0], execOpts)
+		execInstance, err := cli.ContainerExecCreate(ctx, args[0], execOpts)
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError = err
 			jsonError = err
 			humanError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
-		att, err := cli.ContainerExecAttach(context.Background(), execInstance.ID, execOpts)
+		att, err := cli.ContainerExecAttach(ctx, execInstance.ID, execOpts)
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError = err
 			jsonError = err
 			humanError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
@@ -90,13 +80,13 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 			Detach: false,
 			Tty:    false,
 		}
-		err = cli.ContainerExecStart(context.Background(), execInstance.ID, execStartOpts)
+		err = cli.ContainerExecStart(ctx, execInstance.ID, execStartOpts)
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError = err
 			jsonError = err
 			humanError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
@@ -109,7 +99,7 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 			rawError = err
 			jsonError = err
 			humanError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
@@ -121,24 +111,24 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 		stderrResult := dstderr.Bytes()
 
 		// Send the raw result
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/raw/", filename+".out.txt"),
 			Data:     stdoutResult,
-		}
-		dataCh <- types.Data{
+		})
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/raw/", filename+".err.txt"),
 			Data:     stderrResult,
-		}
+		})
 
 		// Human readable version
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/human/", filename+".out.txt"),
 			Data:     stdoutResult,
-		}
-		dataCh <- types.Data{
+		})
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/human/", filename+".err.txt"),
 			Data:     stderrResult,
-		}
+		})
 
 		type runCommandStruct struct {
 			Out string `json:"stdout"`
@@ -153,28 +143,39 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 			jww.ERROR.Print(err)
 			rawError = err
 			jsonError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
 		// Send the json
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/json/", filename+".json"),
 			Data:     j,
-		}
-		timeoutChan <- nil
+		})
+		completeChan <- nil
 	}()
 
+	var err error
 	select {
-	case err := <-timeoutChan:
+	case err = <-completeChan:
 		//completed on time
-		return err
-	case <-time.After(timeout):
+	case <-ctx.Done():
 		//failed to complete on time
-		err := types.TimeoutError{Message: fmt.Sprintf(`Command "%s" timed out after %s`, commandString, timeout.String())}
+		err = types.TimeoutError{Message: fmt.Sprintf(`Command "%s" failed due to: %s`, commandString, ctx.Err().Error())}
+		// err := errors.Wrap(ctx.Err(), `Command "`+commandString+`" failed`) //would be nice to use but doesn't convert to json
 		rawError = err
 		jsonError = err
 		humanError = err
-		return err
 	}
+
+	results := types.Result{
+		Name:        "dockerRunCommand",
+		Description: "Results of running a command within a docker container",
+		Filename:    filename,
+		RawError:    rawError,
+		JSONError:   jsonError,
+		HumanError:  humanError,
+	}
+
+	return datas, results, err
 }

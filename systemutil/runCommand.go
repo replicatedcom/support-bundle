@@ -1,19 +1,19 @@
 package systemutil
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func RunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
+func RunCommand(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	command := args[0]
 	arg := args[1]
 
@@ -22,41 +22,32 @@ func RunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh chan typ
 	filename := "/system/runcommand/" + r.ReplaceAllString(command, "_") + "_" + r.ReplaceAllString(arg, "_")
 
 	var rawError, jsonError, humanError error = nil, nil, nil
-	defer func() {
-		resultsCh <- types.Result{
-			Name:        "dockerps",
-			Description: "`docker ps` command outputs",
-			Filename:    filename,
-			RawError:    rawError,
-			JSONError:   jsonError,
-			HumanError:  humanError,
-		}
-		completeCh <- true
-	}()
 
-	timeoutChan := make(chan error, 1)
+	var datas []types.Data
+
+	completeChan := make(chan error, 1)
 
 	go func() {
 		b, err := exec.Command(command, arg).Output()
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError, jsonError, humanError = err, err, err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
 		// Send the raw
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/raw/", filename),
 			Data:     b,
-		}
+		})
 
 		human := fmt.Sprintf("Run command %q: %q", command, b)
 		// Convert to human readable
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/human/", filename),
 			Data:     []byte(human),
-		}
+		})
 
 		type runCommandStruct struct {
 			Output string `json:"output"`
@@ -68,28 +59,39 @@ func RunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh chan typ
 		if err != nil {
 			jww.ERROR.Print(err)
 			jsonError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/json/", filename),
 			Data:     j,
-		}
+		})
 
-		timeoutChan <- nil
+		completeChan <- nil
 	}()
 
+	var err error
+
 	select {
-	case err := <-timeoutChan:
+	case err = <-completeChan:
 		//completed on time
-		return err
-	case <-time.After(timeout):
+	case <-ctx.Done():
 		//failed to complete on time
-		err := types.TimeoutError{Message: fmt.Sprintf(`Command "%s" timed out after %s`, command+"_"+arg, timeout.String())}
+		err = types.TimeoutError{Message: fmt.Sprintf(`Command "%s" errored out with %s`, command+"_"+arg, ctx.Err().Error())}
 		rawError = err
 		jsonError = err
 		humanError = err
-		return err
 	}
+
+	result := types.Result{
+		Name:        "dockerps",
+		Description: "`docker ps` command outputs",
+		Filename:    filename,
+		RawError:    rawError,
+		JSONError:   jsonError,
+		HumanError:  humanError,
+	}
+
+	return datas, result, err
 }

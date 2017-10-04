@@ -1,34 +1,20 @@
 package systemutil
 
 import (
+	"context"
 	"testing"
-	"time"
 
-	"github.com/replicatedcom/support-bundle/types"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestReadFile(t *testing.T) {
-	resultsCh := make(chan types.Result)
-	dataCh := make(chan types.Data)
-	completeCh := make(chan bool, 1)
-
-	go func() {
-		for {
-			select {
-			case <-resultsCh:
-
-			case <-dataCh:
-			}
-		}
-	}()
 
 	commandStrings := []string{"readFile_test.go"}
 
-	err := ReadFile(dataCh, completeCh, resultsCh, time.Second*1, commandStrings)
+	datas, result, err := ReadFile(context.Background(), commandStrings)
 	require.NoError(t, err)
-
-	complete := <-completeCh
-	assert.Equal(t, true, complete)
+	require.Equal(t, 3, len(datas), "Expected 3 data structs to be returned")
+	require.NoError(t, result.HumanError)
+	require.NoError(t, result.RawError)
+	require.NoError(t, result.JSONError)
 }

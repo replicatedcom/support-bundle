@@ -1,35 +1,26 @@
 package metrics
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os/exec"
 	"path/filepath"
-	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func Hostname(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration, args []string) error {
+func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/system/metrics/hostname"
 
 	var rawError, jsonError, humanError error = nil, nil, nil
-	defer func() {
-		resultsCh <- types.Result{
-			Name:        "hostname",
-			Description: "System Hostname",
-			Filename:    filename,
-			RawError:    rawError,
-			JSONError:   jsonError,
-			HumanError:  humanError,
-		}
-		completeCh <- true
-	}()
 
-	timeoutChan := make(chan error, 1)
+	var datas []types.Data
+
+	completeChan := make(chan error, 1)
 
 	go func() {
 		b, err := exec.Command("hostname").Output()
@@ -38,17 +29,17 @@ func Hostname(dataCh chan types.Data, completeCh chan bool, resultsCh chan types
 		}
 
 		// Send the raw
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/raw/", filename),
 			Data:     b,
-		}
+		})
 
 		human := fmt.Sprintf("Hostname: %q", b)
 		// Convert to human readable
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/human/", filename),
 			Data:     []byte(human),
-		}
+		})
 
 		type hostname struct {
 			Hostname string `json:"hostname"`
@@ -60,27 +51,38 @@ func Hostname(dataCh chan types.Data, completeCh chan bool, resultsCh chan types
 		if err != nil {
 			jww.ERROR.Print(err)
 			jsonError = err
-			timeoutChan <- err
+			completeChan <- err
 			return
 		}
 
-		dataCh <- types.Data{
+		datas = append(datas, types.Data{
 			Filename: filepath.Join("/json/", filename),
 			Data:     j,
-		}
-		timeoutChan <- nil
+		})
+		completeChan <- nil
 	}()
 
+	var err error
+
 	select {
-	case err := <-timeoutChan:
+	case err = <-completeChan:
 		//completed on time
-		return err
-	case <-time.After(timeout):
+	case <-ctx.Done():
 		//failed to complete on time
-		err := types.TimeoutError{Message: fmt.Sprintf(`Fetching hostname timed out after %s`, timeout.String())}
+		err = types.TimeoutError{Message: fmt.Sprintf(`Fetching hostname failed due to: %s`, ctx.Err().Error())}
 		rawError = err
 		jsonError = err
 		humanError = err
-		return err
 	}
+
+	result := types.Result{
+		Name:        "hostname",
+		Description: "System Hostname",
+		Filename:    filename,
+		RawError:    rawError,
+		JSONError:   jsonError,
+		HumanError:  humanError,
+	}
+
+	return datas, result, err
 }
