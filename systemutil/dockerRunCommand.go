@@ -110,8 +110,13 @@ func DockerRunCommand(dataCh chan types.Data, completeCh chan bool, resultsCh ch
 			return
 		}
 
-		//close connection
+		// close connection
 		att.Close()
+
+		// drop the first 8 bytes (TODO figure out why there is garbage here in the first place)
+		if len(response) > 8 {
+			response = response[8:]
+		}
 
 		// Send the raw
 		dataCh <- types.Data{
