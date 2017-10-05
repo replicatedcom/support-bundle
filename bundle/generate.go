@@ -110,6 +110,13 @@ func Generate() error {
 		},
 
 		Task{
+			Description: "Docker inspect",
+			ExecFunc:    metrics.DockerInspect,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057"},
+		},
+
+		Task{
 			Description: "System hostname",
 			ExecFunc:    metrics.Hostname,
 			Timeout:     time.Duration(time.Second * 1),
