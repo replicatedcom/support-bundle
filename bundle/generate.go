@@ -191,6 +191,11 @@ func Generate() error {
 
 			if err != nil {
 				jww.ERROR.Printf(err.Error() + "\n")
+
+				//replace errors with marshallable versions (most error types will return {} when converted to json)
+				results.RawError = types.MarshallableError{Message: results.RawError.Error()}
+				results.HumanError = types.MarshallableError{Message: results.HumanError.Error()}
+				results.JSONError = types.MarshallableError{Message: results.JSONError.Error()}
 			}
 
 			for _, data := range datas {
