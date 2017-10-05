@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/replicatedcom/support-bundle/types"
-	"github.com/replicatedcom/support-bundle/util"
 
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -24,7 +24,7 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 	completeChan := make(chan error, 1)
 
 	go func() {
-		b, err := util.ReadFile("/proc/uptime")
+		b, err := ioutil.ReadFile("/proc/uptime")
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError, jsonError, humanError = err, err, err

@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/replicatedcom/support-bundle/types"
-	"github.com/replicatedcom/support-bundle/util"
 
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -32,7 +32,7 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 	completeChan := make(chan error, 1)
 
 	go func() {
-		b, err := util.ReadFile("/proc/loadavg")
+		b, err := ioutil.ReadFile("/proc/loadavg")
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError, jsonError, humanError = err, err, err
