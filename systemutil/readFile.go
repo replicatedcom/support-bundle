@@ -2,7 +2,6 @@ package systemutil
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -23,6 +22,7 @@ func ReadFile(ctx context.Context, args []string) ([]types.Data, types.Result, e
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -40,32 +40,7 @@ func ReadFile(ctx context.Context, args []string) ([]types.Data, types.Result, e
 			Filename: filepath.Join("/raw/", filename),
 			Data:     b,
 		})
-
-		human := fmt.Sprintf("Read file %q: %q", readFile, b)
-		// Convert to human readable
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename),
-			Data:     []byte(human),
-		})
-
-		type readFileStruct struct {
-			File string `json:"file"`
-		}
-		u := readFileStruct{
-			File: string(b),
-		}
-		j, err := json.Marshal(u)
-		if err != nil {
-			jww.ERROR.Print(err)
-			jsonError = err
-			completeChan <- err
-			return
-		}
-
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/json/", filename),
-			Data:     j,
-		})
+		paths = append(paths, filepath.Join("/raw/", filename))
 
 		completeChan <- nil
 	}()
@@ -84,12 +59,12 @@ func ReadFile(ctx context.Context, args []string) ([]types.Data, types.Result, e
 	}
 
 	result := types.Result{
-		Name:        "dockerps",
-		Description: "`docker ps` command outputs",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "readFile",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err

@@ -2,15 +2,12 @@ package metrics
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os/exec"
 	"path/filepath"
 
 	"github.com/replicatedcom/support-bundle/types"
-
-	jww "github.com/spf13/jwalterweatherman"
 )
 
 func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
@@ -19,6 +16,7 @@ func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, e
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -33,32 +31,8 @@ func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, e
 			Filename: filepath.Join("/raw/", filename),
 			Data:     b,
 		})
+		paths = append(paths, filepath.Join("/raw/", filename))
 
-		human := fmt.Sprintf("Hostname: %q", b)
-		// Convert to human readable
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename),
-			Data:     []byte(human),
-		})
-
-		type hostname struct {
-			Hostname string `json:"hostname"`
-		}
-		u := hostname{
-			Hostname: string(b),
-		}
-		j, err := json.Marshal(u)
-		if err != nil {
-			jww.ERROR.Print(err)
-			jsonError = err
-			completeChan <- err
-			return
-		}
-
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/json/", filename),
-			Data:     j,
-		})
 		completeChan <- nil
 	}()
 
@@ -76,12 +50,12 @@ func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, e
 	}
 
 	result := types.Result{
-		Name:        "hostname",
-		Description: "System Hostname",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "hostname",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err

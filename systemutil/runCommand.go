@@ -2,7 +2,6 @@ package systemutil
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os/exec"
 	"path/filepath"
@@ -24,6 +23,7 @@ func RunCommand(ctx context.Context, args []string) ([]types.Data, types.Result,
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -41,32 +41,7 @@ func RunCommand(ctx context.Context, args []string) ([]types.Data, types.Result,
 			Filename: filepath.Join("/raw/", filename),
 			Data:     b,
 		})
-
-		human := fmt.Sprintf("Run command %q: %q", command, b)
-		// Convert to human readable
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename),
-			Data:     []byte(human),
-		})
-
-		type runCommandStruct struct {
-			Output string `json:"output"`
-		}
-		u := runCommandStruct{
-			Output: string(b),
-		}
-		j, err := json.Marshal(u)
-		if err != nil {
-			jww.ERROR.Print(err)
-			jsonError = err
-			completeChan <- err
-			return
-		}
-
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/json/", filename),
-			Data:     j,
-		})
+		paths = append(paths, filepath.Join("/raw/", filename))
 
 		completeChan <- nil
 	}()
@@ -85,12 +60,12 @@ func RunCommand(ctx context.Context, args []string) ([]types.Data, types.Result,
 	}
 
 	result := types.Result{
-		Name:        "dockerps",
-		Description: "`docker ps` command outputs",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "runCommand",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err

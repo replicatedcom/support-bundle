@@ -2,7 +2,6 @@ package metrics
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -23,6 +22,7 @@ func DockerLogs(ctx context.Context, args []string) ([]types.Data, types.Result,
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -66,34 +66,8 @@ func DockerLogs(ctx context.Context, args []string) ([]types.Data, types.Result,
 			Filename: filepath.Join("/raw/", filename),
 			Data:     logs,
 		})
+		paths = append(paths, filepath.Join("/raw/", filename))
 
-		// Human readable version (sorta, same as raw)
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename),
-			Data:     logs,
-		})
-
-		type dockerLogsStruct struct {
-			Logs      string `json:"logs"`
-			Container string `json:"container"`
-		}
-		u := dockerLogsStruct{
-			Logs:      string(logs),
-			Container: args[0],
-		}
-		j, err := json.Marshal(u)
-		if err != nil {
-			jww.ERROR.Print(err)
-			jsonError = err
-			completeChan <- err
-			return
-		}
-
-		// Send the json
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/json/", filename+".json"),
-			Data:     j,
-		})
 		completeChan <- nil
 	}()
 
@@ -111,12 +85,12 @@ func DockerLogs(ctx context.Context, args []string) ([]types.Data, types.Result,
 	}
 
 	result := types.Result{
-		Name:        "dockerLogs",
-		Description: "`docker logs" + args[0] + "` command results",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "dockerLogs",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err

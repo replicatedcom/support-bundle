@@ -19,6 +19,7 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -52,17 +53,12 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 			return
 		}
 
-		// Send the raw
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/raw/", filename),
-			Data:     infoJSON,
-		})
-
 		// Send the json
 		datas = append(datas, types.Data{
 			Filename: filepath.Join("/json/", filename+".json"),
 			Data:     infoJSON,
 		})
+		paths = append(paths, filepath.Join("/json/", filename+".json"))
 
 		infoIndentJSON, err := json.MarshalIndent(info, "", "  ")
 		if err != nil {
@@ -77,6 +73,8 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 			Filename: filepath.Join("/human/", filename+".json"),
 			Data:     infoIndentJSON,
 		})
+		paths = append(paths, filepath.Join("/human/", filename+".json"))
+
 		completeChan <- nil
 	}()
 
@@ -94,12 +92,12 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 	}
 
 	result := types.Result{
-		Name:        "dockerInfo",
-		Description: "`docker info` command results",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "dockerInfo",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err

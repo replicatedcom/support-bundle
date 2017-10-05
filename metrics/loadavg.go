@@ -28,6 +28,7 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -45,6 +46,7 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 			Filename: filepath.Join("/raw/", filename),
 			Data:     b,
 		})
+		paths = append(paths, filepath.Join("/raw/", filename))
 
 		loadAverage, err := parseLoadAvg(b)
 		if err != nil {
@@ -56,9 +58,10 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 		human := fmt.Sprintf("%f %f %f", loadAverage.minuteOne, loadAverage.minuteFive, loadAverage.minuteTen)
 		// Convert to human readable
 		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename),
+			Filename: filepath.Join("/human/", filename+".txt"),
 			Data:     []byte(human),
 		})
+		paths = append(paths, filepath.Join("/human/", filename+".txt"))
 
 		j, err := json.Marshal(loadAverage)
 		if err != nil {
@@ -69,9 +72,11 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 		}
 
 		datas = append(datas, types.Data{
-			Filename: filepath.Join("/json/", filename),
+			Filename: filepath.Join("/json/", filename+".json"),
 			Data:     j,
 		})
+		paths = append(paths, filepath.Join("/json/", filename+".json"))
+
 		completeChan <- nil
 	}()
 
@@ -89,12 +94,12 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 	}
 
 	result := types.Result{
-		Name:        "loadavg",
-		Description: "System Load Average",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "loadavg",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err

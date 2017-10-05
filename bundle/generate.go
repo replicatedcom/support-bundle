@@ -34,6 +34,10 @@ func Generate(tasks []Task) error {
 	dataCh := make(chan types.Data)
 	completeCh := make(chan bool)
 
+	var resultMutex = &sync.Mutex{}
+	var allResultInfo []resultInfo
+	var allErrorInfo []errorInfo
+
 	wg.Add(len(tasks))
 
 	collectDir, err := ioutil.TempDir("", "support-bundle")
@@ -51,20 +55,31 @@ func Generate(tasks []Task) error {
 				break
 
 			case result := <-resultsCh:
-				dataFile := filepath.Join(collectDir, "/results/", result.Filename)
-				if err := os.MkdirAll(filepath.Dir(dataFile), 0700); err != nil {
-					jww.ERROR.Print(err)
-					continue
+				resultMutex.Lock()
+				allResultInfo = append(allResultInfo, resultInfo{
+					Paths: result.Filenames,
+					Task:  result.Task,
+					Args:  result.Args,
+				})
+				if result.RawError != nil || result.HumanError != nil || result.JSONError != nil {
+					newErrorInfo := errorInfo{
+						Task:   result.Task,
+						Args:   result.Args,
+						Errors: []string{},
+					}
+					if result.RawError != nil {
+						newErrorInfo.Errors = append(newErrorInfo.Errors, "Raw: "+result.RawError.Error())
+					}
+					if result.HumanError != nil {
+						newErrorInfo.Errors = append(newErrorInfo.Errors, "Human: "+result.HumanError.Error())
+					}
+					if result.JSONError != nil {
+						newErrorInfo.Errors = append(newErrorInfo.Errors, "JSON: "+result.JSONError.Error())
+					}
+
+					allErrorInfo = append(allErrorInfo, newErrorInfo)
 				}
-				b, err := json.Marshal(result)
-				if err != nil {
-					jww.ERROR.Print(err)
-					continue
-				}
-				if err := ioutil.WriteFile(dataFile, b, 0666); err != nil {
-					jww.ERROR.Print(err)
-					continue
-				}
+				resultMutex.Unlock()
 				break
 
 			case data := <-dataCh:
@@ -92,9 +107,9 @@ func Generate(tasks []Task) error {
 				jww.ERROR.Printf(err.Error() + "\n")
 
 				//replace errors with marshallable versions (most error types will return {} when converted to json)
-				results.RawError = types.MarshallableError{Message: results.RawError.Error()}
-				results.HumanError = types.MarshallableError{Message: results.HumanError.Error()}
-				results.JSONError = types.MarshallableError{Message: results.JSONError.Error()}
+				// results.RawError = types.MarshallableError{Message: results.RawError.Error()}
+				// results.HumanError = types.MarshallableError{Message: results.HumanError.Error()}
+				// results.JSONError = types.MarshallableError{Message: results.JSONError.Error()}
 			}
 
 			for _, data := range datas {
@@ -107,6 +122,19 @@ func Generate(tasks []Task) error {
 	}
 
 	wg.Wait()
+
+	//write index and error json files
+	indexJSON, err := json.MarshalIndent(allResultInfo, "", "  ")
+	if err != nil {
+		jww.ERROR.Print(err)
+	}
+	ioutil.WriteFile(filepath.Join(collectDir, "index.json"), indexJSON, 0666)
+
+	errorJSON, err := json.MarshalIndent(allErrorInfo, "", "  ")
+	if err != nil {
+		jww.ERROR.Print(err)
+	}
+	ioutil.WriteFile(filepath.Join(collectDir, "error.json"), errorJSON, 0666)
 
 	// Build the output tar file
 	archiveFilename := "./support-bundle.tar.gz"

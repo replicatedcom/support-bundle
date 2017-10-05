@@ -20,6 +20,7 @@ func Dockerps(ctx context.Context, args []string) ([]types.Data, types.Result, e
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -53,17 +54,12 @@ func Dockerps(ctx context.Context, args []string) ([]types.Data, types.Result, e
 			return
 		}
 
-		// Send the raw
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/raw/", filename),
-			Data:     containersJSON,
-		})
-
 		// Send the json
 		datas = append(datas, types.Data{
 			Filename: filepath.Join("/json/", filename+".json"),
 			Data:     containersJSON,
 		})
+		paths = append(paths, filepath.Join("/json/", filename+".json"))
 
 		containerIndentJSON, err := json.MarshalIndent(containers, "", "  ")
 		if err != nil {
@@ -78,6 +74,8 @@ func Dockerps(ctx context.Context, args []string) ([]types.Data, types.Result, e
 			Filename: filepath.Join("/human/", filename+".json"),
 			Data:     containerIndentJSON,
 		})
+		paths = append(paths, filepath.Join("/human/", filename+".json"))
+
 		completeChan <- nil
 	}()
 
@@ -95,12 +93,12 @@ func Dockerps(ctx context.Context, args []string) ([]types.Data, types.Result, e
 	}
 
 	result := types.Result{
-		Name:        "dockerps",
-		Description: "`docker ps` command outputs",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "dockerps",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err

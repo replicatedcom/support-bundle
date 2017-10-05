@@ -34,6 +34,7 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -115,20 +116,12 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 			Filename: filepath.Join("/raw/", filename+".out.txt"),
 			Data:     stdoutResult,
 		})
+		paths = append(paths, filepath.Join("/raw/", filename+".out.txt"))
 		datas = append(datas, types.Data{
 			Filename: filepath.Join("/raw/", filename+".err.txt"),
 			Data:     stderrResult,
 		})
-
-		// Human readable version
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename+".out.txt"),
-			Data:     stdoutResult,
-		})
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename+".err.txt"),
-			Data:     stderrResult,
-		})
+		paths = append(paths, filepath.Join("/raw/", filename+".err.txt"))
 
 		type runCommandStruct struct {
 			Out string `json:"stdout"`
@@ -152,6 +145,7 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 			Filename: filepath.Join("/json/", filename+".json"),
 			Data:     j,
 		})
+		paths = append(paths, filepath.Join("/json/", filename+".json"))
 		completeChan <- nil
 	}()
 
@@ -169,12 +163,12 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 	}
 
 	results := types.Result{
-		Name:        "dockerRunCommand",
-		Description: "Results of running a command within a docker container",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "dockerRunCommand",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, results, err

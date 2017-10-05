@@ -10,7 +10,6 @@ import (
 
 	jww "github.com/spf13/jwalterweatherman"
 
-	dockertypes "github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
 
@@ -22,6 +21,7 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -36,7 +36,7 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 			return
 		}
 
-		containerJSON, err := cli.ContainerInspect(ctx, args[0])
+		container, err := cli.ContainerInspect(ctx, args[0])
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError = err
@@ -46,39 +46,10 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 			return
 		}
 
-		dataBytes, err := json.Marshal(containerJSON)
+		containerJSON, err := json.Marshal(container)
 		if err != nil {
 			jww.ERROR.Print(err)
 			rawError = err
-			jsonError = err
-			humanError = err
-			completeChan <- err
-			return
-		}
-
-		// Send the raw (not really raw, since the source is json)
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/raw/", filename+".json"),
-			Data:     dataBytes,
-		})
-
-		// Human readable version (not really raw, but )
-		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename+".json"),
-			Data:     dataBytes,
-		})
-
-		type dockerLogsStruct struct {
-			ContainerJSON dockertypes.ContainerJSON `json:"containerJSON"`
-			Container     string                    `json:"container"`
-		}
-		u := dockerLogsStruct{
-			ContainerJSON: containerJSON,
-			Container:     args[0],
-		}
-		j, err := json.Marshal(u)
-		if err != nil {
-			jww.ERROR.Print(err)
 			jsonError = err
 			completeChan <- err
 			return
@@ -87,8 +58,25 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 		// Send the json
 		datas = append(datas, types.Data{
 			Filename: filepath.Join("/json/", filename+".json"),
-			Data:     j,
+			Data:     containerJSON,
 		})
+		paths = append(paths, filepath.Join("/json/", filename+".json"))
+
+		containerIndentJSON, err := json.MarshalIndent(container, "", "  ")
+		if err != nil {
+			jww.ERROR.Print(err)
+			humanError = err
+			completeChan <- err
+			return
+		}
+
+		// Human readable version
+		datas = append(datas, types.Data{
+			Filename: filepath.Join("/human/", filename+".json"),
+			Data:     containerIndentJSON,
+		})
+		paths = append(paths, filepath.Join("/human/", filename+".json"))
+
 		completeChan <- nil
 	}()
 
@@ -99,19 +87,19 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
-		err = types.TimeoutError{Message: fmt.Sprintf(`Getting logs from host:%s failed due to: %s`, args[0], ctx.Err().Error())}
+		err = types.TimeoutError{Message: fmt.Sprintf(`Inspecting host:%s failed due to: %s`, args[0], ctx.Err().Error())}
 		rawError = err
 		jsonError = err
 		humanError = err
 	}
 
 	result := types.Result{
-		Name:        "dockerLogs",
-		Description: "`docker logs" + args[0] + "` command results",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "dockerInspect",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err

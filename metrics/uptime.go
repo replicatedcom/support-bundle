@@ -20,6 +20,7 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 	var rawError, jsonError, humanError error = nil, nil, nil
 
 	var datas []types.Data
+	var paths []string
 
 	completeChan := make(chan error, 1)
 
@@ -37,6 +38,7 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 			Filename: filepath.Join("/raw/", filename),
 			Data:     b,
 		})
+		paths = append(paths, filepath.Join("/raw/", filename))
 
 		uptimeSeconds, err := parseUptime(b)
 		if err != nil {
@@ -48,9 +50,10 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 		human := fmt.Sprintf("Total Time (seconds): %f\nIdle Time (seconds): %f", uptimeSeconds[0], uptimeSeconds[1])
 		// Convert to human readable
 		datas = append(datas, types.Data{
-			Filename: filepath.Join("/human/", filename),
+			Filename: filepath.Join("/human/", filename+".txt"),
 			Data:     []byte(human),
 		})
+		paths = append(paths, filepath.Join("/human/", filename+".txt"))
 
 		type uptime struct {
 			TotalSeconds float64 `json:"total_seconds"`
@@ -69,9 +72,12 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 		}
 
 		datas = append(datas, types.Data{
-			Filename: filepath.Join("/json/", filename),
+			Filename: filepath.Join("/json/", filename+".json"),
 			Data:     j,
 		})
+		paths = append(paths, filepath.Join("/json/", filename+".json"))
+
+		completeChan <- nil
 	}()
 
 	var err error
@@ -88,12 +94,12 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 	}
 
 	result := types.Result{
-		Name:        "uptime",
-		Description: "System Uptime",
-		Filename:    filename,
-		RawError:    rawError,
-		JSONError:   jsonError,
-		HumanError:  humanError,
+		Task:       "uptime",
+		Args:       args,
+		Filenames:  paths,
+		RawError:   rawError,
+		JSONError:  jsonError,
+		HumanError: humanError,
 	}
 
 	return datas, result, err
