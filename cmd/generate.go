@@ -161,7 +161,7 @@ func generate(cmd *cobra.Command, args []string) error {
 		},
 	}
 
-	if err := bundle.Generate(tasks); err != nil {
+	if _, err := bundle.Generate(tasks); err != nil {
 		jww.ERROR.Fatal(err)
 	}
 

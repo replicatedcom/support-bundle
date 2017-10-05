@@ -3,6 +3,7 @@ package bundle
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -27,7 +28,7 @@ type errorInfo struct {
 }
 
 // Generate is called to start a new support bundle generation
-func Generate(tasks []Task) error {
+func Generate(tasks []Task) (io.Reader, error) {
 	var wg sync.WaitGroup
 
 	resultsCh := make(chan types.Result)
@@ -43,7 +44,7 @@ func Generate(tasks []Task) error {
 	collectDir, err := ioutil.TempDir("", "support-bundle")
 	if err != nil {
 		jww.ERROR.Fatal(err)
-		return err
+		return nil, err
 	}
 	defer os.RemoveAll(collectDir)
 
@@ -137,14 +138,20 @@ func Generate(tasks []Task) error {
 	ioutil.WriteFile(filepath.Join(collectDir, "error.json"), errorJSON, 0666)
 
 	// Build the output tar file
-	archiveFilename := "./support-bundle.tar.gz"
-	comp := compressor.NewTgz()
-	comp.SetTarConfig(compressor.Tar{TruncateLongFiles: true})
-	if err := comp.Compress(collectDir, archiveFilename); err != nil {
+	archiveFile, err := ioutil.TempFile("", "support-bundle")
+	if err != nil {
 		jww.ERROR.Fatal(err)
-		return err
+		return nil, err
 	}
 
-	jww.TRACE.Printf("Created support bundle at %q\n", archiveFilename)
-	return nil
+	comp := compressor.NewTgz()
+	comp.SetTarConfig(compressor.Tar{TruncateLongFiles: true})
+	if err := comp.Compress(collectDir, archiveFile.Name()); err != nil {
+		jww.ERROR.Fatal(err)
+		return nil, err
+	}
+
+	jww.TRACE.Printf("Created support bundle at %q\n", archiveFile.Name())
+
+	return os.Open(archiveFile.Name())
 }
