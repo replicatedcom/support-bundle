@@ -7,133 +7,33 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
-	"time"
 
-	"github.com/replicatedcom/support-bundle/metrics"
-	"github.com/replicatedcom/support-bundle/systemutil"
 	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/divolgin/archiver/compressor"
 	jww "github.com/spf13/jwalterweatherman"
 )
 
+type resultInfo struct {
+	Paths []string `json:"paths"`
+	Task  string   `json:"task"`
+	Args  []string `json:"arguments"`
+}
+
+type errorInfo struct {
+	Task   string   `json:"task"`
+	Args   []string `json:"arguments"`
+	Errors []string `json:"errors"`
+}
+
 // Generate is called to start a new support bundle generation
-func Generate() error {
+func Generate(tasks []Task) error {
 	var wg sync.WaitGroup
 
 	resultsCh := make(chan types.Result)
 	dataCh := make(chan types.Data)
 	completeCh := make(chan bool)
 
-	var tasks = []Task{
-
-		Task{
-			Description: "Get File",
-			ExecFunc:    systemutil.ReadFile,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"C:/Go/VERSION"},
-		},
-
-		Task{
-			Description: "Get Other File",
-			ExecFunc:    systemutil.ReadFile,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"C:/Go/README.md"},
-		},
-
-		Task{
-			Description: "Run Command",
-			ExecFunc:    systemutil.RunCommand,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"docker", "ps"},
-		},
-
-		Task{
-			Description: "Run Other Command",
-			ExecFunc:    systemutil.RunCommand,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"docker", "info"},
-		},
-
-		Task{
-			Description: "Docker run command in container",
-			ExecFunc:    systemutil.DockerRunCommand,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"7e47d28f0057", "root", "ls", "-a"},
-		},
-
-		Task{
-			Description: "Docker run command in container with large output",
-			ExecFunc:    systemutil.DockerRunCommand,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"7e47d28f0057", "root", "ls", "-a", "-R"},
-		},
-
-		Task{
-			Description: "Docker run command in container, timeout",
-			ExecFunc:    systemutil.DockerRunCommand,
-			Timeout:     time.Duration(time.Second * 1),
-			Args:        []string{"7e47d28f0057", "root", "sleep", "1m"},
-		},
-
-		Task{
-			Description: "Docker read file from container",
-			ExecFunc:    systemutil.DockerReadFile,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"7e47d28f0057", "/usr/local/bin/docker-entrypoint.sh"},
-		},
-
-		Task{
-			Description: "Docker read file from container",
-			ExecFunc:    systemutil.DockerReadFile,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"7e47d28f0057", "/usr/local/bin/"},
-		},
-
-		Task{
-			Description: "Docker ps",
-			ExecFunc:    metrics.Dockerps,
-			Timeout:     time.Duration(time.Second * 15),
-		},
-
-		Task{
-			Description: "Docker info",
-			ExecFunc:    metrics.DockerInfo,
-			Timeout:     time.Duration(time.Second * 15),
-		},
-
-		Task{
-			Description: "Docker logs",
-			ExecFunc:    metrics.DockerLogs,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"7e47d28f0057"},
-		},
-
-		Task{
-			Description: "Docker inspect",
-			ExecFunc:    metrics.DockerInspect,
-			Timeout:     time.Duration(time.Second * 15),
-			Args:        []string{"7e47d28f0057"},
-		},
-
-		Task{
-			Description: "System hostname",
-			ExecFunc:    metrics.Hostname,
-			Timeout:     time.Duration(time.Second * 1),
-		},
-
-		Task{
-			Description: "System loadavg",
-			ExecFunc:    metrics.LoadAvg,
-			Timeout:     time.Duration(time.Second * 1),
-		},
-
-		Task{
-			Description: "System uptime",
-			ExecFunc:    metrics.Uptime,
-			Timeout:     time.Duration(time.Second * 1),
-		},
-	}
 	wg.Add(len(tasks))
 
 	collectDir, err := ioutil.TempDir("", "support-bundle")
@@ -178,7 +78,6 @@ func Generate() error {
 					continue
 				}
 				break
-
 			}
 		}
 	}()

@@ -15,7 +15,11 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/replicatedcom/support-bundle/bundle"
+	"github.com/replicatedcom/support-bundle/metrics"
+	"github.com/replicatedcom/support-bundle/systemutil"
 
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
@@ -48,7 +52,116 @@ func generate(cmd *cobra.Command, args []string) error {
 
 	jww.FEEDBACK.Println("Generating a new support bundle")
 
-	if err := bundle.Generate(); err != nil {
+	var tasks = []bundle.Task{
+		bundle.Task{
+			Description: "Get File",
+			ExecFunc:    systemutil.ReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"C:/Go/VERSION"},
+		},
+
+		bundle.Task{
+			Description: "Get Other File",
+			ExecFunc:    systemutil.ReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"C:/Go/README.md"},
+		},
+
+		bundle.Task{
+			Description: "Run Command",
+			ExecFunc:    systemutil.RunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"docker", "ps"},
+		},
+
+		bundle.Task{
+			Description: "Run Other Command",
+			ExecFunc:    systemutil.RunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"docker", "info"},
+		},
+
+		bundle.Task{
+			Description: "Docker run command in container",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "root", "ls", "-a"},
+		},
+
+		bundle.Task{
+			Description: "Docker run command in container with large output",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "root", "ls", "-a", "-R"},
+		},
+
+		bundle.Task{
+			Description: "Docker run command in container, timeout",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 1),
+			Args:        []string{"7e47d28f0057", "root", "sleep", "1m"},
+		},
+
+		bundle.Task{
+			Description: "Docker read file from container",
+			ExecFunc:    systemutil.DockerReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "/usr/local/bin/docker-entrypoint.sh"},
+		},
+
+		bundle.Task{
+			Description: "Docker read file from container",
+			ExecFunc:    systemutil.DockerReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "/usr/local/bin/"},
+		},
+
+		bundle.Task{
+			Description: "Docker ps",
+			ExecFunc:    metrics.Dockerps,
+			Timeout:     time.Duration(time.Second * 15),
+		},
+
+		bundle.Task{
+			Description: "Docker info",
+			ExecFunc:    metrics.DockerInfo,
+			Timeout:     time.Duration(time.Second * 15),
+		},
+
+		bundle.Task{
+			Description: "Docker logs",
+			ExecFunc:    metrics.DockerLogs,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057"},
+		},
+
+		bundle.Task{
+			Description: "Docker inspect",
+			ExecFunc:    metrics.DockerInspect,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057"},
+		},
+
+		bundle.Task{
+			Description: "System hostname",
+			ExecFunc:    metrics.Hostname,
+			Timeout:     time.Duration(time.Second * 1),
+		},
+
+		bundle.Task{
+			Description: "System loadavg",
+			ExecFunc:    metrics.LoadAvg,
+			Timeout:     time.Duration(time.Second * 1),
+		},
+
+		bundle.Task{
+			Description: "System uptime",
+			ExecFunc:    metrics.Uptime,
+			Timeout:     time.Duration(time.Second * 1),
+		},
+	}
+
+	if err := bundle.Generate(tasks); err != nil {
 		jww.ERROR.Fatal(err)
 	}
 
