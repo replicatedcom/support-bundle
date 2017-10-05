@@ -110,7 +110,7 @@ func parseUptime(contents []byte) ([]float64, error) {
 	// # cat /proc/uptime
 	// 33524.72 66785.42
 
-	parts := strings.Split(string(contents), " ")
+	parts := strings.Split(strings.TrimSpace(string(contents)), " ")
 	if len(parts) != 2 {
 		err := fmt.Errorf("Expected 2 values in uptime but found %d", len(parts))
 		jww.ERROR.Print(err)
