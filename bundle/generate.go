@@ -1,6 +1,7 @@
 package bundle
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"os"
@@ -8,6 +9,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/replicatedcom/support-bundle/metrics"
+	"github.com/replicatedcom/support-bundle/systemutil"
 	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/divolgin/archiver/compressor"
@@ -23,16 +26,112 @@ func Generate() error {
 	completeCh := make(chan bool)
 
 	var tasks = []Task{
+
 		Task{
-			Description: "System Log Files",
-			ExecFunc:    systemLogFiles,
+			Description: "Get File",
+			ExecFunc:    systemutil.ReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"C:/Go/VERSION"},
+		},
+
+		Task{
+			Description: "Get Other File",
+			ExecFunc:    systemutil.ReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"C:/Go/README.md"},
+		},
+
+		Task{
+			Description: "Run Command",
+			ExecFunc:    systemutil.RunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"docker", "ps"},
+		},
+
+		Task{
+			Description: "Run Other Command",
+			ExecFunc:    systemutil.RunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"docker", "info"},
+		},
+
+		Task{
+			Description: "Docker run command in container",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "root", "ls", "-a"},
+		},
+
+		Task{
+			Description: "Docker run command in container with large output",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "root", "ls", "-a", "-R"},
+		},
+
+		Task{
+			Description: "Docker run command in container, timeout",
+			ExecFunc:    systemutil.DockerRunCommand,
+			Timeout:     time.Duration(time.Second * 1),
+			Args:        []string{"7e47d28f0057", "root", "sleep", "1m"},
+		},
+
+		Task{
+			Description: "Docker read file from container",
+			ExecFunc:    systemutil.DockerReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "/usr/local/bin/docker-entrypoint.sh"},
+		},
+
+		Task{
+			Description: "Docker read file from container",
+			ExecFunc:    systemutil.DockerReadFile,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057", "/usr/local/bin/"},
+		},
+
+		Task{
+			Description: "Docker ps",
+			ExecFunc:    metrics.Dockerps,
 			Timeout:     time.Duration(time.Second * 15),
 		},
 
 		Task{
-			Description: "System Metrics",
-			ExecFunc:    systemMetrics,
+			Description: "Docker info",
+			ExecFunc:    metrics.DockerInfo,
 			Timeout:     time.Duration(time.Second * 15),
+		},
+
+		Task{
+			Description: "Docker logs",
+			ExecFunc:    metrics.DockerLogs,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057"},
+		},
+
+		Task{
+			Description: "Docker inspect",
+			ExecFunc:    metrics.DockerInspect,
+			Timeout:     time.Duration(time.Second * 15),
+			Args:        []string{"7e47d28f0057"},
+		},
+
+		Task{
+			Description: "System hostname",
+			ExecFunc:    metrics.Hostname,
+			Timeout:     time.Duration(time.Second * 1),
+		},
+
+		Task{
+			Description: "System loadavg",
+			ExecFunc:    metrics.LoadAvg,
+			Timeout:     time.Duration(time.Second * 1),
+		},
+
+		Task{
+			Description: "System uptime",
+			ExecFunc:    metrics.Uptime,
+			Timeout:     time.Duration(time.Second * 1),
 		},
 	}
 	wg.Add(len(tasks))
@@ -85,7 +184,27 @@ func Generate() error {
 	}()
 
 	for _, task := range tasks {
-		_ = task.ExecFunc(dataCh, completeCh, resultsCh, task.Timeout)
+		go func(task Task) {
+			ctx, cancel := context.WithTimeout(context.Background(), task.Timeout)
+			defer cancel()
+			datas, results, err := task.ExecFunc(ctx, task.Args)
+
+			if err != nil {
+				jww.ERROR.Printf(err.Error() + "\n")
+
+				//replace errors with marshallable versions (most error types will return {} when converted to json)
+				results.RawError = types.MarshallableError{Message: results.RawError.Error()}
+				results.HumanError = types.MarshallableError{Message: results.HumanError.Error()}
+				results.JSONError = types.MarshallableError{Message: results.JSONError.Error()}
+			}
+
+			for _, data := range datas {
+				dataCh <- data
+			}
+
+			resultsCh <- results
+			completeCh <- true
+		}(task)
 	}
 
 	wg.Wait()

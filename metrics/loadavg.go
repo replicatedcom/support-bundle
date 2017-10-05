@@ -1,15 +1,15 @@
 package metrics
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
-	"github.com/replicatedcom/support-bundle/util"
 
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -22,61 +22,82 @@ type LoadAverage struct {
 	processCountTotal   int
 }
 
-func LoadAvg(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration) error {
+func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/system/metrics/loadavg"
 
 	var rawError, jsonError, humanError error = nil, nil, nil
-	defer func() {
-		resultsCh <- types.Result{
-			Name:        "loadavg",
-			Description: "System Load Average",
-			Filename:    filename,
-			RawError:    rawError,
-			JSONError:   jsonError,
-			HumanError:  humanError,
+
+	var datas []types.Data
+
+	completeChan := make(chan error, 1)
+
+	go func() {
+		b, err := ioutil.ReadFile("/proc/loadavg")
+		if err != nil {
+			jww.ERROR.Print(err)
+			rawError, jsonError, humanError = err, err, err
+			completeChan <- err
+			return
 		}
-		completeCh <- true
+
+		// Send the raw
+		datas = append(datas, types.Data{
+			Filename: filepath.Join("/raw/", filename),
+			Data:     b,
+		})
+
+		loadAverage, err := parseLoadAvg(b)
+		if err != nil {
+			jsonError, humanError = err, err
+			completeChan <- err
+			return
+		}
+
+		human := fmt.Sprintf("%f %f %f", loadAverage.minuteOne, loadAverage.minuteFive, loadAverage.minuteTen)
+		// Convert to human readable
+		datas = append(datas, types.Data{
+			Filename: filepath.Join("/human/", filename),
+			Data:     []byte(human),
+		})
+
+		j, err := json.Marshal(loadAverage)
+		if err != nil {
+			jww.ERROR.Print(err)
+			jsonError = err
+			completeChan <- err
+			return
+		}
+
+		datas = append(datas, types.Data{
+			Filename: filepath.Join("/json/", filename),
+			Data:     j,
+		})
+		completeChan <- nil
 	}()
 
-	b, err := util.ReadFile("/proc/loadavg")
-	if err != nil {
-		jww.ERROR.Print(err)
-		rawError, jsonError, humanError = err, err, err
-		return err
-	}
+	var err error
 
-	// Send the raw
-	dataCh <- types.Data{
-		Filename: filepath.Join("/raw/", filename),
-		Data:     b,
-	}
-
-	loadAverage, err := parseLoadAvg(b)
-	if err != nil {
-		jsonError, humanError = err, err
-		return err
-	}
-
-	human := fmt.Sprintf("%f %f %f", loadAverage.minuteOne, loadAverage.minuteFive, loadAverage.minuteTen)
-	// Convert to human readable
-	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename),
-		Data:     []byte(human),
-	}
-
-	j, err := json.Marshal(loadAverage)
-	if err != nil {
-		jww.ERROR.Print(err)
+	select {
+	case err = <-completeChan:
+		//completed on time
+	case <-ctx.Done():
+		//failed to complete on time
+		err = types.TimeoutError{Message: fmt.Sprintf(`Fetching load averages failed due to: %s`, ctx.Err().Error())}
+		rawError = err
 		jsonError = err
-		return err
+		humanError = err
 	}
 
-	dataCh <- types.Data{
-		Filename: filepath.Join("/json/", filename),
-		Data:     j,
+	result := types.Result{
+		Name:        "loadavg",
+		Description: "System Load Average",
+		Filename:    filename,
+		RawError:    rawError,
+		JSONError:   jsonError,
+		HumanError:  humanError,
 	}
 
-	return nil
+	return datas, result, err
 }
 
 func parseLoadAvg(contents []byte) (*LoadAverage, error) {
