@@ -17,7 +17,7 @@ import (
 func Dockerps(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/docker/metrics/ps"
 
-	var err error = nil
+	var err error
 
 	var datas []types.Data
 	var paths []string

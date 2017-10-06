@@ -13,7 +13,7 @@ import (
 func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/system/metrics/hostname"
 
-	var err error = nil
+	var err error
 
 	var datas []types.Data
 	var paths []string

@@ -18,7 +18,7 @@ import (
 func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/docker/inspect/" + args[0]
 
-	var err error = nil
+	var err error
 
 	var datas []types.Data
 	var paths []string

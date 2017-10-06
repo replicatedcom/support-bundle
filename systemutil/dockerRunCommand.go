@@ -31,7 +31,7 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 
 	filename += r.ReplaceAllString(commandString, "_")
 
-	var err error = nil
+	var err error
 
 	var datas []types.Data
 	var paths []string

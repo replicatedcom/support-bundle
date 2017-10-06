@@ -20,7 +20,7 @@ func RunCommand(ctx context.Context, args []string) ([]types.Data, types.Result,
 	r, _ := regexp.Compile(`[^\w]`)
 	filename := "/system/runcommand/" + r.ReplaceAllString(command, "_") + "_" + r.ReplaceAllString(arg, "_")
 
-	var err error = nil
+	var err error
 
 	var datas []types.Data
 	var paths []string

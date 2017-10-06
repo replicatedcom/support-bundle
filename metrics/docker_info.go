@@ -16,7 +16,7 @@ import (
 func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/docker/metrics/info"
 
-	var err error = nil
+	var err error
 
 	var datas []types.Data
 	var paths []string

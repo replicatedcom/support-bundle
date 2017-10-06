@@ -25,7 +25,7 @@ func DockerReadFile(ctx context.Context, args []string) ([]types.Data, types.Res
 		filename += r.ReplaceAllString(arg, "_")
 	}
 
-	var err error = nil
+	var err error
 
 	var datas []types.Data
 	var paths []string

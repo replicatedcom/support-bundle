@@ -19,7 +19,7 @@ func ReadFile(ctx context.Context, args []string) ([]types.Data, types.Result, e
 	r, _ := regexp.Compile(`[^\w]`)
 	filename := "/system/readfile/" + r.ReplaceAllString(readFile, "_")
 
-	var err error = nil
+	var err error
 
 	var datas []types.Data
 	var paths []string
