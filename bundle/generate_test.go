@@ -77,13 +77,14 @@ func TestGenerate(t *testing.T) {
 
 	got, err := Generate(tasks)
 	require.NoError(t, err)
+	defer os.Remove(got)
 
 	testDir, _ := ioutil.TempDir("", "generate-test")
 	defer os.RemoveAll(testDir)
 
 	//decompress to temp dir
 	extractor := extractor.NewTgz()
-	extractor.ExtractFromReader(got, filepath.Join(testDir, "dir"))
+	extractor.Extract(got, filepath.Join(testDir, "dir"))
 
 	//verify what we got
 	files, err := ioutil.ReadDir(filepath.Join(testDir, "dir"))

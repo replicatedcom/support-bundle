@@ -3,12 +3,12 @@ package bundle
 import (
 	"context"
 	"encoding/json"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
 
+	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/divolgin/archiver/compressor"
@@ -28,7 +28,7 @@ type errorInfo struct {
 }
 
 // Generate is called to start a new support bundle generation
-func Generate(tasks []Task) (io.Reader, error) {
+func Generate(tasks []Task) (string, error) {
 	var wg sync.WaitGroup
 
 	resultsCh := make(chan types.Result)
@@ -43,8 +43,9 @@ func Generate(tasks []Task) (io.Reader, error) {
 
 	collectDir, err := ioutil.TempDir("", "support-bundle")
 	if err != nil {
-		jww.ERROR.Fatal(err)
-		return nil, err
+		err = errors.Wrap(err, "Creating a temporary directory to store results failed")
+		jww.ERROR.Print(err)
+		return "", err
 	}
 	defer os.RemoveAll(collectDir)
 
@@ -140,18 +141,20 @@ func Generate(tasks []Task) (io.Reader, error) {
 	// Build the output tar file
 	archiveFile, err := ioutil.TempFile("", "support-bundle")
 	if err != nil {
-		jww.ERROR.Fatal(err)
-		return nil, err
+		err = errors.Wrap(err, "Creating a temporary file to compress results failed")
+		jww.ERROR.Print(err)
+		return "", err
 	}
 
 	comp := compressor.NewTgz()
 	comp.SetTarConfig(compressor.Tar{TruncateLongFiles: true})
 	if err := comp.Compress(collectDir, archiveFile.Name()); err != nil {
-		jww.ERROR.Fatal(err)
-		return nil, err
+		err = errors.Wrap(err, "Compressing results directory failed")
+		jww.ERROR.Print(err)
+		return "", err
 	}
 
 	jww.TRACE.Printf("Created support bundle at %q\n", archiveFile.Name())
 
-	return os.Open(archiveFile.Name())
+	return archiveFile.Name(), nil
 }
