@@ -19,7 +19,7 @@ func ReadFile(ctx context.Context, args []string) ([]types.Data, types.Result, e
 	r, _ := regexp.Compile(`[^\w]`)
 	filename := "/system/readfile/" + r.ReplaceAllString(readFile, "_")
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -30,7 +30,6 @@ func ReadFile(ctx context.Context, args []string) ([]types.Data, types.Result, e
 		b, err := ioutil.ReadFile(readFile)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError, jsonError, humanError = err, err, err
 			completeChan <- err
 			return
 		}
@@ -45,26 +44,19 @@ func ReadFile(ctx context.Context, args []string) ([]types.Data, types.Result, e
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf("Reading file at %s errored out due to %s", args[0], ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "readFile",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "readFile",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err

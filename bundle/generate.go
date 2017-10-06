@@ -22,9 +22,9 @@ type resultInfo struct {
 }
 
 type errorInfo struct {
-	Task   string   `json:"task"`
-	Args   []string `json:"arguments"`
-	Errors []string `json:"errors"`
+	Task  string   `json:"task"`
+	Args  []string `json:"arguments"`
+	Error string   `json:"error"`
 }
 
 // Generate is called to start a new support bundle generation
@@ -63,22 +63,12 @@ func Generate(tasks []Task) (string, error) {
 					Task:  result.Task,
 					Args:  result.Args,
 				})
-				if result.RawError != nil || result.HumanError != nil || result.JSONError != nil {
+				if result.Error != nil {
 					newErrorInfo := errorInfo{
-						Task:   result.Task,
-						Args:   result.Args,
-						Errors: []string{},
+						Task:  result.Task,
+						Args:  result.Args,
+						Error: result.Error.Error(),
 					}
-					if result.RawError != nil {
-						newErrorInfo.Errors = append(newErrorInfo.Errors, "Raw: "+result.RawError.Error())
-					}
-					if result.HumanError != nil {
-						newErrorInfo.Errors = append(newErrorInfo.Errors, "Human: "+result.HumanError.Error())
-					}
-					if result.JSONError != nil {
-						newErrorInfo.Errors = append(newErrorInfo.Errors, "JSON: "+result.JSONError.Error())
-					}
-
 					allErrorInfo = append(allErrorInfo, newErrorInfo)
 				}
 				resultMutex.Unlock()

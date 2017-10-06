@@ -13,7 +13,7 @@ import (
 func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/system/metrics/hostname"
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -36,26 +36,19 @@ func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, e
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Fetching hostname failed due to: %s`, ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "hostname",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "hostname",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err

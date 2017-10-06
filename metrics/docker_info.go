@@ -16,7 +16,7 @@ import (
 func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/docker/metrics/info"
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -27,9 +27,6 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 		cli, err := client.NewEnvClient()
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -37,9 +34,6 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 		info, err := cli.Info(ctx)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -47,8 +41,6 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 		infoJSON, err := json.Marshal(info)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
 			completeChan <- err
 			return
 		}
@@ -63,7 +55,6 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 		infoIndentJSON, err := json.MarshalIndent(info, "", "  ")
 		if err != nil {
 			jww.ERROR.Print(err)
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -78,26 +69,19 @@ func DockerInfo(ctx context.Context, args []string) ([]types.Data, types.Result,
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Docker info failed due to: %s`, ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "dockerInfo",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "dockerInfo",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err

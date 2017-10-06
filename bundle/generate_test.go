@@ -174,11 +174,11 @@ func TestGenerate(t *testing.T) {
 	for _, errorInfo := range errorAll {
 		if errorInfo.Task == "readFile" && errorInfo.Args[0] == unsuccessfulFile {
 			foundUnsuccessfulCopy = true
-			require.NotEmpty(t, errorInfo.Errors)
+			require.NotEqual(t, "", errorInfo.Error)
 		}
 		if errorInfo.Task == "runCommand" && errorInfo.Args[0] == "sleep" {
 			foundFailedCommand = true
-			require.NotEmpty(t, errorInfo.Errors)
+			require.NotEqual(t, "", errorInfo.Error)
 		}
 	}
 

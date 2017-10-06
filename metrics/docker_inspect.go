@@ -18,7 +18,7 @@ import (
 func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/docker/inspect/" + args[0]
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -29,9 +29,6 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 		cli, err := client.NewEnvClient()
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -39,9 +36,6 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 		container, err := cli.ContainerInspect(ctx, args[0])
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -49,8 +43,6 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 		containerJSON, err := json.Marshal(container)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
 			completeChan <- err
 			return
 		}
@@ -65,7 +57,6 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 		containerIndentJSON, err := json.MarshalIndent(container, "", "  ")
 		if err != nil {
 			jww.ERROR.Print(err)
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -80,26 +71,19 @@ func DockerInspect(ctx context.Context, args []string) ([]types.Data, types.Resu
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Inspecting host:%s failed due to: %s`, args[0], ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "dockerInspect",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "dockerInspect",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err

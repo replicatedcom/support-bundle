@@ -25,7 +25,7 @@ func DockerReadFile(ctx context.Context, args []string) ([]types.Data, types.Res
 		filename += r.ReplaceAllString(arg, "_")
 	}
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -36,9 +36,6 @@ func DockerReadFile(ctx context.Context, args []string) ([]types.Data, types.Res
 		cli, err := client.NewEnvClient()
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -46,9 +43,6 @@ func DockerReadFile(ctx context.Context, args []string) ([]types.Data, types.Res
 		readcloser, _, err := cli.CopyFromContainer(ctx, args[0], args[1])
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -57,9 +51,6 @@ func DockerReadFile(ctx context.Context, args []string) ([]types.Data, types.Res
 		response, err := ioutil.ReadAll(readcloser)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -77,26 +68,19 @@ func DockerReadFile(ctx context.Context, args []string) ([]types.Data, types.Res
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Reading a docker file at from host:%s and path:%s errored out with %s`, args[0], args[1], ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "dockerReadFile",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "dockerReadFile",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err

@@ -19,7 +19,7 @@ import (
 func DockerLogs(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/docker/logs/" + args[0]
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -30,9 +30,6 @@ func DockerLogs(ctx context.Context, args []string) ([]types.Data, types.Result,
 		cli, err := client.NewEnvClient()
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -44,9 +41,6 @@ func DockerLogs(ctx context.Context, args []string) ([]types.Data, types.Result,
 		logsReader, err := cli.ContainerLogs(ctx, args[0], options)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -54,9 +48,6 @@ func DockerLogs(ctx context.Context, args []string) ([]types.Data, types.Result,
 		logs, err := ioutil.ReadAll(logsReader)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -71,26 +62,19 @@ func DockerLogs(ctx context.Context, args []string) ([]types.Data, types.Result,
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Getting logs from host:%s failed due to: %s`, args[0], ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "dockerLogs",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "dockerLogs",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err

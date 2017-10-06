@@ -25,7 +25,7 @@ type LoadAverage struct {
 func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/system/metrics/loadavg"
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -36,7 +36,6 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 		b, err := ioutil.ReadFile("/proc/loadavg")
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError, jsonError, humanError = err, err, err
 			completeChan <- err
 			return
 		}
@@ -50,7 +49,6 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 
 		loadAverage, err := parseLoadAvg(b)
 		if err != nil {
-			jsonError, humanError = err, err
 			completeChan <- err
 			return
 		}
@@ -66,7 +64,6 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 		j, err := json.Marshal(loadAverage)
 		if err != nil {
 			jww.ERROR.Print(err)
-			jsonError = err
 			completeChan <- err
 			return
 		}
@@ -80,26 +77,19 @@ func LoadAvg(ctx context.Context, args []string) ([]types.Data, types.Result, er
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Fetching load averages failed due to: %s`, ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "loadavg",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "loadavg",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err

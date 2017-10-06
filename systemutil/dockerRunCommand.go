@@ -31,7 +31,7 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 
 	filename += r.ReplaceAllString(commandString, "_")
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -42,9 +42,6 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 		cli, err := client.NewEnvClient()
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -60,9 +57,6 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 		execInstance, err := cli.ContainerExecCreate(ctx, args[0], execOpts)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -70,9 +64,6 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 		att, err := cli.ContainerExecAttach(ctx, execInstance.ID, execOpts)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -84,9 +75,6 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 		err = cli.ContainerExecStart(ctx, execInstance.ID, execStartOpts)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -97,9 +85,6 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 		_, err = stdcopy.StdCopy(&dstdout, &dstderr, att.Reader)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
-			humanError = err
 			completeChan <- err
 			return
 		}
@@ -134,8 +119,6 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 		j, err := json.Marshal(u)
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError = err
-			jsonError = err
 			completeChan <- err
 			return
 		}
@@ -149,7 +132,6 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 		completeChan <- nil
 	}()
 
-	var err error
 	select {
 	case err = <-completeChan:
 		//completed on time
@@ -157,18 +139,13 @@ func DockerRunCommand(ctx context.Context, args []string) ([]types.Data, types.R
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Command "%s" failed due to: %s`, commandString, ctx.Err().Error())}
 		// err := errors.Wrap(ctx.Err(), `Command "`+commandString+`" failed`) //would be nice to use but doesn't convert to json
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	results := types.Result{
-		Task:       "dockerRunCommand",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "dockerRunCommand",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, results, err

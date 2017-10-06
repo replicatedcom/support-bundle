@@ -17,7 +17,7 @@ import (
 func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/system/metrics/uptime"
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -28,7 +28,6 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 		b, err := ioutil.ReadFile("/proc/uptime")
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError, jsonError, humanError = err, err, err
 			completeChan <- err
 			return
 		}
@@ -42,7 +41,6 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 
 		uptimeSeconds, err := parseUptime(b)
 		if err != nil {
-			jsonError, humanError = err, err
 			completeChan <- err
 			return
 		}
@@ -66,7 +64,6 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 		j, err := json.Marshal(u)
 		if err != nil {
 			jww.ERROR.Print(err)
-			jsonError = err
 			completeChan <- err
 			return
 		}
@@ -80,26 +77,19 @@ func Uptime(ctx context.Context, args []string) ([]types.Data, types.Result, err
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Fetching uptime failed due to: %s`, ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "uptime",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "uptime",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err

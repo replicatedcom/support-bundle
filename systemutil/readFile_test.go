@@ -14,7 +14,5 @@ func TestReadFile(t *testing.T) {
 	datas, result, err := ReadFile(context.Background(), commandStrings)
 	require.NoError(t, err)
 	require.Equal(t, 1, len(datas), "Expected 1 data struct to be returned")
-	require.NoError(t, result.HumanError)
-	require.NoError(t, result.RawError)
-	require.NoError(t, result.JSONError)
+	require.NoError(t, result.Error)
 }

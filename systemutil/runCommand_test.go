@@ -17,9 +17,7 @@ func TestRunCommand(t *testing.T) {
 	datas, result, err := RunCommand(context.Background(), commandStrings)
 	require.NoError(t, err)
 	require.Equal(t, 1, len(datas), "Expected 1 data struct to be returned")
-	require.NoError(t, result.HumanError)
-	require.NoError(t, result.RawError)
-	require.NoError(t, result.JSONError)
+	require.NoError(t, result.Error)
 }
 
 func TestRunCommandTimeout(t *testing.T) {
@@ -35,7 +33,5 @@ func TestRunCommandTimeout(t *testing.T) {
 	datas, result, err := RunCommand(ctx, commandStrings)
 	require.Error(t, err)
 	require.Equal(t, 0, len(datas), "Expected no data structs to be returned due to timeout")
-	require.Error(t, result.HumanError)
-	require.Error(t, result.RawError)
-	require.Error(t, result.JSONError)
+	require.Error(t, result.Error)
 }

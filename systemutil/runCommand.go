@@ -20,7 +20,7 @@ func RunCommand(ctx context.Context, args []string) ([]types.Data, types.Result,
 	r, _ := regexp.Compile(`[^\w]`)
 	filename := "/system/runcommand/" + r.ReplaceAllString(command, "_") + "_" + r.ReplaceAllString(arg, "_")
 
-	var rawError, jsonError, humanError error = nil, nil, nil
+	var err error = nil
 
 	var datas []types.Data
 	var paths []string
@@ -31,7 +31,6 @@ func RunCommand(ctx context.Context, args []string) ([]types.Data, types.Result,
 		b, err := exec.Command(command, arg).Output()
 		if err != nil {
 			jww.ERROR.Print(err)
-			rawError, jsonError, humanError = err, err, err
 			completeChan <- err
 			return
 		}
@@ -46,26 +45,19 @@ func RunCommand(ctx context.Context, args []string) ([]types.Data, types.Result,
 		completeChan <- nil
 	}()
 
-	var err error
-
 	select {
 	case err = <-completeChan:
 		//completed on time
 	case <-ctx.Done():
 		//failed to complete on time
 		err = types.TimeoutError{Message: fmt.Sprintf(`Command "%s" errored out with %s`, command+"_"+arg, ctx.Err().Error())}
-		rawError = err
-		jsonError = err
-		humanError = err
 	}
 
 	result := types.Result{
-		Task:       "runCommand",
-		Args:       args,
-		Filenames:  paths,
-		RawError:   rawError,
-		JSONError:  jsonError,
-		HumanError: humanError,
+		Task:      "runCommand",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
 	return datas, result, err
