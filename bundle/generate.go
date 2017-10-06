@@ -7,8 +7,10 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/pkg/errors"
+	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/divolgin/archiver/compressor"
 	jww "github.com/spf13/jwalterweatherman"
@@ -27,7 +29,7 @@ type errorInfo struct {
 }
 
 // Generate is called to start a new support bundle generation
-func Generate(tasks []Task) (string, error) {
+func Generate(tasks []Task, timeout time.Duration) (string, error) {
 	var wg sync.WaitGroup
 
 	var resultMutex = &sync.Mutex{}
@@ -44,11 +46,24 @@ func Generate(tasks []Task) (string, error) {
 	}
 	defer os.RemoveAll(collectDir)
 
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
 	for _, task := range tasks {
 		go func(task Task) {
-			ctx, cancel := context.WithTimeout(context.Background(), task.Timeout)
-			defer cancel()
-			datas, result, err := task.ExecFunc(ctx, task.Args)
+			var datas []types.Data
+			var result types.Result
+			var err error
+
+			if task.Timeout == 0 {
+				// use the default context for this task
+				datas, result, err = task.ExecFunc(ctx, task.Args)
+			} else {
+				// use a unique context+timeout for this task
+				ctx, cancel := context.WithTimeout(context.Background(), task.Timeout)
+				defer cancel()
+				datas, result, err = task.ExecFunc(ctx, task.Args)
+			}
 
 			if err != nil {
 				jww.ERROR.Printf(err.Error() + "\n")

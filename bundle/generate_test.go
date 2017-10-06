@@ -27,33 +27,28 @@ func TestGenerate(t *testing.T) {
 		Task{
 			Description: "Get File",
 			ExecFunc:    systemutil.ReadFile,
-			Timeout:     time.Duration(time.Second * 15),
 			Args:        []string{successfulFile},
 		},
 
 		Task{
 			Description: "Get nonexistent file",
 			ExecFunc:    systemutil.ReadFile,
-			Timeout:     time.Duration(time.Second * 15),
 			Args:        []string{unsuccessfulFile},
 		},
 
 		Task{
 			Description: "System hostname",
 			ExecFunc:    metrics.Hostname,
-			Timeout:     time.Duration(time.Second * 1),
 		},
 
 		Task{
 			Description: "System loadavg",
 			ExecFunc:    metrics.LoadAvg,
-			Timeout:     time.Duration(time.Second * 1),
 		},
 
 		Task{
 			Description: "System uptime",
 			ExecFunc:    metrics.Uptime,
-			Timeout:     time.Duration(time.Second * 1),
 		},
 	}
 
@@ -63,7 +58,6 @@ func TestGenerate(t *testing.T) {
 			Task{
 				Description: "Run command",
 				ExecFunc:    systemutil.RunCommand,
-				Timeout:     time.Duration(time.Second * 15),
 				Args:        []string{"ls", "-a"},
 			},
 			Task{
@@ -72,10 +66,16 @@ func TestGenerate(t *testing.T) {
 				Timeout:     time.Duration(time.Second * 1),
 				Args:        []string{"sleep", "1m"},
 			},
+			Task{
+				Description: "Run long Command that should succeed due to overriden timeout",
+				ExecFunc:    systemutil.RunCommand,
+				Timeout:     time.Duration(time.Second * 15),
+				Args:        []string{"sleep", "4s"},
+			},
 		)
 	}
 
-	got, err := Generate(tasks)
+	got, err := Generate(tasks, time.Duration(time.Second*2))
 	require.NoError(t, err)
 	defer os.Remove(got)
 
@@ -151,20 +151,27 @@ func TestGenerate(t *testing.T) {
 	foundFailedCommand := false
 	if !(runtime.GOOS == "windows") {
 		// search for successful command and timed out command
+		// search for sleep command that succeeds due to extended timeout
 		// these commands aren't tested on windows platforms
-		commandPath := ""
+		lsCommandPath := ""
+		sleepCommandPath := ""
 		for _, resultInfo := range indexAll {
 			if resultInfo.Task == "runCommand" && resultInfo.Args[0] == "ls" {
 				require.Equal(t, 1, len(resultInfo.Paths))
-				commandPath = resultInfo.Paths[0]
+				lsCommandPath = resultInfo.Paths[0]
 			}
-			if resultInfo.Task == "runCommand" && resultInfo.Args[0] == "sleep" {
+			if resultInfo.Task == "runCommand" && resultInfo.Args[0] == "sleep" && resultInfo.Args[1] == "1m" {
 				require.Equal(t, 0, len(resultInfo.Paths))
 				foundFailedCommand = true
 			}
+			if resultInfo.Task == "runCommand" && resultInfo.Args[0] == "sleep" && resultInfo.Args[1] == "4s" {
+				require.Equal(t, 1, len(resultInfo.Paths))
+				sleepCommandPath = resultInfo.Paths[0]
+			}
 		}
 		require.True(t, foundFailedCommand, "A results index was not found for a timed out command")
-		require.NotEqual(t, "", commandPath, "No path was found for the successful command run")
+		require.NotEqual(t, "", lsCommandPath, "No path was found for the successful ls command run")
+		require.NotEqual(t, "", sleepCommandPath, "No path was found for the successful sleep command run")
 	}
 
 	// look in the errors json and ensure entries are present for the failed copy and timed out command
