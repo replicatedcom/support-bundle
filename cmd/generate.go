@@ -15,6 +15,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/replicatedcom/support-bundle/bundle"
 
 	"github.com/spf13/cobra"
@@ -48,7 +50,9 @@ func generate(cmd *cobra.Command, args []string) error {
 
 	jww.FEEDBACK.Println("Generating a new support bundle")
 
-	if err := bundle.Generate(); err != nil {
+	var tasks = []bundle.Task{}
+
+	if _, err := bundle.Generate(tasks, time.Duration(time.Second*15)); err != nil {
 		jww.ERROR.Fatal(err)
 	}
 

@@ -1,69 +1,55 @@
 package metrics
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"log"
 	"os/exec"
 	"path/filepath"
-	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
-
-	jww "github.com/spf13/jwalterweatherman"
 )
 
-func Hostname(dataCh chan types.Data, completeCh chan bool, resultsCh chan types.Result, timeout time.Duration) error {
+func Hostname(ctx context.Context, args []string) ([]types.Data, types.Result, error) {
 	filename := "/system/metrics/hostname"
 
-	var rawError, jsonError, humanError error = nil, nil, nil
-	defer func() {
-		resultsCh <- types.Result{
-			Name:        "hostname",
-			Description: "System Hostname",
-			Filename:    filename,
-			RawError:    rawError,
-			JSONError:   jsonError,
-			HumanError:  humanError,
+	var err error
+
+	var datas []types.Data
+	var paths []string
+
+	completeChan := make(chan error, 1)
+
+	go func() {
+		b, err := exec.Command("hostname").Output()
+		if err != nil {
+			log.Fatal(err)
 		}
-		completeCh <- true
+
+		// Send the raw
+		datas = append(datas, types.Data{
+			Filename: filepath.Join("/raw/", filename),
+			Data:     b,
+		})
+		paths = append(paths, filepath.Join("/raw/", filename))
+
+		completeChan <- nil
 	}()
 
-	b, err := exec.Command("hostname").Output()
-	if err != nil {
-		log.Fatal(err)
+	select {
+	case err = <-completeChan:
+		//completed on time
+	case <-ctx.Done():
+		//failed to complete on time
+		err = types.TimeoutError{Message: fmt.Sprintf(`Fetching hostname failed due to: %s`, ctx.Err().Error())}
 	}
 
-	// Send the raw
-	dataCh <- types.Data{
-		Filename: filepath.Join("/raw/", filename),
-		Data:     b,
+	result := types.Result{
+		Task:      "hostname",
+		Args:      args,
+		Filenames: paths,
+		Error:     err,
 	}
 
-	human := fmt.Sprintf("Hostname: %q", b)
-	// Convert to human readable
-	dataCh <- types.Data{
-		Filename: filepath.Join("/human/", filename),
-		Data:     []byte(human),
-	}
-
-	type hostname struct {
-		Hostname string `json:"hostname"`
-	}
-	u := hostname{
-		Hostname: string(b),
-	}
-	j, err := json.Marshal(u)
-	if err != nil {
-		jww.ERROR.Print(err)
-		jsonError = err
-		return err
-	}
-
-	dataCh <- types.Data{
-		Filename: filepath.Join("/json/", filename),
-		Data:     j,
-	}
-
-	return nil
+	return datas, result, err
 }
