@@ -46,7 +46,8 @@ func Generate(tasks []Task, timeout time.Duration) (string, error) {
 	}
 	defer os.RemoveAll(collectDir)
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	ctx := context.Background()
+	defaultCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
 	for _, task := range tasks {
@@ -57,12 +58,12 @@ func Generate(tasks []Task, timeout time.Duration) (string, error) {
 
 			if task.Timeout == 0 {
 				// use the default context for this task
-				datas, result, err = task.ExecFunc(ctx, task.Args)
+				datas, result, err = task.ExecFunc(defaultCtx, task.Args)
 			} else {
 				// use a unique context+timeout for this task
-				ctx, cancel := context.WithTimeout(context.Background(), task.Timeout)
+				uniqueCtx, cancel := context.WithTimeout(ctx, task.Timeout)
 				defer cancel()
-				datas, result, err = task.ExecFunc(ctx, task.Args)
+				datas, result, err = task.ExecFunc(uniqueCtx, task.Args)
 			}
 
 			if err != nil {
