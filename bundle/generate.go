@@ -9,7 +9,6 @@ import (
 	"sync"
 
 	"github.com/pkg/errors"
-	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/divolgin/archiver/compressor"
 	jww "github.com/spf13/jwalterweatherman"
@@ -31,10 +30,6 @@ type errorInfo struct {
 func Generate(tasks []Task) (string, error) {
 	var wg sync.WaitGroup
 
-	resultsCh := make(chan types.Result)
-	dataCh := make(chan types.Data)
-	completeCh := make(chan bool)
-
 	var resultMutex = &sync.Mutex{}
 	var allResultInfo []resultInfo
 	var allErrorInfo []errorInfo
@@ -49,67 +44,42 @@ func Generate(tasks []Task) (string, error) {
 	}
 	defer os.RemoveAll(collectDir)
 
-	go func() {
-		for {
-			select {
-			case <-completeCh:
-				wg.Done()
-				break
-
-			case result := <-resultsCh:
-				resultMutex.Lock()
-				allResultInfo = append(allResultInfo, resultInfo{
-					Paths: result.Filenames,
-					Task:  result.Task,
-					Args:  result.Args,
-				})
-				if result.Error != nil {
-					newErrorInfo := errorInfo{
-						Task:  result.Task,
-						Args:  result.Args,
-						Error: result.Error.Error(),
-					}
-					allErrorInfo = append(allErrorInfo, newErrorInfo)
-				}
-				resultMutex.Unlock()
-				break
-
-			case data := <-dataCh:
-				dataFile := filepath.Join(collectDir, data.Filename)
-				if err := os.MkdirAll(filepath.Dir(dataFile), 0700); err != nil {
-					jww.ERROR.Print(err)
-					continue
-				}
-				if err := ioutil.WriteFile(dataFile, data.Data, 0666); err != nil {
-					jww.ERROR.Print(err)
-					continue
-				}
-				break
-			}
-		}
-	}()
-
 	for _, task := range tasks {
 		go func(task Task) {
 			ctx, cancel := context.WithTimeout(context.Background(), task.Timeout)
 			defer cancel()
-			datas, results, err := task.ExecFunc(ctx, task.Args)
+			datas, result, err := task.ExecFunc(ctx, task.Args)
 
 			if err != nil {
 				jww.ERROR.Printf(err.Error() + "\n")
-
-				//replace errors with marshallable versions (most error types will return {} when converted to json)
-				// results.RawError = types.MarshallableError{Message: results.RawError.Error()}
-				// results.HumanError = types.MarshallableError{Message: results.HumanError.Error()}
-				// results.JSONError = types.MarshallableError{Message: results.JSONError.Error()}
 			}
 
 			for _, data := range datas {
-				dataCh <- data
+				dataFile := filepath.Join(collectDir, data.Filename)
+				if err := os.MkdirAll(filepath.Dir(dataFile), 0700); err != nil {
+					jww.ERROR.Print(err)
+				}
+				if err := ioutil.WriteFile(dataFile, data.Data, 0666); err != nil {
+					jww.ERROR.Print(err)
+				}
 			}
 
-			resultsCh <- results
-			completeCh <- true
+			resultMutex.Lock()
+			allResultInfo = append(allResultInfo, resultInfo{
+				Paths: result.Filenames,
+				Task:  result.Task,
+				Args:  result.Args,
+			})
+			if result.Error != nil {
+				allErrorInfo = append(allErrorInfo, errorInfo{
+					Task:  result.Task,
+					Args:  result.Args,
+					Error: result.Error.Error(),
+				})
+			}
+			resultMutex.Unlock()
+
+			wg.Done()
 		}(task)
 	}
 
