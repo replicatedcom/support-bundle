@@ -1,0 +1,9 @@
+specs:
+  - builtin: core.loadavg
+    raw: /raw/metrics/loadavg
+    json: /json/metrics/loadavg.json
+    human: /human/metrics/loadavg
+  - builtin: docker.logs
+    raw: /raw/containers/e0095c302413/logs.txt
+    config:
+      container_id: e0095c302413
