@@ -10,7 +10,8 @@ import (
 func TestParseUptime(t *testing.T) {
 	uptimeSeconds, err := parseUptime([]byte("33524.72 66785.42"))
 	require.NoError(t, err)
-	assert.Equal(t, uptimeSeconds[0], float64(33524.72))
+
+	assert.Equal(t, float64(33524.72), uptimeSeconds.(uptime).TotalSeconds)
 
 	uptimeSeconds, err = parseUptime([]byte("33524.72"))
 	require.NotNil(t, err)
@@ -18,5 +19,5 @@ func TestParseUptime(t *testing.T) {
 
 	uptimeSeconds, err = parseUptime([]byte("0 0"))
 	require.NoError(t, err)
-	assert.Equal(t, uptimeSeconds[0], float64(0))
+	assert.Equal(t, float64(0), uptimeSeconds.(uptime).IdleSeconds)
 }

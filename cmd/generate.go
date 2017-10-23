@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/replicatedcom/support-bundle/bundle"
+	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
@@ -50,9 +51,9 @@ func generate(cmd *cobra.Command, args []string) error {
 
 	jww.FEEDBACK.Println("Generating a new support bundle")
 
-	var tasks = []bundle.Task{}
+	var tasks = []types.Task{}
 
-	if _, err := bundle.Generate(tasks, time.Duration(time.Second*15)); err != nil {
+	if err := bundle.Generate(tasks, time.Duration(time.Second*15), "supportbundle.tar.gz"); err != nil {
 		jww.ERROR.Fatal(err)
 	}
 
