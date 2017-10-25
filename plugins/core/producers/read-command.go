@@ -3,14 +3,13 @@ package producers
 import (
 	"context"
 	"os/exec"
-	"strings"
 
 	"github.com/replicatedcom/support-bundle/types"
 )
 
 func ReadCommand(command string, args ...string) types.BytesProducer {
 	return func(ctx context.Context) ([]byte, error) {
-		return exec.CommandContext(ctx, command, strings.Join(args, " ")).Output()
+		return exec.CommandContext(ctx, command, args...).Output()
 	}
 }
 
