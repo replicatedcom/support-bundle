@@ -15,9 +15,13 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"time"
 
 	"github.com/replicatedcom/support-bundle/bundle"
+	"github.com/replicatedcom/support-bundle/plugins/core"
+	"github.com/replicatedcom/support-bundle/plugins/docker"
+	"github.com/replicatedcom/support-bundle/spec"
 	"github.com/replicatedcom/support-bundle/types"
 
 	"github.com/spf13/cobra"
@@ -32,6 +36,35 @@ var generateCmd = &cobra.Command{
 	RunE:  generate,
 }
 
+var bundlePath string
+var skipDefault bool
+
+var defaultSpecs = []types.Spec{
+	{
+		Builtin: "docker.daemon",
+		Raw:     "/raw/docker/",
+		JSON:    "/json/docker/",
+	},
+	{
+		Builtin: "core.uptime",
+		Raw:     "/raw/core/uptime",
+		JSON:    "/json/core/uptime.json",
+		Human:   "/human/core/uptime",
+	},
+	{
+		Builtin: "core.hostname",
+		Raw:     "/raw/core/hostname",
+		JSON:    "/json/core/hostname.json",
+		Human:   "/human/core/hostname",
+	},
+	{
+		Builtin: "core.loadavg",
+		Raw:     "/raw/core/loadavg",
+		JSON:    "/json/core/loadavg.json",
+		Human:   "/human/core/loadavg",
+	},
+}
+
 func init() {
 	RootCmd.AddCommand(generateCmd)
 
@@ -44,6 +77,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// generateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	generateCmd.Flags().StringVar(&bundlePath, "out", "supportbundle.tar.gz", "Path where the generated bundle should be stored")
+	generateCmd.Flags().BoolVarP(&skipDefault, "skipdefault", "s", false, "If present, skip the default support bundle files")
 }
 
 func generate(cmd *cobra.Command, args []string) error {
@@ -51,9 +87,37 @@ func generate(cmd *cobra.Command, args []string) error {
 
 	jww.FEEDBACK.Println("Generating a new support bundle")
 
-	var tasks = []types.Task{}
+	var specs []types.Spec
 
-	if err := bundle.Generate(tasks, time.Duration(time.Second*15), "supportbundle.tar.gz"); err != nil {
+	if cfgFile != "" {
+		yaml, err := ioutil.ReadFile(cfgFile)
+		if err != nil {
+			jww.ERROR.Fatal(err)
+		}
+
+		specs, err = spec.Parse(yaml)
+		if err != nil {
+			jww.ERROR.Fatal(err)
+		}
+	}
+	if !skipDefault {
+		specs = append(defaultSpecs, specs...)
+	}
+
+	d, err := docker.New()
+	if err != nil {
+		jww.ERROR.Fatal(err)
+	}
+	planner := bundle.Planner{
+		Plugins: map[string]types.Plugin{
+			"core":   core.New(),
+			"docker": d,
+		},
+	}
+
+	var tasks = planner.Plan(specs)
+
+	if err := bundle.Generate(tasks, time.Duration(time.Second*15), bundlePath); err != nil {
 		jww.ERROR.Fatal(err)
 	}
 
