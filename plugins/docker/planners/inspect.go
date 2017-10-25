@@ -8,16 +8,15 @@ import (
 )
 
 func (d *Docker) Inspect(spec types.Spec) []types.Task {
-	config := parseContainerConfig(spec.Config)
-	if config.ContainerID == "" {
-		err := errors.New("spec requires container config")
+	if spec.Config.ContainerID == "" {
+		err := errors.New("spec requires a container id")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}
 	}
 
 	task := &plans.StructuredSource{
-		Producer:  d.producers.Inspect(config.ContainerID),
+		Producer:  d.producers.Inspect(spec.Config.ContainerID),
 		RawPath:   spec.Raw,
 		JSONPath:  spec.JSON,
 		HumanPath: spec.Human,

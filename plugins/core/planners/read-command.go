@@ -8,38 +8,8 @@ import (
 	"github.com/replicatedcom/support-bundle/types"
 )
 
-func parseCommandConfig(src interface{}) (string, []string) {
-	command := ""
-	var args []string
-
-	m, ok := src.(map[interface{}]interface{})
-	if !ok {
-		return command, args
-	}
-	for k, v := range m {
-		if key, ok := k.(string); ok {
-			switch key {
-			case "command":
-				if val, ok := v.(string); ok {
-					command = val
-				}
-			case "args":
-				if val, ok := v.([]interface{}); ok {
-					for _, argInterface := range val {
-						if arg, ok := argInterface.(string); ok {
-							args = append(args, arg)
-						}
-					}
-				}
-			}
-		}
-	}
-	return command, args
-}
-
 func ReadCommand(spec types.Spec) []types.Task {
-	command, args := parseCommandConfig(spec.Config)
-	if command == "" {
+	if spec.Config.Command == "" {
 		err := errors.New("spec requires a command within config")
 		task := plans.PreparedError(err, spec)
 
@@ -47,7 +17,7 @@ func ReadCommand(spec types.Spec) []types.Task {
 	}
 
 	task := &plans.ByteSource{
-		Producer:  producers.ReadCommand(command, args...),
+		Producer:  producers.ReadCommand(spec.Config.Command, spec.Config.Args...),
 		RawPath:   spec.Raw,
 		JSONPath:  spec.JSON,
 		HumanPath: spec.Human,
