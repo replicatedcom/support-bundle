@@ -10,9 +10,10 @@ type Spec struct {
 	Human string
 
 	// Plan-specific config
-	Config interface{}
-}
-
-type ContainerConfig struct {
-	ContainerID string `json="container_id"`
+	Config struct {
+		FilePath    string   `yaml:"file_path"`
+		Args        []string `yaml:"args"`
+		ContainerID string   `yaml:"container_id"`
+		Command     string   `yaml:"command"`
+	}
 }

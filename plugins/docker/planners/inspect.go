@@ -7,7 +7,7 @@ import (
 	"github.com/replicatedcom/support-bundle/types"
 )
 
-func (d *Docker) Logs(spec types.Spec) []types.Task {
+func (d *Docker) Inspect(spec types.Spec) []types.Task {
 	if spec.Config.ContainerID == "" {
 		err := errors.New("spec requires a container id")
 		task := plans.PreparedError(err, spec)
@@ -15,8 +15,8 @@ func (d *Docker) Logs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	task := &plans.StreamSource{
-		Producer:  d.producers.Logs(spec.Config.ContainerID),
+	task := &plans.StructuredSource{
+		Producer:  d.producers.Inspect(spec.Config.ContainerID),
 		RawPath:   spec.Raw,
 		JSONPath:  spec.JSON,
 		HumanPath: spec.Human,

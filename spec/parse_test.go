@@ -34,11 +34,13 @@ specs:
 		Human:   "/human/metrics/loadavg",
 	})
 
-	require.Contains(t, specs, types.Spec{
+	logsSpec := types.Spec{
 		Builtin: "docker.logs",
 		Raw:     "/raw/containers/testExample/logs.txt",
-		Config:  map[interface{}]interface{}{"container_id": "testExample"},
-	})
+	}
+	logsSpec.Config.ContainerID = "testExample"
+
+	require.Contains(t, specs, logsSpec)
 
 	require.Contains(t, specs, types.Spec{
 		Builtin: "docker.daemon",
