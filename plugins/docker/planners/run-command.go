@@ -10,8 +10,8 @@ import (
 func (d *Docker) RunCommand(spec types.Spec) []types.Task {
 	fullCommand := append([]string{spec.Config.Command}, spec.Config.Args...)
 
-	if spec.Config.ContainerID == "" || len(fullCommand) == 0 || spec.Config.Command == "" {
-		err := errors.New("spec requires a container ID and command within config")
+	if (spec.Config.ContainerID == "" && spec.Config.ContainerName == "") || len(fullCommand) == 0 || spec.Config.Command == "" {
+		err := errors.New("spec requires a container ID or Name and command within config")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}
@@ -22,6 +22,15 @@ func (d *Docker) RunCommand(spec types.Spec) []types.Task {
 	// 	RawPath:   spec.Raw,
 	// 	JSONPath:  spec.JSON,
 	// 	HumanPath: spec.Human,
+	// }
+
+	// if spec.Config.ContainerName != "" {
+	// 	task = &plans.StreamsSource{
+	// 		Producer:  d.producers.RunCommandByName(spec.Config.ContainerName),
+	// 		RawPath:   spec.Raw,
+	// 		JSONPath:  spec.JSON,
+	// 		HumanPath: spec.Human,
+	// 	}
 	// }
 
 	err := errors.New("This task type not yet implemented")

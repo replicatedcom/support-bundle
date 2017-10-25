@@ -8,8 +8,8 @@ import (
 )
 
 func (d *Docker) ReadFile(spec types.Spec) []types.Task {
-	if spec.Config.ContainerID == "" || spec.Config.FilePath == "" {
-		err := errors.New("spec requires a container ID and filename within config")
+	if (spec.Config.ContainerID == "" && spec.Config.ContainerName == "") || spec.Config.FilePath == "" {
+		err := errors.New("spec requires a container ID or Name and filename within config")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}
@@ -20,6 +20,15 @@ func (d *Docker) ReadFile(spec types.Spec) []types.Task {
 		RawPath:   spec.Raw,
 		JSONPath:  spec.JSON,
 		HumanPath: spec.Human,
+	}
+
+	if spec.Config.ContainerName != "" {
+		task = &plans.StreamSource{
+			Producer:  d.producers.ReadFileByName(spec.Config.ContainerName, spec.Config.FilePath),
+			RawPath:   spec.Raw,
+			JSONPath:  spec.JSON,
+			HumanPath: spec.Human,
+		}
 	}
 
 	return []types.Task{task}
