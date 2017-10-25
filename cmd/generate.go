@@ -39,32 +39,6 @@ var generateCmd = &cobra.Command{
 var bundlePath string
 var skipDefault bool
 
-var defaultSpecs = []types.Spec{
-	{
-		Builtin: "docker.daemon",
-		Raw:     "/raw/docker/",
-		JSON:    "/json/docker/",
-	},
-	{
-		Builtin: "core.uptime",
-		Raw:     "/raw/core/uptime",
-		JSON:    "/json/core/uptime.json",
-		Human:   "/human/core/uptime",
-	},
-	{
-		Builtin: "core.hostname",
-		Raw:     "/raw/core/hostname",
-		JSON:    "/json/core/hostname.json",
-		Human:   "/human/core/hostname",
-	},
-	{
-		Builtin: "core.loadavg",
-		Raw:     "/raw/core/loadavg",
-		JSON:    "/json/core/loadavg.json",
-		Human:   "/human/core/loadavg",
-	},
-}
-
 func init() {
 	RootCmd.AddCommand(generateCmd)
 
@@ -101,6 +75,11 @@ func generate(cmd *cobra.Command, args []string) error {
 		}
 	}
 	if !skipDefault {
+		defaultSpecs, err := bundle.DefaultSpecs()
+		if err != nil {
+			jww.ERROR.Fatal(err)
+		}
+
 		specs = append(defaultSpecs, specs...)
 	}
 
