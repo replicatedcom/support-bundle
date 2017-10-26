@@ -100,5 +100,11 @@ func generate(cmd *cobra.Command, args []string) error {
 		jww.ERROR.Fatal(err)
 	}
 
+	if !skipDefault {
+		jww.FEEDBACK.Printf("Support bundle generated at %s and does contain the default files\n", bundlePath)
+	} else {
+		jww.FEEDBACK.Printf("Support bundle generated at %s and does not contain the default files\n", bundlePath)
+	}
+
 	return nil
 }
