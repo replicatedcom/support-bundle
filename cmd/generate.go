@@ -38,6 +38,7 @@ var generateCmd = &cobra.Command{
 
 var bundlePath string
 var skipDefault bool
+var timeoutSeconds int
 
 func init() {
 	RootCmd.AddCommand(generateCmd)
@@ -54,6 +55,7 @@ func init() {
 
 	generateCmd.Flags().StringVar(&bundlePath, "out", "supportbundle.tar.gz", "Path where the generated bundle should be stored")
 	generateCmd.Flags().BoolVarP(&skipDefault, "skipdefault", "s", false, "If present, skip the default support bundle files")
+	generateCmd.Flags().IntVar(&timeoutSeconds, "timeout", 60, "The overall support bundle generation timeout")
 }
 
 func generate(cmd *cobra.Command, args []string) error {
@@ -96,7 +98,7 @@ func generate(cmd *cobra.Command, args []string) error {
 
 	var tasks = planner.Plan(specs)
 
-	if err := bundle.Generate(tasks, time.Duration(time.Second*15), bundlePath); err != nil {
+	if err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(timeoutSeconds)), bundlePath); err != nil {
 		jww.ERROR.Fatal(err)
 	}
 

@@ -12,7 +12,7 @@ type Doc struct {
 
 func Parse(doc []byte) ([]types.Spec, error) {
 	d := &Doc{}
-	if err := yaml.Unmarshal(doc, d); err != nil {
+	if err := yaml.UnmarshalStrict(doc, d); err != nil {
 		return nil, errors.Wrap(err, "parse yaml spec")
 	}
 

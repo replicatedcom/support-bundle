@@ -2,6 +2,7 @@ package planners
 
 import (
 	"path/filepath"
+	"time"
 
 	"github.com/replicatedcom/support-bundle/plans"
 	"github.com/replicatedcom/support-bundle/types"
@@ -30,6 +31,11 @@ func (d *Docker) Daemon(spec types.Spec) []types.Task {
 		RawPath:   maybePath(spec.Raw, "docker_ps_all"),
 		JSONPath:  maybePath(spec.JSON, "docker_ps_all.json"),
 		HumanPath: maybePath(spec.Human, "docker_ps_all"),
+	}
+
+	if spec.TimeoutSeconds != 0 {
+		info.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+		ps.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
 	}
 
 	return []types.Task{

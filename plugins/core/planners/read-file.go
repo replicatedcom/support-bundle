@@ -2,6 +2,7 @@ package planners
 
 import (
 	"errors"
+	"time"
 
 	"github.com/replicatedcom/support-bundle/plans"
 	"github.com/replicatedcom/support-bundle/plugins/core/producers"
@@ -21,6 +22,10 @@ func ReadFile(spec types.Spec) []types.Task {
 		RawPath:   spec.Raw,
 		JSONPath:  spec.JSON,
 		HumanPath: spec.Human,
+	}
+
+	if spec.TimeoutSeconds != 0 {
+		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
 	}
 
 	return []types.Task{task}

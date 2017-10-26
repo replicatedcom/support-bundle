@@ -33,6 +33,10 @@ func (d *Docker) RunCommand(spec types.Spec) []types.Task {
 	// 	}
 	// }
 
+	// if spec.TimeoutSeconds != 0 {
+	// 	task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	// }
+
 	err := errors.New("This task type not yet implemented")
 	task := plans.PreparedError(err, spec)
 
