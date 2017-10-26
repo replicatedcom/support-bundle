@@ -3,6 +3,7 @@ package plans
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 )
@@ -27,6 +28,9 @@ type ByteSource struct {
 	// copy of the structured data. If HumanPath is defined and Parser is not,
 	// it will get a copy of the raw data.
 	HumanPath string
+	// If Timeout is defined, it will be used rather than the context provided
+	// to Exec.
+	Timeout time.Duration
 }
 
 func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Result {
@@ -63,7 +67,14 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 		return resultsWithErr(err, results)
 	}
 
-	data, err := task.Producer(ctx)
+	useCtx := ctx
+	if task.Timeout != 0 {
+		var cancel context.CancelFunc
+		useCtx, cancel = context.WithTimeout(useCtx, task.Timeout)
+		defer cancel()
+	}
+
+	data, err := task.Producer(useCtx)
 	if err != nil {
 		return resultsWithErr(err, results)
 	}
