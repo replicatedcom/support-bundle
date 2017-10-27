@@ -32,28 +32,24 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 	jsonify := task.JSONPath != ""
 	human := task.HumanPath != ""
 
-	rawResult := &types.Result{}
-	jsonResult := &types.Result{}
-	humanResult := &types.Result{}
-
 	results := []*types.Result{}
-	if raw {
-		results = append(results, rawResult)
-	}
-	if jsonify {
-		results = append(results, jsonResult)
-	}
-	if human {
-		results = append(results, humanResult)
+
+	if !(raw || jsonify || human) {
+		return results
 	}
 
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")
+		if raw {
+			results = append(results, &types.Result{Description: task.RawPath})
+		}
+		if jsonify {
+			results = append(results, &types.Result{Description: task.JSONPath})
+		}
+		if human {
+			results = append(results, &types.Result{Description: task.HumanPath})
+		}
 		return resultsWithErr(err, results)
-	}
-
-	if !(raw || jsonify || human) {
-		return results
 	}
 
 	if task.Timeout != 0 {
@@ -68,24 +64,50 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 		defer closeLogErr(closer)
 	}
 
+	rawResult := types.Result{}
+	jsonResult := types.Result{}
+	humanResult := types.Result{}
+
 	// first write to one file
 	if raw {
-		ioCopyContext(ctx, rootDir, task.RawPath, data, rawResult)
+		ioCopyContext(ctx, rootDir, task.RawPath, data, &rawResult)
 	} else if jsonify {
-		ioCopyContext(ctx, rootDir, task.JSONPath, data, jsonResult)
+		ioCopyContext(ctx, rootDir, task.JSONPath, data, &jsonResult)
 	} else if human {
-		ioCopyContext(ctx, rootDir, task.HumanPath, data, humanResult)
+		ioCopyContext(ctx, rootDir, task.HumanPath, data, &humanResult)
 	}
 
 	// then link to any other requested paths
 	if raw && jsonify {
-		os.Link(task.RawPath, task.HumanPath)
+		jsonResult = rawResult
+		if rawResult.Path != "" {
+			os.Link(task.RawPath, task.JSONPath)
+			jsonResult.Path = task.JSONPath
+		}
 	}
 	if raw && human {
-		os.Link(task.RawPath, task.HumanPath)
+		humanResult = rawResult
+		if rawResult.Path != "" {
+			os.Link(task.RawPath, task.HumanPath)
+			humanResult.Path = task.HumanPath
+		}
 	}
 	if jsonify && human {
-		os.Link(task.JSONPath, task.HumanPath)
+		humanResult = jsonResult
+		if jsonResult.Path != "" {
+			os.Link(task.JSONPath, task.HumanPath)
+			humanResult.Path = task.HumanPath
+		}
+	}
+
+	if raw {
+		results = append(results, &rawResult)
+	}
+	if jsonify {
+		results = append(results, &jsonResult)
+	}
+	if human {
+		results = append(results, &humanResult)
 	}
 
 	return results

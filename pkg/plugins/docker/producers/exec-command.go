@@ -12,7 +12,7 @@ import (
 
 // ExecCommand returns stdout and stderr results.
 func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProducer {
-	return func(ctx context.Context) (io.Reader, io.Reader, error) {
+	return func(ctx context.Context) (map[string]io.Reader, error) {
 		execOpts := dockertypes.ExecConfig{
 			Cmd:          cmd,
 			AttachStderr: true,
@@ -22,12 +22,12 @@ func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProd
 
 		execInstance, err := d.client.ContainerExecCreate(ctx, containerID, execOpts)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 
 		att, err := d.client.ContainerExecAttach(ctx, execInstance.ID, execOpts)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 
 		execStartOpts := dockertypes.ExecStartCheck{
@@ -36,7 +36,7 @@ func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProd
 		}
 		if err := d.client.ContainerExecStart(ctx, execInstance.ID, execStartOpts); err != nil {
 			att.Close()
-			return nil, nil, err
+			return nil, err
 		}
 
 		stdoutR, stdoutW := io.Pipe()
@@ -59,15 +59,18 @@ func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProd
 			}
 		}()
 
-		return stdoutR, stderrR, nil
+		readers := make(map[string]io.Reader)
+		readers["stdout"] = stdoutR
+		readers["stderr"] = stderrR
+		return readers, nil
 	}
 }
 
 func (d *Docker) ExecCommandByName(containerName string, cmd []string) types.StreamsProducer {
-	return func(ctx context.Context) (io.Reader, io.Reader, error) {
+	return func(ctx context.Context) (map[string]io.Reader, error) {
 		containerID, err := d.getContainerID(ctx, containerName)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 		return d.ExecCommand(containerID, cmd)(ctx)
 	}
