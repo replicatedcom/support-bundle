@@ -1,8 +1,9 @@
 package planners
 
 import (
-	"errors"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -21,6 +22,14 @@ func (d *Docker) ReadFile(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
+	scrubber, err := plans.RawScrubber(spec.Config.Scrub)
+	if err != nil {
+		err = errors.Wrap(err, "spec for docker.read-file has invalid scrubber spec")
+		task := plans.PreparedError(err, spec)
+
+		return []types.Task{task}
+	}
+
 	producer := d.producers.ReadFile(spec.Config.ContainerID, spec.Config.FilePath)
 
 	if spec.Config.ContainerName != "" {
@@ -28,10 +37,11 @@ func (d *Docker) ReadFile(spec types.Spec) []types.Task {
 	}
 
 	task := &plans.StreamSource{
-		Producer:  producer,
-		RawPath:   spec.Raw,
-		JSONPath:  spec.JSON,
-		HumanPath: spec.Human,
+		Producer:    producer,
+		RawScrubber: scrubber,
+		RawPath:     spec.Raw,
+		JSONPath:    spec.JSON,
+		HumanPath:   spec.Human,
 	}
 
 	if spec.TimeoutSeconds != 0 {

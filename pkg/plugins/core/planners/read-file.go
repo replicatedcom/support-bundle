@@ -1,7 +1,6 @@
 package planners
 
 import (
-	"regexp"
 	"time"
 
 	"github.com/pkg/errors"
@@ -18,9 +17,9 @@ func ReadFile(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	scrubber, err := rawScrubber(spec.Config.Scrub)
+	scrubber, err := plans.RawScrubber(spec.Config.Scrub)
 	if err != nil {
-		err := errors.New("spec for core.read-file has invalid scrubber spec")
+		err = errors.Wrap(err, "spec for core.read-file has invalid scrubber spec")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}
@@ -39,20 +38,4 @@ func ReadFile(spec types.Spec) []types.Task {
 	}
 
 	return []types.Task{task}
-}
-
-func rawScrubber(scrubSpec types.Scrub) (types.BytesScrubber, error) {
-	if scrubSpec.Regex == "" {
-		return nil, nil
-	}
-
-	regex, err := regexp.Compile(scrubSpec.Regex)
-	if err != nil {
-		return nil, errors.Wrapf(err, "parse regex %s", scrubSpec.Regex)
-	}
-
-	return func(in []byte) []byte {
-		return regex.ReplaceAll(in, []byte(scrubSpec.Replace))
-	}, nil
-
 }

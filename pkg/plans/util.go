@@ -2,6 +2,9 @@ package plans
 
 import (
 	"io"
+	"regexp"
+
+	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
@@ -24,4 +27,20 @@ func closeLogErr(c io.Closer) {
 	if err := c.Close(); err != nil {
 		jww.ERROR.Print(err)
 	}
+}
+
+// RawScrubber creates a scrubber function from a scrubSpec
+func RawScrubber(scrubSpec types.Scrub) (types.BytesScrubber, error) {
+	if scrubSpec.Regex == "" {
+		return nil, nil
+	}
+
+	regex, err := regexp.Compile(scrubSpec.Regex)
+	if err != nil {
+		return nil, errors.Wrapf(err, "parse regex %s", scrubSpec.Regex)
+	}
+
+	return func(in []byte) []byte {
+		return regex.ReplaceAll(in, []byte(scrubSpec.Replace))
+	}, nil
 }

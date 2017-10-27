@@ -1,6 +1,7 @@
 package plans
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"io"
@@ -16,6 +17,8 @@ type StreamsSource struct {
 	// Producer provides the seed data for this task as an io.Reader array
 	// Names of the sources are provided as a string array
 	Producer func(context.Context) (map[string]io.Reader, error)
+	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
+	RawScrubber func([]byte) []byte
 	// Template, if defined, renders structured data in a human-readable format
 	Template string
 	// If RawPath is defined it will get a copy of the data
@@ -71,6 +74,27 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 		go func(name string, reader io.Reader) {
 			if closer, ok := reader.(io.Closer); ok {
 				defer closeLogErr(closer)
+			}
+
+			if task.RawScrubber != nil {
+				scrubbedReader, scrubbedWriter := io.Pipe()
+				go func(readFrom io.Reader, writeTo *io.PipeWriter) {
+					lineScanner := bufio.NewScanner(readFrom)
+					byteWriter := bufio.NewWriter(writeTo)
+					for lineScanner.Scan() {
+						line := lineScanner.Bytes()
+						line = task.RawScrubber(line)
+
+						// TODO: actually deal with errors besides 'buffer full'
+						n, _ := byteWriter.Write(line)
+						for n < len(line) {
+							line = line[n:]
+							n, _ = byteWriter.Write(line)
+						}
+					}
+					writeTo.Close()
+				}(reader, scrubbedWriter)
+				reader = scrubbedReader
 			}
 
 			rawResult := types.Result{}
