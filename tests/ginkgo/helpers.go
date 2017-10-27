@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"context"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -14,6 +15,7 @@ import (
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	dockernetworktypes "github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/replicatedcom/support-bundle/cmd"
 	jww "github.com/spf13/jwalterweatherman"
@@ -37,6 +39,14 @@ func CleanupDir() {
 	Expect(err).NotTo(HaveOccurred())
 	err = os.RemoveAll(tmpdir)
 	Expect(err).NotTo(HaveOccurred())
+}
+
+func LogErrors() {
+	contents := ReadFileFromBundle(
+		path.Join("bundle.tar.gz"),
+		"/error.json",
+	)
+	fmt.Fprintf(GinkgoWriter, "Errors: %s\n", contents)
 }
 
 func WriteFile(path string, contents string) {

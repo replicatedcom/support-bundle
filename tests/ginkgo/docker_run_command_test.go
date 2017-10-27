@@ -1,7 +1,6 @@
 package ginkgo
 
 import (
-	"fmt"
 	"path"
 	"strings"
 
@@ -14,21 +13,22 @@ var _ = Describe("Docker run command", func() {
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(CleanupDir)
+	AfterEach(LogErrors)
 
 	It("Successfully executes the docker run command", func() {
 
-		WriteFile("config.yml", `
+		cfgDoc := `
 specs:
   - builtin: docker.run-command
     raw: /dockerext/run-command/
     config:
       image: replicated/support-bundle:latest
       command: echo
-      args: ["Hello World!"]
-      `)
+      args: ["Hello World!"]`
 
 		err := cmd.Generate(
-			path.Join(tmpdir, "config.yml"),
+			"",
+			cfgDoc,
 			path.Join(tmpdir, "bundle.tar.gz"),
 			true,
 			60,
@@ -41,13 +41,7 @@ specs:
 			"/dockerext/run-command/stdout",
 		)
 
-		if !Expect(strings.TrimSpace(contents)).To(Equal("Hello World!")) {
-			contents := ReadFileFromBundle(
-				path.Join("bundle.tar.gz"),
-				"/error.json",
-			)
-			fmt.Fprintf(GinkgoWriter, "Errors: %s\n", contents)
-		}
+		Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
 	})
 
 })
