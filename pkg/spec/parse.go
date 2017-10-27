@@ -6,12 +6,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-type Doc struct {
-	Specs []types.Spec
-}
-
 func Parse(doc []byte) ([]types.Spec, error) {
-	d := &Doc{}
+	d := &types.Doc{}
 	if err := yaml.UnmarshalStrict(doc, d); err != nil {
 		return nil, errors.Wrap(err, "parse yaml spec")
 	}
