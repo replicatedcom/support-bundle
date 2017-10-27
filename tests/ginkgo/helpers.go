@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"strings"
 
 	dockertypes "github.com/docker/docker/api/types"
@@ -44,9 +45,13 @@ func LogErrors(bundlePath string) func() {
 	return func() {
 		contents := ReadFileFromBundle(
 			bundlePath,
+			"/index.json",
+		)
+		fmt.Fprintf(GinkgoWriter, "Index: %s\n", contents)
+		contents = ReadFileFromBundle(
+			bundlePath,
 			"/error.json",
 		)
-		fmt.Println("+++ HERE +++")
 		fmt.Fprintf(GinkgoWriter, "Errors: %s\n", contents)
 	}
 }

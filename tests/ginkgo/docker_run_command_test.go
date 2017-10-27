@@ -12,8 +12,8 @@ import (
 var _ = Describe("Docker run command", func() {
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(CleanupDir)
 	AfterEach(LogErrors("bundle.tar.gz"))
+	AfterEach(CleanupDir)
 
 	It("Successfully executes the docker run command", func() {
 
@@ -23,7 +23,7 @@ specs:
     raw: /dockerext/run-command/
     config:
       image: replicated/support-bundle:latest
-      command: echo
+      command: echof
       args: ["Hello World!"]`
 
 		err := cmd.Generate(
@@ -37,7 +37,7 @@ specs:
 		Expect(err).To(BeNil())
 
 		contents := ReadFileFromBundle(
-			path.Join("bundle.tar.gz"),
+			"bundle.tar.gz",
 			"/dockerext/run-command/stdout",
 		)
 
