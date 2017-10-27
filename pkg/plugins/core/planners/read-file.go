@@ -27,11 +27,11 @@ func ReadFile(spec types.Spec) []types.Task {
 	}
 
 	task := &plans.ByteSource{
-		Producer: producers.ReadFile(spec.Config.FilePath),
+		Producer:    producers.ReadFile(spec.Config.FilePath),
 		RawScrubber: scrubber,
-		RawPath:   spec.Raw,
-		JSONPath:  spec.JSON,
-		HumanPath: spec.Human,
+		RawPath:     spec.Raw,
+		JSONPath:    spec.JSON,
+		HumanPath:   spec.Human,
 	}
 
 	if spec.TimeoutSeconds != 0 {
@@ -51,7 +51,7 @@ func rawScrubber(scrubSpec types.Scrub) (types.BytesScrubber, error) {
 		return nil, errors.Wrapf(err, "parse regex %s", scrubSpec.Regex)
 	}
 
-	return func(in []byte) ([]byte) {
+	return func(in []byte) []byte {
 		return regex.ReplaceAll(in, []byte(scrubSpec.Replace))
 	}, nil
 

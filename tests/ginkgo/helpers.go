@@ -1,13 +1,13 @@
 package ginkgo
 
 import (
-	"os"
-	"io/ioutil"
-	. "github.com/onsi/gomega"
-	"io"
-	"compress/gzip"
 	"archive/tar"
+	"compress/gzip"
+	. "github.com/onsi/gomega"
 	jww "github.com/spf13/jwalterweatherman"
+	"io"
+	"io/ioutil"
+	"os"
 	"strings"
 )
 

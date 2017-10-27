@@ -58,6 +58,10 @@ func init() {
 	generateCmd.Flags().IntVar(&timeoutSeconds, "timeout", 60, "The overall support bundle generation timeout")
 }
 
+func generate(cmd *cobra.Command, args []string) error {
+	return Generate(cfgFile, bundlePath, skipDefault, timeoutSeconds)
+}
+
 func Generate(cfgFile string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
 	jww.SetStdoutThreshold(jww.LevelTrace)
 
@@ -109,8 +113,4 @@ func Generate(cfgFile string, bundlePath string, skipDefault bool, timeoutSecond
 	}
 
 	return nil
-}
-
-func generate(cmd *cobra.Command, args []string) error {
-	return Generate(cfgFile, bundlePath, skipDefault, timeoutSeconds)
 }

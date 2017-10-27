@@ -23,7 +23,7 @@ specs:
   - builtin: core.read-file
     raw: /pg/pg.env
     config:
-      file_path: `+ path.Join(tmpdir, "pg.env")+ `
+      file_path: `+path.Join(tmpdir, "pg.env")+`
       scrub:
         regex: (PGPASSWORD)=(.*)
         replace: $1=REDACTED
