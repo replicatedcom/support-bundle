@@ -14,7 +14,7 @@ generate:
 	./bin/support-bundle generate
 
 test:
-	go test -v `go list ./... | grep -v /vendor/`
+	go test ./pkg/...
 
 integration-test:
 	./tests/run.sh
