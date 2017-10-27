@@ -22,7 +22,7 @@ specs:
   - builtin: docker.run-command
     raw: /dockerext/run-command/
     config:
-      image: circleci/golang:1.8.1
+      image: alpine:latest
       command: echo
       args: ["Hello World!"]`
 

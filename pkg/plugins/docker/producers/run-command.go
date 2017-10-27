@@ -3,6 +3,7 @@ package producers
 import (
 	"context"
 	"io"
+	"io/ioutil"
 	"log"
 
 	dockertypes "github.com/docker/docker/api/types"
@@ -19,7 +20,17 @@ func (d *Docker) RunCommand(image string, cmd []string, env []string, binds []st
 	return func(ctx context.Context) (map[string]io.Reader, error) {
 		if _, _, err := d.client.ImageInspectWithRaw(ctx, image); err != nil {
 			if docker.IsErrNotFound(err) {
-				// TODO: support for image pull
+				// TODO: disable pull
+				resp, err := d.client.ImagePull(ctx, image, dockertypes.ImagePullOptions{
+				// TODO: registry auth
+				})
+				if err != nil {
+					return nil, errors.Wrapf(err, "image pull %s", image)
+				}
+				if _, err := ioutil.ReadAll(resp); err != nil {
+					return nil, err
+				}
+				resp.Close()
 			}
 			return nil, errors.Wrapf(err, "image inspect %s", image)
 		}
