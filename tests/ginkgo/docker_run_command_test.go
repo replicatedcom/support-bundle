@@ -44,9 +44,9 @@ specs:
 		if !Expect(strings.TrimSpace(contents)).To(Equal("Hello World!")) {
 			contents := ReadFileFromBundle(
 				path.Join("bundle.tar.gz"),
-				"/errors.json",
+				"/error.json",
 			)
-			fmt.Println(contents)
+			fmt.Fprintf(GinkgoWriter, "Errors: %s\n", contents)
 		}
 	})
 
