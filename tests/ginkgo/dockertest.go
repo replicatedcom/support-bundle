@@ -12,7 +12,7 @@ var _ = Describe("Scrubbing secrets from file", func() {
 	BeforeEach(EnterNewTempDir)
 	AfterEach(CleanupDir)
 
-	It("Scrubs any instances of PGPASSWORD=.*", func() {
+	It("Finds DriverStatus in docker_info.json", func() {
 
 
 		WriteFile("config.yml", `
