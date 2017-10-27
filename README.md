@@ -11,3 +11,10 @@ docker run \
   replicatedcom/support-bundle generate
 ```
 
+
+### Integration tests
+
+- ginkgo suite at tests/ginkgo
+- run with `make integration-test`
+
+
