@@ -31,8 +31,9 @@ func (d *Docker) RunCommand(image string, cmd []string, env []string, binds []st
 					return nil, err
 				}
 				resp.Close()
+			} else {
+				return nil, errors.Wrapf(err, "image inspect %s", image)
 			}
-			return nil, errors.Wrapf(err, "image inspect %s", image)
 		}
 
 		createOpts := dockertypes.ContainerCreateConfig{
