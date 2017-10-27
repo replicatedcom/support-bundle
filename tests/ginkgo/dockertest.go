@@ -7,7 +7,7 @@ import (
 	"path"
 )
 
-var _ = Describe("Scrubbing secrets from file", func() {
+var _ = Describe("docker.daemon", func() {
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(CleanupDir)
