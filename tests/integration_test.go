@@ -87,18 +87,19 @@ func TestGenerate(t *testing.T) {
 		)
 	}
 	got, _ := ioutil.TempFile("", "generate-test-bundle")
-	// fmt.Println(got.Name())
 	defer os.Remove(got.Name())
 
 	err = bundle.Generate(tasks, time.Duration(time.Second*2), got.Name())
 	require.NoError(t, err)
+	t.Logf("Generate file %s", got.Name())
 
 	testDir, _ := ioutil.TempDir("", "generate-test")
-	defer os.RemoveAll(testDir)
+	// defer os.RemoveAll(testDir)
 
 	//decompress to temp dir
 	extractor := extractor.NewTgz()
 	extractor.Extract(got.Name(), filepath.Join(testDir, "dir"))
+	t.Logf("Extract to directory %s", filepath.Join(testDir, "dir"))
 
 	//verify what we got
 	files, err := ioutil.ReadDir(filepath.Join(testDir, "dir"))
