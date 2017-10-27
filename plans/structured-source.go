@@ -3,6 +3,7 @@ package plans
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 )
@@ -23,6 +24,9 @@ type StructuredSource struct {
 	// HumanPath is defined and a Template is not, it will get the data as
 	// YAML.
 	HumanPath string
+	// If Timeout is defined, it will be used rather than the context provided
+	// to Exec.
+	Timeout time.Duration
 }
 
 func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types.Result {
@@ -50,6 +54,10 @@ func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")
 		return resultsWithErr(err, results)
+	}
+
+	if task.Timeout != 0 {
+		ctx, _ = context.WithTimeout(ctx, task.Timeout)
 	}
 
 	data, err := task.Producer(ctx)

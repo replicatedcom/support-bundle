@@ -38,32 +38,7 @@ var generateCmd = &cobra.Command{
 
 var bundlePath string
 var skipDefault bool
-
-var defaultSpecs = []types.Spec{
-	{
-		Builtin: "docker.daemon",
-		Raw:     "/raw/docker/",
-		JSON:    "/json/docker/",
-	},
-	{
-		Builtin: "core.uptime",
-		Raw:     "/raw/core/uptime",
-		JSON:    "/json/core/uptime.json",
-		Human:   "/human/core/uptime",
-	},
-	{
-		Builtin: "core.hostname",
-		Raw:     "/raw/core/hostname",
-		JSON:    "/json/core/hostname.json",
-		Human:   "/human/core/hostname",
-	},
-	{
-		Builtin: "core.loadavg",
-		Raw:     "/raw/core/loadavg",
-		JSON:    "/json/core/loadavg.json",
-		Human:   "/human/core/loadavg",
-	},
-}
+var timeoutSeconds int
 
 func init() {
 	RootCmd.AddCommand(generateCmd)
@@ -80,6 +55,7 @@ func init() {
 
 	generateCmd.Flags().StringVar(&bundlePath, "out", "supportbundle.tar.gz", "Path where the generated bundle should be stored")
 	generateCmd.Flags().BoolVarP(&skipDefault, "skipdefault", "s", false, "If present, skip the default support bundle files")
+	generateCmd.Flags().IntVar(&timeoutSeconds, "timeout", 60, "The overall support bundle generation timeout")
 }
 
 func generate(cmd *cobra.Command, args []string) error {
@@ -101,6 +77,11 @@ func generate(cmd *cobra.Command, args []string) error {
 		}
 	}
 	if !skipDefault {
+		defaultSpecs, err := bundle.DefaultSpecs()
+		if err != nil {
+			jww.ERROR.Fatal(err)
+		}
+
 		specs = append(defaultSpecs, specs...)
 	}
 
@@ -117,8 +98,14 @@ func generate(cmd *cobra.Command, args []string) error {
 
 	var tasks = planner.Plan(specs)
 
-	if err := bundle.Generate(tasks, time.Duration(time.Second*15), bundlePath); err != nil {
+	if err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(timeoutSeconds)), bundlePath); err != nil {
 		jww.ERROR.Fatal(err)
+	}
+
+	if !skipDefault {
+		jww.FEEDBACK.Printf("Support bundle generated at %s and does contain the default files\n", bundlePath)
+	} else {
+		jww.FEEDBACK.Printf("Support bundle generated at %s and does not contain the default files\n", bundlePath)
 	}
 
 	return nil

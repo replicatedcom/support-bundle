@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"time"
 
 	"github.com/replicatedcom/support-bundle/types"
 )
@@ -21,6 +22,9 @@ type StreamSource struct {
 	JSONPath string
 	// If HumanPath is defined it will get a copy of the data
 	HumanPath string
+	// If Timeout is defined, it will be used rather than the context provided
+	// to Exec.
+	Timeout time.Duration
 }
 
 func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Result {
@@ -50,6 +54,10 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 
 	if !(raw || jsonify || human) {
 		return results
+	}
+
+	if task.Timeout != 0 {
+		ctx, _ = context.WithTimeout(ctx, task.Timeout)
 	}
 
 	data, err := task.Producer(ctx)
