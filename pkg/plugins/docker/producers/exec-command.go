@@ -12,7 +12,7 @@ import (
 
 // ExecCommand returns stdout and stderr results.
 func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProducer {
-	return func(ctx context.Context) (io.Reader, io.Reader, error) {
+	return func(ctx context.Context) ([]io.Reader, []string, error) {
 		execOpts := dockertypes.ExecConfig{
 			Cmd:          cmd,
 			AttachStderr: true,
@@ -59,12 +59,12 @@ func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProd
 			}
 		}()
 
-		return stdoutR, stderrR, nil
+		return []io.Reader{stdoutR, stderrR}, []string{"stdout", "stderr"}, nil
 	}
 }
 
 func (d *Docker) ExecCommandByName(containerName string, cmd []string) types.StreamsProducer {
-	return func(ctx context.Context) (io.Reader, io.Reader, error) {
+	return func(ctx context.Context) ([]io.Reader, []string, error) {
 		containerID, err := d.getContainerID(ctx, containerName)
 		if err != nil {
 			return nil, nil, err

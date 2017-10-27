@@ -2,14 +2,13 @@ package planners
 
 import (
 	"errors"
+	"time"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
 func (d *Docker) ExecCommand(spec types.Spec) []types.Task {
-	// fullCommand := append([]string{spec.Config.Command}, spec.Config.Args...)
-
 	if spec.Config.ContainerID == "" && spec.Config.ContainerName == "" {
 		err := errors.New("spec for docker.run-command requires a container ID or Name within config")
 		task := plans.PreparedError(err, spec)
@@ -22,28 +21,22 @@ func (d *Docker) ExecCommand(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	// task := &plans.StreamsSource{
-	// 	Producer:  d.producers.ExecCommand(spec.Config.ContainerID, fullCommand),
-	// 	RawPath:   spec.Raw,
-	// 	JSONPath:  spec.JSON,
-	// 	HumanPath: spec.Human,
-	// }
+	fullCommand := append([]string{spec.Config.Command}, spec.Config.Args...)
 
-	// if spec.Config.ContainerName != "" {
-	// 	task = &plans.StreamsSource{
-	// 		Producer:  d.producers.ExecCommandByName(spec.Config.ContainerName),
-	// 		RawPath:   spec.Raw,
-	// 		JSONPath:  spec.JSON,
-	// 		HumanPath: spec.Human,
-	// 	}
-	// }
+	task := &plans.StreamsSource{
+		Producer:  d.producers.ExecCommand(spec.Config.ContainerID, fullCommand),
+		RawPath:   spec.Raw,
+		JSONPath:  spec.JSON,
+		HumanPath: spec.Human,
+	}
 
-	// if spec.TimeoutSeconds != 0 {
-	// 	task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
-	// }
+	if spec.Config.ContainerName != "" {
+		task.Producer = d.producers.ExecCommandByName(spec.Config.ContainerName, fullCommand)
+	}
 
-	err := errors.New("This task type not yet implemented")
-	task := plans.PreparedError(err, spec)
+	if spec.TimeoutSeconds != 0 {
+		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	}
 
 	return []types.Task{task}
 }
