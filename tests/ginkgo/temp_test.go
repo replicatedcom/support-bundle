@@ -16,8 +16,8 @@ var _ = Describe("Checking contents of the file", func() {
 	It("Validating text in blah.txt", func() {
 
 		WriteFile("blah.txt", `
-Hello World!
-What's in my Bundle`)
+Hey there!
+Let's take a peek into my file!`)
 
 		WriteFile("config.yml", `
 specs:
@@ -26,11 +26,6 @@ specs:
     config:
       file_path: blah.txt
       `)
-		/*
-		   - builtin: core.read-file
-		       raw: /daemon/etc/default/replicated
-		       config:
-		         file_path: /etc/default/replicated */
 
 		err := cmd.Generate(
 			path.Join(tmpdir, "config.yml"),
@@ -45,8 +40,8 @@ specs:
 			path.Join("bundle.tar.gz"),
 			"/daemon/etc/default/replicated",
 		)
-		Expect(contents).To(ContainSubstring("Hello World!"))
-		Expect(contents).To(ContainSubstring("What's in my Bundle"))
+		Expect(contents).To(ContainSubstring("Hey there!"))
+		Expect(contents).To(ContainSubstring("Let's take a peek into my file!"))
 
 	})
 
