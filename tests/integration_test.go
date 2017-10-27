@@ -18,6 +18,7 @@ import (
 
 	"github.com/divolgin/archiver/extractor"
 	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -25,20 +26,35 @@ import (
 	docker "github.com/docker/docker/client"
 )
 
-// TestGenerate runs all the local data collection tools (read file, run command, hostname, loadavg, uptime)
-// some tasks are not fully tested on windows (run command, loadavg, uptime)
-func TestGenerate(t *testing.T) {
+type testResult struct {
+	Description string `json:"description"`
+	Path        string `json:"path"`
+	Error       string `json:"error,omitempty"`
+}
 
-	successfulFile := "./integration_test.go"
-	unsuccessfulFile := "/path/does/not/exist.xyz"
+// IntegrationTestSuite runs all the local data collection tools (read file, run command, hostname, loadavg, uptime)
+// some tasks are not fully tested on windows (run command, loadavg, uptime)
+type IntegrationTestSuite struct {
+	suite.Suite
+	SuccessfulFile   string
+	UnsuccessfulFile string
+	UncompressedDir  string
+	TestDir          string
+	IndexAll         []testResult
+	ErrorAll         []testResult
+}
+
+func (s *IntegrationTestSuite) SetupSuite() {
+	s.SuccessfulFile = "./integration_test.go"
+	s.UnsuccessfulFile = "/path/does/not/exist.xyz"
 
 	var tasks = []types.Task{
 		&plans.ByteSource{
-			Producer: coreproducers.ReadFile(successfulFile),
+			Producer: coreproducers.ReadFile(s.SuccessfulFile),
 			RawPath:  "files/successfulFile",
 		},
 		&plans.ByteSource{
-			Producer: coreproducers.ReadFile(unsuccessfulFile),
+			Producer: coreproducers.ReadFile(s.UnsuccessfulFile),
 			RawPath:  "files/unsuccessfulFile",
 		},
 	}
@@ -89,31 +105,33 @@ func TestGenerate(t *testing.T) {
 	got, _ := ioutil.TempFile("", "generate-test-bundle")
 	defer os.Remove(got.Name())
 
+	t := s.T()
+
 	err = bundle.Generate(tasks, time.Duration(time.Second*2), got.Name())
 	require.NoError(t, err)
 	t.Logf("Generate file %s", got.Name())
 
-	testDir, _ := ioutil.TempDir("", "generate-test")
-	// defer os.RemoveAll(testDir)
+	s.TestDir, _ = ioutil.TempDir("", "generate-test")
+	// defer os.RemoveAll(s.TestDir)
 
 	//decompress to temp dir
 	extractor := extractor.NewTgz()
-	extractor.Extract(got.Name(), filepath.Join(testDir, "dir"))
-	t.Logf("Extract to directory %s", filepath.Join(testDir, "dir"))
+	extractor.Extract(got.Name(), filepath.Join(s.TestDir, "dir"))
+	t.Logf("Extract to directory %s", filepath.Join(s.TestDir, "dir"))
 
 	//verify what we got
-	files, err := ioutil.ReadDir(filepath.Join(testDir, "dir"))
+	files, err := ioutil.ReadDir(filepath.Join(s.TestDir, "dir"))
 	require.NoError(t, err)
 
 	require.Equal(t, 1, len(files))
 	require.True(t, files[0].IsDir())
 
-	uncompressedDir := files[0].Name()
+	s.UncompressedDir = files[0].Name()
 
 	//get index.json and error.json
-	indexReader, err := os.Open(filepath.Join(testDir, "dir", uncompressedDir, "index.json"))
+	indexReader, err := os.Open(filepath.Join(s.TestDir, "dir", s.UncompressedDir, "index.json"))
 	require.NoError(t, err)
-	errorReader, err := os.Open(filepath.Join(testDir, "dir", uncompressedDir, "error.json"))
+	errorReader, err := os.Open(filepath.Join(s.TestDir, "dir", s.UncompressedDir, "error.json"))
 	require.NoError(t, err)
 
 	//read into byte arrays
@@ -122,49 +140,34 @@ func TestGenerate(t *testing.T) {
 	errorBytes, err := ioutil.ReadAll(errorReader)
 	require.NoError(t, err)
 
-	type testResult struct {
-		Description string `json:"description"`
-		Path        string `json:"path"`
-		Error       string `json:"error,omitempty"`
-	}
-
-	var indexAll []testResult
-	var errorAll []testResult
-
-	err = json.Unmarshal(indexBytes, &indexAll)
+	err = json.Unmarshal(indexBytes, &s.IndexAll)
 	require.NoError(t, err)
-	err = json.Unmarshal(errorBytes, &errorAll)
+	err = json.Unmarshal(errorBytes, &s.ErrorAll)
 	require.NoError(t, err)
 
-	defer func() {
-		filepath.Join(testDir, "dir")
-		t.Logf("Errors:\n%s", errorBytes)
-	}()
+	// jww.FEEDBACK.Print(len(s.IndexAll))
+	// jww.FEEDBACK.Print(len(s.ErrorAll))
 
 	// check for presence of what should be there
 	// directory for successful file, error for nonexsistent file
 	// directory for successful command, error for timeout command
 	// directories for hostname, uptime, loadavg
+}
 
-	// jww.FEEDBACK.Print(len(indexAll))
-	// jww.FEEDBACK.Print(len(errorAll))
+func (s *IntegrationTestSuite) TestSuccessfulFile() {
+	t := s.T()
 
-	// search for successful file copy & unsuccessful file copy
+	// search for successful file copy
 	fileCopyPath := ""
-	foundUnsuccessfulCopy := false
-	for _, resultInfo := range indexAll {
-		if resultInfo.Path == "files/successfulFile" /*&& resultInfo.Args[0] == successfulFile*/ {
+	for _, resultInfo := range s.IndexAll {
+		if resultInfo.Path == "files/successfulFile" /*&& resultInfo.Args[0] == s.SuccessfulFile*/ {
 			fileCopyPath = resultInfo.Path
 		}
-		if resultInfo.Path == "files/unsuccessfulFile" /*&& resultInfo.Args[0] == unsuccessfulFile*/ {
-			require.Equal(t, 0, len(resultInfo.Path))
-			foundUnsuccessfulCopy = true
-		}
 	}
-	require.False(t, foundUnsuccessfulCopy, "A results index was found for an unsuccessful copy, and should not have been")
+
 	require.NotEqual(t, "", fileCopyPath, "No path was found for the successful file copy")
 
-	fileCopyReader, err := os.Open(filepath.Join(testDir, "dir", uncompressedDir, fileCopyPath))
+	fileCopyReader, err := os.Open(filepath.Join(s.TestDir, "dir", s.UncompressedDir, fileCopyPath))
 	require.NoError(t, err)
 	fileCopyBytes, err := ioutil.ReadAll(fileCopyReader)
 	require.NoError(t, err)
@@ -172,6 +175,36 @@ func TestGenerate(t *testing.T) {
 	// ensure the file was actually copied by checking for this magic string
 	// the file we're reading is this test's source file, so by definition it
 	require.True(t, strings.Contains(string(fileCopyBytes), "GlRIh6YfVnnJBo4TY3Q3"))
+}
+
+func (s *IntegrationTestSuite) TestUnsuccessfulFile() {
+	t := s.T()
+
+	// search for unsuccessful file copy
+	foundUnsuccessfulCopy := false
+	for _, resultInfo := range s.IndexAll {
+		if resultInfo.Path == "files/unsuccessfulFile" /*&& resultInfo.Args[0] == s.UnsuccessfulFile*/ {
+			require.Equal(t, 0, len(resultInfo.Path))
+			foundUnsuccessfulCopy = true
+		}
+	}
+	require.False(t, foundUnsuccessfulCopy, "A results index was found for an unsuccessful copy, and should not have been")
+
+	// look in the errors json and ensure entries are present for the failed copy and timed out command
+
+	foundUnsuccessfulCopy = false
+	for _, errorInfo := range s.ErrorAll {
+		if strings.Contains(errorInfo.Error, s.UnsuccessfulFile) {
+			foundUnsuccessfulCopy = true
+			require.NotEqual(t, "", errorInfo.Error)
+		}
+	}
+
+	require.True(t, foundUnsuccessfulCopy, "An error entry was not found for a failed file copy")
+}
+
+func (s *IntegrationTestSuite) TestRest() {
+	t := s.T()
 
 	foundFailedCommand := false
 	if !(runtime.GOOS == "windows") {
@@ -180,7 +213,7 @@ func TestGenerate(t *testing.T) {
 		// these commands aren't tested on windows platforms
 		lsCommandPath := ""
 		// sleepCommandPath := ""
-		for _, resultInfo := range indexAll {
+		for _, resultInfo := range s.IndexAll {
 			if resultInfo.Path == "cmd/ls_-a" {
 				require.NotEqual(t, "", resultInfo.Path)
 				lsCommandPath = resultInfo.Path
@@ -199,23 +232,6 @@ func TestGenerate(t *testing.T) {
 		// require.NotEqual(t, "", sleepCommandPath, "No path was found for the successful sleep command run")
 	}
 
-	// look in the errors json and ensure entries are present for the failed copy and timed out command
-
-	foundUnsuccessfulCopy = false
-	foundFailedCommand = false
-	for _, errorInfo := range errorAll {
-		if strings.Contains(errorInfo.Error, unsuccessfulFile) {
-			foundUnsuccessfulCopy = true
-			require.NotEqual(t, "", errorInfo.Error)
-		}
-		if errorInfo.Path == "runCommand" { // todo: figure out why failed commands don't produce errors
-			foundFailedCommand = true
-			require.NotEqual(t, "", errorInfo.Error)
-		}
-	}
-
-	require.True(t, foundUnsuccessfulCopy, "An error entry was not found for a failed file copy")
-
 	if !(runtime.GOOS == "windows") {
 		// command tasks not tested on windows
 		foundFailedCommand = true // todo: fix after figuring out why failed commands don't produce errors
@@ -224,7 +240,7 @@ func TestGenerate(t *testing.T) {
 
 	// look for uptime, loadavg, hostname task successes
 	uptimeFound, loadavgFound, hostnameFound := false, false, false
-	for _, resultInfo := range indexAll {
+	for _, resultInfo := range s.IndexAll {
 		if resultInfo.Path == "core/uptime.json" {
 			if runtime.GOOS == "windows" {
 				// uptime does not run properly on windows (the file doesn't exist)
@@ -257,7 +273,7 @@ func TestGenerate(t *testing.T) {
 	require.True(t, hostnameFound)
 
 	dInfoPath, dPSPath := "", ""
-	for _, resultInfo := range indexAll {
+	for _, resultInfo := range s.IndexAll {
 		if resultInfo.Path == "docker/docker_info" {
 			require.NotEqual(t, "", resultInfo.Path)
 			dInfoPath = resultInfo.Path
@@ -270,4 +286,8 @@ func TestGenerate(t *testing.T) {
 
 	require.NotEqual(t, "", dInfoPath)
 	require.NotEqual(t, "", dPSPath)
+}
+
+func TestIntegrationTestSuite(t *testing.T) {
+	suite.Run(t, new(IntegrationTestSuite))
 }
