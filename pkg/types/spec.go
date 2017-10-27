@@ -1,5 +1,9 @@
 package types
 
+type Doc struct {
+	Specs []Spec
+}
+
 type Spec struct {
 	ID             string
 	Builtin        string
@@ -10,14 +14,16 @@ type Spec struct {
 	Human string
 
 	// Plan-specific config
-	Config struct {
-		FilePath      string   `yaml:"file_path"`
-		Args          []string `yaml:"args"`
-		ContainerID   string   `yaml:"container_id"`
-		ContainerName string   `yaml:"container_name"`
-		Command       string   `yaml:"command"`
-		Scrub         Scrub    `yaml:"scrub"`
-	}
+	Config Config
+}
+
+type Config struct {
+	FilePath      string   `yaml:"file_path"`
+	Args          []string `yaml:"args"`
+	ContainerID   string   `yaml:"container_id"`
+	ContainerName string   `yaml:"container_name"`
+	Command       string   `yaml:"command"`
+	Scrub         Scrub    `yaml:"scrub"`
 }
 
 type Scrub struct {
