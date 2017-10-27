@@ -1,6 +1,7 @@
 package ginkgo
 
 import (
+	"fmt"
 	"path"
 	"strings"
 
@@ -40,7 +41,13 @@ specs:
 			"/dockerext/run-command/stdout",
 		)
 
-		Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
+		if !Expect(strings.TrimSpace(contents)).To(Equal("Hello World!")) {
+			contents := ReadFileFromBundle(
+				path.Join("bundle.tar.gz"),
+				"/errors.json",
+			)
+			fmt.Println(contents)
+		}
 	})
 
 })
