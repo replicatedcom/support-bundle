@@ -136,6 +136,11 @@ func TestGenerate(t *testing.T) {
 	err = json.Unmarshal(errorBytes, &errorAll)
 	require.NoError(t, err)
 
+	defer func() {
+		filepath.Join(testDir, "dir")
+		t.Logf("Errors:\n%s", errorBytes)
+	}()
+
 	// check for presence of what should be there
 	// directory for successful file, error for nonexsistent file
 	// directory for successful command, error for timeout command
