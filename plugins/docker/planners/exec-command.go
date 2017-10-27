@@ -7,7 +7,7 @@ import (
 	"github.com/replicatedcom/support-bundle/types"
 )
 
-func (d *Docker) RunCommand(spec types.Spec) []types.Task {
+func (d *Docker) ExecCommand(spec types.Spec) []types.Task {
 	// fullCommand := append([]string{spec.Config.Command}, spec.Config.Args...)
 
 	if spec.Config.ContainerID == "" && spec.Config.ContainerName == "" {
@@ -23,7 +23,7 @@ func (d *Docker) RunCommand(spec types.Spec) []types.Task {
 	}
 
 	// task := &plans.StreamsSource{
-	// 	Producer:  d.producers.RunCommand(spec.Config.ContainerID, fullCommand),
+	// 	Producer:  d.producers.ExecCommand(spec.Config.ContainerID, fullCommand),
 	// 	RawPath:   spec.Raw,
 	// 	JSONPath:  spec.JSON,
 	// 	HumanPath: spec.Human,
@@ -31,7 +31,7 @@ func (d *Docker) RunCommand(spec types.Spec) []types.Task {
 
 	// if spec.Config.ContainerName != "" {
 	// 	task = &plans.StreamsSource{
-	// 		Producer:  d.producers.RunCommandByName(spec.Config.ContainerName),
+	// 		Producer:  d.producers.ExecCommandByName(spec.Config.ContainerName),
 	// 		RawPath:   spec.Raw,
 	// 		JSONPath:  spec.JSON,
 	// 		HumanPath: spec.Human,

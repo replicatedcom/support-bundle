@@ -10,8 +10,8 @@ import (
 	"github.com/replicatedcom/support-bundle/types"
 )
 
-// RunCommand returns stdout and stderr results.
-func (d *Docker) RunCommand(containerID string, cmd []string) types.StreamsProducer {
+// ExecCommand returns stdout and stderr results.
+func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProducer {
 	return func(ctx context.Context) (io.Reader, io.Reader, error) {
 		execOpts := dockertypes.ExecConfig{
 			Cmd:          cmd,
@@ -63,12 +63,12 @@ func (d *Docker) RunCommand(containerID string, cmd []string) types.StreamsProdu
 	}
 }
 
-func (d *Docker) RunCommandByName(containerName string, cmd []string) types.StreamsProducer {
+func (d *Docker) ExecCommandByName(containerName string, cmd []string) types.StreamsProducer {
 	return func(ctx context.Context) (io.Reader, io.Reader, error) {
 		containerID, err := d.getContainerID(ctx, containerName)
 		if err != nil {
 			return nil, nil, err
 		}
-		return d.RunCommand(containerID, cmd)(ctx)
+		return d.ExecCommand(containerID, cmd)(ctx)
 	}
 }
