@@ -47,10 +47,29 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 	humanYAML := human && parser && !humanTemplated
 	humanRaw := human && !humanTemplated && !humanYAML
 
+	results := []*types.Result{}
+
+	if !(raw || jsonify || human) {
+		return results
+	}
+
+	if task.Producer == nil {
+		err := errors.New("no data source defined for task")
+		if raw {
+			results = append(results, &types.Result{Description: task.RawPath})
+		}
+		if jsonify {
+			results = append(results, &types.Result{Description: task.JSONPath})
+		}
+		if human {
+			results = append(results, &types.Result{Description: task.HumanPath})
+		}
+		return resultsWithErr(err, results)
+	}
+
 	rawResult := &types.Result{}
 	jsonResult := &types.Result{}
 	humanResult := &types.Result{}
-	results := []*types.Result{}
 
 	if raw {
 		results = append(results, rawResult)
@@ -60,11 +79,6 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 	}
 	if human {
 		results = append(results, humanResult)
-	}
-
-	if task.Producer == nil {
-		err := errors.New("no data source defined for task")
-		return resultsWithErr(err, results)
 	}
 
 	if task.Timeout != 0 {

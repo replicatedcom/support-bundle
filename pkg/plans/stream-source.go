@@ -34,13 +34,22 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 
 	results := []*types.Result{}
 
-	if task.Producer == nil {
-		err := errors.New("no data source defined for task")
-		return resultsWithErr(err, results)
-	}
-
 	if !(raw || jsonify || human) {
 		return results
+	}
+
+	if task.Producer == nil {
+		err := errors.New("no data source defined for task")
+		if raw {
+			results = append(results, &types.Result{Description: task.RawPath})
+		}
+		if jsonify {
+			results = append(results, &types.Result{Description: task.JSONPath})
+		}
+		if human {
+			results = append(results, &types.Result{Description: task.HumanPath})
+		}
+		return resultsWithErr(err, results)
 	}
 
 	if task.Timeout != 0 {
@@ -70,23 +79,23 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 
 	// then link to any other requested paths
 	if raw && jsonify {
-		os.Link(task.RawPath, task.JSONPath)
 		jsonResult = rawResult
-		if jsonResult.Path != "" {
+		if rawResult.Path != "" {
+			os.Link(task.RawPath, task.JSONPath)
 			jsonResult.Path = task.JSONPath
 		}
 	}
 	if raw && human {
-		os.Link(task.RawPath, task.HumanPath)
 		humanResult = rawResult
-		if humanResult.Path != "" {
+		if rawResult.Path != "" {
+			os.Link(task.RawPath, task.HumanPath)
 			humanResult.Path = task.HumanPath
 		}
 	}
 	if jsonify && human {
-		os.Link(task.JSONPath, task.HumanPath)
 		humanResult = jsonResult
-		if humanResult.Path != "" {
+		if jsonResult.Path != "" {
+			os.Link(task.JSONPath, task.HumanPath)
 			humanResult.Path = task.HumanPath
 		}
 	}

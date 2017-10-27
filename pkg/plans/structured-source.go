@@ -36,10 +36,29 @@ func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types
 	humanTemplated := human && task.Template != ""
 	humanYAML := human && !humanTemplated
 
+	results := []*types.Result{}
+
+	if !(raw || jsonify || human) {
+		return results
+	}
+
+	if task.Producer == nil {
+		err := errors.New("no data source defined for task")
+		if raw {
+			results = append(results, &types.Result{Description: task.RawPath})
+		}
+		if jsonify {
+			results = append(results, &types.Result{Description: task.JSONPath})
+		}
+		if human {
+			results = append(results, &types.Result{Description: task.HumanPath})
+		}
+		return resultsWithErr(err, results)
+	}
+
 	rawResult := &types.Result{}
 	jsonResult := &types.Result{}
 	humanResult := &types.Result{}
-	results := []*types.Result{}
 
 	if raw {
 		results = append(results, rawResult)
@@ -49,11 +68,6 @@ func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types
 	}
 	if human {
 		results = append(results, humanResult)
-	}
-
-	if task.Producer == nil {
-		err := errors.New("no data source defined for task")
-		return resultsWithErr(err, results)
 	}
 
 	if task.Timeout != 0 {
