@@ -15,3 +15,5 @@ type StreamsProducer func(context.Context) (io.Reader, io.Reader, error)
 type Planner func(Spec) []Task
 
 type Plugin map[string]Planner
+
+type BytesScrubber func([]byte) []byte

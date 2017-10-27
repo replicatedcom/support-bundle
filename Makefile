@@ -23,4 +23,8 @@ build:
 	mkdir -p bin
 	go build -o ./bin/support-bundle .
 
+githooks:
+	echo 'make integration-test' > .git/hooks/pre-push
+	chmod +x .git/hooks/pre-push
+
 all: build test

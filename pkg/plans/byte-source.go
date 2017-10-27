@@ -12,8 +12,12 @@ import (
 type ByteSource struct {
 	// Producer provides the seed data for this task
 	Producer func(context.Context) ([]byte, error)
+	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
+	RawScrubber func([]byte) []byte
 	// Parser, if defined, structures the raw data for json and human sinks
 	Parser func([]byte) (interface{}, error)
+	// StructuredScrubber, if defined, rewrites the structured data to remove sensitive data
+	//StructedScrubber func(interface{}) (interface{}, error)
 	// Template, if defined, renders structured data in a human-readable format
 	Template string
 	// If RawPath is defined it will get a copy of the raw data []byte
@@ -35,6 +39,7 @@ type ByteSource struct {
 
 func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Result {
 	parser := task.Parser != nil
+	rawScrubber := task.RawScrubber != nil
 
 	raw := task.RawPath != ""
 
@@ -74,6 +79,10 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 	data, err := task.Producer(ctx)
 	if err != nil {
 		return resultsWithErr(err, results)
+	}
+
+	if rawScrubber {
+		data = task.RawScrubber(data)
 	}
 
 	if raw {
