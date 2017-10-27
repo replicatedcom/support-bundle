@@ -56,14 +56,11 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 		return results
 	}
 
-	useCtx := ctx
 	if task.Timeout != 0 {
-		var cancel context.CancelFunc
-		useCtx, cancel = context.WithTimeout(useCtx, task.Timeout)
-		defer cancel()
+		ctx, _ = context.WithTimeout(ctx, task.Timeout)
 	}
 
-	data, err := task.Producer(useCtx)
+	data, err := task.Producer(ctx)
 	if err != nil {
 		return resultsWithErr(err, results)
 	}
