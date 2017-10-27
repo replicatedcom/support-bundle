@@ -63,10 +63,21 @@ func TestGenerate(t *testing.T) {
 
 	client, err := docker.NewEnvClient()
 
-	tasks = append(tasks, dockerplanners.New(dockerproducers.New(client)).Daemon(types.Spec{
+	dockerplanner := dockerplanners.New(dockerproducers.New(client))
+
+	tasks = append(tasks, dockerplanner.Daemon(types.Spec{
 		Raw:  "docker",
 		JSON: "docker",
 		// Human: "docker", // todo: figure out why including human causes a panic
+	})...)
+
+	tasks = append(tasks, dockerplanner.RunCommand(types.Spec{
+		Raw: "dockerext/exec",
+		Config: types.Config{
+			Image:   "replicated/support-bundle:latest",
+			Command: "echo",
+			Args:    []string{"Hello World!"},
+		},
 	})...)
 
 	if !(runtime.GOOS == "windows") {

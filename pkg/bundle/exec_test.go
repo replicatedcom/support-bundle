@@ -66,7 +66,8 @@ func TestExec(t *testing.T) {
 		},
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	defer cancel()
 	results := Exec(ctx, "/dir", []types.Task{
 		nilResults,
 		noResults,

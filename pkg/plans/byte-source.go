@@ -87,7 +87,9 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 	}
 
 	if task.Timeout != 0 {
-		ctx, _ = context.WithTimeout(ctx, task.Timeout)
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, task.Timeout)
+		defer cancel()
 	}
 
 	data, err := task.Producer(ctx)
