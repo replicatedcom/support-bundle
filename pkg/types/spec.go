@@ -16,5 +16,11 @@ type Spec struct {
 		ContainerID   string   `yaml:"container_id"`
 		ContainerName string   `yaml:"container_name"`
 		Command       string   `yaml:"command"`
+		Scrub         Scrub    `yaml:"scrub"`
 	}
+}
+
+type Scrub struct {
+	Regex   string `yaml:"regex"`
+	Replace string `yaml:"replace"`
 }

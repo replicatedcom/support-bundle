@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/replicatedcom/support-bundle/pkg/types"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
+	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
 // path returns "" if dir is empty, otherwise returns the joined pathnme

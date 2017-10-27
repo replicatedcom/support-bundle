@@ -59,6 +59,10 @@ func init() {
 }
 
 func generate(cmd *cobra.Command, args []string) error {
+	return Generate(cfgFile, bundlePath, skipDefault, timeoutSeconds)
+}
+
+func Generate(cfgFile string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
 	jww.SetStdoutThreshold(jww.LevelTrace)
 
 	jww.FEEDBACK.Println("Generating a new support bundle")

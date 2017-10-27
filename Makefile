@@ -23,4 +23,10 @@ build:
 	mkdir -p bin
 	go build -o ./bin/support-bundle .
 
+githooks:
+	echo 'make integration-test' > .git/hooks/pre-push
+	chmod +x .git/hooks/pre-push
+	echo 'go fmt ./...' > .git/hooks/pre-commit
+	chmod +x .git/hooks/pre-commit
+
 all: build test
