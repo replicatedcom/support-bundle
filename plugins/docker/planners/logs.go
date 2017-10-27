@@ -10,7 +10,7 @@ import (
 
 func (d *Docker) Logs(spec types.Spec) []types.Task {
 	if spec.Config.ContainerID == "" && spec.Config.ContainerName == "" {
-		err := errors.New("spec requires a container id or name")
+		err := errors.New("spec for docker.logs requires a container id or name")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}

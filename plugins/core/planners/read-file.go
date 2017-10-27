@@ -11,7 +11,7 @@ import (
 
 func ReadFile(spec types.Spec) []types.Task {
 	if spec.Config.FilePath == "" {
-		err := errors.New("spec requires a filename within config")
+		err := errors.New("spec for core.read-file requires a filename within config")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}

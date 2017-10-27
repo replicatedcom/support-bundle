@@ -8,10 +8,15 @@ import (
 )
 
 func (d *Docker) RunCommand(spec types.Spec) []types.Task {
-	fullCommand := append([]string{spec.Config.Command}, spec.Config.Args...)
+	// fullCommand := append([]string{spec.Config.Command}, spec.Config.Args...)
 
-	if (spec.Config.ContainerID == "" && spec.Config.ContainerName == "") || len(fullCommand) == 0 || spec.Config.Command == "" {
-		err := errors.New("spec requires a container ID or Name and command within config")
+	if spec.Config.ContainerID == "" && spec.Config.ContainerName == "" {
+		err := errors.New("spec for docker.run-command requires a container ID or Name within config")
+		task := plans.PreparedError(err, spec)
+
+		return []types.Task{task}
+	} else if spec.Config.Command == "" {
+		err := errors.New("spec for docker.run-command requires a command within config")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}
