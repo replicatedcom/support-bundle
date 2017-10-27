@@ -23,7 +23,7 @@ specs:
     raw: /dockerext/run-command/
     config:
       image: replicated/support-bundle:latest
-      command: echof
+      command: echo
       args: ["Hello World!"]`
 
 		err := cmd.Generate(
