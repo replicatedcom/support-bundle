@@ -16,8 +16,11 @@ generate:
 test:
 	go test -v `go list ./... | grep -v /vendor/`
 
+integration-test:
+	./tests/run.sh
+
 build:
 	mkdir -p bin
 	go build -o ./bin/support-bundle .
 
-all: build test
+all: build test integration-test
