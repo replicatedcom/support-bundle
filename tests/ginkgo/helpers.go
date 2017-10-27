@@ -4,10 +4,12 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	. "github.com/onsi/gomega"
+	"github.com/replicatedcom/support-bundle/cmd"
 	jww "github.com/spf13/jwalterweatherman"
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -34,6 +36,28 @@ func CleanupDir() {
 func WriteFile(path string, contents string) {
 	err := ioutil.WriteFile(path, []byte(contents), 0666)
 	Expect(err).NotTo(HaveOccurred())
+}
+
+func WriteBundleConfig(config string) {
+	WriteFile("config.yml", config)
+}
+
+func GenerateBundle() {
+	err := cmd.Generate(
+		path.Join(tmpdir, "config.yml"),
+		path.Join(tmpdir, "bundle.tar.gz"),
+		true,
+		60,
+	)
+
+	Expect(err).To(BeNil())
+}
+
+func GetFileFromBundle(pathInBundle string) string {
+	return ReadFileFromBundle(
+		path.Join(tmpdir, "bundle.tar.gz"),
+		pathInBundle,
+	)
 }
 
 func ReadFile(filename string) []byte {
