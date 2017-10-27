@@ -10,17 +10,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/replicatedcom/support-bundle/plans"
-	coreplanners "github.com/replicatedcom/support-bundle/plugins/core/planners"
-	coreproducers "github.com/replicatedcom/support-bundle/plugins/core/producers"
-	dockerplanners "github.com/replicatedcom/support-bundle/plugins/docker/planners"
-	dockerproducers "github.com/replicatedcom/support-bundle/plugins/docker/producers"
+	"github.com/replicatedcom/support-bundle/pkg/plans"
+	coreplanners "github.com/replicatedcom/support-bundle/pkg/plugins/core/planners"
+	coreproducers "github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
+	dockerplanners "github.com/replicatedcom/support-bundle/pkg/plugins/docker/planners"
+	dockerproducers "github.com/replicatedcom/support-bundle/pkg/plugins/docker/producers"
 
 	"github.com/divolgin/archiver/extractor"
 	"github.com/stretchr/testify/require"
 
-	"github.com/replicatedcom/support-bundle/bundle"
-	"github.com/replicatedcom/support-bundle/types"
+	"github.com/replicatedcom/support-bundle/pkg/bundle"
+	"github.com/replicatedcom/support-bundle/pkg/types"
 
 	docker "github.com/docker/docker/client"
 )

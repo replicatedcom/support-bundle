@@ -18,11 +18,11 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/replicatedcom/support-bundle/bundle"
-	"github.com/replicatedcom/support-bundle/plugins/core"
-	"github.com/replicatedcom/support-bundle/plugins/docker"
-	"github.com/replicatedcom/support-bundle/spec"
-	"github.com/replicatedcom/support-bundle/types"
+	"github.com/replicatedcom/support-bundle/pkg/bundle"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
+	"github.com/replicatedcom/support-bundle/pkg/spec"
+	"github.com/replicatedcom/support-bundle/pkg/types"
 
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
