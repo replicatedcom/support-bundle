@@ -15,10 +15,10 @@ func New() (types.Plugin, error) {
 	producers := producers.New(c)
 	docker := planners.New(producers)
 	return map[string]types.Planner{
-		"daemon":      docker.Daemon,
-		"logs":        docker.Logs,
-		"inspect":     docker.Inspect,
-		"read-file":   docker.ReadFile,
-		"run-command": docker.RunCommand,
+		"daemon":       docker.Daemon,
+		"logs":         docker.Logs,
+		"inspect":      docker.Inspect,
+		"read-file":    docker.ReadFile,
+		"exec-command": docker.ExecCommand,
 	}, nil
 }
