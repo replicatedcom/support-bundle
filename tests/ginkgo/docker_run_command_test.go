@@ -22,7 +22,7 @@ specs:
   - builtin: docker.run-command
     raw: /dockerext/run-command/
     config:
-      image: replicated/support-bundle:latest
+      image: circleci/golang:1.8.1
       command: echo
       args: ["Hello World!"]`
 
