@@ -16,6 +16,9 @@ generate:
 test:
 	go test -v `go list ./... | grep -v /vendor/`
 
+integration-test:
+	ginkgo -v -r -p tests/ginkgo
+
 build:
 	mkdir -p bin
 	go build -o ./bin/support-bundle .
