@@ -8,7 +8,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
 	"strings"
 
 	dockertypes "github.com/docker/docker/api/types"
@@ -41,12 +40,15 @@ func CleanupDir() {
 	Expect(err).NotTo(HaveOccurred())
 }
 
-func LogErrors() {
-	contents := ReadFileFromBundle(
-		path.Join("bundle.tar.gz"),
-		"/error.json",
-	)
-	fmt.Fprintf(GinkgoWriter, "Errors: %s\n", contents)
+func LogErrors(bundlePath string) func() {
+	return func() {
+		contents := ReadFileFromBundle(
+			bundlePath,
+			"/error.json",
+		)
+		fmt.Println("+++ HERE +++")
+		fmt.Fprintf(GinkgoWriter, "Errors: %s\n", contents)
+	}
 }
 
 func WriteFile(path string, contents string) {

@@ -13,7 +13,7 @@ var _ = Describe("Docker run command", func() {
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(CleanupDir)
-	AfterEach(LogErrors)
+	AfterEach(LogErrors("bundle.tar.gz"))
 
 	It("Successfully executes the docker run command", func() {
 
