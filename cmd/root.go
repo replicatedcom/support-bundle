@@ -24,6 +24,7 @@ import (
 )
 
 var cfgFile string
+var cfgDoc string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -54,7 +55,8 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "spec", "", "config file (default is to run core tasks only)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "spec-file", "", "config file (default is to run core tasks only)")
+	RootCmd.PersistentFlags().StringVar(&cfgDoc, "spec", "", "config doc (default is to run core tasks only)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

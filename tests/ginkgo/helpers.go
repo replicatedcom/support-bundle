@@ -3,14 +3,15 @@ package ginkgo
 import (
 	"archive/tar"
 	"compress/gzip"
-	. "github.com/onsi/gomega"
-	"github.com/replicatedcom/support-bundle/cmd"
-	jww "github.com/spf13/jwalterweatherman"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"strings"
+
+	. "github.com/onsi/gomega"
+	"github.com/replicatedcom/support-bundle/cmd"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 var tmpdir string
@@ -45,6 +46,7 @@ func WriteBundleConfig(config string) {
 func GenerateBundle() {
 	err := cmd.Generate(
 		path.Join(tmpdir, "config.yml"),
+		"",
 		path.Join(tmpdir, "bundle.tar.gz"),
 		true,
 		60,

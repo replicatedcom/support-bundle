@@ -59,10 +59,10 @@ func init() {
 }
 
 func generate(cmd *cobra.Command, args []string) error {
-	return Generate(cfgFile, bundlePath, skipDefault, timeoutSeconds)
+	return Generate(cfgFile, cfgDoc, bundlePath, skipDefault, timeoutSeconds)
 }
 
-func Generate(cfgFile string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
+func Generate(cfgFile string, cfgDoc string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
 	jww.SetStdoutThreshold(jww.LevelTrace)
 
 	jww.FEEDBACK.Println("Generating a new support bundle")
@@ -80,6 +80,15 @@ func Generate(cfgFile string, bundlePath string, skipDefault bool, timeoutSecond
 			jww.ERROR.Fatal(err)
 		}
 	}
+
+	if cfgDoc != "" {
+		argSpecs, err := spec.Parse([]byte(cfgDoc))
+		if err != nil {
+			jww.ERROR.Fatal(err)
+		}
+		specs = append(specs, argSpecs...)
+	}
+
 	if !skipDefault {
 		defaultSpecs, err := bundle.DefaultSpecs()
 		if err != nil {

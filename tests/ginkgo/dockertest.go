@@ -1,10 +1,11 @@
 package ginkgo
 
 import (
+	"path"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/replicatedcom/support-bundle/cmd"
-	"path"
 )
 
 var _ = Describe("docker.daemon", func() {
@@ -13,7 +14,6 @@ var _ = Describe("docker.daemon", func() {
 	AfterEach(CleanupDir)
 
 	It("Finds DriverStatus in docker_info.json", func() {
-
 
 		WriteFile("config.yml", `
 specs:
@@ -24,6 +24,7 @@ specs:
 
 		err := cmd.Generate(
 			path.Join(tmpdir, "config.yml"),
+			"",
 			path.Join(tmpdir, "bundle.tar.gz"),
 			true,
 			60,
