@@ -21,6 +21,7 @@ type Config struct {
 	FilePath      string   `yaml:"file_path"`
 	Args          []string `yaml:"args"`
 	Image         string   `yaml:"image"`
+	EnablePull    bool     `yaml:"enable_pull"`
 	ContainerID   string   `yaml:"container_id"`
 	ContainerName string   `yaml:"container_name"`
 	Command       string   `yaml:"command"`

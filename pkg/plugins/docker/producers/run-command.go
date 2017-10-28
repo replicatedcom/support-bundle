@@ -15,37 +15,43 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
+type RunCommandOptions struct {
+	Image      string
+	Cmd        []string
+	Env        []string
+	Binds      []string
+	EnablePull bool
+}
+
 // RunCommand returns stdout and stderr results.
-func (d *Docker) RunCommand(image string, cmd []string, env []string, binds []string) types.StreamsProducer {
+func (d *Docker) RunCommand(opts RunCommandOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
-		if _, _, err := d.client.ImageInspectWithRaw(ctx, image); err != nil {
-			if docker.IsErrNotFound(err) {
-				// TODO: disable pull
-				resp, err := d.client.ImagePull(ctx, image, dockertypes.ImagePullOptions{
-				// TODO: registry auth
-				})
-				if err != nil {
-					return nil, errors.Wrapf(err, "image pull %s", image)
-				}
-				if _, err := ioutil.ReadAll(resp); err != nil {
-					return nil, err
-				}
-				resp.Close()
-			} else {
-				return nil, errors.Wrapf(err, "image inspect %s", image)
+		if _, _, err := d.client.ImageInspectWithRaw(ctx, opts.Image); err != nil {
+			if !opts.EnablePull || !docker.IsErrNotFound(err) {
+				return nil, errors.Wrapf(err, "image inspect %s", opts.Image)
 			}
+			resp, err := d.client.ImagePull(ctx, opts.Image, dockertypes.ImagePullOptions{
+			// TODO: registry auth
+			})
+			if err != nil {
+				return nil, errors.Wrapf(err, "image pull %s", opts.Image)
+			}
+			if _, err := ioutil.ReadAll(resp); err != nil {
+				return nil, err
+			}
+			resp.Close()
 		}
 
 		createOpts := dockertypes.ContainerCreateConfig{
 			Config: &container.Config{
 				AttachStderr: true,
 				AttachStdout: true,
-				Cmd:          strslice.StrSlice(cmd),
-				Image:        image,
-				Env:          env,
+				Cmd:          strslice.StrSlice(opts.Cmd),
+				Image:        opts.Image,
+				Env:          opts.Env,
 			},
 			HostConfig: &container.HostConfig{
-				Binds: binds,
+				Binds: opts.Binds,
 			},
 		}
 		containerInstance, err := d.client.ContainerCreate(ctx, createOpts.Config, createOpts.HostConfig, nil, "")
@@ -99,4 +105,24 @@ func (d *Docker) RunCommand(image string, cmd []string, env []string, binds []st
 		readers["stderr"] = stderrR
 		return readers, nil
 	}
+}
+
+func RunCommandOptionsFromSpec(config types.Config) (RunCommandOptions, error) {
+	if config.Image == "" {
+		return RunCommandOptions{}, errors.New("spec for docker.run-command requires an image within config")
+	}
+
+	var fullCommand []string
+	if config.Command != "" {
+		fullCommand = append(fullCommand, config.Command)
+	}
+	fullCommand = append(fullCommand, config.Args...)
+
+	return RunCommandOptions{
+		Image:      config.Image,
+		Cmd:        fullCommand,
+		Env:        config.Env,
+		Binds:      config.Binds,
+		EnablePull: config.EnablePull,
+	}, nil
 }

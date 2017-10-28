@@ -1,12 +1,10 @@
 package ginkgo
 
 import (
-	"path"
 	"strings"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/replicatedcom/support-bundle/cmd"
 )
 
 var _ = Describe("Docker run command", func() {
@@ -16,30 +14,19 @@ var _ = Describe("Docker run command", func() {
 	AfterEach(CleanupDir)
 
 	It("Successfully executes the docker run command", func() {
-
-		cfgDoc := `
+		WriteFile("config.yml", `
 specs:
   - builtin: docker.run-command
     raw: /dockerext/run-command/
     config:
       image: alpine:latest
       command: echo
-      args: ["Hello World!"]`
+      args: ["Hello World!"]
+      enable_pull: true`)
 
-		err := cmd.Generate(
-			"",
-			cfgDoc,
-			path.Join(tmpdir, "bundle.tar.gz"),
-			true,
-			60,
-		)
+		GenerateBundle()
 
-		Expect(err).To(BeNil())
-
-		contents := ReadFileFromBundle(
-			"bundle.tar.gz",
-			"/dockerext/run-command/stdout",
-		)
+		contents := GetFileFromBundle("/dockerext/run-command/stdout")
 
 		Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
 	})
