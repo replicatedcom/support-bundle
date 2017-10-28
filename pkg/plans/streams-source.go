@@ -39,22 +39,25 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 
 	results := []*types.Result{}
 
+	descriptionResults := []*types.Result{}
+	if raw {
+		descriptionResults = append(descriptionResults, &types.Result{Description: task.RawPath})
+	}
+	if jsonify {
+		descriptionResults = append(descriptionResults, &types.Result{Description: task.JSONPath})
+	}
+	if human {
+		descriptionResults = append(descriptionResults, &types.Result{Description: task.HumanPath})
+	}
+
 	if !(raw || jsonify || human) {
 		return results
 	}
 
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")
-		if raw {
-			results = append(results, &types.Result{Description: task.RawPath})
-		}
-		if jsonify {
-			results = append(results, &types.Result{Description: task.JSONPath})
-		}
-		if human {
-			results = append(results, &types.Result{Description: task.HumanPath})
-		}
-		return resultsWithErr(err, results)
+
+		return resultsWithErr(err, descriptionResults)
 	}
 
 	if task.Timeout != 0 {
@@ -63,7 +66,7 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 
 	readers, err := task.Producer(ctx)
 	if err != nil {
-		return resultsWithErr(err, results)
+		return resultsWithErr(err, descriptionResults)
 	}
 
 	var resultsMut sync.Mutex
