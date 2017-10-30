@@ -1,6 +1,7 @@
 package plans
 
 import (
+	"bufio"
 	"io"
 	"regexp"
 
@@ -43,4 +44,18 @@ func RawScrubber(scrubSpec types.Scrub) (types.BytesScrubber, error) {
 	return func(in []byte) []byte {
 		return regex.ReplaceAll(in, []byte(scrubSpec.Replace))
 	}, nil
+}
+
+func filterStreams(readFrom io.Reader, writeTo *io.PipeWriter, scrubber func([]byte) []byte) {
+	lineScanner := bufio.NewScanner(readFrom)
+	for lineScanner.Scan() {
+		line := lineScanner.Bytes()
+		line = scrubber(line)
+
+		_, err := writeTo.Write(line)
+		if err != nil {
+			writeTo.CloseWithError(err)
+		}
+	}
+	writeTo.Close()
 }

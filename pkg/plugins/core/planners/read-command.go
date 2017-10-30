@@ -20,7 +20,7 @@ func ReadCommand(spec types.Spec) []types.Task {
 
 	scrubber, err := plans.RawScrubber(spec.Config.Scrub)
 	if err != nil {
-		err = errors.Wrap(err, "spec for docker.read-file has invalid scrubber spec")
+		err = errors.Wrap(err, "create scrubber for docker.read-file")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}

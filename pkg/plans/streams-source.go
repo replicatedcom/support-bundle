@@ -1,7 +1,6 @@
 package plans
 
 import (
-	"bufio"
 	"context"
 	"errors"
 	"io"
@@ -81,22 +80,7 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 
 			if task.RawScrubber != nil {
 				scrubbedReader, scrubbedWriter := io.Pipe()
-				go func(readFrom io.Reader, writeTo *io.PipeWriter) {
-					lineScanner := bufio.NewScanner(readFrom)
-					byteWriter := bufio.NewWriter(writeTo)
-					for lineScanner.Scan() {
-						line := lineScanner.Bytes()
-						line = task.RawScrubber(line)
-
-						// TODO: actually deal with errors besides 'buffer full'
-						n, _ := byteWriter.Write(line)
-						for n < len(line) {
-							line = line[n:]
-							n, _ = byteWriter.Write(line)
-						}
-					}
-					writeTo.Close()
-				}(reader, scrubbedWriter)
+				go filterStreams(reader, scrubbedWriter, task.RawScrubber)
 				reader = scrubbedReader
 			}
 

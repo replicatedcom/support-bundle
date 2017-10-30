@@ -24,7 +24,7 @@ func (d *Docker) ExecCommand(spec types.Spec) []types.Task {
 
 	scrubber, err := plans.RawScrubber(spec.Config.Scrub)
 	if err != nil {
-		err = errors.Wrap(err, "spec for docker.exec-command has invalid scrubber spec")
+		err = errors.Wrap(err, "create scrubber for docker.exec-command")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}
