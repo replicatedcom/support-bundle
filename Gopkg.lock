@@ -50,6 +50,12 @@
   version = "v1.4.2"
 
 [[projects]]
+  name = "github.com/ghodss/yaml"
+  packages = ["."]
+  revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
   packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
@@ -184,6 +190,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fdb2ba6346d965365ceb81c96c3c21b89971ea44d903e823fa04d76a51960eaa"
+  inputs-digest = "e6ebe6a613082364bb456cc3004727ccea1648b8be93450cd595cbf346c28341"
   solver-name = "gps-cdcl"
   solver-version = 1
