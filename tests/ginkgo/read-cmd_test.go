@@ -14,17 +14,16 @@ var _ = Describe("Given file paths", func() {
 	AfterEach(CleanupDir)
 
 	It("And the user runs the following commands within desired locations", func() {
-
-		WriteFile("config.yml", `
+		cfgDoc := `
 specs:
   - builtin: core.read-command
     raw: /daemon/commands/date
     config:
-      command: "date"
-      `)
+      command: "date"`
 
 		err := cmd.Generate(
-			path.Join(tmpdir, "config.yml"),
+			"",
+			cfgDoc,
 			path.Join(tmpdir, "bundle.tar.gz"),
 			true,
 			60,
