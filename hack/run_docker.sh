@@ -8,5 +8,6 @@ docker run --rm \
     -v /lib/modules:/host/lib/modules:ro \
     -v /usr:/host/usr:ro \
     -v `pwd`:/out \
+    -e IN_CONTAINER=true \
     replicated/support-bundle \
-    support-bundle generate --out /out/supportbundle.tar.gz
+    generate --out /out/supportbundle.tar.gz
