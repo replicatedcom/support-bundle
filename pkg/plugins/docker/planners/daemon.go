@@ -33,13 +33,22 @@ func (d *Docker) Daemon(spec types.Spec) []types.Task {
 		HumanPath: maybePath(spec.Human, "docker_ps_all"),
 	}
 
+	images := &plans.StructuredSource{
+		Producer:  d.producers.ImagesAll,
+		RawPath:   maybePath(spec.Raw, "docker_images_all"),
+		JSONPath:  maybePath(spec.JSON, "docker_images_all.json"),
+		HumanPath: maybePath(spec.Human, "docker_images_all"),
+	}
+
 	if spec.TimeoutSeconds != 0 {
 		info.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
 		ps.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+		images.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
 	}
 
 	return []types.Task{
 		info,
 		ps,
+		images,
 	}
 }

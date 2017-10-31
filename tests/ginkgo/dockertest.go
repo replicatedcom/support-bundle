@@ -21,9 +21,19 @@ specs:
 
 		GenerateBundle()
 
-		contents := GetFileFromBundle("/daemon/docker/docker_info.json")
+		index := GetFileFromBundle("/index.json")
+		Expect(index).To(ContainSubstring("docker_info.json"))
+		Expect(index).To(ContainSubstring("docker_ps_all.json"))
+		Expect(index).To(ContainSubstring("docker_images_all.json"))
 
-		Expect(contents).To(ContainSubstring("DriverStatus"))
+		infoContents := GetFileFromBundle("/daemon/docker/docker_info.json")
+		Expect(infoContents).To(ContainSubstring("DriverStatus"))
+
+		psContents := GetFileFromBundle("/daemon/docker/docker_ps_all.json")
+		Expect(psContents).ToNot(Equal(""))
+
+		imagesContents := GetFileFromBundle("/daemon/docker/docker_images_all.json")
+		Expect(imagesContents).ToNot(Equal(""))
 	})
 
 	Describe("Container tests", func() {
