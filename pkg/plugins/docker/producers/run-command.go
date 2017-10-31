@@ -7,34 +7,25 @@ import (
 	"log"
 
 	dockertypes "github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/strslice"
 	docker "github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-type RunCommandOptions struct {
-	Image      string
-	Cmd        []string
-	Env        []string
-	Binds      []string
-	EnablePull bool
-}
-
 // RunCommand returns stdout and stderr results.
-func (d *Docker) RunCommand(opts RunCommandOptions) types.StreamsProducer {
+func (d *Docker) RunCommand(opts types.DockerRunCommandOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
-		if _, _, err := d.client.ImageInspectWithRaw(ctx, opts.Image); err != nil {
+		image := opts.ContainerCreateConfig.Config.Image
+		if _, _, err := d.client.ImageInspectWithRaw(ctx, image); err != nil {
 			if !opts.EnablePull || !docker.IsErrNotFound(err) {
-				return nil, errors.Wrapf(err, "image inspect %s", opts.Image)
+				return nil, errors.Wrapf(err, "image inspect %s", image)
 			}
-			resp, err := d.client.ImagePull(ctx, opts.Image, dockertypes.ImagePullOptions{
+			resp, err := d.client.ImagePull(ctx, image, dockertypes.ImagePullOptions{
 			// TODO: registry auth
 			})
 			if err != nil {
-				return nil, errors.Wrapf(err, "image pull %s", opts.Image)
+				return nil, errors.Wrapf(err, "image pull %s", image)
 			}
 			if _, err := ioutil.ReadAll(resp); err != nil {
 				return nil, err
@@ -42,19 +33,7 @@ func (d *Docker) RunCommand(opts RunCommandOptions) types.StreamsProducer {
 			resp.Close()
 		}
 
-		createOpts := dockertypes.ContainerCreateConfig{
-			Config: &container.Config{
-				AttachStderr: true,
-				AttachStdout: true,
-				Cmd:          strslice.StrSlice(opts.Cmd),
-				Image:        opts.Image,
-				Env:          opts.Env,
-			},
-			HostConfig: &container.HostConfig{
-				Binds: opts.Binds,
-			},
-		}
-		containerInstance, err := d.client.ContainerCreate(ctx, createOpts.Config, createOpts.HostConfig, nil, "")
+		containerInstance, err := d.client.ContainerCreate(ctx, opts.ContainerCreateConfig.Config, opts.ContainerCreateConfig.HostConfig, opts.ContainerCreateConfig.NetworkingConfig, opts.ContainerCreateConfig.Name)
 		if err != nil {
 			return nil, errors.Wrap(err, "container create")
 		}
@@ -105,24 +84,4 @@ func (d *Docker) RunCommand(opts RunCommandOptions) types.StreamsProducer {
 		readers["stderr"] = stderrR
 		return readers, nil
 	}
-}
-
-func RunCommandOptionsFromSpec(config types.Config) (RunCommandOptions, error) {
-	if config.Image == "" {
-		return RunCommandOptions{}, errors.New("spec for docker.run-command requires an image within config")
-	}
-
-	var fullCommand []string
-	if config.Command != "" {
-		fullCommand = append(fullCommand, config.Command)
-	}
-	fullCommand = append(fullCommand, config.Args...)
-
-	return RunCommandOptions{
-		Image:      config.Image,
-		Cmd:        fullCommand,
-		Env:        config.Env,
-		Binds:      config.Binds,
-		EnablePull: config.EnablePull,
-	}, nil
 }

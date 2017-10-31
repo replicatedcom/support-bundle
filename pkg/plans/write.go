@@ -9,8 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	yaml "gopkg.in/yaml.v2"
-
+	"github.com/ghodss/yaml"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 

@@ -10,7 +10,7 @@ import (
 var _ = Describe("Docker run command", func() {
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogErrors("bundle.tar.gz"))
+	AfterEach(LogErrorsFomBundle)
 	AfterEach(CleanupDir)
 
 	It("Successfully executes the docker run command", func() {
@@ -18,11 +18,13 @@ var _ = Describe("Docker run command", func() {
 specs:
   - builtin: docker.run-command
     raw: /dockerext/run-command/
-    config:
-      image: alpine:latest
-      command: echo
-      args: ["Hello World!"]
-      enable_pull: true`)
+    docker.run-command:
+      ContainerCreateConfig:
+        Config:
+          Image: alpine:latest
+          Cmd: ["echo", "Hello World!"]
+      EnablePull: true
+      `)
 
 		GenerateBundle()
 

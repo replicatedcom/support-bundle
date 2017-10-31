@@ -41,15 +41,19 @@ func CleanupDir() {
 	Expect(err).NotTo(HaveOccurred())
 }
 
-func LogErrors(bundlePath string) func() {
+func LogErrorsFomBundle() {
+	LogErrors(path.Join(tmpdir, "bundle.tar.gz"))()
+}
+
+func LogErrors(archivePath string) func() {
 	return func() {
 		contents := ReadFileFromBundle(
-			bundlePath,
+			archivePath,
 			"/index.json",
 		)
 		fmt.Fprintf(GinkgoWriter, "Index: %s\n", contents)
 		contents = ReadFileFromBundle(
-			bundlePath,
+			archivePath,
 			"/error.json",
 		)
 		fmt.Fprintf(GinkgoWriter, "Errors: %s\n", contents)
