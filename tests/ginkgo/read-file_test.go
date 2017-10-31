@@ -29,6 +29,7 @@ specs:
 
 		err := cmd.Generate(
 			path.Join(tmpdir, "config.yml"),
+			"",
 			path.Join(tmpdir, "bundle.tar.gz"),
 			true,
 			60,

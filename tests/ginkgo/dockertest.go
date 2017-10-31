@@ -1,6 +1,8 @@
 package ginkgo
 
 import (
+	"path"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
