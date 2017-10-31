@@ -10,19 +10,18 @@ import (
 	"testing"
 	"time"
 
+	"github.com/divolgin/archiver/extractor"
+	dockertypes "github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	docker "github.com/docker/docker/client"
+	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	coreplanners "github.com/replicatedcom/support-bundle/pkg/plugins/core/planners"
 	coreproducers "github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
 	dockerplanners "github.com/replicatedcom/support-bundle/pkg/plugins/docker/planners"
 	dockerproducers "github.com/replicatedcom/support-bundle/pkg/plugins/docker/producers"
-
-	"github.com/divolgin/archiver/extractor"
-	"github.com/stretchr/testify/require"
-
-	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/types"
-
-	docker "github.com/docker/docker/client"
+	"github.com/stretchr/testify/require"
 )
 
 // TestGenerate runs all the local data collection tools (read file, run command, hostname, loadavg, uptime)
@@ -73,10 +72,14 @@ func TestGenerate(t *testing.T) {
 
 	tasks = append(tasks, dockerplanner.RunCommand(types.Spec{
 		Raw: "dockerext/exec",
-		Config: types.Config{
-			Image:   "replicated/support-bundle:latest",
-			Command: "echo",
-			Args:    []string{"Hello World!"},
+		DockerRunCommand: &types.DockerRunCommandOptions{
+			ContainerCreateConfig: dockertypes.ContainerCreateConfig{
+				Config: &container.Config{
+					Image: "alpine:latest",
+					Cmd:   []string{"echo", "Hello World!"},
+				},
+			},
+			EnablePull: true,
 		},
 	})...)
 
