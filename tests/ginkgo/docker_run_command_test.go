@@ -7,14 +7,15 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Docker run command", func() {
+var _ = Describe("Docker container run command", func() {
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(LogErrorsFomBundle)
 	AfterEach(CleanupDir)
 
-	It("Successfully executes the docker run command", func() {
-		WriteFile("config.yml", `
+	It("Successfully executes the docker container run command", func() {
+
+		WriteBundleConfig(`
 specs:
   - builtin: docker.run-command
     raw: /dockerext/run-command/

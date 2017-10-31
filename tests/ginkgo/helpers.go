@@ -4,7 +4,6 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"context"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -15,7 +14,6 @@ import (
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	dockernetworktypes "github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
-	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/replicatedcom/support-bundle/cmd"
 	jww "github.com/spf13/jwalterweatherman"
@@ -51,12 +49,12 @@ func LogErrors(archivePath string) func() {
 			archivePath,
 			"/index.json",
 		)
-		fmt.Fprintf(GinkgoWriter, "Index: %s\n", contents)
+		jww.DEBUG.Printf("Index: %s\n", contents)
 		contents = ReadFileFromBundle(
 			archivePath,
 			"/error.json",
 		)
-		fmt.Fprintf(GinkgoWriter, "Errors: %s\n", contents)
+		jww.DEBUG.Printf("Errors: %s\n", contents)
 	}
 }
 
