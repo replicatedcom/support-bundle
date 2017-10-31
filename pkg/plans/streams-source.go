@@ -16,6 +16,8 @@ type StreamsSource struct {
 	// Producer provides the seed data for this task as an io.Reader array
 	// Names of the sources are provided as a string array
 	Producer func(context.Context) (map[string]io.Reader, error)
+	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
+	RawScrubber func([]byte) []byte
 	// Template, if defined, renders structured data in a human-readable format
 	Template string
 	// If RawPath is defined it will get a copy of the data
@@ -74,6 +76,12 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 		go func(name string, reader io.Reader) {
 			if closer, ok := reader.(io.Closer); ok {
 				defer closeLogErr(closer)
+			}
+
+			if task.RawScrubber != nil {
+				scrubbedReader, scrubbedWriter := io.Pipe()
+				go filterStreams(reader, scrubbedWriter, task.RawScrubber)
+				reader = scrubbedReader
 			}
 
 			rawResult := types.Result{}

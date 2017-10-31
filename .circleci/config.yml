@@ -11,4 +11,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: go get github.com/onsi/ginkgo/ginkgo
       - run: make test
+      - run: make integration-test
+      - run: make integration-test-docker

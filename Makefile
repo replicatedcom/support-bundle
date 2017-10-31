@@ -14,10 +14,14 @@ generate:
 	./bin/support-bundle generate
 
 test:
-	go test -v `go list ./... | grep -v /vendor/`
+	go test -v `go list ./... | grep -v '/vendor/\|/ginkgo'`
 
 integration-test:
-	ginkgo -v -r -p tests/ginkgo
+	ginkgo -v -r -p --skip="docker container" tests/ginkgo
+
+integration-test-docker:
+	docker pull ubuntu:latest
+	ginkgo -v -r -p --focus="docker container" tests/ginkgo
 
 build:
 	mkdir -p bin
@@ -29,4 +33,4 @@ githooks:
 	echo 'go fmt ./...' > .git/hooks/pre-commit
 	chmod +x .git/hooks/pre-commit
 
-all: build test
+all: build test integration-test integration-test-docker

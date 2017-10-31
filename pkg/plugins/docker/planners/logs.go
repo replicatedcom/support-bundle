@@ -1,8 +1,9 @@
 package planners
 
 import (
-	"errors"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -16,6 +17,14 @@ func (d *Docker) Logs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
+	scrubber, err := plans.RawScrubber(spec.Config.Scrub)
+	if err != nil {
+		err = errors.Wrap(err, "create scrubber for docker.logs")
+		task := plans.PreparedError(err, spec)
+
+		return []types.Task{task}
+	}
+
 	producer := d.producers.Logs(spec.Config.ContainerID)
 
 	if spec.Config.ContainerName != "" {
@@ -23,10 +32,11 @@ func (d *Docker) Logs(spec types.Spec) []types.Task {
 	}
 
 	task := &plans.StreamSource{
-		Producer:  producer,
-		RawPath:   spec.Raw,
-		JSONPath:  spec.JSON,
-		HumanPath: spec.Human,
+		Producer:    producer,
+		RawScrubber: scrubber,
+		RawPath:     spec.Raw,
+		JSONPath:    spec.JSON,
+		HumanPath:   spec.Human,
 	}
 
 	if spec.TimeoutSeconds != 0 {

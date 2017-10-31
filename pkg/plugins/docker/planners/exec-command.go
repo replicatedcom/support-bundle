@@ -1,8 +1,9 @@
 package planners
 
 import (
-	"errors"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -21,13 +22,22 @@ func (d *Docker) ExecCommand(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
+	scrubber, err := plans.RawScrubber(spec.Config.Scrub)
+	if err != nil {
+		err = errors.Wrap(err, "create scrubber for docker.exec-command")
+		task := plans.PreparedError(err, spec)
+
+		return []types.Task{task}
+	}
+
 	fullCommand := append([]string{spec.Config.Command}, spec.Config.Args...)
 
 	task := &plans.StreamsSource{
-		Producer:  d.producers.ExecCommand(spec.Config.ContainerID, fullCommand),
-		RawPath:   spec.Raw,
-		JSONPath:  spec.JSON,
-		HumanPath: spec.Human,
+		Producer:    d.producers.ExecCommand(spec.Config.ContainerID, fullCommand),
+		RawScrubber: scrubber,
+		RawPath:     spec.Raw,
+		JSONPath:    spec.JSON,
+		HumanPath:   spec.Human,
 	}
 
 	if spec.Config.ContainerName != "" {
