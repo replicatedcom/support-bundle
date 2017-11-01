@@ -39,6 +39,25 @@ func CleanupDir() {
 	Expect(err).NotTo(HaveOccurred())
 }
 
+func LogErrorsFomBundle() {
+	LogErrors(path.Join(tmpdir, "bundle.tar.gz"))()
+}
+
+func LogErrors(archivePath string) func() {
+	return func() {
+		contents := ReadFileFromBundle(
+			archivePath,
+			"/index.json",
+		)
+		jww.DEBUG.Printf("Index: %s\n", contents)
+		contents = ReadFileFromBundle(
+			archivePath,
+			"/error.json",
+		)
+		jww.DEBUG.Printf("Errors: %s\n", contents)
+	}
+}
+
 func WriteFile(path string, contents string) {
 	err := ioutil.WriteFile(path, []byte(contents), 0666)
 	Expect(err).NotTo(HaveOccurred())

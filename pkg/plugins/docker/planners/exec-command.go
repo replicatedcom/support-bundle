@@ -11,12 +11,12 @@ import (
 
 func (d *Docker) ExecCommand(spec types.Spec) []types.Task {
 	if spec.Config.ContainerID == "" && spec.Config.ContainerName == "" {
-		err := errors.New("spec for docker.run-command requires a container ID or Name within config")
+		err := errors.New("spec for docker.exec-command requires a container ID or Name within config")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}
 	} else if spec.Config.Command == "" {
-		err := errors.New("spec for docker.run-command requires a command within config")
+		err := errors.New("spec for docker.exec-command requires a command within config")
 		task := plans.PreparedError(err, spec)
 
 		return []types.Task{task}

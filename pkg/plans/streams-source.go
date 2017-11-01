@@ -60,7 +60,9 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 	}
 
 	if task.Timeout != 0 {
-		ctx, _ = context.WithTimeout(ctx, task.Timeout)
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, task.Timeout)
+		defer cancel()
 	}
 
 	readers, err := task.Producer(ctx)

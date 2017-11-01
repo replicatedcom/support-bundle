@@ -20,5 +20,6 @@ func New() (types.Plugin, error) {
 		"inspect":      docker.Inspect,
 		"read-file":    docker.ReadFile,
 		"exec-command": docker.ExecCommand,
+		"run-command":  docker.RunCommand,
 	}, nil
 }
