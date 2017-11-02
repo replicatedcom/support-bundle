@@ -15,6 +15,10 @@
 package cmd
 
 import (
+	"os"
+
+	"github.com/replicatedcom/support-bundle/pkg/bundle"
+
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -23,10 +27,17 @@ import (
 var uploadCmd = &cobra.Command{
 	Use:   "upload",
 	Short: "Upload a support bundle to share",
-	Long: `Upload an existing support bundle. This will be secret, and you'll receive a link
-when uploaded that can be shared with anyone to access this bundle.`,
+	Long: `Upload an existing support bundle. This will be secret, and you'll receive a name
+when uploaded that can be shared with support staff to access this bundle.`,
 	RunE: upload,
 }
+
+var uploadBundlePath string
+var firstName string
+var lastName string
+var email string
+var company string
+var bundleDescription string
 
 func init() {
 	RootCmd.AddCommand(uploadCmd)
@@ -40,12 +51,34 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// uploadCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	uploadCmd.Flags().StringVarP(&uploadBundlePath, "path", "p", "supportbundle.tar.gz", "Path to the bundle that should be uploaded")
+	uploadCmd.Flags().StringVar(&firstName, "firstname", "", "Your first name")
+	uploadCmd.Flags().StringVar(&lastName, "lastname", "", "Your last name")
+	uploadCmd.Flags().StringVar(&email, "email", "", "Your email")
+	uploadCmd.Flags().StringVar(&company, "company", "", "The name of your company")
+	uploadCmd.Flags().StringVar(&bundleDescription, "description", "No description provided", "A description for the issue being experienced")
 }
 
 func upload(cmd *cobra.Command, args []string) error {
 	jww.SetStdoutThreshold(jww.LevelTrace)
 
-	jww.FEEDBACK.Println("Upload support bundle is not implemented...")
+	jww.FEEDBACK.Println("Uploading the provided support bundle")
+
+	contents, err := os.Open(uploadBundlePath)
+	if err != nil {
+		jww.ERROR.Printf("Error encountered when trying to read support bundle: %s\n", err)
+		return err
+	}
+	defer contents.Close()
+
+	bundleName, err := bundle.Upload(contents, firstName, lastName, email, company, bundleDescription)
+	if err != nil {
+		jww.ERROR.Printf("Error encountered when uploading support bundle: %s\n", err)
+		return err
+	}
+
+	jww.FEEDBACK.Printf("Support bundle located at %s was uploaded. This bundle can be referred to as %s.\n", uploadBundlePath, bundleName)
 
 	return nil
 }
