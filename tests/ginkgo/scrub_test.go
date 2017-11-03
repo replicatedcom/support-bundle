@@ -29,7 +29,7 @@ specs:
 
 		GenerateBundle()
 
-		contents := GetFileFromBundle("/pg/pg.env")
+		contents := GetFileFromBundle("pg/pg.env")
 
 		Expect(contents).To(ContainSubstring("PGDATABASE=mydata"))
 		Expect(contents).NotTo(ContainSubstring("PGPASSWORD=mypass"))
@@ -64,8 +64,8 @@ specs:
 
 			GenerateBundle()
 
-			censored := GetFileFromBundle("/os/release")
-			uncensored := GetFileFromBundle("/os/release-uncensored")
+			censored := GetFileFromBundle("os/release")
+			uncensored := GetFileFromBundle("os/release-uncensored")
 
 			Expect(censored).To(ContainSubstring("replicatedOS"))
 			Expect(censored).NotTo(ContainSubstring("ubuntu"))
@@ -95,8 +95,8 @@ specs:
 
 			GenerateBundle()
 
-			censored := GetFileFromBundle("/os/release.stdout")
-			uncensored := GetFileFromBundle("/os/release-uncensored.stdout")
+			censored := GetFileFromBundle("os/release.stdout")
+			uncensored := GetFileFromBundle("os/release-uncensored.stdout")
 
 			Expect(censored).To(ContainSubstring("replicatedOS"))
 			Expect(censored).NotTo(ContainSubstring("ubuntu"))

@@ -29,7 +29,7 @@ specs:
 
 		GenerateBundle()
 
-		contents := GetFileFromBundle("/dockerext/run-command/stdout")
+		contents := GetFileFromBundle("dockerext/run-command/stdout")
 
 		Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
 	})

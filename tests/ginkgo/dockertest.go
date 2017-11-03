@@ -21,18 +21,18 @@ specs:
 
 		GenerateBundle()
 
-		index := GetFileFromBundle("/index.json")
+		index := GetFileFromBundle("index.json")
 		Expect(index).To(ContainSubstring("docker_info.json"))
 		Expect(index).To(ContainSubstring("docker_ps_all.json"))
 		Expect(index).To(ContainSubstring("docker_images_all.json"))
 
-		infoContents := GetFileFromBundle("/daemon/docker/docker_info.json")
+		infoContents := GetFileFromBundle("daemon/docker/docker_info.json")
 		Expect(infoContents).To(ContainSubstring("DriverStatus"))
 
-		psContents := GetFileFromBundle("/daemon/docker/docker_ps_all.json")
+		psContents := GetFileFromBundle("daemon/docker/docker_ps_all.json")
 		Expect(psContents).ToNot(Equal(""))
 
-		imagesContents := GetFileFromBundle("/daemon/docker/docker_images_all.json")
+		imagesContents := GetFileFromBundle("daemon/docker/docker_images_all.json")
 		Expect(imagesContents).ToNot(Equal(""))
 	})
 
@@ -56,7 +56,7 @@ specs:
 
 			GenerateBundle()
 
-			contents := GetFileFromBundle("/daemon/docker/readfile")
+			contents := GetFileFromBundle("daemon/docker/readfile")
 
 			Expect(contents).To(ContainSubstring("ubuntu"))
 		})
@@ -73,7 +73,7 @@ specs:
 
 			GenerateBundle()
 
-			contents := GetFileFromBundle("/daemon/docker/command-succeed.stdout")
+			contents := GetFileFromBundle("daemon/docker/command-succeed.stdout")
 
 			Expect(contents).To(ContainSubstring("testingEchoCommand"))
 		})
@@ -90,7 +90,7 @@ specs:
 
 			GenerateBundle()
 
-			contents := GetFileFromBundle("/daemon/docker/command-fail.stderr")
+			contents := GetFileFromBundle("daemon/docker/command-fail.stderr")
 
 			Expect(contents).To(ContainSubstring("fileThatDoesNotExist"))
 		})
