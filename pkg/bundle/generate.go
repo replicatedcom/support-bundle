@@ -58,7 +58,8 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 
 	comp := compressor.NewTgz()
 	comp.SetTarConfig(compressor.Tar{TruncateLongFiles: true})
-	if err := comp.Compress(collectDir, pathname); err != nil {
+	// trailing slash keeps the parent directory from being included in archive
+	if err := comp.Compress(collectDir+"/", pathname); err != nil {
 		return errors.Wrap(err, "Compressing results directory failed")
 	}
 
