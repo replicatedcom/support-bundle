@@ -59,22 +59,20 @@ func TestGenerate(t *testing.T) {
 	defer os.RemoveAll(testDir)
 
 	//decompress to temp dir
+	uncompressedDir := filepath.Join(testDir, "dir")
 	extractor := extractor.NewTgz()
-	extractor.Extract(got.Name(), filepath.Join(testDir, "dir"))
+	extractor.Extract(got.Name(), uncompressedDir)
 
 	//verify what we got
 	files, err := ioutil.ReadDir(filepath.Join(testDir, "dir"))
 	require.NoError(t, err)
 
-	require.Equal(t, 1, len(files))
-	require.True(t, files[0].IsDir())
-
-	uncompressedDir := files[0].Name()
+	require.Equal(t, 2, len(files))
 
 	//get index.json and error.json
-	indexReader, err := os.Open(filepath.Join(testDir, "dir", uncompressedDir, "index.json"))
+	indexReader, err := os.Open(filepath.Join(uncompressedDir, "index.json"))
 	require.NoError(t, err)
-	errorReader, err := os.Open(filepath.Join(testDir, "dir", uncompressedDir, "error.json"))
+	errorReader, err := os.Open(filepath.Join(uncompressedDir, "error.json"))
 	require.NoError(t, err)
 
 	//read into byte arrays
