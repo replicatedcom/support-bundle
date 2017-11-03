@@ -1,6 +1,9 @@
 package types
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+)
 
 // Result represents a single file within a support bundle or the failure to
 // collect the data for a single file within a support bundle. A Result may have
@@ -28,4 +31,22 @@ func (r *Result) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(intermediate)
+}
+
+// convert Error from string to error
+func (r *Result) UnmarshalJSON(raw []byte) error {
+	intermediate := map[string]string{}
+
+	if err := json.Unmarshal(raw, &intermediate); err != nil {
+		return err
+	}
+
+	r.Description = intermediate["description"]
+	r.Path = intermediate["path"]
+
+	if errMsg, ok := intermediate["error"]; ok {
+		r.Error = errors.New(errMsg)
+	}
+
+	return nil
 }
