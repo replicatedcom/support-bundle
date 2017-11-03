@@ -15,10 +15,6 @@
 package cmd
 
 import (
-	"os"
-
-	"github.com/replicatedcom/support-bundle/pkg/bundle"
-
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -63,22 +59,24 @@ func init() {
 func upload(cmd *cobra.Command, args []string) error {
 	jww.SetStdoutThreshold(jww.LevelTrace)
 
-	jww.FEEDBACK.Println("Uploading the provided support bundle")
+	// jww.FEEDBACK.Println("Uploading the provided support bundle")
 
-	contents, err := os.Open(uploadBundlePath)
-	if err != nil {
-		jww.ERROR.Printf("Error encountered when trying to read support bundle: %s\n", err)
-		return err
-	}
-	defer contents.Close()
+	// contents, err := os.Open(uploadBundlePath)
+	// if err != nil {
+	// 	jww.ERROR.Printf("Error encountered when trying to read support bundle: %s\n", err)
+	// 	return err
+	// }
+	// defer contents.Close()
 
-	bundleName, err := bundle.Upload(contents, firstName, lastName, email, company, bundleDescription)
-	if err != nil {
-		jww.ERROR.Printf("Error encountered when uploading support bundle: %s\n", err)
-		return err
-	}
+	// bundleName, err := bundle.Upload(contents, firstName, lastName, email, company, bundleDescription)
+	// if err != nil {
+	// 	jww.ERROR.Printf("Error encountered when uploading support bundle: %s\n", err)
+	// 	return err
+	// }
 
-	jww.FEEDBACK.Printf("Support bundle located at %s was uploaded. This bundle can be referred to as %s.\n", uploadBundlePath, bundleName)
+	// jww.FEEDBACK.Printf("Support bundle located at %s was uploaded. This bundle can be referred to as %s.\n", uploadBundlePath, bundleName)
+
+	jww.FEEDBACK.Println("Uploading support bundles from the command line is not yet implemented.")
 
 	return nil
 }
