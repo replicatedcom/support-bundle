@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 
 	dockertypes "github.com/docker/docker/api/types"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
@@ -47,12 +46,12 @@ func LogErrors(archivePath string) func() {
 	return func() {
 		contents := ReadFileFromBundle(
 			archivePath,
-			"/index.json",
+			"index.json",
 		)
 		jww.DEBUG.Printf("Index: %s\n", contents)
 		contents = ReadFileFromBundle(
 			archivePath,
-			"/error.json",
+			"error.json",
 		)
 		jww.DEBUG.Printf("Errors: %s\n", contents)
 	}
@@ -113,10 +112,9 @@ func ReadFileFromBundle(archivePath, targetFile string) string {
 			continue
 		}
 
-		filePath := strings.TrimLeft(header.Name, "0123456789")
-		jww.DEBUG.Printf("reading tar entry %s looking for %s", filePath, targetFile)
+		jww.DEBUG.Printf("reading tar entry %s looking for %s", header.Name, targetFile)
 
-		if filePath == targetFile && header.Typeflag == tar.TypeReg {
+		if header.Name == targetFile && header.Typeflag == tar.TypeReg {
 			contents, err := ioutil.ReadAll(tr)
 			Expect(err).NotTo(HaveOccurred())
 			return string(contents)

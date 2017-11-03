@@ -33,7 +33,7 @@ specs:
 
 		contents := ReadFileFromBundle(
 			path.Join("bundle.tar.gz"),
-			"/daemon/commands/date",
+			"daemon/commands/date",
 		)
 
 		Expect(contents).ToNot(BeEmpty())

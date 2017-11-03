@@ -39,7 +39,7 @@ specs:
 
 		contents := ReadFileFromBundle(
 			path.Join("bundle.tar.gz"),
-			"/daemon/etc/default/replicated",
+			"daemon/etc/default/replicated",
 		)
 		Expect(contents).To(ContainSubstring("Hey there!"))
 		Expect(contents).To(ContainSubstring("Let's take a peek into my file!"))
