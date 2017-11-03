@@ -3,10 +3,9 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build:
+  test:
     docker:
-      - image: circleci/golang:1.8.1
-
+      - image: circleci/golang:1.9
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
@@ -15,3 +14,17 @@ jobs:
       - run: make test
       - run: make integration-test
       - run: make integration-test-docker
+
+  deploy:
+    docker:
+      - image: docker:stable
+    working_directory: /go/src/github.com/replicatedcom/support-bundle
+    requires:
+      - test
+    filters:
+      tags:
+        only: /^v[0-9]+(\.[0-9]+)*(-.*)*/
+    steps:
+      - checkout
+      - setup_remote_docker
+      - deploy: curl -sL https://git.io/goreleaser | bash

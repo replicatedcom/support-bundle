@@ -1,0 +1,43 @@
+project_name: support-bundle
+release:
+  github:
+    owner: replicatedcom
+    name: support-bundle
+builds:
+- goos:
+  - linux
+  goarch:
+  - amd64
+  - "386"
+  main: main.go
+  ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+  binary: support-bundle
+  hooks: {}
+archive:
+  format: tar.gz
+  name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{.Arm }}{{ end }}'
+  files:
+  - licence*
+  - LICENCE*
+  - license*
+  - LICENSE*
+  - readme*
+  - README*
+  - changelog*
+  - CHANGELOG*
+brew:
+  github:
+    owner: replicatedhq
+    name: homebrew-replicated
+  folder: HomebrewFormula
+  install: bin.install "support-bundle"
+  homepage: https://www.replicated.com/docs/reference/support-bundle/
+  description: "Genrate a support bundle from the command line"
+dockers:
+  - image: replicated/support-bundle
+    dockerfile: hack/Dockerfile
+    latest: true
+snapshot:
+  name_template: SNAPSHOT-{{ .Commit }}
+build:
+  hooks: {}
