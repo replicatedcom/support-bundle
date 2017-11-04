@@ -35,7 +35,7 @@ brew:
   description: "Genrate a support bundle from the command line"
 dockers:
   - image: replicated/support-bundle
-    dockerfile: hack/Dockerfile
+    dockerfile: hack/Dockerfile-release
     latest: true
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
