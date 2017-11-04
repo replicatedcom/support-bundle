@@ -5,7 +5,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.9.2
+      - image: circleci/golang:1.9
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
@@ -17,7 +17,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/golang:1.9.2
+      - image: circleci/golang:1.9
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     requires:
       - test
