@@ -62,7 +62,7 @@ func TestGenerate(t *testing.T) {
 
 	client, err := docker.NewEnvClient()
 
-	dockerplanner := dockerplanners.New(dockerproducers.New(client))
+	dockerplanner := dockerplanners.New(dockerproducers.New(client), client)
 
 	tasks = append(tasks, dockerplanner.Daemon(types.Spec{
 		Raw:  "docker",
