@@ -2,9 +2,10 @@ package planners
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"path/filepath"
+
+	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -12,8 +13,16 @@ import (
 
 func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 	if spec.DockerContainerLogs == nil {
-		err := errors.New("spec for docker.container-logs required")
+		err := errors.New("spec for docker.container-ls-logs required")
 		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
+	}
+
+	scrubber, err := plans.RawScrubber(spec.Config.Scrub)
+	if err != nil {
+		err = errors.Wrap(err, "create scrubber for docker.container-ls-logs")
+		task := plans.PreparedError(err, spec)
+
 		return []types.Task{task}
 	}
 
@@ -29,7 +38,8 @@ func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 
 	for _, container := range containers {
 		task := &plans.StreamSource{
-			Producer: d.producers.Logs(container.ID),
+			Producer:    d.producers.Logs(container.ID),
+			RawScrubber: scrubber,
 		}
 
 		basename := container.ID
