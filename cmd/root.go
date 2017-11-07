@@ -17,6 +17,7 @@ package cmd
 import (
 	"os"
 
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
 	"github.com/spf13/viper"
@@ -75,8 +76,14 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
+		// Search config in home directory with name ".support-bundle" (without extension).
 		viper.SetConfigName(".support-bundle")
-		viper.AddConfigPath("$HOME")
+		home, err := homedir.Dir()
+		if err != nil {
+			jww.ERROR.Printf("Failed to find the user's home directory: %v\n", err)
+		} else {
+			viper.AddConfigPath(home)
+		}
 		viper.AddConfigPath(".")
 	}
 
