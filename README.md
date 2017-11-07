@@ -33,5 +33,5 @@ make integration-test integration-test-docker
 Releases are created on CircleCI when a tag is pushed.
 
 ```bash
-git tag -a v0.1.0 -m "First release" && git push origin v0.1.0
+git tag -a v0.1.0 -m "Initial release" && git push origin v0.1.0
 ```

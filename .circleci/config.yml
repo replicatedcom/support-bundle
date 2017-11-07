@@ -2,14 +2,12 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
+
 jobs:
   build:
     docker:
       - image: circleci/golang:1.9
     working_directory: /go/src/github.com/replicatedcom/support-bundle
-    filters:
-      tags:
-        only: /.*/
     steps:
       - checkout
       - setup_remote_docker
@@ -17,17 +15,31 @@ jobs:
       - run: make test
       - run: make integration-test
       - run: make integration-test-docker
-
   deploy:
     docker:
       - image: circleci/golang:1.9
     working_directory: /go/src/github.com/replicatedcom/support-bundle
-    requires:
-      - build
-    filters:
-      tags:
-        only: /^v[0-9]+(\.[0-9]+)*(-.*)*/
     steps:
       - checkout
       - setup_remote_docker
-      - deploy: curl -sL https://git.io/goreleaser | bash
+      - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+      - deploy:
+          command: curl -sL https://git.io/goreleaser | bash
+
+workflows:
+  version: 2
+  build-n-deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+
+      - deploy:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*(-.*)*/
+            branches:
+              ignore: /.*/
