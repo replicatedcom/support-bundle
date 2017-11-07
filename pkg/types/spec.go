@@ -22,7 +22,9 @@ type Spec struct {
 
 	// New plan-specific config
 	// TODO: new format for all tasks
-	DockerRunCommand *DockerRunCommandOptions `json:"docker.run-command,omitempty"`
+	DockerRunCommand       *DockerRunCommandOptions       `json:"docker.run-command,omitempty"`
+	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
+	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
 }
 
 type Config struct {
@@ -39,6 +41,14 @@ type Config struct {
 type DockerRunCommandOptions struct {
 	ContainerCreateConfig dockertypes.ContainerCreateConfig
 	EnablePull            bool
+}
+
+type DockerContainerLogsOptions struct {
+	ContainerListOptions dockertypes.ContainerListOptions `json:"container_list_options"`
+}
+
+type DockerContainerInspectOptions struct {
+	ContainerListOptions dockertypes.ContainerListOptions `json:"container_list_options"`
 }
 
 type Scrub struct {

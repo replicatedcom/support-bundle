@@ -1,6 +1,9 @@
 package ginkgo
 
 import (
+	"fmt"
+	"time"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -39,10 +42,70 @@ specs:
 	Describe("Container tests", func() {
 		var containerID string
 		BeforeEach(func() {
-			containerID = MakeDockerContainer()
+			containerID = MakeDockerContainer("", nil)
 		})
 		AfterEach(func() {
 			RemoveDockerContainer(containerID)
+		})
+
+		Describe("docker container-ls-logs", func() {
+			name := fmt.Sprintf("labeled-logs-container-%d", time.Now().UnixNano())
+			labels := map[string]string{
+				"foo": "bar",
+			}
+			var labeledContainerID string
+			BeforeEach(func() {
+				labeledContainerID = MakeDockerContainer(name, labels)
+			})
+			AfterEach(func() {
+				RemoveDockerContainer(labeledContainerID)
+			})
+
+			It("Gets logs from docker containers with matching labels", func() {
+				WriteFile("config.yml", `
+specs:
+- builtin: docker.container-ls-logs
+  raw: /containers/foo
+  docker.container-logs:
+    container_list_options:
+      filters:
+        label:
+          foo=bar: true`)
+				GenerateBundle()
+
+				path := fmt.Sprintf("containers/foo/%s.log", name)
+				_ = GetFileFromBundle(path)
+			})
+		})
+
+		Describe("docker container-ls-inspect", func() {
+			name := fmt.Sprintf("labeled-inspect-container-%d", time.Now().UnixNano())
+			labels := map[string]string{
+				"foo": "bar",
+			}
+			var labeledContainerID string
+			BeforeEach(func() {
+				labeledContainerID = MakeDockerContainer(name, labels)
+			})
+			AfterEach(func() {
+				RemoveDockerContainer(labeledContainerID)
+			})
+
+			It("Inspects docker containers with matching labels", func() {
+				WriteFile("config.yml", `
+specs:
+- builtin: docker.container-ls-inspect
+  raw: /containers/foo
+  docker.container-inspect:
+    container_list_options:
+      filters:
+        label:
+          foo=bar: true`)
+				GenerateBundle()
+
+				path := fmt.Sprintf("containers/foo/%s.json", name)
+				_ = GetFileFromBundle(path)
+			})
 		})
 
 		It("Copies a file from the docker container", func() {

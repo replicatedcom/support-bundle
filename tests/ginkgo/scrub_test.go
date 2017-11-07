@@ -39,7 +39,7 @@ specs:
 	Describe("Container tests", func() {
 		var containerID string
 		BeforeEach(func() {
-			containerID = MakeDockerContainer()
+			containerID = MakeDockerContainer("", nil)
 		})
 		AfterEach(func() {
 			RemoveDockerContainer(containerID)
