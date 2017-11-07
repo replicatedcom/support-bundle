@@ -88,15 +88,29 @@ func GenerateBundle() {
 }
 
 func GetResultFromBundle(path string) *types.Result {
-	return getResultFromBundleIndex(path, "index.json")
+	results := GetResultsFromBundle()
+	for _, result := range results {
+		if result.Path == "/"+path {
+			return result
+		}
+	}
+	Expect(fmt.Errorf("failed to find result at path %s", path)).NotTo(HaveOccurred())
+	return nil
 }
 
 func GetResultFromBundleErrors(path string) *types.Result {
-	return getResultFromBundleIndex(path, "error.json")
+	results := GetResultsFromBundleErrors()
+	for _, result := range results {
+		if result.Description == "/"+path {
+			return result
+		}
+	}
+	Expect(fmt.Errorf("failed to find result at path %s", path)).NotTo(HaveOccurred())
+	return nil
 }
 
 func GetResultsFromBundle() []*types.Result {
-	return getResultsFromBundleIndex("error.json")
+	return getResultsFromBundleIndex("index.json")
 }
 
 func GetResultsFromBundleErrors() []*types.Result {
@@ -111,17 +125,6 @@ func getResultsFromBundleIndex(index string) (results []*types.Result) {
 	err := json.Unmarshal([]byte(contents), &results)
 	Expect(err).NotTo(HaveOccurred())
 	return
-}
-
-func getResultFromBundleIndex(path, index string) *types.Result {
-	results := getResultsFromBundleIndex(index)
-	for _, result := range results {
-		if result.Path == "/"+path {
-			return result
-		}
-	}
-	Expect(fmt.Errorf("failed to find result at path %s", path)).NotTo(HaveOccurred())
-	return nil
 }
 
 func ExpectBundleErrorToHaveOccured(path, reStr string) {

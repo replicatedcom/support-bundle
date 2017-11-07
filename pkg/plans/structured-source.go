@@ -45,13 +45,13 @@ func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")
 		if raw {
-			results = append(results, &types.Result{Path: task.RawPath})
+			results = append(results, &types.Result{Description: task.RawPath})
 		}
 		if jsonify {
-			results = append(results, &types.Result{Path: task.JSONPath})
+			results = append(results, &types.Result{Description: task.JSONPath})
 		}
 		if human {
-			results = append(results, &types.Result{Path: task.HumanPath})
+			results = append(results, &types.Result{Description: task.HumanPath})
 		}
 		return resultsWithErr(err, results)
 	}
