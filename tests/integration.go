@@ -32,11 +32,11 @@ func TestGenerate(t *testing.T) {
 	unsuccessfulFile := "/path/does/not/exist.xyz"
 
 	var tasks = []types.Task{
-		&plans.ByteSource{
+		&plans.StreamSource{
 			Producer: coreproducers.ReadFile(successfulFile),
 			RawPath:  "files/successfulFile",
 		},
-		&plans.ByteSource{
+		&plans.StreamSource{
 			Producer: coreproducers.ReadFile(unsuccessfulFile),
 			RawPath:  "files/unsuccessfulFile",
 		},

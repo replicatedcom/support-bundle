@@ -2,12 +2,16 @@ package ginkgo
 
 import (
 	"archive/tar"
+	"bytes"
 	"compress/gzip"
 	"context"
+	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
+	"regexp"
 
 	dockertypes "github.com/docker/docker/api/types"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
@@ -15,6 +19,7 @@ import (
 	"github.com/docker/docker/client"
 	. "github.com/onsi/gomega"
 	"github.com/replicatedcom/support-bundle/cmd"
+	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
 
@@ -38,11 +43,11 @@ func CleanupDir() {
 	Expect(err).NotTo(HaveOccurred())
 }
 
-func LogErrorsFomBundle() {
-	LogErrors(path.Join(tmpdir, "bundle.tar.gz"))()
+func LogResultsFomBundle() {
+	LogResults(filepath.Join(tmpdir, "bundle.tar.gz"))()
 }
 
-func LogErrors(archivePath string) func() {
+func LogResults(archivePath string) func() {
 	return func() {
 		contents := ReadFileFromBundle(
 			archivePath,
@@ -67,20 +72,76 @@ func WriteBundleConfig(config string) {
 }
 
 func GenerateBundle() {
-	err := cmd.Generate(
-		path.Join(tmpdir, "config.yml"),
-		"",
-		path.Join(tmpdir, "bundle.tar.gz"),
-		true,
-		60,
-	)
+	c := cmd.RootCmd
+	buf := new(bytes.Buffer)
+	c.SetOutput(buf)
+	c.SetArgs([]string{
+		"generate",
+		fmt.Sprintf("--spec-file=%s", filepath.Join(tmpdir, "config.yml")),
+		fmt.Sprintf("--out=%s", filepath.Join(tmpdir, "bundle.tar.gz")),
+		"--skip-default=true",
+		"--timeout=10",
+	})
+	err := c.Execute()
+	Expect(err).NotTo(HaveOccurred())
+	// output := buf.String()
+}
 
-	Expect(err).To(BeNil())
+func GetResultFromBundle(path string) *types.Result {
+	results := GetResultsFromBundle()
+	for _, result := range results {
+		if result.Path == "/"+path {
+			return result
+		}
+	}
+	Expect(fmt.Errorf("failed to find result at path %s", path)).NotTo(HaveOccurred())
+	return nil
+}
+
+func GetResultFromBundleErrors(path string) *types.Result {
+	results := GetResultsFromBundleErrors()
+	for _, result := range results {
+		if result.Description == "/"+path {
+			return result
+		}
+	}
+	Expect(fmt.Errorf("failed to find result at path %s", path)).NotTo(HaveOccurred())
+	return nil
+}
+
+func GetResultsFromBundle() []*types.Result {
+	return getResultsFromBundleIndex("index.json")
+}
+
+func GetResultsFromBundleErrors() []*types.Result {
+	return getResultsFromBundleIndex("error.json")
+}
+
+func getResultsFromBundleIndex(index string) (results []*types.Result) {
+	contents := ReadFileFromBundle(
+		filepath.Join(tmpdir, "bundle.tar.gz"),
+		index,
+	)
+	err := json.Unmarshal([]byte(contents), &results)
+	Expect(err).NotTo(HaveOccurred())
+	return
+}
+
+func ExpectBundleErrorToHaveOccured(path, reStr string) {
+	result := GetResultFromBundleErrors(path)
+	if reStr == "" {
+		return
+	}
+	re, err := regexp.Compile(reStr)
+	Expect(err).NotTo(HaveOccurred())
+	if !re.MatchString(result.Error.Error()) {
+		Expect(fmt.Errorf("error %q for path %s does not match", result.Error, path)).NotTo(HaveOccurred())
+	}
 }
 
 func GetFileFromBundle(pathInBundle string) string {
 	return ReadFileFromBundle(
-		path.Join(tmpdir, "bundle.tar.gz"),
+		filepath.Join(tmpdir, "bundle.tar.gz"),
 		pathInBundle,
 	)
 }

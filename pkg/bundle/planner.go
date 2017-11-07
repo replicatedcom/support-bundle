@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 type Planner struct {
@@ -20,10 +21,12 @@ func (p Planner) Plan(specs []types.Spec) []types.Task {
 		}
 		plugin, ok := p.Plugins[parts[0]]
 		if !ok {
+			jww.ERROR.Printf("Plugin %s not defined\n", parts[0])
 			continue
 		}
 		planner, ok := plugin[parts[1]]
 		if !ok {
+			jww.ERROR.Printf("Planner %s not defined\n", parts[0])
 			continue
 		}
 		tasks = append(tasks, planner(spec)...)

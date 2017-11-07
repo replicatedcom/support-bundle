@@ -12,5 +12,6 @@ func New() types.Plugin {
 		"uptime":       planners.Uptime,
 		"read-file":    planners.ReadFile,
 		"read-command": planners.ReadCommand,
+		// "http-request": planners.HTTPRequest,
 	}
 }

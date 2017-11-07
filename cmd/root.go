@@ -15,16 +15,17 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	jww "github.com/spf13/jwalterweatherman"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
 var cfgDoc string
+var verbose bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -35,16 +36,21 @@ from a server that can be used to assist when troubleshooting a server.
 
 The support-bundle utility can generate human readable archives, and can also 
 be used to generate input to the support.io service.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		jww.SetLogOutput(os.Stderr)
+		if verbose {
+			jww.SetStdoutThreshold(jww.LevelTrace)
+		} else {
+			jww.SetStdoutThreshold(jww.LevelError)
+		}
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }
@@ -55,8 +61,9 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "spec-file", "", "config file (default is to run core tasks only)")
-	RootCmd.PersistentFlags().StringVar(&cfgDoc, "spec", "", "config doc (default is to run core tasks only)")
+	RootCmd.PersistentFlags().StringVarP(&cfgFile, "spec-file", "f", "", "config file (default is to run core tasks only)")
+	RootCmd.PersistentFlags().StringVarP(&cfgDoc, "spec", "s", "", "config doc (default is to run core tasks only)")
+	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Turn on verbose logging")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -69,22 +76,21 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
+		// Search config in home directory with name ".support-bundle" (without extension).
+		viper.SetConfigName(".support-bundle")
 		home, err := homedir.Dir()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			jww.ERROR.Printf("Failed to find the user's home directory: %v\n", err)
+		} else {
+			viper.AddConfigPath(home)
 		}
-
-		// Search config in home directory with name ".support-bundle" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".support-bundle")
+		viper.AddConfigPath(".")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		jww.DEBUG.Println("Using config file:", viper.ConfigFileUsed())
 	}
 }

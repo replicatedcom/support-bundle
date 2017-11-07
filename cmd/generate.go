@@ -18,12 +18,12 @@ import (
 	"io/ioutil"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
-
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -53,8 +53,8 @@ func init() {
 	// is called directly, e.g.:
 	// generateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	generateCmd.Flags().StringVar(&bundlePath, "out", "supportbundle.tar.gz", "Path where the generated bundle should be stored")
-	generateCmd.Flags().BoolVarP(&skipDefault, "skipdefault", "s", false, "If present, skip the default support bundle files")
+	generateCmd.Flags().StringVarP(&bundlePath, "out", "o", "supportbundle.tar.gz", "Path where the generated bundle should be stored")
+	generateCmd.Flags().BoolVar(&skipDefault, "skip-default", false, "If present, skip the default support bundle files")
 	generateCmd.Flags().IntVar(&timeoutSeconds, "timeout", 60, "The overall support bundle generation timeout")
 }
 
@@ -63,8 +63,6 @@ func generate(cmd *cobra.Command, args []string) error {
 }
 
 func Generate(cfgFile string, cfgDoc string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
-	jww.SetStdoutThreshold(jww.LevelTrace)
-
 	jww.FEEDBACK.Println("Generating a new support bundle")
 
 	var specs []types.Spec
@@ -72,19 +70,19 @@ func Generate(cfgFile string, cfgDoc string, bundlePath string, skipDefault bool
 	if cfgFile != "" {
 		yaml, err := ioutil.ReadFile(cfgFile)
 		if err != nil {
-			jww.ERROR.Fatal(err)
+			return errors.Wrap(err, "Failed to read spec file")
 		}
 
 		specs, err = spec.Parse(yaml)
 		if err != nil {
-			jww.ERROR.Fatal(err)
+			return errors.Wrap(err, "Failed to parse spec")
 		}
 	}
 
 	if cfgDoc != "" {
 		argSpecs, err := spec.Parse([]byte(cfgDoc))
 		if err != nil {
-			jww.ERROR.Fatal(err)
+			return errors.Wrap(err, "Failed to parse spec")
 		}
 		specs = append(specs, argSpecs...)
 	}
@@ -92,7 +90,7 @@ func Generate(cfgFile string, cfgDoc string, bundlePath string, skipDefault bool
 	if !skipDefault {
 		defaultSpecs, err := bundle.DefaultSpecs()
 		if err != nil {
-			jww.ERROR.Fatal(err)
+			return errors.Wrap(err, "Failed to get default specs")
 		}
 
 		specs = append(defaultSpecs, specs...)
@@ -100,7 +98,7 @@ func Generate(cfgFile string, cfgDoc string, bundlePath string, skipDefault bool
 
 	d, err := docker.New()
 	if err != nil {
-		jww.ERROR.Fatal(err)
+		return errors.Wrap(err, "Failed to initialize docker plugin")
 	}
 	planner := bundle.Planner{
 		Plugins: map[string]types.Plugin{
@@ -110,9 +108,12 @@ func Generate(cfgFile string, cfgDoc string, bundlePath string, skipDefault bool
 	}
 
 	var tasks = planner.Plan(specs)
+	if len(tasks) == 0 {
+		return errors.New("No tasks defined")
+	}
 
 	if err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(timeoutSeconds)), bundlePath); err != nil {
-		jww.ERROR.Fatal(err)
+		return errors.Wrap(err, "Failed to generate bundle")
 	}
 
 	if !skipDefault {

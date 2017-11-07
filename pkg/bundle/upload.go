@@ -19,6 +19,8 @@ type responseData struct {
 }
 
 func streamingUploadFile(file *os.File, backingWriter *io.PipeWriter, writer *multipart.Writer, data string) {
+	// TODO: handle the errors here
+
 	defer backingWriter.Close()
 	defer writer.Close()
 

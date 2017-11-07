@@ -10,6 +10,8 @@ import (
 
 func TestGinkgo(t *testing.T) {
 	jww.SetLogOutput(GinkgoWriter)
+	jww.SetLogThreshold(jww.LevelTrace)
+
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Support Bundle")
 }
