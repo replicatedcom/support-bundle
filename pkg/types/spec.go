@@ -53,10 +53,11 @@ type DockerContainerInspectOptions struct {
 }
 
 type HTTPRequestCommandOptions struct {
-	URL    string
-	Method string              `json:",omitempty"` // default "get"
-	Body   string              `json:",omitempty"`
-	Header map[string][]string `json:",omitempty"`
+	URL      string              `json:"url"`
+	Method   string              `json:"method,omitempty"` // default "get"
+	Body     string              `json:"body,omitempty"`
+	Header   map[string][]string `json:"header,omitempty"`
+	Insecure bool                `json:"insecure,omitempty"`
 }
 
 type Scrub struct {
