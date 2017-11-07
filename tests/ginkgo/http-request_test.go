@@ -116,7 +116,7 @@ specs:
 
 		ExpectBundleErrorToHaveOccured(
 			"core/http-request/secure",
-			`make request: Get https:\/\/.+\/raw: x509: cannot validate certificate for 127\.0\.0\.1 because it doesn't contain any IP SANs`)
+			`make request: Get https:\/\/.+\/raw: x509: cannot validate certificate .+`)
 	})
 
 })
