@@ -14,7 +14,7 @@ generate:
 	./bin/support-bundle generate
 
 test:
-	go test -v `go list ./... | grep -v '/vendor/\|/ginkgo'`
+	go test -v ./pkg/...
 
 integration-test:
 	ginkgo -v -r -p --skip="docker container" tests/ginkgo
