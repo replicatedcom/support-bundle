@@ -8,8 +8,6 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
-
-	jww "github.com/spf13/jwalterweatherman"
 )
 
 type uptime struct {
@@ -22,8 +20,9 @@ Total Time (seconds): {{ .TotalSeconds }}
 Idle Time (seconds): {{ .IdleSeconds }}`
 
 func Uptime(spec types.Spec) []types.Task {
+	producer := types.BytesProducerFromStreamProducer(producers.ReadFile("/proc/uptime"))
 	task := &plans.ByteSource{
-		Producer: producers.ReadFile("/proc/uptime"),
+		Producer: producer,
 		Parser:   parseUptime,
 		Template: uptimeTmpl,
 
@@ -42,19 +41,15 @@ func parseUptime(contents []byte) (interface{}, error) {
 
 	parts := strings.Split(strings.TrimSpace(string(contents)), " ")
 	if len(parts) != 2 {
-		err := fmt.Errorf("Expected 2 values in uptime but found %d", len(parts))
-		jww.ERROR.Print(err)
-		return nil, err
+		return nil, fmt.Errorf("Expected 2 values in uptime but found %d", len(parts))
 	}
 
 	totalSeconds, err := strconv.ParseFloat(parts[0], 64)
 	if err != nil {
-		jww.ERROR.Print(err)
 		return nil, err
 	}
 	idleSeconds, err := strconv.ParseFloat(parts[1], 64)
 	if err != nil {
-		jww.ERROR.Print(err)
 		return nil, err
 	}
 

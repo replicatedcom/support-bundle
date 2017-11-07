@@ -12,15 +12,13 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 
 	"github.com/divolgin/archiver/compressor"
-	jww "github.com/spf13/jwalterweatherman"
 )
 
 // Generate a new support bundle and write the results as an archive at pathname
 func Generate(tasks []types.Task, timeout time.Duration, pathname string) error {
 	collectDir, err := ioutil.TempDir(filepath.Dir(pathname), "")
 	if err != nil {
-		err = errors.Wrap(err, "Creating a temporary directory to store results failed")
-		return err
+		return errors.Wrap(err, "Creating a temporary directory to store results failed")
 	}
 	defer os.RemoveAll(collectDir)
 
@@ -46,13 +44,13 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 	//write index and error json files
 	indexJSON, err := json.MarshalIndent(resultsWithOutput, "", "  ")
 	if err != nil {
-		jww.ERROR.Print(err)
+		return errors.Wrap(err, "Marshalling index.json failed")
 	}
 	ioutil.WriteFile(filepath.Join(collectDir, "index.json"), indexJSON, 0666)
 
 	errorJSON, err := json.MarshalIndent(resultsWithError, "", "  ")
 	if err != nil {
-		jww.ERROR.Print(err)
+		return errors.Wrap(err, "Marshalling errors.json failed")
 	}
 	ioutil.WriteFile(filepath.Join(collectDir, "error.json"), errorJSON, 0666)
 

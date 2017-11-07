@@ -10,7 +10,7 @@ import (
 var _ = Describe("Docker container run command", func() {
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogErrorsFomBundle)
+	AfterEach(LogResultsFomBundle)
 	AfterEach(CleanupDir)
 
 	It("Successfully executes the docker container run command", func() {

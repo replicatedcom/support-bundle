@@ -35,7 +35,7 @@ specs:
 			60,
 		)
 
-		Expect(err).To(BeNil())
+		Expect(err).NotTo(HaveOccurred())
 
 		contents := ReadFileFromBundle(
 			path.Join("bundle.tar.gz"),

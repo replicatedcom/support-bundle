@@ -25,7 +25,7 @@ func ReadFile(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	task := &plans.ByteSource{
+	task := &plans.StreamSource{
 		Producer:    producers.ReadFile(spec.Config.FilePath),
 		RawScrubber: scrubber,
 		RawPath:     spec.Raw,

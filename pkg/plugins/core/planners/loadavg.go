@@ -8,8 +8,6 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
-
-	jww "github.com/spf13/jwalterweatherman"
 )
 
 type LoadAverage struct {
@@ -29,8 +27,9 @@ const loadAverageTemplate = `
 {{ with .ProcessCountTotal }}Total Processes: {{ . }}{{ end }}`
 
 func PlanLoadAverage(spec types.Spec) []types.Task {
+	producer := types.BytesProducerFromStreamProducer(producers.ReadFile("/proc/loadavg"))
 	task := &plans.ByteSource{
-		Producer:  producers.ReadFile("/proc/loadavg"),
+		Producer:  producer,
 		Template:  loadAverageTemplate,
 		Parser:    parseLoadAvg,
 		RawPath:   spec.Raw,
@@ -48,24 +47,19 @@ func parseLoadAvg(contents []byte) (interface{}, error) {
 
 	parts := strings.Split(string(contents), " ")
 	if len(parts) != 5 {
-		err := fmt.Errorf("Expected 5 values in loadavg but found %d", len(parts))
-		jww.ERROR.Print(err)
-		return nil, err
+		return nil, fmt.Errorf("expected 5 values in loadavg but found %d", len(parts))
 	}
 
 	oneMin, err := strconv.ParseFloat(parts[0], 64)
 	if err != nil {
-		jww.ERROR.Print(err)
 		return nil, err
 	}
 	fiveMin, err := strconv.ParseFloat(parts[1], 64)
 	if err != nil {
-		jww.ERROR.Print(err)
 		return nil, err
 	}
 	tenMin, err := strconv.ParseFloat(parts[2], 64)
 	if err != nil {
-		jww.ERROR.Print(err)
 		return nil, err
 	}
 

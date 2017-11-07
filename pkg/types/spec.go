@@ -25,6 +25,7 @@ type Spec struct {
 	DockerRunCommand       *DockerRunCommandOptions       `json:"docker.run-command,omitempty"`
 	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
+	HTTPRequestCommand     *HTTPRequestCommandOptions     `json:"core.http-request,omitempty"`
 }
 
 type Config struct {
@@ -49,6 +50,13 @@ type DockerContainerLogsOptions struct {
 
 type DockerContainerInspectOptions struct {
 	ContainerListOptions dockertypes.ContainerListOptions `json:"container_list_options"`
+}
+
+type HTTPRequestCommandOptions struct {
+	URL    string
+	Method string              `json:",omitempty"` // default "get"
+	Body   string              `json:",omitempty"`
+	Header map[string][]string `json:",omitempty"`
 }
 
 type Scrub struct {

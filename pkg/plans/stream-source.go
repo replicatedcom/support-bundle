@@ -36,15 +36,15 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 
 	results := []*types.Result{}
 
-	descriptionResults := []*types.Result{}
+	pathResults := []*types.Result{}
 	if raw {
-		descriptionResults = append(descriptionResults, &types.Result{Description: task.RawPath})
+		pathResults = append(pathResults, &types.Result{Path: task.RawPath})
 	}
 	if jsonify {
-		descriptionResults = append(descriptionResults, &types.Result{Description: task.JSONPath})
+		pathResults = append(pathResults, &types.Result{Path: task.JSONPath})
 	}
 	if human {
-		descriptionResults = append(descriptionResults, &types.Result{Description: task.HumanPath})
+		pathResults = append(pathResults, &types.Result{Path: task.HumanPath})
 	}
 
 	if !(raw || jsonify || human) {
@@ -53,7 +53,7 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")
-		return resultsWithErr(err, descriptionResults)
+		return resultsWithErr(err, pathResults)
 	}
 
 	if task.Timeout != 0 {
@@ -64,7 +64,7 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 
 	data, err := task.Producer(ctx)
 	if err != nil {
-		return resultsWithErr(err, descriptionResults)
+		return resultsWithErr(err, pathResults)
 	}
 	if closer, ok := data.(io.Closer); ok {
 		defer closeLogErr(closer)
