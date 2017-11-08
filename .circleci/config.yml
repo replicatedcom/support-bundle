@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.9
+      - image: golang:1.9-alpine
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
@@ -17,7 +17,7 @@ jobs:
       - run: make integration-test-docker
   deploy:
     docker:
-      - image: circleci/golang:1.9
+      - image: golang:1.9-alpine
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
