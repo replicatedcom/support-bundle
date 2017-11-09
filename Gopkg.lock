@@ -123,6 +123,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/retracedhq/retraced-go"
+  packages = ["."]
+  revision = "af91ec4891047cfc79dd2dbe4dd548d61cf82cfd"
+
+[[projects]]
+  branch = "master"
   name = "github.com/spf13/afero"
   packages = [".","mem"]
   revision = "ee1bd8ee15a1306d1f9201acc41ef39cd9f99a1b"
@@ -190,6 +196,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e2d7adaf3bff095102abe039120549df5864dd45d08f920e658550fe14606c14"
+  inputs-digest = "8b5c6c06f349ffac87c079d583c0cc83ab8fcf0aed1b558a08cb60edf0decf4a"
   solver-name = "gps-cdcl"
   solver-version = 1

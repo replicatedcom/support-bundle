@@ -17,11 +17,24 @@ test:
 	go test -v ./pkg/...
 
 integration-test:
-	ginkgo -v -r -p --skip="docker container" tests/ginkgo
+	ginkgo -v -r -p --skip="docker container|retraced.events" tests/ginkgo
 
 integration-test-docker:
 	docker pull ubuntu:latest
 	ginkgo -v -r -p --focus="docker container" tests/ginkgo
+
+# this task assumes a working retraced installation, and requires the following params to be set:
+#
+#  RETRACED_API_ENDPOINT
+#  RETRACED_PROJECT_ID
+#  RETRACED_API_KEY
+#
+# Can also optionally set
+#
+#  RETRACED_INSECURE_SKIP_VERIFY=1
+#
+integration-test-retraced:
+	ginkgo -v -r -p --focus="retraced.events" tests/ginkgo
 
 build:
 	mkdir -p bin
