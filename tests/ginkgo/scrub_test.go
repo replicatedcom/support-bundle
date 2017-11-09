@@ -8,6 +8,7 @@ import (
 var _ = Describe("Scrubbing Secrets", func() {
 
 	BeforeEach(EnterNewTempDir)
+	AfterEach(LogResultsFomBundle)
 	AfterEach(CleanupDir)
 
 	It("Scrubs any instances of PGPASSWORD=.* when reading local file (ByteSource)", func() {

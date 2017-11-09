@@ -1,41 +1,28 @@
 package ginkgo
 
 import (
-	"path"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/replicatedcom/support-bundle/cmd"
 )
 
 var _ = Describe("Given file paths", func() {
 
 	BeforeEach(EnterNewTempDir)
+	AfterEach(LogResultsFomBundle)
 	AfterEach(CleanupDir)
 
 	It("And the user runs the following commands within desired locations", func() {
-		cfgDoc := `
+
+		WriteBundleConfig(`
 specs:
   - builtin: core.read-command
     raw: /daemon/commands/date
     config:
-      command: "date"`
+      command: "date"`)
 
-		err := cmd.Generate(
-			"",
-			cfgDoc,
-			path.Join(tmpdir, "bundle.tar.gz"),
-			true,
-			60,
-		)
+		GenerateBundle()
 
-		Expect(err).NotTo(HaveOccurred())
-
-		contents := ReadFileFromBundle(
-			path.Join("bundle.tar.gz"),
-			"daemon/commands/date",
-		)
-
+		contents := GetFileFromBundle("daemon/commands/date")
 		Expect(contents).ToNot(BeEmpty())
 	})
 })
