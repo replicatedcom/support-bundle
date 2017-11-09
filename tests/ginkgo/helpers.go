@@ -18,7 +18,8 @@ import (
 	dockernetworktypes "github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	. "github.com/onsi/gomega"
-	"github.com/replicatedcom/support-bundle/cmd"
+	"github.com/replicatedcom/support-bundle/pkg/cli"
+	"github.com/replicatedcom/support-bundle/pkg/cli/commands"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -72,17 +73,17 @@ func WriteBundleConfig(config string) {
 }
 
 func GenerateBundle() {
-	c := cmd.RootCmd
+	cmd := commands.NewSupportBundleCommand(cli.NewCli())
 	buf := new(bytes.Buffer)
-	c.SetOutput(buf)
-	c.SetArgs([]string{
+	cmd.SetOutput(buf)
+	cmd.SetArgs([]string{
 		"generate",
 		fmt.Sprintf("--spec-file=%s", filepath.Join(tmpdir, "config.yml")),
 		fmt.Sprintf("--out=%s", filepath.Join(tmpdir, "bundle.tar.gz")),
 		"--skip-default=true",
 		"--timeout=10",
 	})
-	err := c.Execute()
+	err := cmd.Execute()
 	Expect(err).NotTo(HaveOccurred())
 	// output := buf.String()
 }

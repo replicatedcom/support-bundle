@@ -11,11 +11,12 @@ import (
 var _ = Describe("docker.daemon", func() {
 
 	BeforeEach(EnterNewTempDir)
+	AfterEach(LogResultsFomBundle)
 	AfterEach(CleanupDir)
 
 	It("Finds DriverStatus in docker_info.json", func() {
 
-		WriteFile("config.yml", `
+		WriteBundleConfig(`
 specs:
   - builtin: docker.daemon
     json: /daemon/docker/
@@ -62,7 +63,7 @@ specs:
 			})
 
 			It("Gets logs from docker containers with matching labels", func() {
-				WriteFile("config.yml", `
+				WriteBundleConfig(`
 specs:
 - builtin: docker.container-ls-logs
   raw: /containers/foo
@@ -92,7 +93,7 @@ specs:
 			})
 
 			It("Inspects docker containers with matching labels", func() {
-				WriteFile("config.yml", `
+				WriteBundleConfig(`
 specs:
 - builtin: docker.container-ls-inspect
   raw: /containers/foo
@@ -109,13 +110,13 @@ specs:
 		})
 
 		It("Copies a file from the docker container", func() {
-			WriteFile("config.yml", `
+			WriteBundleConfig(`
 specs:
   - builtin: docker.read-file
     raw: /daemon/docker/readfile
     config:
       file_path: "/usr/lib/os-release"
-      container_id: `+containerID)
+      container_id: ` + containerID)
 
 			GenerateBundle()
 
@@ -125,14 +126,14 @@ specs:
 		})
 
 		It("Runs a command on the docker container", func() {
-			WriteFile("config.yml", `
+			WriteBundleConfig(`
 specs:
   - builtin: docker.exec-command
     raw: /daemon/docker/command-succeed.
     config:
       command: "echo"
       args: ["testingEchoCommand"]
-      container_id: `+containerID)
+      container_id: ` + containerID)
 
 			GenerateBundle()
 
@@ -142,14 +143,14 @@ specs:
 		})
 
 		It("Runs a command on the docker container that generates output on stderr", func() {
-			WriteFile("config.yml", `
+			WriteBundleConfig(`
 specs:
   - builtin: docker.exec-command
     raw: /daemon/docker/command-fail.
     config:
       command: "cat"
       args: ["fileThatDoesNotExist"]
-      container_id: `+containerID)
+      container_id: ` + containerID)
 
 			GenerateBundle()
 
