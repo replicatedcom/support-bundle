@@ -86,6 +86,10 @@ specs:
     config:
       file_path: /etc/os-release
   - builtin: core.read-file
+    raw: /default/etc/sysconfig/docker
+    config:
+      file_path: /etc/sysconfig/docker
+  - builtin: core.read-file
     raw: /default/etc/system-release
     config:
       file_path: /etc/system-release
