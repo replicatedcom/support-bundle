@@ -10,7 +10,12 @@ import (
 )
 
 func (d *Docker) ReadFile(spec types.Spec) []types.Task {
-	if spec.Config.ContainerID == "" && spec.Config.ContainerName == "" {
+	containerID := spec.Config.ContainerID
+	if containerID == "" {
+		containerID = spec.Config.ContainerName
+	}
+
+	if containerID == "" {
 		err := errors.New("spec for docker.read-file requires a container ID or Name within config")
 		task := plans.PreparedError(err, spec)
 
@@ -30,11 +35,7 @@ func (d *Docker) ReadFile(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	producer := d.producers.ReadFile(spec.Config.ContainerID, spec.Config.FilePath)
-
-	if spec.Config.ContainerName != "" {
-		producer = d.producers.ReadFileByName(spec.Config.ContainerName, spec.Config.FilePath)
-	}
+	producer := d.producers.ReadFile(containerID, spec.Config.FilePath)
 
 	task := &plans.StreamSource{
 		Producer:    producer,

@@ -26,7 +26,7 @@ func (p Planner) Plan(specs []types.Spec) []types.Task {
 		}
 		planner, ok := plugin[parts[1]]
 		if !ok {
-			jww.ERROR.Printf("Planner %s not defined\n", parts[0])
+			jww.ERROR.Printf("Planner %s not defined\n", parts[1])
 			continue
 		}
 		tasks = append(tasks, planner(spec)...)

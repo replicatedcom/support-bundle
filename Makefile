@@ -14,6 +14,7 @@ generate:
 	./bin/support-bundle generate
 
 test:
+	docker pull ubuntu:latest
 	go test -v ./pkg/...
 
 integration-test:
