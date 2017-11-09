@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/mitchellh/go-homedir"
 	"github.com/replicatedcom/support-bundle/pkg/cli"
 	"github.com/replicatedcom/support-bundle/pkg/cli/commands"
 	"github.com/spf13/cobra"

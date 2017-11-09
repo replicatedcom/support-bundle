@@ -2,6 +2,7 @@ package types
 
 import (
 	dockertypes "github.com/docker/docker/api/types"
+	"github.com/retracedhq/retraced-go"
 )
 
 type Doc struct {
@@ -26,6 +27,7 @@ type Spec struct {
 	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
 	HTTPRequestCommand     *HTTPRequestCommandOptions     `json:"core.http-request,omitempty"`
+	RetracedEventsCommand  *RetracedEventsOptions         `json:"retraced.events,omitempty"`
 }
 
 type Config struct {
@@ -58,6 +60,15 @@ type HTTPRequestCommandOptions struct {
 	Body     string              `json:"body,omitempty"`
 	Header   map[string][]string `json:"header,omitempty"`
 	Insecure bool                `json:"insecure,omitempty"`
+}
+
+type RetracedEventsOptions struct {
+	APIEndpoint string                    `json:"api_endpoint"`
+	ProjectID   string                    `json:"project_id,omitempty"`
+	APIToken    string                    `json:"api_token,omitempty"`
+	Insecure    bool                      `json:"insecure,omitempty"`
+	Mask        *retraced.EventNodeMask   `json:"mask,omitempty"`
+	Query       *retraced.StructuredQuery `json:"query,omitempty"`
 }
 
 type Scrub struct {
