@@ -14,6 +14,7 @@ func NewSupportBundleCommand(cli *cli.Cli) *cobra.Command {
 	
 	The support-bundle utility can generate human readable archives, and can also 
 	be used to generate input to the support.io service.`,
+		SilenceUsage: true,
 	}
 
 	addCommands(cmd, cli)
