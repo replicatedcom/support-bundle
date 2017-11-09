@@ -55,6 +55,7 @@ func filterStreams(readFrom io.Reader, writeTo *io.PipeWriter, scrubber func([]b
 		_, err := writeTo.Write(line)
 		if err != nil {
 			writeTo.CloseWithError(err)
+			return
 		}
 	}
 	writeTo.Close()
