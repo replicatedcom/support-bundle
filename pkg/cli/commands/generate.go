@@ -25,8 +25,8 @@ func NewGenerateCommand(cli *cli.Cli) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringSliceVarP(&opts.specFiles, "spec-file", "f", nil, "spec file (default is to run core tasks only)")
-	cmd.Flags().StringSliceVarP(&opts.specDocs, "spec", "s", nil, "spec doc (default is to run core tasks only)")
+	cmd.Flags().StringArrayVarP(&opts.specFiles, "spec-file", "f", nil, "spec file (default is to run core tasks only)")
+	cmd.Flags().StringArrayVarP(&opts.specDocs, "spec", "s", nil, "spec doc (default is to run core tasks only)")
 	cmd.Flags().StringVarP(&opts.bundlePath, "out", "o", "supportbundle.tar.gz", "Path where the generated bundle should be stored")
 	cmd.Flags().BoolVar(&opts.skipDefault, "skip-default", false, "If present, skip the default support bundle files")
 	cmd.Flags().IntVar(&opts.timeoutSeconds, "timeout", 60, "The overall support bundle generation timeout")
