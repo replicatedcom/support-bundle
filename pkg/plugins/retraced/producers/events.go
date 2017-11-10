@@ -55,6 +55,8 @@ func getClient(spec types.Spec) (*retraced.Client, error) {
 		return nil, err
 	}
 
+	client.Endpoint = spec.RetracedEventsCommand.APIEndpoint
+
 	if spec.RetracedEventsCommand.Insecure {
 		client.HttpClient = &http.Client{
 			Transport: &http.Transport{
@@ -64,6 +66,7 @@ func getClient(spec types.Spec) (*retraced.Client, error) {
 			},
 		}
 	}
+
 	return client, nil
 }
 

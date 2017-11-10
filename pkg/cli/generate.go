@@ -8,10 +8,10 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
 )
 
 func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
