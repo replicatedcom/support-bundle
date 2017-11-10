@@ -102,7 +102,7 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 	}
 
 	if raw {
-		write(rootDir, task.RawPath, data, rawResult)
+		writeResultBytes(ctx, rootDir, task.RawPath, rawResult, data)
 	}
 
 	var structured interface{}
@@ -117,24 +117,24 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 				return results
 			}
 		} else {
-			writeJSON(rootDir, task.JSONPath, structured, jsonResult)
+			writeResultJSON(ctx, rootDir, task.JSONPath, jsonResult, structured)
 		}
 	}
 
 	if jsonRaw {
-		write(rootDir, task.JSONPath, data, jsonResult)
+		writeResultBytes(ctx, rootDir, task.JSONPath, jsonResult, data)
 	}
 
 	if humanTemplated {
-		writeTemplate(rootDir, task.HumanPath, task.Template, structured, humanResult)
+		writeResultTemplate(ctx, rootDir, task.HumanPath, humanResult, task.Template, structured)
 	}
 
 	if humanYAML {
-		writeYAML(rootDir, task.HumanPath, structured, humanResult)
+		writeResultYAML(ctx, rootDir, task.HumanPath, humanResult, structured)
 	}
 
 	if humanRaw {
-		write(rootDir, task.HumanPath, data, humanResult)
+		writeResultBytes(ctx, rootDir, task.HumanPath, humanResult, data)
 	}
 
 	return results

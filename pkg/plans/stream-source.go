@@ -82,11 +82,11 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 
 	// first write to one file
 	if raw {
-		ioCopyContext(ctx, rootDir, task.RawPath, data, &rawResult)
+		writeResult(ctx, rootDir, task.RawPath, &rawResult, data)
 	} else if jsonify {
-		ioCopyContext(ctx, rootDir, task.JSONPath, data, &jsonResult)
+		writeResult(ctx, rootDir, task.JSONPath, &jsonResult, data)
 	} else if human {
-		ioCopyContext(ctx, rootDir, task.HumanPath, data, &humanResult)
+		writeResult(ctx, rootDir, task.HumanPath, &humanResult, data)
 	}
 
 	// then link to any other requested paths

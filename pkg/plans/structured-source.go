@@ -1,6 +1,7 @@
 package plans
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"time"
@@ -13,6 +14,8 @@ import (
 type StructuredSource struct {
 	// Producer provides the seed data for this task
 	Producer func(context.Context) (interface{}, error)
+	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
+	RawScrubber func([]byte) []byte
 	// Template, if defined, renders the task's data in a human-readable format
 	Template string
 	// RawPath, if defined, gets the tasks's data as json.
@@ -30,6 +33,8 @@ type StructuredSource struct {
 }
 
 func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types.Result {
+	rawScrubber := task.RawScrubber != nil
+
 	raw := task.RawPath != ""
 	jsonify := task.JSONPath != ""
 	human := task.HumanPath != ""
@@ -82,19 +87,67 @@ func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types
 	}
 
 	if jsonify {
-		writeJSON(rootDir, task.JSONPath, data, jsonResult)
+		if rawScrubber {
+			buf := bytes.NewBuffer(nil)
+			n, err := writeJSON(ctx, buf, data)
+			if err != nil {
+				jsonResult.Error = err
+			}
+			if n > 0 {
+				data := task.RawScrubber(buf.Bytes())
+				writeResultBytes(ctx, rootDir, task.JSONPath, jsonResult, data)
+			}
+		} else {
+			writeResultJSON(ctx, rootDir, task.JSONPath, jsonResult, data)
+		}
 	}
 
 	if raw {
-		writeJSON(rootDir, task.RawPath, data, rawResult)
+		if rawScrubber {
+			buf := bytes.NewBuffer(nil)
+			n, err := writeJSON(ctx, buf, data)
+			if err != nil {
+				rawResult.Error = err
+			}
+			if n > 0 {
+				data := task.RawScrubber(buf.Bytes())
+				writeResultBytes(ctx, rootDir, task.RawPath, rawResult, data)
+			}
+		} else {
+			writeResultJSON(ctx, rootDir, task.RawPath, rawResult, data)
+		}
 	}
 
 	if humanTemplated {
-		writeTemplate(rootDir, task.HumanPath, task.Template, data, humanResult)
+		if rawScrubber {
+			buf := bytes.NewBuffer(nil)
+			n, err := writeTemplate(ctx, buf, task.Template, data)
+			if err != nil {
+				humanResult.Error = err
+			}
+			if n > 0 {
+				data := task.RawScrubber(buf.Bytes())
+				writeResultBytes(ctx, rootDir, task.HumanPath, humanResult, data)
+			}
+		} else {
+			writeResultTemplate(ctx, rootDir, task.HumanPath, humanResult, task.Template, data)
+		}
 	}
 
 	if humanYAML {
-		writeYAML(rootDir, task.HumanPath, data, humanResult)
+		if rawScrubber {
+			buf := bytes.NewBuffer(nil)
+			n, err := writeYAML(ctx, buf, data)
+			if err != nil {
+				humanResult.Error = err
+			}
+			if n > 0 {
+				data := task.RawScrubber(buf.Bytes())
+				writeResultBytes(ctx, rootDir, task.HumanPath, humanResult, data)
+			}
+		} else {
+			writeResultYAML(ctx, rootDir, task.HumanPath, humanResult, data)
+		}
 	}
 
 	return results
