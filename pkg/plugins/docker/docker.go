@@ -19,6 +19,7 @@ func New() (types.Plugin, error) {
 		"logs":                 docker.Logs,
 		"inspect":              docker.Inspect,
 		"read-file":            docker.ReadFile,
+		"read-host-file":       docker.ReadHostFile,
 		"exec-command":         docker.ExecCommand,
 		"run-command":          docker.RunCommand,
 		"container-ls-logs":    docker.ContainerLogs,
