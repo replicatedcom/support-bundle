@@ -28,6 +28,14 @@ var tmpdir string
 var cwd string
 var err error
 
+type ErrFileNotFound struct {
+	Filename string
+}
+
+func (e ErrFileNotFound) Error() string {
+	return fmt.Sprintf("Failed to find %s in support bundle.", e.Filename)
+}
+
 func EnterNewTempDir() {
 	cwd, err = os.Getwd()
 	Expect(err).NotTo(HaveOccurred())
@@ -45,22 +53,10 @@ func CleanupDir() {
 }
 
 func LogResultsFomBundle() {
-	LogResults(filepath.Join(tmpdir, "bundle.tar.gz"))()
-}
-
-func LogResults(archivePath string) func() {
-	return func() {
-		contents := ReadFileFromBundle(
-			archivePath,
-			"index.json",
-		)
-		jww.DEBUG.Printf("Index: %s\n", contents)
-		contents = ReadFileFromBundle(
-			archivePath,
-			"error.json",
-		)
-		jww.DEBUG.Printf("Errors: %s\n", contents)
-	}
+	contents := GetFileFromBundle("index.json")
+	jww.DEBUG.Printf("Index: %s\n", contents)
+	contents = GetFileFromBundle("error.json")
+	jww.DEBUG.Printf("Errors: %s\n", contents)
 }
 
 func WriteFile(path string, contents string) {
@@ -119,11 +115,12 @@ func GetResultsFromBundleErrors() []*types.Result {
 }
 
 func getResultsFromBundleIndex(index string) (results []*types.Result) {
-	contents := ReadFileFromBundle(
+	contents, err := ReadFileFromBundle(
 		filepath.Join(tmpdir, "bundle.tar.gz"),
 		index,
 	)
-	err := json.Unmarshal([]byte(contents), &results)
+	Expect(err).NotTo(HaveOccurred())
+	err = json.Unmarshal([]byte(contents), &results)
 	Expect(err).NotTo(HaveOccurred())
 	return
 }
@@ -141,10 +138,21 @@ func ExpectBundleErrorToHaveOccured(path, reStr string) {
 }
 
 func GetFileFromBundle(pathInBundle string) string {
-	return ReadFileFromBundle(
+	contents, err := ReadFileFromBundle(
 		filepath.Join(tmpdir, "bundle.tar.gz"),
 		pathInBundle,
 	)
+	Expect(err).NotTo(HaveOccurred())
+	return contents
+}
+
+func ExpectFileNotInBundle(pathInBundle string) {
+	_, err := ReadFileFromBundle(
+		filepath.Join(tmpdir, "bundle.tar.gz"),
+		pathInBundle,
+	)
+	Expect(err).To(HaveOccurred())
+	Expect(err).To(BeEquivalentTo(&ErrFileNotFound{pathInBundle}))
 }
 
 func ReadFile(filename string) []byte {
@@ -153,21 +161,25 @@ func ReadFile(filename string) []byte {
 	return data
 }
 
-func ReadFileFromBundle(archivePath, targetFile string) string {
+func ReadFileFromBundle(archivePath, targetFile string) (string, error) {
 	file, err := os.Open(archivePath)
+	if err != nil {
+		return "", err
+	}
 	defer CloseLogErr(file)
-	Expect(err).NotTo(HaveOccurred())
 
 	gzr, err := gzip.NewReader(file)
+	if err != nil {
+		return "", err
+	}
 	defer CloseLogErr(gzr)
-	Expect(err).NotTo(HaveOccurred())
 
 	tr := tar.NewReader(gzr)
 
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
-			Expect(err).NotTo(HaveOccurred(), "Failed to find "+targetFile+" in support bundle.")
+			return "", &ErrFileNotFound{targetFile}
 		}
 		Expect(err).NotTo(HaveOccurred())
 		if header == nil {
@@ -179,7 +191,7 @@ func ReadFileFromBundle(archivePath, targetFile string) string {
 		if header.Name == targetFile && header.Typeflag == tar.TypeReg {
 			contents, err := ioutil.ReadAll(tr)
 			Expect(err).NotTo(HaveOccurred())
-			return string(contents)
+			return string(contents), nil
 		}
 	}
 }

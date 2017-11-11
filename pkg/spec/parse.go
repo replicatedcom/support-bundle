@@ -1,6 +1,8 @@
 package spec
 
 import (
+	"encoding/json"
+
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -16,7 +18,7 @@ func Parse(doc []byte) ([]types.Spec, error) {
 }
 
 func Marshal(doc *types.Doc) ([]byte, error) {
-	marshaled, err := yaml.Marshal(doc)
+	marshaled, err := json.Marshal(doc)
 	if err != nil {
 		return nil, errors.Wrap(err, "marshal yaml spec")
 	}
