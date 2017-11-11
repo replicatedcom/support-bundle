@@ -11,7 +11,7 @@ import (
 
 func (d *Docker) ReadHostFile(spec types.Spec) []types.Task {
 	if spec.Config.Image == "" {
-		err := errors.New("spec for docker.read-host-file requires a image name within config")
+		err := errors.New("spec for docker.read-host-file requires an image name within config")
 		return []types.Task{plans.PreparedError(err, spec)}
 	}
 

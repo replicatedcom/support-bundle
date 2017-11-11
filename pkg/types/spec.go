@@ -2,6 +2,7 @@ package types
 
 import (
 	dockertypes "github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/retracedhq/retraced-go"
 )
 
@@ -47,11 +48,11 @@ type DockerRunCommandOptions struct {
 }
 
 type DockerContainerLogsOptions struct {
-	ContainerListOptions dockertypes.ContainerListOptions `json:"container_list_options"`
+	ContainerListOptions ContainerListOptions `json:"container_list_options"`
 }
 
 type DockerContainerInspectOptions struct {
-	ContainerListOptions dockertypes.ContainerListOptions `json:"container_list_options"`
+	ContainerListOptions ContainerListOptions `json:"container_list_options"`
 }
 
 type HTTPRequestCommandOptions struct {
@@ -74,4 +75,32 @@ type RetracedEventsOptions struct {
 type Scrub struct {
 	Regex   string `json:"regex"`
 	Replace string `json:"replace"`
+}
+
+type ContainerListOptions struct {
+	dockertypes.ContainerListOptions
+	Filters map[string][]string
+}
+
+func (opts ContainerListOptions) ToDockerContainerListOptions() dockertypes.ContainerListOptions {
+	dockerOpts := dockertypes.ContainerListOptions{
+		Size:   opts.Size,
+		All:    opts.All,
+		Latest: opts.Latest,
+		Since:  opts.Since,
+		Before: opts.Before,
+		Limit:  opts.Limit,
+	}
+	dockerOpts.Filters = FiltersToArgs(opts.Filters)
+	return dockerOpts
+}
+
+func FiltersToArgs(f map[string][]string) filters.Args {
+	args := filters.NewArgs()
+	for k, vList := range f {
+		for _, v := range vList {
+			args.Add(k, v)
+		}
+	}
+	return args
 }

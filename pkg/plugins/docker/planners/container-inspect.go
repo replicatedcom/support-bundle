@@ -25,7 +25,8 @@ func (d *Docker) ContainerInspect(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	containers, err := d.client.ContainerList(context.Background(), spec.DockerContainerInspect.ContainerListOptions)
+	containers, err := d.client.ContainerList(context.Background(),
+		spec.DockerContainerInspect.ContainerListOptions.ToDockerContainerListOptions())
 	if err != nil {
 		err := fmt.Errorf("container-ls-inspect failed to list containers: %v", err)
 		task := plans.PreparedError(err, spec)

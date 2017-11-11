@@ -26,7 +26,8 @@ func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	containers, err := d.client.ContainerList(context.Background(), spec.DockerContainerLogs.ContainerListOptions)
+	containers, err := d.client.ContainerList(context.Background(),
+		spec.DockerContainerLogs.ContainerListOptions.ToDockerContainerListOptions())
 	if err != nil {
 		err := fmt.Errorf("container-ls-logs failed to list containers: %v", err)
 		task := plans.PreparedError(err, spec)
