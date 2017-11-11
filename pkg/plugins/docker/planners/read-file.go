@@ -38,11 +38,12 @@ func (d *Docker) ReadFile(spec types.Spec) []types.Task {
 	producer := d.producers.ReadFile(containerID, spec.Config.FilePath)
 
 	task := &plans.StreamSource{
-		Producer:    producer,
-		RawScrubber: scrubber,
-		RawPath:     spec.Raw,
-		JSONPath:    spec.JSON,
-		HumanPath:   spec.Human,
+		Producer:     producer,
+		StreamFormat: "tar",
+		RawScrubber:  scrubber,
+		RawPath:      spec.Raw,
+		JSONPath:     spec.JSON,
+		HumanPath:    spec.Human,
 	}
 
 	if spec.TimeoutSeconds != 0 {
