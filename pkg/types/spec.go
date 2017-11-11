@@ -83,14 +83,7 @@ type ContainerListOptions struct {
 }
 
 func (opts ContainerListOptions) ToDockerContainerListOptions() dockertypes.ContainerListOptions {
-	dockerOpts := dockertypes.ContainerListOptions{
-		Size:   opts.Size,
-		All:    opts.All,
-		Latest: opts.Latest,
-		Since:  opts.Since,
-		Before: opts.Before,
-		Limit:  opts.Limit,
-	}
+	dockerOpts := opts.ContainerListOptions
 	dockerOpts.Filters = FiltersToArgs(opts.Filters)
 	return dockerOpts
 }
