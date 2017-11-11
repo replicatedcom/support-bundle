@@ -2,6 +2,7 @@ package ginkgo
 
 import (
 	"fmt"
+	"path/filepath"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -51,15 +52,18 @@ specs:
 
 		Describe("docker container-ls-logs", func() {
 			name := fmt.Sprintf("labeled-logs-container-%d", time.Now().UnixNano())
+			name2 := fmt.Sprintf("labeled-inspect-container-2-%d", time.Now().UnixNano())
 			labels := map[string]string{
 				"foo": "bar",
 			}
-			var labeledContainerID string
+			var labeledContainerID, labeledContainer2ID string
 			BeforeEach(func() {
 				labeledContainerID = MakeDockerContainer(name, labels)
+				labeledContainer2ID = MakeDockerContainer(name2, nil)
 			})
 			AfterEach(func() {
 				RemoveDockerContainer(labeledContainerID)
+				RemoveDockerContainer(labeledContainer2ID)
 			})
 
 			It("Gets logs from docker containers with matching labels", func() {
@@ -71,25 +75,34 @@ specs:
     container_list_options:
       filters:
         label:
-          foo=bar: true`)
+          - foo=bar`)
 				GenerateBundle()
 
 				path := fmt.Sprintf("containers/foo/%s.log", name)
 				_ = GetFileFromBundle(path)
+				path2 := fmt.Sprintf("containers/foo/%s.log", name2)
+				_, err := ReadFileFromBundle(
+					filepath.Join(tmpdir, "bundle.tar.gz"),
+					path2,
+				)
+				Expect(err).To(HaveOccurred())
 			})
 		})
 
 		Describe("docker container-ls-inspect", func() {
 			name := fmt.Sprintf("labeled-inspect-container-%d", time.Now().UnixNano())
+			name2 := fmt.Sprintf("labeled-inspect-container-2-%d", time.Now().UnixNano())
 			labels := map[string]string{
 				"foo": "bar",
 			}
-			var labeledContainerID string
+			var labeledContainerID, labeledContainer2ID string
 			BeforeEach(func() {
 				labeledContainerID = MakeDockerContainer(name, labels)
+				labeledContainer2ID = MakeDockerContainer(name2, nil)
 			})
 			AfterEach(func() {
 				RemoveDockerContainer(labeledContainerID)
+				RemoveDockerContainer(labeledContainer2ID)
 			})
 
 			It("Inspects docker containers with matching labels", func() {
@@ -101,11 +114,17 @@ specs:
     container_list_options:
       filters:
         label:
-          foo=bar: true`)
+          - foo=bar`)
 				GenerateBundle()
 
 				path := fmt.Sprintf("containers/foo/%s.json", name)
 				_ = GetFileFromBundle(path)
+				path2 := fmt.Sprintf("containers/foo/%s.json", name2)
+				_, err := ReadFileFromBundle(
+					filepath.Join(tmpdir, "bundle.tar.gz"),
+					path2,
+				)
+				Expect(err).To(HaveOccurred())
 			})
 		})
 
