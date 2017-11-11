@@ -53,24 +53,10 @@ func CleanupDir() {
 }
 
 func LogResultsFomBundle() {
-	LogResults(filepath.Join(tmpdir, "bundle.tar.gz"))()
-}
-
-func LogResults(archivePath string) func() {
-	return func() {
-		contents, err := ReadFileFromBundle(
-			archivePath,
-			"index.json",
-		)
-		Expect(err).NotTo(HaveOccurred())
-		jww.DEBUG.Printf("Index: %s\n", contents)
-		contents, err = ReadFileFromBundle(
-			archivePath,
-			"error.json",
-		)
-		Expect(err).NotTo(HaveOccurred())
-		jww.DEBUG.Printf("Errors: %s\n", contents)
-	}
+	contents := GetFileFromBundle("index.json")
+	jww.DEBUG.Printf("Index: %s\n", contents)
+	contents = GetFileFromBundle("error.json")
+	jww.DEBUG.Printf("Errors: %s\n", contents)
 }
 
 func WriteFile(path string, contents string) {
@@ -158,6 +144,15 @@ func GetFileFromBundle(pathInBundle string) string {
 	)
 	Expect(err).NotTo(HaveOccurred())
 	return contents
+}
+
+func ExpectFileNotInBundle(pathInBundle string) {
+	_, err := ReadFileFromBundle(
+		filepath.Join(tmpdir, "bundle.tar.gz"),
+		pathInBundle,
+	)
+	Expect(err).To(HaveOccurred())
+	Expect(err).To(BeEquivalentTo(&ErrFileNotFound{pathInBundle}))
 }
 
 func ReadFile(filename string) []byte {

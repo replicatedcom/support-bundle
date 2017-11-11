@@ -2,7 +2,6 @@ package ginkgo
 
 import (
 	"fmt"
-	"path/filepath"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -81,12 +80,7 @@ specs:
 				path := fmt.Sprintf("containers/foo/%s.log", name)
 				_ = GetFileFromBundle(path)
 				path2 := fmt.Sprintf("containers/foo/%s.log", name2)
-				_, err := ReadFileFromBundle(
-					filepath.Join(tmpdir, "bundle.tar.gz"),
-					path2,
-				)
-				Expect(err).To(HaveOccurred())
-				Expect(err).To(BeEquivalentTo(&ErrFileNotFound{path2}))
+				ExpectFileNotInBundle(path2)
 			})
 		})
 
@@ -121,11 +115,7 @@ specs:
 				path := fmt.Sprintf("containers/foo/%s.json", name)
 				_ = GetFileFromBundle(path)
 				path2 := fmt.Sprintf("containers/foo/%s.json", name2)
-				_, err := ReadFileFromBundle(
-					filepath.Join(tmpdir, "bundle.tar.gz"),
-					path2,
-				)
-				Expect(err).To(BeEquivalentTo(&ErrFileNotFound{path2}))
+				ExpectFileNotInBundle(path2)
 			})
 		})
 
