@@ -86,6 +86,7 @@ specs:
 					path2,
 				)
 				Expect(err).To(HaveOccurred())
+				Expect(err).To(BeEquivalentTo(&ErrFileNotFound{path2}))
 			})
 		})
 
@@ -124,7 +125,7 @@ specs:
 					filepath.Join(tmpdir, "bundle.tar.gz"),
 					path2,
 				)
-				Expect(err).To(HaveOccurred())
+				Expect(err).To(BeEquivalentTo(&ErrFileNotFound{path2}))
 			})
 		})
 

@@ -6,7 +6,6 @@ import (
 	"compress/gzip"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -28,6 +27,14 @@ import (
 var tmpdir string
 var cwd string
 var err error
+
+type ErrFileNotFound struct {
+	Filename string
+}
+
+func (e ErrFileNotFound) Error() string {
+	return fmt.Sprintf("Failed to find %s in support bundle.", e.Filename)
+}
 
 func EnterNewTempDir() {
 	cwd, err = os.Getwd()
@@ -177,7 +184,7 @@ func ReadFileFromBundle(archivePath, targetFile string) (string, error) {
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
-			return "", errors.New("Failed to find " + targetFile + " in support bundle.")
+			return "", &ErrFileNotFound{targetFile}
 		}
 		Expect(err).NotTo(HaveOccurred())
 		if header == nil {
