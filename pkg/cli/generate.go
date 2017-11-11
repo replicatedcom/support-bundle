@@ -8,6 +8,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -54,11 +55,17 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		return errors.Wrap(err, "Failed to initialize docker plugin")
 	}
 
+	j, err := journald.New()
+	if err != nil {
+		return errors.Wrap(err, "Failed to initialize journald plugin")
+	}
+
 	planner := bundle.Planner{
 		Plugins: map[string]types.Plugin{
 			"core":     core.New(),
 			"docker":   d,
 			"retraced": retraced.New(),
+			"journald": j,
 		},
 	}
 

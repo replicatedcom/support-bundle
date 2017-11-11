@@ -18,11 +18,11 @@ test:
 	go test -v ./pkg/...
 
 integration-test:
-	ginkgo -v -r -p --skip="docker container|retraced.events" tests/ginkgo
+	ginkgo -v -r -p --skip="docker container|retraced.events|journald.logs" tests/ginkgo
 
 integration-test-docker:
 	docker pull ubuntu:latest
-	ginkgo -v -r -p --focus="docker container" tests/ginkgo
+	ginkgo -v -r -p --focus="docker container|journald.logs" tests/ginkgo
 
 # this task assumes a working retraced installation, and requires the following params to be set:
 #

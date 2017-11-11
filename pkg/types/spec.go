@@ -28,6 +28,7 @@ type Spec struct {
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
 	HTTPRequestCommand     *HTTPRequestCommandOptions     `json:"core.http-request,omitempty"`
 	RetracedEventsCommand  *RetracedEventsOptions         `json:"retraced.events,omitempty"`
+	JournaldLogs           *JournaldLogs                  `json:"journald.logs,omitempty"`
 }
 
 type Config struct {
@@ -69,6 +70,11 @@ type RetracedEventsOptions struct {
 	Insecure    bool                      `json:"insecure,omitempty"`
 	Mask        *retraced.EventNodeMask   `json:"mask,omitempty"`
 	Query       *retraced.StructuredQuery `json:"query,omitempty"`
+}
+
+type JournaldLogs struct {
+	Unit  string
+	Since string
 }
 
 type Scrub struct {
