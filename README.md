@@ -12,7 +12,7 @@ docker run --rm \
     -v /usr:/host/usr:ro \
     -v `pwd`:/out \
     -e IN_CONTAINER=true \
-    replicated/support-bundle \
+    registry.replicated.com/library/support-bundle \
     generate --out /out/supportbundle.tar.gz
 ```
 

@@ -65,8 +65,8 @@ specs:
 
 			GenerateBundle()
 
-			censored := GetFileFromBundle("os/release")
-			uncensored := GetFileFromBundle("os/release-uncensored")
+			censored := GetFileFromBundle("os/release/os-release")
+			uncensored := GetFileFromBundle("os/release-uncensored/os-release")
 
 			Expect(censored).To(ContainSubstring("replicatedOS"))
 			Expect(censored).NotTo(ContainSubstring("ubuntu"))

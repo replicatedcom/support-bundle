@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker build -t replicated/support-bundle -f hack/Dockerfile .
+docker build -t registry.replicated.com/library/support-bundle -f hack/Dockerfile .

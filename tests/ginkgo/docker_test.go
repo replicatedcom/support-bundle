@@ -130,7 +130,7 @@ specs:
 
 			GenerateBundle()
 
-			contents := GetFileFromBundle("daemon/docker/readfile")
+			contents := GetFileFromBundle("daemon/docker/readfile/os-release")
 
 			Expect(contents).To(ContainSubstring("ubuntu"))
 		})
