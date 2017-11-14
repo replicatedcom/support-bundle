@@ -69,35 +69,35 @@ specs:
     raw: /default/commands/uptime
   - builtin: docker.daemon
     json: /default/docker/
-  - builtin: core.read-file
+  - builtin: docker.read-host-file
     raw: /default/etc/default/docker
     config:
       file_path: /etc/default/docker
-  - builtin: core.read-file
+  - builtin: docker.read-host-file
     raw: /default/etc/hostname
     config:
       file_path: /etc/hostname
-  - builtin: core.read-file
+  - builtin: docker.read-host-file
     raw: /default/etc/hosts
     config:
       file_path: /etc/hosts
-  - builtin: core.read-file
+  - builtin: docker.read-host-file
     raw: /default/etc/os-release
     config:
       file_path: /etc/os-release
-  - builtin: core.read-file
+  - builtin: docker.read-host-file
     raw: /default/etc/sysconfig/docker
     config:
       file_path: /etc/sysconfig/docker
-  - builtin: core.read-file
+  - builtin: docker.read-host-file
     raw: /default/etc/system-release
     config:
       file_path: /etc/system-release
-  - builtin: core.read-file
+  - builtin: docker.read-host-file
     raw: /default/etc/systemd/system/docker.service.d/http-proxy.conf
     config:
       file_path: /etc/systemd/system/docker.service.d/http-proxy.conf
-  - builtin: core.read-file
+  - builtin: docker.read-host-file
     raw: /default/etc/timezone
     config:
       file_path: /etc/timezone
@@ -133,7 +133,7 @@ specs:
 
 var centosYaml = `
 specs:
-- builtin: core.read-file
+- builtin: docker.read-host-file
   raw: /default/etc/centos-release
   config:
     file_path: /etc/centos-release
