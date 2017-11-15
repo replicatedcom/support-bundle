@@ -1,16 +1,28 @@
 package planners
 
 import (
+	"context"
 	"time"
 
 	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/docker/util"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
 func (d *Docker) ReadHostFile(spec types.Spec) []types.Task {
-	if spec.Config.Image == "" {
+	image := spec.Config.Image
+
+	// use image of current container if unspecified
+	if image == "" {
+		c, err := util.ThisContainer(context.Background(), d.client)
+		if err == nil {
+			image = c.Image
+		}
+	}
+
+	if image == "" {
 		err := errors.New("spec for docker.read-host-file requires an image name within config")
 		return []types.Task{plans.PreparedError(err, spec)}
 	}
@@ -26,7 +38,7 @@ func (d *Docker) ReadHostFile(spec types.Spec) []types.Task {
 		return []types.Task{plans.PreparedError(err, spec)}
 	}
 
-	producer := d.producers.ReadHostFile(spec.Config.Image, spec.Config.FilePath)
+	producer := d.producers.ReadHostFile(image, spec.Config.FilePath)
 
 	task := &plans.StreamSource{
 		Producer:     producer,
