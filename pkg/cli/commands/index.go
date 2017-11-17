@@ -24,8 +24,8 @@ func NewIndexCommand(cli *cli.Cli) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringArrayVarP(&opts.specFiles, "spec-file", "f", nil, "spec file (default is to run core tasks only)")
-	cmd.Flags().StringArrayVarP(&opts.specDocs, "spec", "s", nil, "spec doc (default is to run core tasks only)")
+	cmd.Flags().StringArrayVarP(&opts.specFiles, "spec-file", "f", nil, "Additional spec files")
+	cmd.Flags().StringArrayVarP(&opts.specDocs, "spec", "s", nil, "Additional spec docs")
 	cmd.Flags().BoolVar(&opts.skipDefault, "skip-default", false, "If present, skip the default support bundle files")
 	cmd.Flags().StringVar(&opts.format, "format", "json", `Index format (one of "json", "yaml")`)
 
