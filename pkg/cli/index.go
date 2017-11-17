@@ -13,11 +13,6 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-type indexFile struct {
-	Path        string
-	Description string
-}
-
 func (cli *Cli) Index(cfgFiles []string, cfgDocs []string, skipDefault bool, format string) error {
 	var specs []types.Spec
 
@@ -51,18 +46,18 @@ func (cli *Cli) Index(cfgFiles []string, cfgDocs []string, skipDefault bool, for
 		specs = append(defaultSpecs, specs...)
 	}
 
-	index := []indexFile{}
+	index := []types.Result{}
 
 	// TODO: it would be nice if specs had descriptions rather than results
 	for _, spec := range specs {
 		if spec.Raw != "" {
-			index = append(index, indexFile{Path: spec.Raw, Description: "Raw"})
+			index = append(index, types.Result{Path: spec.Raw, Description: "Raw"})
 		}
 		if spec.Human != "" {
-			index = append(index, indexFile{Path: spec.Human, Description: "Human"})
+			index = append(index, types.Result{Path: spec.Human, Description: "Human"})
 		}
 		if spec.JSON != "" {
-			index = append(index, indexFile{Path: spec.JSON, Description: "JSON"})
+			index = append(index, types.Result{Path: spec.JSON, Description: "JSON"})
 		}
 	}
 
