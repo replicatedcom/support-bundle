@@ -136,7 +136,7 @@ specs:
 var centosYaml = `
 specs:
 - builtin: docker.read-host-file
-  raw: /default/etc/centos-release
+  raw: /default/etc
   config:
     file_path: /etc/centos-release
 `
