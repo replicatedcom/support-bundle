@@ -79,13 +79,13 @@ specs:
 			WriteBundleConfig(`
 specs:
 - builtin: docker.exec-command
-  raw: /os/release-uncensored.
+  raw: /os/release-uncensored
   config:
     command: cat
     args: ["/usr/lib/os-release"]
     container_id: ` + containerID + `
 - builtin: docker.exec-command
-  raw: /os/release.
+  raw: /os/release
   config:
     command: cat
     args: ["/usr/lib/os-release"]

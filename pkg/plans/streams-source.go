@@ -74,6 +74,10 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 	var readerGroup sync.WaitGroup
 	readerGroup.Add(len(readers))
 
+	mkPath := func(path, name string) string {
+		return path + "." + name
+	}
+
 	for name, reader := range readers {
 		go func(name string, reader io.Reader) {
 			if closer, ok := reader.(io.Closer); ok {
@@ -92,33 +96,42 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 
 			// first write to one file
 			if raw {
-				writeResult(ctx, rootDir, task.RawPath+name, &rawResult, reader)
+				writeResult(ctx, rootDir, mkPath(task.RawPath, name), &rawResult, reader)
 			} else if jsonify {
-				writeResult(ctx, rootDir, task.JSONPath+name, &jsonResult, reader)
+				writeResult(ctx, rootDir, mkPath(task.JSONPath, name), &jsonResult, reader)
 			} else if human {
-				writeResult(ctx, rootDir, task.HumanPath+name, &humanResult, reader)
+				writeResult(ctx, rootDir, mkPath(task.HumanPath, name), &humanResult, reader)
 			}
 
 			// then link to any other requested paths
 			if raw && jsonify {
 				jsonResult = rawResult
 				if rawResult.Path != "" {
-					os.Link(task.RawPath+name, task.JSONPath+name)
-					jsonResult.Path = task.JSONPath + name
+					if err := os.Link(mkPath(task.RawPath, name), mkPath(task.JSONPath, name)); err != nil {
+						jsonResult.Error = err
+					} else {
+						jsonResult.Path = mkPath(task.JSONPath, name)
+					}
 				}
 			}
 			if raw && human {
 				humanResult = rawResult
 				if rawResult.Path != "" {
-					os.Link(task.RawPath+name, task.HumanPath+name)
-					humanResult.Path = task.HumanPath + name
+					if err := os.Link(mkPath(task.RawPath, name), mkPath(task.HumanPath, name)); err != nil {
+						humanResult.Error = err
+					} else {
+						humanResult.Path = mkPath(task.HumanPath, name)
+					}
 				}
 			}
 			if jsonify && human {
 				humanResult = jsonResult
 				if jsonResult.Path != "" {
-					os.Link(task.JSONPath+name, task.HumanPath+name)
-					humanResult.Path = task.HumanPath + name
+					if err := os.Link(mkPath(task.JSONPath, name), mkPath(task.HumanPath, name)); err != nil {
+						humanResult.Error = err
+					} else {
+						humanResult.Path = mkPath(task.HumanPath, name)
+					}
 				}
 			}
 
