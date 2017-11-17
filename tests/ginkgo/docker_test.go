@@ -139,7 +139,7 @@ specs:
 			WriteBundleConfig(`
 specs:
   - builtin: docker.exec-command
-    raw: /daemon/docker/command-succeed.
+    raw: /daemon/docker/command-succeed
     config:
       command: "echo"
       args: ["testingEchoCommand"]
@@ -156,7 +156,7 @@ specs:
 			WriteBundleConfig(`
 specs:
   - builtin: docker.exec-command
-    raw: /daemon/docker/command-fail.
+    raw: /daemon/docker/command-fail
     config:
       command: "cat"
       args: ["fileThatDoesNotExist"]

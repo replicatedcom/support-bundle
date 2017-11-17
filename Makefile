@@ -14,14 +14,14 @@ generate:
 	./bin/support-bundle generate
 
 test:
-	docker pull ubuntu:latest
+	# docker pull ubuntu:latest
 	go test -v ./pkg/...
 
 integration-test:
 	ginkgo -v -r -p --skip="docker container|retraced.events|journald.logs" tests/ginkgo
 
 integration-test-docker:
-	docker pull ubuntu:latest
+	# docker pull ubuntu:latest
 	ginkgo -v -r -p --focus="docker container|journald.logs" tests/ginkgo
 
 # this task assumes a working retraced installation, and requires the following params to be set:

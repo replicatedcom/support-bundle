@@ -18,7 +18,7 @@ var _ = Describe("Docker container run command", func() {
 		WriteBundleConfig(`
 specs:
   - builtin: docker.run-command
-    raw: /dockerext/run-command/
+    raw: /dockerext/run-command
     docker.run-command:
       ContainerCreateConfig:
         Config:
@@ -29,7 +29,7 @@ specs:
 
 		GenerateBundle()
 
-		contents := GetFileFromBundle("dockerext/run-command/stdout")
+		contents := GetFileFromBundle("dockerext/run-command.stdout")
 		Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
 	})
 

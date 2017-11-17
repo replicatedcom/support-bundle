@@ -102,7 +102,7 @@ specs:
     config:
       file_path: /etc/timezone
   - builtin: core.read-file
-    raw: /default/proc
+    raw: /default/proc/cpuinfo
     config:
       file_path: /proc/cpuinfo
   - builtin: core.read-file
