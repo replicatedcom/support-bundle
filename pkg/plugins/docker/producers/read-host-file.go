@@ -37,8 +37,10 @@ func (d *Docker) ReadHostFile(image string, path string) types.StreamProducer {
 		if err != nil {
 			return nil, errors.Wrap(err, "container create")
 		}
+
+		localCtx, cancel := context.WithCancel(ctx)
 		go func() {
-			<-ctx.Done()
+			<-localCtx.Done()
 			d.client.ContainerRemove(context.Background(), containerInstance.ID, dockertypes.ContainerRemoveOptions{
 				RemoveVolumes: true,
 				Force:         true,
@@ -66,6 +68,8 @@ func (d *Docker) ReadHostFile(image string, path string) types.StreamProducer {
 			// This will also be terminated when ctx.Done() fires and container is removed.
 			var err error
 			defer func() {
+				cancel() // trigger container removal as soon as StdCopy is done
+
 				// FIXME: error will be "io: read/write on closed pipe" even if there was no error
 				// (see comment on StdCopy)
 				stdoutW.CloseWithError(err)

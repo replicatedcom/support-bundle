@@ -17,8 +17,11 @@ func RunCommand(ctx context.Context, client *docker.Client, config dockertypes.C
 	if err != nil {
 		return nil, errors.Wrap(err, "container create")
 	}
+
+	localCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	go func() {
-		<-ctx.Done()
+		<-localCtx.Done()
 		client.ContainerRemove(context.Background(), containerInstance.ID, dockertypes.ContainerRemoveOptions{
 			RemoveVolumes: true,
 			Force:         true,
