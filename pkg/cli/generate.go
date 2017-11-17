@@ -10,6 +10,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
@@ -62,10 +63,11 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 
 	planner := bundle.Planner{
 		Plugins: map[string]types.Plugin{
-			"core":     core.New(),
-			"docker":   d,
-			"retraced": retraced.New(),
-			"journald": j,
+			"core":          core.New(),
+			"docker":        d,
+			"retraced":      retraced.New(),
+			"journald":      j,
+			"supportbundle": supportbundle.New(),
 		},
 	}
 

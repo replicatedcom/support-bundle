@@ -7,6 +7,8 @@ import (
 
 var unconditionalYaml = `
 specs:
+  - builtin: supportbundle.version
+    json: VERSION.json
   - builtin: core.read-command
     raw: /default/commands/date
     config:
