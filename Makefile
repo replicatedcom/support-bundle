@@ -44,7 +44,7 @@ build:
 	go build \
 		-ldflags=" \
 		-X github.com/replicatedcom/support-bundle/version.version=$(SUPPORTBUNDLE_VERSION) \
-		-X github.com/replicatedcom/support-bundle/version.gitSHA=$(BUILD_SHA) \
+		-X github.com/replicatedcom/support-bundle/version.gitSHA=$(shell git log --pretty=format:'%h' -n 1) \
 		-X github.com/replicatedcom/support-bundle/version.buildTime=$(shell date --rfc-3339=seconds | sed 's/ /T/')" \
 		-o ./bin/support-bundle .
 

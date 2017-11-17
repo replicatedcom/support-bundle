@@ -10,7 +10,7 @@ builds:
   - amd64
   - "386"
   main: main.go
-  ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+  ldflags: -s -w -X version.version={{.Version}} -X version.gitSHA={{.Commit}} -X version.goReleaserTime={{.Date}}
   binary: support-bundle
   hooks: {}
 archive:
