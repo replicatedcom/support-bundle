@@ -70,39 +70,39 @@ specs:
   - builtin: docker.daemon
     json: /default/docker/
   - builtin: docker.read-host-file
-    raw: /default/etc/default/docker
+    raw: /default/etc/default
     config:
       file_path: /etc/default/docker
   - builtin: docker.read-host-file
-    raw: /default/etc/hostname
+    raw: /default/etc
     config:
       file_path: /etc/hostname
   - builtin: docker.read-host-file
-    raw: /default/etc/hosts
+    raw: /default/etc
     config:
       file_path: /etc/hosts
   - builtin: docker.read-host-file
-    raw: /default/etc/os-release
+    raw: /default/etc
     config:
       file_path: /etc/os-release
   - builtin: docker.read-host-file
-    raw: /default/etc/sysconfig/docker
+    raw: /default/etc/sysconfig
     config:
       file_path: /etc/sysconfig/docker
   - builtin: docker.read-host-file
-    raw: /default/etc/system-release
+    raw: /default/etc
     config:
       file_path: /etc/system-release
   - builtin: docker.read-host-file
-    raw: /default/etc/systemd/system/docker.service.d/http-proxy.conf
+    raw: /default/etc/systemd/system/docker.service.d
     config:
       file_path: /etc/systemd/system/docker.service.d/http-proxy.conf
   - builtin: docker.read-host-file
-    raw: /default/etc/timezone
+    raw: /default/etc
     config:
       file_path: /etc/timezone
   - builtin: core.read-file
-    raw: /default/proc/cpuinfo
+    raw: /default/proc
     config:
       file_path: /proc/cpuinfo
   - builtin: core.read-file
@@ -125,8 +125,8 @@ specs:
     raw: /default/proc/vmstat
     config:
       file_path: /proc/vmstat
-  - builtin: core.read-file
-    raw: /default/var/log/upstart/docker.log
+  - builtin: docker.read-host-file
+    raw: /default/var/log/upstart
     config:
       file_path: /var/log/upstart/docker.log
 `
