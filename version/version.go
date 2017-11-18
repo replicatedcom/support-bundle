@@ -9,20 +9,21 @@ var (
 )
 
 type Build struct {
-	Type      string
-	Version   string
-	GitSHA    string
-	BuildTime time.Time
+	Type         string
+	Version      string
+	GitSHA       string
+	BuildTime    time.Time
+	TimeFallback string `json:"time_fallback,omitempty"`
 }
 
 func Init() {
 	build.Type = "external"
 	build.Version = version
-	build.GitSHA = gitSHA
-	if buildTime != "" {
-		build.BuildTime, _ = time.Parse(time.RFC3339, buildTime)
-	} else if goReleaserTime != "" {
-		build.BuildTime, _ = time.Parse("2006-01-02_15:04:05", buildTime)
+	build.GitSHA = gitSHA[:7]
+	var err error
+	build.BuildTime, err = time.Parse(time.RFC3339, buildTime)
+	if err != nil {
+		build.TimeFallback = buildTime
 	}
 }
 

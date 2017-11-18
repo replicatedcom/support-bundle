@@ -10,7 +10,10 @@ builds:
   - amd64
   - "386"
   main: main.go
-  ldflags: -s -w -X version.version={{.Version}} -X version.gitSHA={{.Commit}} -X version.goReleaserTime={{.Date}}
+  ldflags: -s -w 
+    -X github.com/replicatedcom/support-bundle/version.version={{.Version}} 
+    -X github.com/replicatedcom/support-bundle/version.gitSHA={{.Commit}} 
+    -X github.com/replicatedcom/support-bundle/version.buildTime={{.Date}}
   binary: support-bundle
   hooks: {}
 archive:

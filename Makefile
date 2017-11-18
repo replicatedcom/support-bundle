@@ -1,8 +1,6 @@
 SHELL := /bin/bash
 .PHONY: clean deps install run test build shell all
 
-SUPPORTBUNDLE_VERSION?=1.0.0
-
 clean:
 	rm -f ./bin/support-bundle
 
@@ -43,8 +41,8 @@ build:
 	mkdir -p bin
 	go build \
 		-ldflags=" \
-		-X github.com/replicatedcom/support-bundle/version.version=$(SUPPORTBUNDLE_VERSION) \
-		-X github.com/replicatedcom/support-bundle/version.gitSHA=$(shell git log --pretty=format:'%h' -n 1) \
+		-X github.com/replicatedcom/support-bundle/version.version=$(shell git describe) \
+		-X github.com/replicatedcom/support-bundle/version.gitSHA=$(shell git log --pretty=format:'%H' -n 1) \
 		-X github.com/replicatedcom/support-bundle/version.buildTime=$(shell date --rfc-3339=seconds | sed 's/ /T/')" \
 		-o ./bin/support-bundle .
 
