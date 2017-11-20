@@ -25,4 +25,5 @@ func NewSupportBundleCommand(cli *cli.Cli) *cobra.Command {
 func addCommands(cmd *cobra.Command, cli *cli.Cli) {
 	cmd.AddCommand(NewGenerateCommand(cli))
 	cmd.AddCommand(NewUploadCommand(cli))
+	cmd.AddCommand(NewIndexCommand(cli))
 }
