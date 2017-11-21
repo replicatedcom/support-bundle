@@ -31,15 +31,15 @@ func (k *Kubernetes) Resource(rtype string) types.StructuredProducer {
 		case "podtemplates":
 			return c.CoreV1().PodTemplates(ns).List(opts)
 		case "podsecuritypolicies":
-			return c.Extensions().PodSecurityPolicies(ns).List(opts)
+			return c.Extensions().PodSecurityPolicies().List(opts)
 		case "pods":
 			return c.Core().Pods(ns).List(opts)
 		case "persistentvolumes":
-			return c.Core().PersistentVolumes(ns).List(opts)
+			return c.Core().PersistentVolumes().List(opts)
 		case "persistentvolumeclaims":
 			return c.Core().PersistentVolumeClaims(ns).List(opts)
 		case "nodes":
-			return c.Core().Nodes(ns).List(opts)
+			return c.Core().Nodes().List(opts)
 		case "networkpolicies":
 			return c.Networking().NetworkPolicies(ns).List(opts)
 		case "limitranges":
@@ -61,7 +61,7 @@ func (k *Kubernetes) Resource(rtype string) types.StructuredProducer {
 		case "configmaps":
 			return c.Core().ConfigMaps(ns).List(opts)
 		case "configmaps":
-			return c.Core().ComponentStatuses(ns).List(opts)
+			return c.Core().ComponentStatuses().List(opts)
 		default:
 			return nil, errors.New("Unknown resource type, must be one of: storageclasses, statefulsets, services, secrets, resourcequotas, replicationcontrollers, replicasets, podtemplates, podsecuritypolicies, pods, persistentvolumes, persistentvolumeclaims, nodes, networkpolicies, limitranges, jobs, ingresses, horizontalpodautoscalers, events, endpoints, deployments, daemonsets, configmaps, componentstatuses")
 		}
