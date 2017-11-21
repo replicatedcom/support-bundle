@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"io/ioutil"
 	"time"
 
@@ -9,8 +10,8 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
@@ -18,10 +19,10 @@ import (
 
 func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
 	jww.FEEDBACK.Println("Generating a new support bundle")
-
 	var specs []types.Spec
-
+	fmt.Println(cfgFiles)
 	for _, cfgFile := range cfgFiles {
+		fmt.Println(cfgFile)
 		yaml, err := ioutil.ReadFile(cfgFile)
 		if err != nil {
 			return errors.Wrap(err, "Failed to read spec file")
@@ -63,11 +64,12 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 
 	planner := bundle.Planner{
 		Plugins: map[string]types.Plugin{
-			"core":          core.New(),
-			"docker":        d,
-			"retraced":      retraced.New(),
-			"journald":      j,
-			"supportbundle": supportbundle.New(),
+			"core":     core.New(),
+			"docker":   d,
+			"retraced": retraced.New(),
+			"journald": j,
+			// "supportbundle": supportbundle.New(),
+			"kubernetes": kubernetes.New(),
 		},
 	}
 

@@ -40,7 +40,8 @@ type Config struct {
 	ContainerID   string   `json:"container_id"`
 	ContainerName string   `json:"container_name"`
 	Command       string   `json:"command"`
-	Scrub         Scrub    `json:"scrub"` // TODO: should we pull scrub up one level into Spec?
+	Scrub         Scrub    `json:"scrub"`
+	ResourceName  string   `json:"resource_name"` // TODO: should we pull scrub up one level into Spec?
 }
 
 type DockerRunCommandOptions struct {
