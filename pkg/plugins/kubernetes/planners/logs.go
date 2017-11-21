@@ -8,7 +8,7 @@ import (
 
 func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	opts := spec.KubernetesContainerLogsOptions
-	if spec.Config.PodName == "" {
+	if opts.PodName == "" {
 		err := errors.New("spec for kubernettes.logs requires a pod name (and a container name for multi-container pods")
 		task := plans.PreparedError(err, spec)
 
