@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes/planners"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -11,12 +12,18 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func New() types.Plugin {
+func New() (types.Plugin, error) {
 	kubeconfig := filepath.Join(os.Getenv("HOME"), ".kube", "config")
 
-	config, _ := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		return errors.Wrap(err, "getting kubernetes config")
+	}
 
-	clientset, _ := kubernetes.NewForConfig(config)
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return errors.Wrap(err, "getting kubernetes client")
+	}
 
 	p := producers.New(clientset)
 	k := planners.New(p)

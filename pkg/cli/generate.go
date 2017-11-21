@@ -11,6 +11,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
@@ -60,14 +61,19 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		return errors.Wrap(err, "Failed to initialize journald plugin")
 	}
 
+	k, err := kubernetes.New()
+	if err != nil {
+		return errors.Wrap(err, "Failed to initialize kubernetes plugin")
+	}
+
 	planner := bundle.Planner{
 		Plugins: map[string]types.Plugin{
-			"core":     core.New(),
-			"docker":   d,
-			"retraced": retraced.New(),
-			"journald": j,
-			// "supportbundle": supportbundle.New(),
-			"kubernetes": kubernetes.New(),
+			"core":          core.New(),
+			"docker":        d,
+			"retraced":      retraced.New(),
+			"journald":      j,
+			"supportbundle": supportbundle.New(),
+			"kubernetes":    k,
 		},
 	}
 
