@@ -24,5 +24,6 @@ func New() types.Plugin {
 		"version":      k.Version,
 		"api-versions": k.APIVersions,
 		"cluster-info": k.ClusterInfo,
+		"resource":     k.Resource,
 	}
 }
