@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"fmt"
 	"io/ioutil"
 	"time"
 
@@ -20,9 +19,8 @@ import (
 func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
 	jww.FEEDBACK.Println("Generating a new support bundle")
 	var specs []types.Spec
-	fmt.Println(cfgFiles)
+
 	for _, cfgFile := range cfgFiles {
-		fmt.Println(cfgFile)
 		yaml, err := ioutil.ReadFile(cfgFile)
 		if err != nil {
 			return errors.Wrap(err, "Failed to read spec file")
