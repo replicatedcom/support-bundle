@@ -1,21 +1,16 @@
 package kubernetes
 
 import (
-	"os"
-	"path/filepath"
-
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes/planners"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/rest"
 )
 
 func New() (types.Plugin, error) {
-	kubeconfig := filepath.Join(os.Getenv("HOME"), ".kube", "config")
-
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	config, err := rest.InClusterConfig()
 	if err != nil {
 		return nil, errors.Wrap(err, "getting kubernetes config")
 	}
