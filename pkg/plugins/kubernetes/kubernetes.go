@@ -17,12 +17,12 @@ func New() (types.Plugin, error) {
 
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
-		return errors.Wrap(err, "getting kubernetes config")
+		return nil, errors.Wrap(err, "getting kubernetes config")
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		return errors.Wrap(err, "getting kubernetes client")
+		return nil, errors.Wrap(err, "getting kubernetes client")
 	}
 
 	p := producers.New(clientset)
@@ -32,5 +32,6 @@ func New() (types.Plugin, error) {
 		"api-versions": k.APIVersions,
 		"cluster-info": k.ClusterInfo,
 		"resource":     k.Resource,
-	}
+		"logs":         k.Logs,
+	}, nil
 }

@@ -47,12 +47,14 @@ type Config struct {
 }
 
 type KubernetesResourceCommand struct {
-	Type string `json:"type"`
+	Type      string `json:"type"`
+	Namespace string `json:"namespace, omitempty"`
 }
 
 type KubernetesContainerLogsOptions struct {
 	PodName       string `json:"pod_name"`
 	ContainerName string `json:"container_name,omitempty"`
+	Namespace     string `json:"namespace,omitempty"`
 }
 
 type DockerRunCommandOptions struct {

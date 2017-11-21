@@ -9,7 +9,7 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	opts := spec.KubernetesContainerLogsOptions
 	return []types.Task{
 		&plans.StreamSource{
-			Producer:  k.p.Logs(opts.PodName, opts.PodName),
+			Producer:  k.p.Logs(opts.PodName, opts.ContainerName, opts.Namespace),
 			RawPath:   spec.Raw,
 			JSONPath:  spec.JSON,
 			HumanPath: spec.Human,

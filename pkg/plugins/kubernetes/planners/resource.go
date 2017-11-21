@@ -6,10 +6,10 @@ import (
 )
 
 func (k *Kubernetes) Resource(spec types.Spec) []types.Task {
-	resource := spec.KubernetesResourceCommand.Type
+	resource := spec.KubernetesResourceCommand
 	return []types.Task{
 		&plans.StructuredSource{
-			Producer:  k.p.Resource(resource),
+			Producer:  k.p.Resource(resource.Type, resource.Namespace),
 			RawPath:   spec.Raw,
 			JSONPath:  spec.JSON,
 			HumanPath: spec.Human,
