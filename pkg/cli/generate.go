@@ -9,6 +9,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
@@ -16,9 +17,8 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string, skipDefault bool, timeoutSeconds int) error {
+func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string, skipDefault bool, timeoutSeconds int, enableKubernetes bool) error {
 	jww.FEEDBACK.Println("Generating a new support bundle")
-
 	var specs []types.Spec
 
 	for _, cfgFile := range cfgFiles {
@@ -69,6 +69,15 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 			"journald":      j,
 			"supportbundle": supportbundle.New(),
 		},
+	}
+
+	if enableKubernetes {
+		k, err := kubernetes.New()
+		if err != nil {
+			return errors.Wrap(err, "Failed to initialize kubernetes plugin")
+		}
+
+		planner.Plugins["kubernetes"] = k
 	}
 
 	var tasks = planner.Plan(specs)

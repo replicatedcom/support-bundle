@@ -6,11 +6,12 @@ import (
 )
 
 type generateOptions struct {
-	specFiles      []string
-	specDocs       []string
-	bundlePath     string
-	skipDefault    bool
-	timeoutSeconds int
+	specFiles        []string
+	specDocs         []string
+	bundlePath       string
+	skipDefault      bool
+	timeoutSeconds   int
+	enableKubernetes bool
 }
 
 func NewGenerateCommand(cli *cli.Cli) *cobra.Command {
@@ -21,7 +22,7 @@ func NewGenerateCommand(cli *cli.Cli) *cobra.Command {
 		Short: "Generate a new support bundle",
 		Long:  `Collect data and generate a new support bundle`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return cli.Generate(opts.specFiles, opts.specDocs, opts.bundlePath, opts.skipDefault, opts.timeoutSeconds)
+			return cli.Generate(opts.specFiles, opts.specDocs, opts.bundlePath, opts.skipDefault, opts.timeoutSeconds, opts.enableKubernetes)
 		},
 	}
 
@@ -30,6 +31,7 @@ func NewGenerateCommand(cli *cli.Cli) *cobra.Command {
 	cmd.Flags().StringVarP(&opts.bundlePath, "out", "o", "supportbundle.tar.gz", "Path where the generated bundle should be stored")
 	cmd.Flags().BoolVar(&opts.skipDefault, "skip-default", false, "If present, skip the default support bundle files")
 	cmd.Flags().IntVar(&opts.timeoutSeconds, "timeout", 60, "The overall support bundle generation timeout")
+	cmd.Flags().BoolVarP(&opts.enableKubernetes, "kubernetes", "k", false, "enable kubernetes support")
 
 	return cmd
 }

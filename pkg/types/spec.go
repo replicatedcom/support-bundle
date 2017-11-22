@@ -30,6 +30,9 @@ type Spec struct {
 	HTTPRequestCommand     *HTTPRequestCommandOptions     `json:"core.http-request,omitempty"`
 	RetracedEventsCommand  *RetracedEventsOptions         `json:"retraced.events,omitempty"`
 	JournaldLogs           *JournaldLogs                  `json:"journald.logs,omitempty"`
+
+	KubernetesContainerLogsOptions *KubernetesContainerLogsOptions `json:"kubernetes.logs,omitempty"`
+	KubernetesResourceCommand      *KubernetesResourceCommand      `json:"kubernetes.resource,omitempty"`
 }
 
 type Config struct {
@@ -41,6 +44,18 @@ type Config struct {
 	ContainerName string   `json:"container_name"`
 	Command       string   `json:"command"`
 	Scrub         Scrub    `json:"scrub"` // TODO: should we pull scrub up one level into Spec?
+}
+
+type KubernetesResourceCommand struct {
+	Type      string `json:"type"`
+	Namespace string `json:"namespace,omitempty"`
+}
+
+type KubernetesContainerLogsOptions struct {
+	PodName       string `json:"pod_name"`
+	ContainerName string `json:"container_name,omitempty"`
+	Namespace     string `json:"namespace,omitempty"`
+	Scrub         Scrub  `json:"scrub"`
 }
 
 type DockerRunCommandOptions struct {
