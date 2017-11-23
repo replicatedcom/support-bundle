@@ -4,5 +4,33 @@
 0.2.0 / 2017-11-07
     * Debian container
 
+0.3.1 / 2017-11-10
+    * Pull support bundle image from registry
+    * Include audit logs
+
+0.4.0 / 2017-11-10
+
+0.5.0 / 2017-11-13
+    * Include journald logs
+    * Option to scrub structured source data
+    * Fix ps and free commands
+
+0.5.1 / 2017-11-13
+    * More resilient find image for journalctl
+
+0.6.0 / 2017-11-14
+    * Read default '/etc' files from host, not support-bundle container
+
+0.7.0 / 2017-11-17
+    * Include /var/log/upstart/docker.log
+
+0.8.0 / 2017-11-17
+    * Build dockerfile with 'make build'
+    * Include a version file within generated bundles
+    * Fix cpuinfo data
+
+0.8.1 / 2017-11-17
+    * Goreleaser properly supplies version data during compilation
+
 0.9.0 / 2017-11-22
     * Kubernetes support
