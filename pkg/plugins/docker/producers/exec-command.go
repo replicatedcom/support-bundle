@@ -60,8 +60,8 @@ func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProd
 		}()
 
 		readers := make(map[string]io.Reader)
-		readers["stdout"] = stdoutR
-		readers["stderr"] = stderrR
+		readers[".stdout"] = stdoutR
+		readers[".stderr"] = stderrR
 		return readers, nil
 	}
 }

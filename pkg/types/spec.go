@@ -27,9 +27,10 @@ type Spec struct {
 	DockerRunCommand       *DockerRunCommandOptions       `json:"docker.run-command,omitempty"`
 	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
+	DockerSwarmOptions     *DockerSwarmOptions            `json:"docker.swarm-options,omitempty"`
 	HTTPRequestCommand     *HTTPRequestCommandOptions     `json:"core.http-request,omitempty"`
-	RetracedEventsCommand  *RetracedEventsOptions         `json:"retraced.events,omitempty"`
 	JournaldLogs           *JournaldLogs                  `json:"journald.logs,omitempty"`
+	RetracedEventsCommand  *RetracedEventsOptions         `json:"retraced.events,omitempty"`
 
 	KubernetesContainerLogsOptions *KubernetesContainerLogsOptions `json:"kubernetes.logs,omitempty"`
 	KubernetesResourceCommand      *KubernetesResourceCommand      `json:"kubernetes.resource,omitempty"`
@@ -69,6 +70,11 @@ type DockerContainerLogsOptions struct {
 
 type DockerContainerInspectOptions struct {
 	ContainerListOptions ContainerListOptions `json:"container_list_options"`
+}
+
+type DockerSwarmOptions struct {
+	ServiceName string `json:"service_name"`
+	Namespace   string `json:"namespace"`
 }
 
 type HTTPRequestCommandOptions struct {
