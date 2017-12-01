@@ -3,7 +3,6 @@ package bundle
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -80,12 +79,7 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 		if err != nil {
 			return errors.Wrap(err, "finding the file that was just compressed")
 		}
-
-		fmt.Printf("Posting to %s\n", url.String())
-
 		_, err = http.Post(url.String(), "application/tar+gzip", file)
-
-		fmt.Println(err)
 	}
 
 	return err
