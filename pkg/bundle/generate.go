@@ -1,9 +1,12 @@
 package bundle
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
@@ -20,10 +23,10 @@ import (
 func Generate(tasks []types.Task, timeout time.Duration, pathname string) error {
 	var isURL bool
 
-	url, err := url.Parse(pathname)
-	if err == nil && url.Scheme == "https" {
+	callbackURL, err := url.Parse(pathname)
+	if err == nil && (callbackURL.Scheme == "http" || callbackURL.Scheme == "https") {
 		isURL = true
-		pathname = "/tmp/support-bundle.tar.gz"
+		pathname = "/tmp/bundle.tar.gz"
 	}
 
 	collectDir, err := ioutil.TempDir(filepath.Dir(pathname), "")
@@ -73,14 +76,38 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 	}
 
 	if isURL {
-		file, err := os.Open(pathname)
-		defer file.Close()
+		var b bytes.Buffer
+		w := multipart.NewWriter(&b)
 
+		file, err := os.Open(pathname)
 		if err != nil {
 			return errors.Wrap(err, "finding the file that was just compressed")
 		}
-		_, err = http.Post(url.String(), "application/tar+gzip", file)
+		defer file.Close()
+		fw, err := w.CreateFormFile("file", pathname)
+		if err != nil {
+			return errors.Wrap(err, "creating multipart form")
+		}
+
+		if _, err = io.Copy(fw, file); err != nil {
+			return errors.Wrap(err, "copying buffer")
+		}
+
+		w.Close()
+
+		req, err := http.NewRequest("POST", callbackURL.String(), &b)
+		if err != nil {
+			return errors.Wrap(err, "making request")
+		}
+
+		req.Header.Set("Content-Type", w.FormDataContentType())
+
+		client := &http.Client{}
+		_, err = client.Do(req)
+		if err != nil {
+			return errors.Wrap(err, "completing request")
+		}
 	}
 
-	return err
+	return nil
 }
