@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"fmt"
 	"io/ioutil"
 	"time"
 
@@ -36,7 +35,6 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 	}
 
 	for _, cfgDoc := range cfgDocs {
-		fmt.Println(cfgDoc)
 		argSpecs, err := spec.Parse([]byte(cfgDoc))
 		if err != nil {
 			return errors.Wrap(err, "Failed to parse spec")
