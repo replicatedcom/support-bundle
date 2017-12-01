@@ -34,3 +34,6 @@
 
 0.9.0 / 2017-11-22
     * Kubernetes support
+
+0.9.1 / 2017-12-01
+    * Support output to a URL. This will do a form post to the provided callback URL.
