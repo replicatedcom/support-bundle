@@ -41,4 +41,5 @@
 0.10.0 /2017-12-04
     * Swarm specific commands - docker.services, docker.service-logs, docker.swarm-nodes, docker.swarm-node-tasks,
         docker.stack-services, docker.stack-services-logs, docker.stack-tasks, docker.stack-tasks-logs
-    * docker.stack-tasks-logs may not be functional
+    * Updated docker client library to latest
+    * Docker client now negotiates a version

@@ -25,7 +25,11 @@ func (d *Docker) ExecCommand(containerID string, cmd []string) types.StreamsProd
 			return nil, err
 		}
 
-		att, err := d.client.ContainerExecAttach(ctx, execInstance.ID, execOpts)
+		execStartCheck := dockertypes.ExecStartCheck{
+			Detach: false,
+			Tty:    false,
+		}
+		att, err := d.client.ContainerExecAttach(ctx, execInstance.ID, execStartCheck)
 		if err != nil {
 			return nil, err
 		}

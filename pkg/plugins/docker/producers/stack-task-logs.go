@@ -45,8 +45,7 @@ func (d *Docker) StackTaskLogs(namespace string) types.StreamsProducer {
 				continue
 			}
 
-			//TODO: this needs to be changed to TaskLogs, but that requires a docker library version >=17.05
-			reader, err := d.client.ServiceLogs(ctx, task.ID,
+			reader, err := d.client.TaskLogs(ctx, task.ID,
 				dockertypes.ContainerLogsOptions{ShowStderr: true, ShowStdout: true, Timestamps: true})
 			if err != nil {
 				gotError := bytes.NewReader([]byte("error: " + err.Error()))
