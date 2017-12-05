@@ -80,8 +80,8 @@ func (d *Docker) RunCommand(opts types.DockerRunCommandOptions) types.StreamsPro
 		}()
 
 		readers := make(map[string]io.Reader)
-		readers["stdout"] = stdoutR
-		readers["stderr"] = stderrR
+		readers[".stdout"] = stdoutR
+		readers[".stderr"] = stderrR
 		return readers, nil
 	}
 }

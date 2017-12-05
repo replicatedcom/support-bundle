@@ -24,5 +24,13 @@ func New() (types.Plugin, error) {
 		"run-command":          docker.RunCommand,
 		"container-ls-logs":    docker.ContainerLogs,
 		"container-ls-inspect": docker.ContainerInspect,
+		"services":             docker.Services,
+		"service-logs":         docker.ServiceLogs,
+		"swarm-nodes":          docker.SwarmNodes,
+		"swarm-node-tasks":     docker.SwarmNodeTasks,
+		"stack-services":       docker.StackServices,
+		"stack-services-logs":  docker.StackServiceLogs,
+		"stack-tasks":          docker.StackTasks,
+		"stack-tasks-logs":     docker.StackTaskLogs,
 	}, nil
 }

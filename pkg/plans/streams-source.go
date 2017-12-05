@@ -75,7 +75,7 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 	readerGroup.Add(len(readers))
 
 	mkPath := func(path, name string) string {
-		return path + "." + name
+		return path + name
 	}
 
 	for name, reader := range readers {

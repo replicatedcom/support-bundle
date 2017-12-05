@@ -13,6 +13,7 @@ type Docker struct {
 }
 
 func New(client *docker.Client) *Docker {
+	client.NegotiateAPIVersion(context.Background())
 	return &Docker{client}
 }
 

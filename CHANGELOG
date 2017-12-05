@@ -37,3 +37,9 @@
 
 0.9.1 / 2017-12-01
     * Support output to a URL. This will do a form post to the provided callback URL.
+
+0.10.0 /2017-12-04
+    * Swarm specific commands - docker.services, docker.service-logs, docker.swarm-nodes, docker.swarm-node-tasks,
+        docker.stack-services, docker.stack-services-logs, docker.stack-tasks, docker.stack-tasks-logs
+    * Updated docker client library to latest
+    * Docker client now negotiates a version
