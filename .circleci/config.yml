@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     machine: true
-    working_directory: $HOME/go/src/github.com/replicatedcom/support-bundle
+    working_directory: ~/go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
       - run: make build
@@ -17,7 +17,7 @@ jobs:
   deploy:
     docker:
       - image: circleci/golang:1.9
-    working_directory: $HOME/go/src/github.com/replicatedcom/support-bundle
+    working_directory: ~/go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
       - setup_remote_docker
