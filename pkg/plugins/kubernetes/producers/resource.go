@@ -49,7 +49,7 @@ func (k *Kubernetes) Resource(rtype string, ns string) types.StructuredProducer 
 		case "ingresses":
 			return c.ExtensionsV1beta1().Ingresses(ns).List(opts)
 		case "horizontalpodautoscalers":
-			return c.AutoscalingV2beta1().HorizontalPodAutoscalers(ns).List(opts)
+			return c.AutoscalingV1().HorizontalPodAutoscalers(ns).List(opts)
 		case "events":
 			return c.CoreV1().Events(ns).List(opts)
 		case "endpoints":
