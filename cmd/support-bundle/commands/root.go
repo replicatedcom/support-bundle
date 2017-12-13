@@ -25,5 +25,4 @@ be used to generate input to the support.io service.`,
 func addCommands(cmd *cobra.Command, cli *cli.Cli) {
 	cmd.AddCommand(NewGenerateCommand(cli))
 	cmd.AddCommand(NewUploadCommand(cli))
-	cmd.AddCommand(NewServerCommand(cli))
 }
