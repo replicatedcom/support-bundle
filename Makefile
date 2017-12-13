@@ -142,4 +142,4 @@ container-clean:
 bin-clean:
 	rm -rf .go bin
 
-all: build test integration-test integration-test-docker
+all: build test e2e e2e-docker
