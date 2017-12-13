@@ -6,7 +6,12 @@ PKG := github.com/replicatedcom/support-bundle
 VERSION := $(shell git describe --tags --always --dirty)
 SHA := $(shell git log --pretty=format:'%H' -n 1)
 ARCH ?= amd64
-BUILD_TIME ?= $(shell date -u +%FT%T)
+
+ifeq ($(shell uname), Darwin)
+	BUILD_TIME := $(shell date -u +%FT%T)
+else
+	BUILD_TIME := $(shell date --rfc-3339=seconds | sed 's/ /T/')
+endif
 
 SRC_DIRS := cmd pkg
 BUILD_IMAGE ?= golang:1.9-alpine
