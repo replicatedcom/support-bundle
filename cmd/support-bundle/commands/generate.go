@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"github.com/replicatedcom/support-bundle/pkg/cli"

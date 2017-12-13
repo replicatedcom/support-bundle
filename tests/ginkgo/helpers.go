@@ -18,7 +18,7 @@ import (
 	dockernetworktypes "github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	. "github.com/onsi/gomega"
-	"github.com/replicatedcom/support-bundle/cmd"
+	cmd "github.com/replicatedcom/support-bundle/cmd/support-bundle/commands"
 	"github.com/replicatedcom/support-bundle/pkg/cli"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
