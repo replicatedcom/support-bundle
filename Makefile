@@ -1,9 +1,12 @@
+# Structure adapted from https://github.com/thockin/go-build-template
+
 SHELL := /bin/bash
 BIN := support-bundle
 PKG := github.com/replicatedcom/support-bundle
 VERSION := $(shell git describe --tags --always --dirty)
 SHA := $(shell git log --pretty=format:'%H' -n 1)
 ARCH ?= amd64
+BUILD_TIME := $(shell date --rfc-3339=seconds | sed 's/ /T/')"
 
 SRC_DIRS := cmd pkg
 BUILD_IMAGE ?= golang:1.9-alpine
@@ -82,7 +85,8 @@ bin/$(ARCH)/$(BIN): build-dirs
 	        ARCH=$(ARCH)                                                    \
 	        VERSION=$(VERSION)                                              \
 	        PKG=$(PKG)                                                      \
-			SHA=$(SHA)                                                        \
+			SHA=$(SHA)
+			BUILD_TIME=$(BUILD_TIME)                                                       \
 	        ./build/build.sh                                                \
 	    "
 

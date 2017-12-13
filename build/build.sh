@@ -20,6 +20,10 @@ if [ -z "${SHA}" ]; then
     echo "SHA must be set"
     exit 1
 fi
+if [ -z "${BUILD_TIME}" ]; then
+    echo "BUILD_TIME must be set"
+    exit 1
+fi
 
 export CGO_ENABLED=0
 export GOARCH="${ARCH}"
@@ -29,4 +33,5 @@ go install \
     -ldflags " \
     -X ${PKG}/pkg/version.version=${VERSION} \
     -X ${PKG}/pkg/version.gitSHA=${SHA}" \
+    -X ${PKG}/pkg/version.buildTime=${BUILD_TIME}" \
     ./...

@@ -11,7 +11,6 @@ jobs:
       - checkout
       - run: make build
       - run: docker build -t registry.replicated.com/library/support-bundle -f hack/Dockerfile-release .
-      - run: docker pull ubuntu:latest
       - run: make test
       - run: make e2e
       - run: make e2e-docker

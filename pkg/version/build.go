@@ -3,5 +3,5 @@ package version
 // NOTE: these variables are injected at build time
 
 var (
-	version, gitSHA string
+	version, gitSHA, buildTime string
 )
