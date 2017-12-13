@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
-	"github.com/replicatedcom/support-bundle/version"
+	"github.com/replicatedcom/support-bundle/pkg/version"
 )
 
 func Version() types.StructuredProducer {

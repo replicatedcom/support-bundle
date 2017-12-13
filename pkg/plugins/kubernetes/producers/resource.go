@@ -15,9 +15,9 @@ func (k *Kubernetes) Resource(rtype string, ns string) types.StructuredProducer 
 
 		switch rtype {
 		case "storageclasses":
-			return c.Storage().StorageClasses().List(opts)
+			return c.StorageV1().StorageClasses().List(opts)
 		case "statefulsets":
-			return c.Apps().StatefulSets(ns).List(opts)
+			return c.AppsV1beta2().StatefulSets(ns).List(opts)
 		case "services":
 			return c.CoreV1().Services(ns).List(opts)
 		case "secrets":
@@ -27,41 +27,41 @@ func (k *Kubernetes) Resource(rtype string, ns string) types.StructuredProducer 
 		case "replicationcontrollers":
 			return c.CoreV1().ReplicationControllers(ns).List(opts)
 		case "replicasets":
-			return c.Apps().ReplicaSets(ns).List(opts)
+			return c.AppsV1beta2().ReplicaSets(ns).List(opts)
 		case "podtemplates":
 			return c.CoreV1().PodTemplates(ns).List(opts)
 		case "podsecuritypolicies":
-			return c.Extensions().PodSecurityPolicies().List(opts)
+			return c.ExtensionsV1beta1().PodSecurityPolicies().List(opts)
 		case "pods":
-			return c.Core().Pods(ns).List(opts)
+			return c.CoreV1().Pods(ns).List(opts)
 		case "persistentvolumes":
-			return c.Core().PersistentVolumes().List(opts)
+			return c.CoreV1().PersistentVolumes().List(opts)
 		case "persistentvolumeclaims":
-			return c.Core().PersistentVolumeClaims(ns).List(opts)
+			return c.CoreV1().PersistentVolumeClaims(ns).List(opts)
 		case "nodes":
-			return c.Core().Nodes().List(opts)
+			return c.CoreV1().Nodes().List(opts)
 		case "networkpolicies":
-			return c.Networking().NetworkPolicies(ns).List(opts)
+			return c.NetworkingV1().NetworkPolicies(ns).List(opts)
 		case "limitranges":
-			return c.Core().LimitRanges(ns).List(opts)
+			return c.CoreV1().LimitRanges(ns).List(opts)
 		case "jobs":
-			return c.Batch().Jobs(ns).List(opts)
+			return c.BatchV1().Jobs(ns).List(opts)
 		case "ingresses":
-			return c.Extensions().Ingresses(ns).List(opts)
+			return c.ExtensionsV1beta1().Ingresses(ns).List(opts)
 		case "horizontalpodautoscalers":
-			return c.Autoscaling().HorizontalPodAutoscalers(ns).List(opts)
+			return c.AutoscalingV1().HorizontalPodAutoscalers(ns).List(opts)
 		case "events":
-			return c.Core().Events(ns).List(opts)
+			return c.CoreV1().Events(ns).List(opts)
 		case "endpoints":
-			return c.Core().Endpoints(ns).List(opts)
+			return c.CoreV1().Endpoints(ns).List(opts)
 		case "deployments":
-			return c.Apps().Deployments(ns).List(opts)
+			return c.AppsV1beta2().Deployments(ns).List(opts)
 		case "daemonsets":
-			return c.Apps().DaemonSets(ns).List(opts)
+			return c.AppsV1beta2().DaemonSets(ns).List(opts)
 		case "configmaps":
-			return c.Core().ConfigMaps(ns).List(opts)
+			return c.CoreV1().ConfigMaps(ns).List(opts)
 		case "componentstatuses":
-			return c.Core().ComponentStatuses().List(opts)
+			return c.CoreV1().ComponentStatuses().List(opts)
 		default:
 			return nil, errors.New("Unknown resource type, must be one of: storageclasses, statefulsets, services, secrets, resourcequotas, replicationcontrollers, replicasets, podtemplates, podsecuritypolicies, pods, persistentvolumes, persistentvolumeclaims, nodes, networkpolicies, limitranges, jobs, ingresses, horizontalpodautoscalers, events, endpoints, deployments, daemonsets, configmaps, componentstatuses")
 		}

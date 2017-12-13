@@ -61,6 +61,7 @@ func TestGenerate(t *testing.T) {
 	})...)
 
 	client, err := docker.NewEnvClient()
+	require.NoError(t, err, "Unable to get Docker client")
 
 	dockerplanner := dockerplanners.New(dockerproducers.New(client), client)
 

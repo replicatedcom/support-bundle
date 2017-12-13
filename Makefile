@@ -1,8 +1,21 @@
-SHELL := /bin/bash
-.PHONY: clean deps install run test build shell all
+# Structure adapted from https://github.com/thockin/go-build-template
 
-clean:
-	rm -f ./bin/support-bundle
+SHELL := /bin/bash
+BIN := support-bundle
+PKG := github.com/replicatedcom/support-bundle
+VERSION := $(shell git describe --tags --always --dirty)
+SHA := $(shell git log --pretty=format:'%H' -n 1)
+ARCH ?= amd64
+
+ifeq ($(shell uname), Darwin)
+	BUILD_TIME := $(shell date -u +%FT%T)
+else
+	BUILD_TIME := $(shell date --rfc-3339=seconds | sed 's/ /T/')
+endif
+
+SRC_DIRS := cmd pkg
+BUILD_IMAGE ?= golang:1.9-alpine
+.PHONY: clean deps install run test build shell all
 
 deps:
 	go install
@@ -12,18 +25,6 @@ install:
 
 generate:
 	./bin/support-bundle generate
-
-test:
-	docker pull ubuntu:latest
-	go test -v ./pkg/...
-
-integration-test:
-	ginkgo -v -r -p --skip="docker container|retraced.events|journald.logs" tests/ginkgo
-
-integration-test-docker:
-	docker pull ubuntu:latest
-	ginkgo -v -r -p --focus="docker container|journald.logs" tests/ginkgo
-
 # this task assumes a working retraced installation, and requires the following params to be set:
 #
 #  RETRACED_API_ENDPOINT
@@ -37,14 +38,100 @@ integration-test-docker:
 integration-test-retraced:
 	ginkgo -v -r -p --focus="retraced.events" tests/ginkgo
 
-build:
-	mkdir -p bin
-	go build \
-		-ldflags=" \
-		-X github.com/replicatedcom/support-bundle/version.version=$(shell git describe) \
-		-X github.com/replicatedcom/support-bundle/version.gitSHA=$(shell git log --pretty=format:'%H' -n 1) \
-		-X github.com/replicatedcom/support-bundle/version.buildTime=$(shell date --rfc-3339=seconds | sed 's/ /T/')" \
-		-o ./bin/support-bundle .
+build-%:
+	@$(MAKE) --no-print-directory ARCH=$* build
+
+container-%:
+	@$(MAKE) --no-print-directory ARCH=$* container
+
+push-%:
+	@$(MAKE) --no-print-directory ARCH=$* push
+
+build: bin/$(ARCH)/$(BIN)
+
+bin/$(ARCH)/$(BIN): build-dirs
+	@echo "building: $@"
+	@docker run                                                             \
+	    -ti                                                                 \
+	    --rm                                                                \
+	    -u $$(id -u):$$(id -g)                                              \
+	    -v "$$(pwd)/.go:/go"                                                \
+	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+	    -v "$$(pwd)/bin/$(ARCH):/go/bin"                                    \
+	    -v "$$(pwd)/bin/$(ARCH):/go/bin/$$(go env GOOS)_$(ARCH)"            \
+	    -v "$$(pwd)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
+	    -w /go/src/$(PKG)                                                   \
+	    $(BUILD_IMAGE)                                                      \
+	    /bin/sh -c "                                                        \
+	        ARCH=$(ARCH)                                                    \
+	        VERSION=$(VERSION)                                              \
+	        PKG=$(PKG)                                                      \
+			SHA=$(SHA)                                                      \
+			BUILD_TIME=$(BUILD_TIME)                                        \
+	        ./build/build.sh                                                \
+	    "
+
+# Example: make shell CMD="-c 'date > datefile'"
+shell: build-dirs
+	@echo "launching a shell in the containerized build environment"
+	@docker run                                                             \
+	    -ti                                                                 \
+	    --rm                                                                \
+	    -u $$(id -u):$$(id -g)                                              \
+	    -v "$$(pwd)/.go:/go"                                                \
+	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+	    -v "$$(pwd)/bin/$(ARCH):/go/bin"                                    \
+	    -v "$$(pwd)/bin/$(ARCH):/go/bin/$$(go env GOOS)_$(ARCH)"            \
+	    -v "$$(pwd)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
+	    -w /go/src/$(PKG)                                                   \
+	    $(BUILD_IMAGE)                                                      \
+	    /bin/sh $(CMD)
+
+test: build-dirs
+	@docker run                                                             \
+	    -ti                                                                 \
+	    --rm                                                                \
+	    -v "$$(pwd)/.go:/go"                                                \
+	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+	    -v "$$(pwd)/bin/$(ARCH):/go/bin"                                    \
+		-v /var/run/docker.sock:/var/run/docker.sock                        \
+	    -v "$$(pwd)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
+	    -w /go/src/$(PKG)                                                   \
+	    $(BUILD_IMAGE)                                                      \
+	    /bin/sh -c "                                                        \
+	        ./build/test.sh $(SRC_DIRS)                                     \
+	    "
+
+e2e: build-dirs
+	@docker run                                                             \
+	    -ti                                                                 \
+	    --rm                                                                \
+	    -v "$$(pwd)/.go:/go"                                                \
+	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+		-v /var/run/docker.sock:/var/run/docker.sock                        \
+	    -w /go/src/$(PKG)                                                   \
+	    golang:1.9                                                          \
+	    /bin/sh -c "                                                        \
+	        ./build/e2e.sh $(SRC_DIRS)                                      \
+	    "
+
+e2e-docker: build-dirs
+	@docker run                                                             \
+	    -ti                                                                 \
+	    --rm                                                                \
+	    -v "$$(pwd)/.go:/go"                                                \
+	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+		-v /var/run/docker.sock:/var/run/docker.sock                        \
+	    -w /go/src/$(PKG)                                                   \
+		golang:1.9                                                          \
+	    /bin/sh -c "                                                        \
+			DOCKER=1                                                        \
+	        ./build/e2e.sh $(SRC_DIRS)                                      \
+	    "
+
+build-dirs:
+	@mkdir -p bin/$(ARCH)
+	@mkdir -p .go/src/$(PKG) .go/pkg .go/bin .go/std/$(ARCH)
 
 githooks:
 	echo 'make integration-test' > .git/hooks/pre-push
@@ -52,4 +139,12 @@ githooks:
 	echo 'go fmt ./...' > .git/hooks/pre-commit
 	chmod +x .git/hooks/pre-commit
 
-all: build test integration-test integration-test-docker
+clean: container-clean bin-clean
+
+container-clean:
+	rm -rf .container-* .dockerfile-* .push-*
+
+bin-clean:
+	rm -rf .go bin
+
+all: build test e2e e2e-docker

@@ -4,6 +4,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-instal
     procps \
     systemd \
   && rm -rf /var/lib/apt/lists/*
-COPY support-bundle /usr/local/bin/support-bundle
+COPY bin/amd64/support-bundle /usr/local/bin/support-bundle
 ENTRYPOINT [ "support-bundle" ]
 CMD [ "generate" ]

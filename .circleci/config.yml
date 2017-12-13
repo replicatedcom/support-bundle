@@ -5,24 +5,20 @@ version: 2
 
 jobs:
   build:
-    docker:
-      - image: circleci/golang:1.9
-    working_directory: /go/src/github.com/replicatedcom/support-bundle
+    machine: true
+    working_directory: ~/go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
-      - setup_remote_docker
-      - run: go get github.com/onsi/ginkgo/ginkgo
-      - run: docker pull alpine:3.5
-      # build the default image used in the journalctl task
-      - run: go build
+      - run: make build
+      - run: docker pull ubuntu:latest
       - run: docker build -t registry.replicated.com/library/support-bundle -f hack/Dockerfile-release .
       - run: make test
-      - run: make integration-test
-      - run: make integration-test-docker
+      - run: make e2e
+      - run: make e2e-docker
   deploy:
     docker:
       - image: circleci/golang:1.9
-    working_directory: /go/src/github.com/replicatedcom/support-bundle
+    working_directory: ~/go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
       - setup_remote_docker

@@ -39,6 +39,7 @@ func (d *Docker) ReadHostFile(image string, path string) types.StreamProducer {
 		}
 
 		localCtx, cancel := context.WithCancel(ctx)
+		defer cancel()
 		go func() {
 			<-localCtx.Done()
 			d.client.ContainerRemove(context.Background(), containerInstance.ID, dockertypes.ContainerRemoveOptions{

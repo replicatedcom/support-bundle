@@ -1,8 +1,6 @@
 package version
 
-import (
-	"time"
-)
+import "time"
 
 var (
 	build Build
