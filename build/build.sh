@@ -32,6 +32,6 @@ go install \
     -installsuffix "static" \
     -ldflags " \
     -X ${PKG}/pkg/version.version=${VERSION} \
-    -X ${PKG}/pkg/version.gitSHA=${SHA}" \
+    -X ${PKG}/pkg/version.gitSHA=${SHA} \
     -X ${PKG}/pkg/version.buildTime=${BUILD_TIME}" \
     ./...
