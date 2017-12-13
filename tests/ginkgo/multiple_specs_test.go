@@ -8,8 +8,8 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/replicatedcom/support-bundle/cmd/support-bundle/commands"
 	"github.com/replicatedcom/support-bundle/pkg/cli"
-	"github.com/replicatedcom/support-bundle/pkg/cli/commands"
 )
 
 var _ = Describe("Multiple specs", func() {

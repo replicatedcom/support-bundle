@@ -7,6 +7,8 @@ support-bundle.tar.gz
 *.so
 *.dylib
 
+.go/
+
 # Test binary, build with `go test -c`
 *.test
 

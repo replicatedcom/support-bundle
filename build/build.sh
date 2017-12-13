@@ -16,6 +16,10 @@ if [ -z "${VERSION}" ]; then
     echo "VERSION must be set"
     exit 1
 fi
+if [ -z "${SHA}" ]; then
+    echo "SHA must be set"
+    exit 1
+fi
 
 export CGO_ENABLED=0
 export GOARCH="${ARCH}"
@@ -24,5 +28,5 @@ go install \
     -installsuffix "static" \
     -ldflags " \
     -X ${PKG}/pkg/version.version=${VERSION} \
-    -X ${PKG}/pkg/version.gitSHA=$(git log --pretty=format:'%H' -n 1)" \
+    -X ${PKG}/pkg/version.gitSHA=${SHA}" \
     ./...
