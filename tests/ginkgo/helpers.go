@@ -18,8 +18,8 @@ import (
 	dockernetworktypes "github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	. "github.com/onsi/gomega"
+	"github.com/replicatedcom/support-bundle/cmd"
 	"github.com/replicatedcom/support-bundle/pkg/cli"
-	"github.com/replicatedcom/support-bundle/pkg/cli/commands"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -69,7 +69,7 @@ func WriteBundleConfig(config string) {
 }
 
 func GenerateBundle() {
-	cmd := commands.NewSupportBundleCommand(cli.NewCli())
+	cmd := cmd.NewSupportBundleCommand(cli.NewCli())
 	buf := new(bytes.Buffer)
 	cmd.SetOutput(buf)
 	cmd.SetArgs([]string{

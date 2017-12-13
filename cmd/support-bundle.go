@@ -5,7 +5,6 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/replicatedcom/support-bundle/pkg/cli"
-	"github.com/replicatedcom/support-bundle/pkg/cli/commands"
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
 	"github.com/spf13/viper"
@@ -19,7 +18,7 @@ type supportBundleOptions struct {
 func NewSupportBundleCommand(cli *cli.Cli) *cobra.Command {
 	opts := supportBundleOptions{}
 
-	cmd := commands.NewSupportBundleCommand(cli)
+	cmd := NewRootCommand(cli)
 	cmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		jww.SetLogOutput(os.Stderr)
 		if opts.verbose {
