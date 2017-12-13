@@ -12,24 +12,6 @@ SRC_DIRS := cmd pkg
 BUILD_IMAGE ?= golang:1.9-alpine
 .PHONY: clean deps install run test build shell all
 
-ALL_ARCH := amd64 arm arm64 ppc64le
-
-# Set default base image dynamically for each arch
-ifeq ($(ARCH),amd64)
-    BASEIMAGE?=alpine
-endif
-ifeq ($(ARCH),arm)
-    BASEIMAGE?=armel/busybox
-endif
-ifeq ($(ARCH),arm64)
-    BASEIMAGE?=aarch64/busybox
-endif
-ifeq ($(ARCH),ppc64le)
-    BASEIMAGE?=ppc64le/busybox
-endif
-
-IMAGE := $(REGISTRY)/$(BIN)-$(ARCH)
-
 deps:
 	go install
 
@@ -59,12 +41,6 @@ container-%:
 
 push-%:
 	@$(MAKE) --no-print-directory ARCH=$* push
-
-all-build: $(addprefix build-, $(ALL_ARCH))
-
-all-container: $(addprefix container-, $(ALL_ARCH))
-
-all-push: $(addprefix push-, $(ALL_ARCH))
 
 build: bin/$(ARCH)/$(BIN)
 
