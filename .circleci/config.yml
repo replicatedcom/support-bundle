@@ -9,9 +9,6 @@ jobs:
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
-      - setup_remote_docker
-      - run: docker pull alpine:3.5
-      # build the default image used in the journalctl task
       - run: make build
       - run: docker build -t registry.replicated.com/library/support-bundle -f hack/Dockerfile-release .
       - run: make test
