@@ -8,10 +8,6 @@ export CGO_ENABLED=0
 
 TARGETS=$(for d in "$@"; do echo ./$d/...; done)
 
-echo "Pulling pre-requisite image:"
-docker pull ubuntu:latest
-echo
-
 echo "Running tests:"
 go test -i -installsuffix "static" ${TARGETS}
 go test -installsuffix "static" ${TARGETS}
