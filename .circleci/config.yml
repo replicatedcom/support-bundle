@@ -4,21 +4,44 @@
 version: 2
 
 jobs:
-  build:
-    machine: true
-    working_directory: ~/go/src/github.com/replicatedcom/support-bundle
+  test:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
+      - run: make test
+
+  e2e:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/replicatedcom/support-bundle
+    steps:
+      - checkout
+      - setup_remote_docker
       - run: make build
       - run: docker pull ubuntu:latest
       - run: docker build -t registry.replicated.com/library/support-bundle -f hack/Dockerfile-release .
       - run: make test
       - run: make e2e
+
+  e2e_docker:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/replicatedcom/support-bundle
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: make build
+      - run: docker pull ubuntu:latest
+      - run: docker build -t registry.replicated.com/library/support-bundle -f hack/Dockerfile-release .
+      - run: make test
       - run: make e2e-docker
+
   deploy:
     docker:
       - image: circleci/golang:1.9
-    working_directory: ~/go/src/github.com/replicatedcom/support-bundle
+    working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
       - setup_remote_docker
@@ -28,16 +51,16 @@ jobs:
 
 workflows:
   version: 2
-  build-n-deploy:
+  build_accept_deploy:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /.*/
-
+      - test
+      - e2e
+      - e2e_docker
       - deploy:
           requires:
-            - build
+            - test
+            - e2e
+            - e2e_docker
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*(-.*)*/
