@@ -29,9 +29,9 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      # - run: make build
       - run: docker pull ubuntu:latest
-      # - run: docker build -t registry.replicated.com/library/support-bundle -f hack/Dockerfile-release .
+      - run: touch bin/amd64/support-bundle
+      - run: docker build -t registry.replicated.com/library/support-bundle -f hack/Dockerfile-release .
       - run: DOCKER=true ./build/e2e.sh
 
   deploy:
