@@ -10,6 +10,7 @@ jobs:
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
+      - setup_remote_docker
       - run: make test
 
   e2e:
