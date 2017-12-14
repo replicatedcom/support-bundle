@@ -2,6 +2,8 @@ package planners
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"strconv"
 	"strings"
 
@@ -34,10 +36,15 @@ func Uptime(spec types.Spec) []types.Task {
 	return []types.Task{task}
 }
 
-func parseUptime(contents []byte) (interface{}, error) {
+func parseUptime(r io.Reader) (interface{}, error) {
 
 	// # cat /proc/uptime
 	// 33524.72 66785.42
+
+	contents, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
 
 	parts := strings.Split(strings.TrimSpace(string(contents)), " ")
 	if len(parts) != 2 {

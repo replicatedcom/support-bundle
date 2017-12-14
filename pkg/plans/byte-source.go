@@ -1,8 +1,10 @@
 package plans
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
 	"time"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -15,7 +17,7 @@ type ByteSource struct {
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
 	RawScrubber func([]byte) []byte
 	// Parser, if defined, structures the raw data for json and human sinks
-	Parser func([]byte) (interface{}, error)
+	Parser func(io.Reader) (interface{}, error)
 	// StructuredScrubber, if defined, rewrites the structured data to remove sensitive data
 	//StructedScrubber func(interface{}) (interface{}, error)
 	// Template, if defined, renders structured data in a human-readable format
@@ -107,7 +109,7 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 
 	var structured interface{}
 	if parser {
-		structured, err = task.Parser(data)
+		structured, err = task.Parser(bytes.NewReader(data))
 		if err != nil {
 			jsonResult.Error = err
 

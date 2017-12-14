@@ -19,6 +19,8 @@ type StreamsSource struct {
 	// Producer provides the seed data for this task as an io.Reader array
 	// Names of the sources are provided as a string array
 	Producer func(context.Context) (map[string]io.Reader, error)
+	// Parser, if defined, structures the raw data for json and human sinks
+	Parser func(io.Reader) (interface{}, error)
 	// StreamFormat describe stream format returned by Producer.  Only "" and "tar" are supported.
 	StreamFormat string
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
@@ -71,8 +73,6 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 		go func(name string, reader io.Reader) {
 			defer readerGroup.Done()
 
-			fmt.Fprintln(os.Stderr, "HERE 1", name)
-
 			var moreResults []*types.Result
 			switch task.StreamFormat {
 			case "":
@@ -92,13 +92,10 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 			resultsMut.Lock()
 			results = append(results, moreResults...)
 			resultsMut.Unlock()
-			fmt.Fprintln(os.Stderr, "HERE 2", name)
 		}(name, reader)
 	}
 
-	fmt.Fprintln(os.Stderr, "HERE 3")
 	readerGroup.Wait()
-	fmt.Fprintln(os.Stderr, "HERE 4")
 	return results
 }
 
@@ -131,9 +128,19 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 		defer closeLogErr(closer)
 	}
 
+	parser := task.Parser != nil
+	templated := task.Template != ""
+
 	raw := task.RawPath != ""
+
 	jsonify := task.JSONPath != ""
+	jsonParsed := jsonify && parser
+	jsonRaw := jsonify && !jsonParsed
+
 	human := task.HumanPath != ""
+	humanTemplated := human && parser && templated
+	humanYAML := human && parser && !humanTemplated
+	humanRaw := human && !humanTemplated && !humanYAML
 
 	results := []*types.Result{}
 
@@ -143,25 +150,53 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 		reader = scrubbedReader
 	}
 
-	rawResult := types.Result{}
-	jsonResult := types.Result{}
-	humanResult := types.Result{}
+	rawResult := &types.Result{}
+	jsonResult := &types.Result{}
+	humanResult := &types.Result{}
+
+	if raw {
+		results = append(results, rawResult)
+	}
+	if jsonify {
+		results = append(results, jsonResult)
+	}
+	if human {
+		results = append(results, humanResult)
+	}
 
 	rawPath := mkPath(task.RawPath, filePath, fileExt)
 	jsonPath := mkPath(task.JSONPath, filePath, fileExt)
 	humanPath := mkPath(task.HumanPath, filePath, fileExt)
 
-	// first write to one file
-	if raw {
-		writeResult(ctx, rootDir, rawPath, &rawResult, reader)
-	} else if jsonify {
-		writeResult(ctx, rootDir, jsonPath, &jsonResult, reader)
-	} else if human {
-		writeResult(ctx, rootDir, humanPath, &humanResult, reader)
+	var structured interface{}
+	if parser {
+		pr, pw := io.Pipe()
+		tr := io.TeeReader(reader, pw)
+		var err error
+		structured, err = task.Parser(tr)
+		reader = pr
+		if err != nil {
+			jsonResult.Error = err
+
+			if humanTemplated || humanYAML {
+				humanResult.Error = err
+				// nothing left to do
+				return results
+			}
+		} else {
+			writeResultJSON(ctx, rootDir, task.JSONPath, jsonResult, structured)
+		}
 	}
 
-	// then link to any other requested paths
-	if raw && jsonify {
+	if raw {
+		writeResult(ctx, rootDir, rawPath, rawResult, reader)
+	} else if jsonRaw {
+		writeResult(ctx, rootDir, jsonPath, jsonResult, reader)
+	} else if humanRaw {
+		writeResult(ctx, rootDir, humanPath, humanResult, reader)
+	}
+
+	if raw && jsonRaw {
 		jsonResult = rawResult
 		if rawResult.Path != "" {
 			if err := os.Link(rawPath, jsonPath); err != nil {
@@ -171,7 +206,16 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 			}
 		}
 	}
-	if raw && human {
+
+	if humanTemplated {
+		writeResultTemplate(ctx, rootDir, task.HumanPath, humanResult, task.Template, structured)
+	}
+
+	if humanYAML {
+		writeResultYAML(ctx, rootDir, task.HumanPath, humanResult, structured)
+	}
+
+	if raw && humanRaw {
 		humanResult = rawResult
 		if rawResult.Path != "" {
 			if err := os.Link(rawPath, humanPath); err != nil {
@@ -180,8 +224,7 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 				humanResult.Path = humanPath
 			}
 		}
-	}
-	if jsonify && human {
+	} else if jsonRaw && humanRaw {
 		humanResult = jsonResult
 		if jsonResult.Path != "" {
 			if err := os.Link(jsonPath, humanPath); err != nil {
@@ -190,16 +233,6 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 				humanResult.Path = humanPath
 			}
 		}
-	}
-
-	if raw {
-		results = append(results, &rawResult)
-	}
-	if jsonify {
-		results = append(results, &jsonResult)
-	}
-	if human {
-		results = append(results, &humanResult)
 	}
 
 	return results
