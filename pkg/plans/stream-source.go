@@ -12,12 +12,12 @@ import (
 type StreamSource struct {
 	// Producer provides the seed data for this task as an io.Reader
 	Producer func(context.Context) (io.Reader, error)
-	// Parser, if defined, structures the raw data for json and human sinks
-	Parser func(io.Reader) (interface{}, error)
 	// StreamFormat describe stream format returned by Producer.  Only "" and "tar" are supported.
 	StreamFormat string
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
 	RawScrubber func([]byte) []byte
+	// Parser, if defined, structures the raw data for json and human sinks
+	Parser func(io.Reader) (interface{}, error)
 	// Template, if defined, renders structured data in a human-readable format
 	Template string
 	// If RawPath is defined it will get a copy of the data
@@ -35,6 +35,7 @@ func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Res
 	s := StreamsSource{
 		StreamFormat: task.StreamFormat,
 		RawScrubber:  task.RawScrubber,
+		Parser:       task.Parser,
 		Template:     task.Template,
 		RawPath:      task.RawPath,
 		JSONPath:     task.JSONPath,

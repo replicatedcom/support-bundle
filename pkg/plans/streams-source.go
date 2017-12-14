@@ -19,12 +19,12 @@ type StreamsSource struct {
 	// Producer provides the seed data for this task as an io.Reader array
 	// Names of the sources are provided as a string array
 	Producer func(context.Context) (map[string]io.Reader, error)
-	// Parser, if defined, structures the raw data for json and human sinks
-	Parser func(io.Reader) (interface{}, error)
 	// StreamFormat describe stream format returned by Producer.  Only "" and "tar" are supported.
 	StreamFormat string
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
 	RawScrubber func([]byte) []byte
+	// Parser, if defined, structures the raw data for json and human sinks
+	Parser func(io.Reader) (interface{}, error)
 	// Template, if defined, renders structured data in a human-readable format
 	Template string
 	// If RawPath is defined it will get a copy of the data
