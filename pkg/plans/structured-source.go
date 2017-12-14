@@ -45,19 +45,21 @@ func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types
 		HumanPath:   task.HumanPath,
 		Timeout:     task.Timeout,
 	}
-	s.Parser = func(_ io.Reader) (interface{}, error) {
-		return task.Producer(ctx)
-	}
-	s.Producer = func(context.Context) (map[string]io.Reader, error) {
-		structured, err := s.Parser(nil)
-		if err != nil {
-			return nil, err
+	if task.Producer != nil {
+		structured, structuredErr := task.Producer(ctx)
+		s.Parser = func(_ io.Reader) (interface{}, error) {
+			return structured, structuredErr
 		}
-		data, err := json.Marshal(structured)
-		if err != nil {
-			return nil, err
+		s.Producer = func(context.Context) (map[string]io.Reader, error) {
+			if structuredErr != nil {
+				return nil, structuredErr
+			}
+			data, err := json.Marshal(structured)
+			if err != nil {
+				return nil, err
+			}
+			return map[string]io.Reader{"": bytes.NewReader(data)}, nil
 		}
-		return map[string]io.Reader{"": bytes.NewReader(data)}, nil
 	}
 	return s.Exec(ctx, rootDir)
 }

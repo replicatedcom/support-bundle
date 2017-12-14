@@ -48,12 +48,14 @@ func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Resul
 		HumanPath:   task.HumanPath,
 		Timeout:     task.Timeout,
 	}
-	s.Producer = func(context.Context) (map[string]io.Reader, error) {
-		data, err := task.Producer(ctx)
-		if err != nil {
-			return nil, err
+	if task.Producer != nil {
+		s.Producer = func(context.Context) (map[string]io.Reader, error) {
+			data, err := task.Producer(ctx)
+			if err != nil {
+				return nil, err
+			}
+			return map[string]io.Reader{"": bytes.NewReader(data)}, nil
 		}
-		return map[string]io.Reader{"": bytes.NewReader(data)}, nil
 	}
 	return s.Exec(ctx, rootDir)
 }
