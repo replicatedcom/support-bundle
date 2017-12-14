@@ -2,6 +2,8 @@ package planners
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"strconv"
 	"strings"
 
@@ -40,10 +42,15 @@ func PlanLoadAverage(spec types.Spec) []types.Task {
 	return []types.Task{task}
 }
 
-func parseLoadAvg(contents []byte) (interface{}, error) {
+func parseLoadAvg(r io.Reader) (interface{}, error) {
 
 	// # cat /proc/loadavg
 	// 0.02 0.01 0.00 4/229 5
+
+	contents, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
 
 	parts := strings.Split(string(contents), " ")
 	if len(parts) != 5 {

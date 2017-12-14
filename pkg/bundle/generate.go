@@ -63,7 +63,7 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 
 	errorJSON, err := json.MarshalIndent(resultsWithError, "", "  ")
 	if err != nil {
-		return errors.Wrap(err, "Marshalling errors.json failed")
+		return errors.Wrap(err, "Marshalling error.json failed")
 	}
 	ioutil.WriteFile(filepath.Join(collectDir, "error.json"), errorJSON, 0666)
 

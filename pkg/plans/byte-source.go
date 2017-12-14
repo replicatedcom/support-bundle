@@ -1,8 +1,9 @@
 package plans
 
 import (
+	"bytes"
 	"context"
-	"errors"
+	"io"
 	"time"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -15,7 +16,7 @@ type ByteSource struct {
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
 	RawScrubber func([]byte) []byte
 	// Parser, if defined, structures the raw data for json and human sinks
-	Parser func([]byte) (interface{}, error)
+	Parser func(io.Reader) (interface{}, error)
 	// StructuredScrubber, if defined, rewrites the structured data to remove sensitive data
 	//StructedScrubber func(interface{}) (interface{}, error)
 	// Template, if defined, renders structured data in a human-readable format
@@ -38,104 +39,23 @@ type ByteSource struct {
 }
 
 func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Result {
-	parser := task.Parser != nil
-	rawScrubber := task.RawScrubber != nil
-
-	raw := task.RawPath != ""
-
-	jsonify := task.JSONPath != ""
-	jsonParsed := jsonify && parser
-	jsonRaw := jsonify && !jsonParsed
-
-	human := task.HumanPath != ""
-	humanTemplated := human && parser && task.Template != ""
-	humanYAML := human && parser && !humanTemplated
-	humanRaw := human && !humanTemplated && !humanYAML
-
-	results := []*types.Result{}
-
-	if !(raw || jsonify || human) {
-		return results
+	s := StreamsSource{
+		RawScrubber: task.RawScrubber,
+		Parser:      task.Parser,
+		Template:    task.Template,
+		RawPath:     task.RawPath,
+		JSONPath:    task.JSONPath,
+		HumanPath:   task.HumanPath,
+		Timeout:     task.Timeout,
 	}
-
-	if task.Producer == nil {
-		err := errors.New("no data source defined for task")
-		if raw {
-			results = append(results, &types.Result{Description: task.RawPath})
-		}
-		if jsonify {
-			results = append(results, &types.Result{Description: task.JSONPath})
-		}
-		if human {
-			results = append(results, &types.Result{Description: task.HumanPath})
-		}
-		return resultsWithErr(err, results)
-	}
-
-	rawResult := &types.Result{}
-	jsonResult := &types.Result{}
-	humanResult := &types.Result{}
-
-	if raw {
-		results = append(results, rawResult)
-	}
-	if jsonify {
-		results = append(results, jsonResult)
-	}
-	if human {
-		results = append(results, humanResult)
-	}
-
-	if task.Timeout != 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, task.Timeout)
-		defer cancel()
-	}
-
-	data, err := task.Producer(ctx)
-	if err != nil {
-		return resultsWithErr(err, results)
-	}
-
-	if rawScrubber {
-		data = task.RawScrubber(data)
-	}
-
-	if raw {
-		writeResultBytes(ctx, rootDir, task.RawPath, rawResult, data)
-	}
-
-	var structured interface{}
-	if parser {
-		structured, err = task.Parser(data)
-		if err != nil {
-			jsonResult.Error = err
-
-			if humanTemplated || humanYAML {
-				humanResult.Error = err
-				// nothing left to do
-				return results
+	if task.Producer != nil {
+		s.Producer = func(context.Context) (map[string]io.Reader, error) {
+			data, err := task.Producer(ctx)
+			if err != nil {
+				return nil, err
 			}
-		} else {
-			writeResultJSON(ctx, rootDir, task.JSONPath, jsonResult, structured)
+			return map[string]io.Reader{"": bytes.NewReader(data)}, nil
 		}
 	}
-
-	if jsonRaw {
-		writeResultBytes(ctx, rootDir, task.JSONPath, jsonResult, data)
-	}
-
-	if humanTemplated {
-		writeResultTemplate(ctx, rootDir, task.HumanPath, humanResult, task.Template, structured)
-	}
-
-	if humanYAML {
-		writeResultYAML(ctx, rootDir, task.HumanPath, humanResult, structured)
-	}
-
-	if humanRaw {
-		writeResultBytes(ctx, rootDir, task.HumanPath, humanResult, data)
-	}
-
-	return results
+	return s.Exec(ctx, rootDir)
 }
