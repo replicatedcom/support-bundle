@@ -3,8 +3,6 @@
 set -o errexit
 set -o nounset
 
-export CGO_ENABLED=0
-
 TARGETS=$(for d in "$@"; do echo ./$d/...; done)
 
 echo "Running tests:"
