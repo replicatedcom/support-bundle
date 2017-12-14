@@ -1,10 +1,13 @@
 package plans
 
 import (
+	"archive/tar"
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -16,6 +19,8 @@ type StreamsSource struct {
 	// Producer provides the seed data for this task as an io.Reader array
 	// Names of the sources are provided as a string array
 	Producer func(context.Context) (map[string]io.Reader, error)
+	// StreamFormat describe stream format returned by Producer.  Only "" and "tar" are supported.
+	StreamFormat string
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
 	RawScrubber func([]byte) []byte
 	// Template, if defined, renders structured data in a human-readable format
@@ -32,31 +37,19 @@ type StreamsSource struct {
 }
 
 func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Result {
+	if task.Producer == nil {
+		err := errors.New("no data source defined for task")
+		return task.resultsWithErr(err, "", "")
+	}
+
 	raw := task.RawPath != ""
 	jsonify := task.JSONPath != ""
 	human := task.HumanPath != ""
 
 	results := []*types.Result{}
 
-	descriptionResults := []*types.Result{}
-	if raw {
-		descriptionResults = append(descriptionResults, &types.Result{Description: task.RawPath})
-	}
-	if jsonify {
-		descriptionResults = append(descriptionResults, &types.Result{Description: task.JSONPath})
-	}
-	if human {
-		descriptionResults = append(descriptionResults, &types.Result{Description: task.HumanPath})
-	}
-
 	if !(raw || jsonify || human) {
 		return results
-	}
-
-	if task.Producer == nil {
-		err := errors.New("no data source defined for task")
-
-		return resultsWithErr(err, descriptionResults)
 	}
 
 	if task.Timeout != 0 {
@@ -67,90 +60,179 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 
 	readers, err := task.Producer(ctx)
 	if err != nil {
-		return resultsWithErr(err, descriptionResults)
+		return task.resultsWithErr(err, "", "")
 	}
 
 	var resultsMut sync.Mutex
 	var readerGroup sync.WaitGroup
 	readerGroup.Add(len(readers))
 
-	mkPath := func(path, name string) string {
-		return path + name
-	}
-
 	for name, reader := range readers {
 		go func(name string, reader io.Reader) {
-			if closer, ok := reader.(io.Closer); ok {
-				defer closeLogErr(closer)
-			}
+			defer readerGroup.Done()
 
-			if task.RawScrubber != nil {
-				scrubbedReader, scrubbedWriter := io.Pipe()
-				go filterStreams(reader, scrubbedWriter, task.RawScrubber)
-				reader = scrubbedReader
-			}
+			fmt.Fprintln(os.Stderr, "HERE 1", name)
 
-			rawResult := types.Result{}
-			jsonResult := types.Result{}
-			humanResult := types.Result{}
+			var moreResults []*types.Result
+			switch task.StreamFormat {
+			case "":
+				moreResults = task.execStream(ctx, rootDir, "", name, reader)
 
-			// first write to one file
-			if raw {
-				writeResult(ctx, rootDir, mkPath(task.RawPath, name), &rawResult, reader)
-			} else if jsonify {
-				writeResult(ctx, rootDir, mkPath(task.JSONPath, name), &jsonResult, reader)
-			} else if human {
-				writeResult(ctx, rootDir, mkPath(task.HumanPath, name), &humanResult, reader)
-			}
+			case "tar":
+				moreResults = task.execTarStream(ctx, rootDir, "", name, reader)
 
-			// then link to any other requested paths
-			if raw && jsonify {
-				jsonResult = rawResult
-				if rawResult.Path != "" {
-					if err := os.Link(mkPath(task.RawPath, name), mkPath(task.JSONPath, name)); err != nil {
-						jsonResult.Error = err
-					} else {
-						jsonResult.Path = mkPath(task.JSONPath, name)
-					}
+			default:
+				if closer, ok := reader.(io.Closer); ok {
+					closeLogErr(closer)
 				}
-			}
-			if raw && human {
-				humanResult = rawResult
-				if rawResult.Path != "" {
-					if err := os.Link(mkPath(task.RawPath, name), mkPath(task.HumanPath, name)); err != nil {
-						humanResult.Error = err
-					} else {
-						humanResult.Path = mkPath(task.HumanPath, name)
-					}
-				}
-			}
-			if jsonify && human {
-				humanResult = jsonResult
-				if jsonResult.Path != "" {
-					if err := os.Link(mkPath(task.JSONPath, name), mkPath(task.HumanPath, name)); err != nil {
-						humanResult.Error = err
-					} else {
-						humanResult.Path = mkPath(task.HumanPath, name)
-					}
-				}
+				err := fmt.Errorf("unsupported stream format: %q", task.StreamFormat)
+				moreResults = task.resultsWithErr(err, "", name)
 			}
 
 			resultsMut.Lock()
-			if raw {
-				results = append(results, &rawResult)
-			}
-			if jsonify {
-				results = append(results, &jsonResult)
-			}
-			if human {
-				results = append(results, &humanResult)
-			}
+			results = append(results, moreResults...)
 			resultsMut.Unlock()
-
-			readerGroup.Done()
+			fmt.Fprintln(os.Stderr, "HERE 2", name)
 		}(name, reader)
 	}
 
+	fmt.Fprintln(os.Stderr, "HERE 3")
 	readerGroup.Wait()
+	fmt.Fprintln(os.Stderr, "HERE 4")
 	return results
+}
+
+func (task *StreamsSource) execTarStream(ctx context.Context, rootDir string, filePath string, fileExt string, reader io.Reader) []*types.Result {
+	results := []*types.Result{}
+
+	tarReader := tar.NewReader(reader)
+	for {
+		hdr, err := tarReader.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return task.resultsWithErr(err, filePath, fileExt)
+		}
+
+		if hdr.FileInfo().IsDir() {
+			continue
+		}
+
+		moreResults := task.execStream(ctx, rootDir, hdr.Name, fileExt, tarReader)
+		results = append(results, moreResults...)
+	}
+
+	return results
+}
+
+func (task *StreamsSource) execStream(ctx context.Context, rootDir string, filePath string, fileExt string, reader io.Reader) []*types.Result {
+	if closer, ok := reader.(io.Closer); ok {
+		defer closeLogErr(closer)
+	}
+
+	raw := task.RawPath != ""
+	jsonify := task.JSONPath != ""
+	human := task.HumanPath != ""
+
+	results := []*types.Result{}
+
+	if task.RawScrubber != nil {
+		scrubbedReader, scrubbedWriter := io.Pipe()
+		go filterStreams(reader, scrubbedWriter, task.RawScrubber)
+		reader = scrubbedReader
+	}
+
+	rawResult := types.Result{}
+	jsonResult := types.Result{}
+	humanResult := types.Result{}
+
+	rawPath := mkPath(task.RawPath, filePath, fileExt)
+	jsonPath := mkPath(task.JSONPath, filePath, fileExt)
+	humanPath := mkPath(task.HumanPath, filePath, fileExt)
+
+	// first write to one file
+	if raw {
+		writeResult(ctx, rootDir, rawPath, &rawResult, reader)
+	} else if jsonify {
+		writeResult(ctx, rootDir, jsonPath, &jsonResult, reader)
+	} else if human {
+		writeResult(ctx, rootDir, humanPath, &humanResult, reader)
+	}
+
+	// then link to any other requested paths
+	if raw && jsonify {
+		jsonResult = rawResult
+		if rawResult.Path != "" {
+			if err := os.Link(rawPath, jsonPath); err != nil {
+				jsonResult.Error = err
+			} else {
+				jsonResult.Path = jsonPath
+			}
+		}
+	}
+	if raw && human {
+		humanResult = rawResult
+		if rawResult.Path != "" {
+			if err := os.Link(rawPath, humanPath); err != nil {
+				humanResult.Error = err
+			} else {
+				humanResult.Path = humanPath
+			}
+		}
+	}
+	if jsonify && human {
+		humanResult = jsonResult
+		if jsonResult.Path != "" {
+			if err := os.Link(jsonPath, humanPath); err != nil {
+				humanResult.Error = err
+			} else {
+				humanResult.Path = humanPath
+			}
+		}
+	}
+
+	if raw {
+		results = append(results, &rawResult)
+	}
+	if jsonify {
+		results = append(results, &jsonResult)
+	}
+	if human {
+		results = append(results, &humanResult)
+	}
+
+	return results
+}
+
+func (task *StreamsSource) resultsWithErr(err error, filePath, fileExt string) []*types.Result {
+	raw := task.RawPath != ""
+	jsonify := task.JSONPath != ""
+	human := task.HumanPath != ""
+
+	rawPath := mkPath(task.RawPath, filePath, fileExt)
+	jsonPath := mkPath(task.JSONPath, filePath, fileExt)
+	humanPath := mkPath(task.HumanPath, filePath, fileExt)
+
+	results := []*types.Result{}
+
+	if raw {
+		results = append(results, &types.Result{Description: rawPath})
+	}
+	if jsonify {
+		results = append(results, &types.Result{Description: jsonPath})
+	}
+	if human {
+		results = append(results, &types.Result{Description: humanPath})
+	}
+
+	return resultsWithErr(err, results)
+}
+
+func mkPath(path, name, ext string) string {
+	path = filepath.Join(path, name)
+	if ext == "" {
+		return path
+	}
+	return path + "." + ext
 }
