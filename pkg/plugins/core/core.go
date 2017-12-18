@@ -5,13 +5,21 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func New() types.Plugin {
-	return map[string]types.Planner{
-		"loadavg":      planners.PlanLoadAverage,
-		"hostname":     planners.Hostname,
-		"uptime":       planners.Uptime,
-		"read-file":    planners.ReadFile,
-		"read-command": planners.ReadCommand,
-		"http-request": planners.HTTPRequest,
+func Plan(spec types.Spec) types.Planner {
+	switch {
+	case spec.CoreHostname != nil:
+		return planners.Hostname
+	case spec.CoreHTTPRequest != nil:
+		return planners.HTTPRequest
+	case spec.CoreLoadavg != nil:
+		return planners.Loadavg
+	case spec.CoreReadFile != nil:
+		return planners.ReadFile
+	case spec.CoreRunCommand != nil:
+		return planners.RunCommand
+	case spec.CoreUptime != nil:
+		return planners.Uptime
+	default:
+		return nil
 	}
 }

@@ -19,7 +19,6 @@ jobs:
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
-      # - setup_remote_docker
       - run: ./build/e2e.sh
 
   e2e_docker:
@@ -31,7 +30,7 @@ jobs:
       - setup_remote_docker
       - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" registry.replicated.com
       - run: docker pull ubuntu:latest
-      - run: docker pull registry.replicated.com/library/support-bundle
+      - run: docker pull registry.replicated.com/library/support-bundle:latest
       - run: DOCKER=true ./build/e2e.sh
 
   deploy:

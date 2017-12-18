@@ -6,12 +6,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
@@ -51,34 +45,34 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		specs = append(defaultSpecs, specs...)
 	}
 
-	d, err := docker.New()
-	if err != nil {
-		return errors.Wrap(err, "Failed to initialize docker plugin")
-	}
+	// d, err := docker.New()
+	// if err != nil {
+	// 	return errors.Wrap(err, "Failed to initialize docker plugin")
+	// }
 
-	j, err := journald.New()
-	if err != nil {
-		return errors.Wrap(err, "Failed to initialize journald plugin")
-	}
+	// j, err := journald.New()
+	// if err != nil {
+	// 	return errors.Wrap(err, "Failed to initialize journald plugin")
+	// }
 
 	planner := bundle.Planner{
 		Plugins: map[string]types.Plugin{
-			"core":          core.New(),
-			"docker":        d,
-			"retraced":      retraced.New(),
-			"journald":      j,
-			"supportbundle": supportbundle.New(),
+		// "core": core.New(),
+		// "docker":        d,
+		// "retraced":      retraced.New(),
+		// "journald":      j,
+		// "supportbundle": supportbundle.New(),
 		},
 	}
 
-	if enableKubernetes {
-		k, err := kubernetes.New()
-		if err != nil {
-			return errors.Wrap(err, "Failed to initialize kubernetes plugin")
-		}
+	// if enableKubernetes {
+	// 	k, err := kubernetes.New()
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "Failed to initialize kubernetes plugin")
+	// 	}
 
-		planner.Plugins["kubernetes"] = k
-	}
+	// 	planner.Plugins["kubernetes"] = k
+	// }
 
 	var tasks = planner.Plan(specs)
 	if len(tasks) == 0 {

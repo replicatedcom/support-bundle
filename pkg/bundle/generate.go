@@ -13,10 +13,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/divolgin/archiver/compressor"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/types"
-
-	"github.com/divolgin/archiver/compressor"
 )
 
 // Generate a new support bundle and write the results as an archive at pathname

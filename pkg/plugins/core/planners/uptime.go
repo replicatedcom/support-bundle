@@ -17,23 +17,24 @@ type uptime struct {
 	IdleSeconds  float64 `json:"idle_seconds"`
 }
 
-const uptimeTmpl = `
+const uptimeTemplate = `
 Total Time (seconds): {{ .TotalSeconds }}
 Idle Time (seconds): {{ .IdleSeconds }}`
 
 func Uptime(spec types.Spec) []types.Task {
-	producer := types.BytesProducerFromStreamProducer(producers.ReadFile("/proc/uptime"))
-	task := &plans.ByteSource{
-		Producer: producer,
+	task := plans.StreamsSource{
+		Spec:     spec,
+		Producer: producers.ReadFile(types.CoreReadFileOptions{Filepath: "/proc/uptime"}),
+		Template: uptimeTemplate,
 		Parser:   parseUptime,
-		Template: uptimeTmpl,
-
-		RawPath:   spec.Raw,
-		JSONPath:  spec.JSON,
-		HumanPath: spec.Human,
 	}
-
-	return []types.Task{task}
+	var err error
+	task, err = setCommonFieldsStreamsSource(task, spec)
+	if err != nil {
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
+	}
+	return []types.Task{&task}
 }
 
 func parseUptime(r io.Reader) (interface{}, error) {

@@ -1,124 +1,124 @@
 package ginkgo
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net"
 	"net/http"
-	"strings"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Make http request", func() {
+var _ = Describe("os.http-request", func() {
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(LogResultsFomBundle)
 	AfterEach(CleanupDir)
 
-	It("Successfully executes the http request", func() {
+	Context("When the spec is run", func() {
 
-		ln, err := net.Listen("tcp", "127.0.0.1:0")
-		Expect(err).NotTo(HaveOccurred())
-		defer ln.Close()
-		mux := http.NewServeMux()
-		mux.HandleFunc("/raw", func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`Hello World!`))
-		})
-		mux.HandleFunc("/json", func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`{"a":"b"}`))
-		})
-		mux.HandleFunc("/post", func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != "POST" {
-				w.WriteHeader(http.StatusMethodNotAllowed)
-				return
-			}
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`aok!`))
-		})
-		go http.Serve(ln, mux)
+		It("should output the correct files in the bundle", func() {
 
-		WriteBundleConfig(fmt.Sprintf(`
+			ln, err := net.Listen("tcp", "127.0.0.1:0")
+			Expect(err).NotTo(HaveOccurred())
+			defer ln.Close()
+			mux := http.NewServeMux()
+			mux.HandleFunc("/raw", func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "text/plain")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`Hello World!`))
+			})
+			mux.HandleFunc("/json", func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"a":"b"}`))
+			})
+			mux.HandleFunc("/post", func(w http.ResponseWriter, r *http.Request) {
+				if r.Method != "POST" {
+					w.WriteHeader(http.StatusMethodNotAllowed)
+					return
+				}
+				w.Header().Set("Content-Type", "text/plain")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`aok!`))
+			})
+			go http.Serve(ln, mux)
+
+			WriteBundleConfig(fmt.Sprintf(`
 specs:
-  - builtin: core.http-request
-    raw: /core/http-request/raw
-    core.http-request:
+  - os.http-request:
       url: http://%s/raw
-  - builtin: core.http-request
-    json: /core/http-request/json
-    core.http-request:
+    output_dir: /os/http-request/raw/
+  - os.http-request:
       url: http://%s/json
-  - builtin: core.http-request
-    raw: /core/http-request/post
-    core.http-request:
+    output_dir: /os/http-request/json/
+  - os.http-request:
       url: http://%s/post
       method: post
-  - builtin: core.http-request
-    raw: /core/http-request/err
-    core.http-request:
-      url: http://%s/post`,
-			ln.Addr(), ln.Addr(), ln.Addr(), ln.Addr()))
+    output_dir: /os/http-request/post/
+  - os.http-request:
+      url: http://%s/post
+    output_dir: /os/http-request/err/`,
+				ln.Addr(), ln.Addr(), ln.Addr(), ln.Addr()))
 
-		GenerateBundle()
+			GenerateBundle()
 
-		contents := GetFileFromBundle("core/http-request/raw")
-		Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
+			_ = GetResultFromBundle("os/http-request/raw/body")
+			contents := GetFileFromBundle("os/http-request/raw/body")
+			Expect(contents).To(Equal("Hello World!"))
 
-		contents = GetFileFromBundle("core/http-request/json")
-		Expect(strings.TrimSpace(contents)).To(Equal(`{"a":"b"}`))
+			_ = GetResultFromBundle("os/http-request/json/body")
+			contents = GetFileFromBundle("os/http-request/json/body")
+			Expect(contents).To(Equal(`{"a":"b"}`))
 
-		contents = GetFileFromBundle("core/http-request/post")
-		Expect(strings.TrimSpace(contents)).To(Equal(`aok!`))
+			_ = GetResultFromBundle("os/http-request/post/body")
+			contents = GetFileFromBundle("os/http-request/post/body")
+			Expect(contents).To(Equal(`aok!`))
 
-		ExpectBundleErrorToHaveOccured("core/http-request/err", "unexpected status 405 Method Not Allowed")
+			ExpectBundleErrorToHaveOccured("os/http-request/err", "unexpected status 405 Method Not Allowed")
+		})
 	})
 
-	It("Successfully executes the https request", func() {
+	/*	It("Successfully executes the https request", func() {
 
-		x509Cert, err := tls.X509KeyPair([]byte(certPEM), []byte(keyPEM))
-		Expect(err).NotTo(HaveOccurred())
-		ln, err := tls.Listen("tcp", "127.0.0.1:0", &tls.Config{
-			Certificates: []tls.Certificate{x509Cert},
-		})
-		Expect(err).NotTo(HaveOccurred())
-		defer ln.Close()
-		mux := http.NewServeMux()
-		mux.HandleFunc("/raw", func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(`Hello World!`))
-		})
-		go http.Serve(ln, mux)
+				x509Cert, err := tls.X509KeyPair([]byte(certPEM), []byte(keyPEM))
+				Expect(err).NotTo(HaveOccurred())
+				ln, err := tls.Listen("tcp", "127.0.0.1:0", &tls.Config{
+					Certificates: []tls.Certificate{x509Cert},
+				})
+				Expect(err).NotTo(HaveOccurred())
+				defer ln.Close()
+				mux := http.NewServeMux()
+				mux.HandleFunc("/raw", func(w http.ResponseWriter, r *http.Request) {
+					w.Header().Set("Content-Type", "text/plain")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`Hello World!`))
+				})
+				go http.Serve(ln, mux)
 
-		WriteBundleConfig(fmt.Sprintf(`
-specs:
-  - builtin: core.http-request
-    raw: /core/http-request/insecure
-    core.http-request:
-      url: https://%s/raw
-      insecure: true
-  - builtin: core.http-request
-    raw: /core/http-request/secure
-    core.http-request:
-      url: https://%s/raw`,
-			ln.Addr(), ln.Addr()))
+				WriteBundleConfig(fmt.Sprintf(`
+		specs:
+		  - builtin: core.http-request
+		    raw: /core/http-request/insecure
+		    core.http-request:
+		      url: https://%s/raw
+		      insecure: true
+		  - builtin: core.http-request
+		    raw: /core/http-request/secure
+		    core.http-request:
+		      url: https://%s/raw`,
+					ln.Addr(), ln.Addr()))
 
-		GenerateBundle()
+				GenerateBundle()
 
-		contents := GetFileFromBundle("core/http-request/insecure")
-		Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
+				contents := GetFileFromBundle("core/http-request/insecure")
+				Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
 
-		ExpectBundleErrorToHaveOccured(
-			"core/http-request/secure",
-			`make request: Get https:\/\/.+\/raw: x509: cannot validate certificate .+`)
-	})
-
+				ExpectBundleErrorToHaveOccured(
+					"core/http-request/secure",
+					`make request: Get https:\/\/.+\/raw: x509: cannot validate certificate .+`)
+			})
+	*/
 })
 
 var certPEM, keyPEM = `-----BEGIN CERTIFICATE-----

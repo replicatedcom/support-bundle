@@ -31,8 +31,8 @@ func closeLogErr(c io.Closer) {
 }
 
 // RawScrubber creates a scrubber function from a scrubSpec
-func RawScrubber(scrubSpec types.Scrub) (types.BytesScrubber, error) {
-	if scrubSpec.Regex == "" {
+func RawScrubber(scrubSpec *types.Scrub) (types.BytesScrubber, error) {
+	if scrubSpec == nil || scrubSpec.Regex == "" {
 		return nil, nil
 	}
 

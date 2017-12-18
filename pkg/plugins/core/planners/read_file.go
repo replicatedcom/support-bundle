@@ -7,15 +7,21 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func Hostname(spec types.Spec) []types.Task {
-	if spec.CoreHostname == nil {
-		err := errors.New("spec for os.hostname options required")
+func ReadFile(spec types.Spec) []types.Task {
+	if spec.CoreReadFile == nil {
+		err := errors.New("spec for os.read-file options required")
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}
+	if spec.CoreReadFile.Filepath == "" {
+		err := errors.New("spec for os.read-file filepath required")
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
+	}
+
 	task := plans.StreamsSource{
 		Spec:     spec,
-		Producer: producers.RunCommand(types.CoreRunCommandOptions{Name: "hostname"}),
+		Producer: producers.ReadFile(*spec.CoreReadFile),
 	}
 	var err error
 	task, err = setCommonFieldsStreamsSource(task, spec)

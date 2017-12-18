@@ -16,10 +16,12 @@ import (
 
 // StreamsSource is a Task that gets its data as an io.Reader
 type StreamsSource struct {
+	Spec types.Spec
+
 	// Producer provides the seed data for this task as an io.Reader array
 	// Names of the sources are provided as a string array
 	Producer func(context.Context) (map[string]io.Reader, error)
-	// StreamFormat describe stream format returned by Producer.  Only "" and "tar" are supported.
+	// StreamFormat describe stream format returned by Producer. Only "" and "tar" are supported.
 	StreamFormat string
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
 	RawScrubber func([]byte) []byte
@@ -41,7 +43,7 @@ type StreamsSource struct {
 func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Result {
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")
-		return task.resultsWithErr(err, "", "")
+		return task.resultsWithErr(err, "")
 	}
 
 	raw := task.RawPath != ""
@@ -62,7 +64,7 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 
 	readers, err := task.Producer(ctx)
 	if err != nil {
-		return task.resultsWithErr(err, "", "")
+		return task.resultsWithErr(err, "")
 	}
 
 	var resultsMut sync.Mutex
@@ -76,17 +78,17 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 			var moreResults []*types.Result
 			switch task.StreamFormat {
 			case "":
-				moreResults = task.execStream(ctx, rootDir, "", name, reader)
+				moreResults = task.execStream(ctx, rootDir, name, reader)
 
 			case "tar":
-				moreResults = task.execTarStream(ctx, rootDir, "", name, reader)
+				moreResults = task.execTarStream(ctx, rootDir, name, reader)
 
 			default:
 				if closer, ok := reader.(io.Closer); ok {
 					closeLogErr(closer)
 				}
 				err := fmt.Errorf("unsupported stream format: %q", task.StreamFormat)
-				moreResults = task.resultsWithErr(err, "", name)
+				moreResults = task.resultsWithErr(err, name)
 			}
 
 			resultsMut.Lock()
@@ -99,7 +101,7 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 	return results
 }
 
-func (task *StreamsSource) execTarStream(ctx context.Context, rootDir string, filePath string, fileExt string, reader io.Reader) []*types.Result {
+func (task *StreamsSource) execTarStream(ctx context.Context, rootDir string, filePath string, reader io.Reader) []*types.Result {
 	results := []*types.Result{}
 
 	tarReader := tar.NewReader(reader)
@@ -109,21 +111,21 @@ func (task *StreamsSource) execTarStream(ctx context.Context, rootDir string, fi
 			break
 		}
 		if err != nil {
-			return task.resultsWithErr(err, filePath, fileExt)
+			return task.resultsWithErr(err, filePath)
 		}
 
 		if hdr.FileInfo().IsDir() {
 			continue
 		}
 
-		moreResults := task.execStream(ctx, rootDir, hdr.Name, fileExt, tarReader)
+		moreResults := task.execStream(ctx, rootDir, hdr.Name, tarReader)
 		results = append(results, moreResults...)
 	}
 
 	return results
 }
 
-func (task *StreamsSource) execStream(ctx context.Context, rootDir string, filePath string, fileExt string, reader io.Reader) []*types.Result {
+func (task *StreamsSource) execStream(ctx context.Context, rootDir string, filePath string, reader io.Reader) []*types.Result {
 	if closer, ok := reader.(io.Closer); ok {
 		defer closeLogErr(closer)
 	}
@@ -150,9 +152,9 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 		reader = scrubbedReader
 	}
 
-	rawResult := &types.Result{}
-	jsonResult := &types.Result{}
-	humanResult := &types.Result{}
+	rawResult := &types.Result{Spec: task.Spec}
+	jsonResult := &types.Result{Spec: task.Spec}
+	humanResult := &types.Result{Spec: task.Spec}
 
 	if raw {
 		results = append(results, rawResult)
@@ -164,9 +166,9 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 		results = append(results, humanResult)
 	}
 
-	rawPath := mkPath(task.RawPath, filePath, fileExt)
-	jsonPath := mkPath(task.JSONPath, filePath, fileExt)
-	humanPath := mkPath(task.HumanPath, filePath, fileExt)
+	rawPath := filepath.Join(task.RawPath, filePath)
+	jsonPath := filepath.Join(task.JSONPath, filePath)
+	humanPath := filepath.Join(task.HumanPath, filePath)
 
 	var structured interface{}
 	if parser {
@@ -238,34 +240,26 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 	return results
 }
 
-func (task *StreamsSource) resultsWithErr(err error, filePath, fileExt string) []*types.Result {
+func (task *StreamsSource) resultsWithErr(err error, filePath string) []*types.Result {
 	raw := task.RawPath != ""
 	jsonify := task.JSONPath != ""
 	human := task.HumanPath != ""
 
-	rawPath := mkPath(task.RawPath, filePath, fileExt)
-	jsonPath := mkPath(task.JSONPath, filePath, fileExt)
-	humanPath := mkPath(task.HumanPath, filePath, fileExt)
+	rawPath := filepath.Join(task.RawPath, filePath)
+	jsonPath := filepath.Join(task.JSONPath, filePath)
+	humanPath := filepath.Join(task.HumanPath, filePath)
 
 	results := []*types.Result{}
 
 	if raw {
-		results = append(results, &types.Result{Description: rawPath})
+		results = append(results, &types.Result{Spec: task.Spec, Path: rawPath})
 	}
 	if jsonify {
-		results = append(results, &types.Result{Description: jsonPath})
+		results = append(results, &types.Result{Spec: task.Spec, Path: jsonPath})
 	}
 	if human {
-		results = append(results, &types.Result{Description: humanPath})
+		results = append(results, &types.Result{Spec: task.Spec, Path: humanPath})
 	}
 
 	return resultsWithErr(err, results)
-}
-
-func mkPath(path, name, ext string) string {
-	path = filepath.Join(path, name)
-	if ext == "" {
-		return path
-	}
-	return path + "." + ext
 }

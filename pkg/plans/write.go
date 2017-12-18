@@ -52,13 +52,10 @@ func writeResultFile(ctx context.Context, rootDir, path string, result *types.Re
 		result.Error = err
 		return
 	}
-	n, err := fn(ctx, dst)
-	if err != nil {
+	if _, err := fn(ctx, dst); err != nil {
 		result.Error = err
 	}
-	if n > 0 {
-		result.Path = path
-	}
+	result.Path = path
 }
 
 func write(ctx context.Context, dst io.Writer, src io.Reader) (int64, error) {

@@ -11,29 +11,52 @@ type Doc struct {
 }
 
 type Spec struct {
-	ID             string
-	Builtin        string
-	TimeoutSeconds int
-	// paths
-	Raw   string
-	JSON  string
-	Human string
+	Description    string `json:"description,omitempty"`
+	Meta           Meta   `json:"meta,omitempty"`
+	OutputDir      string `json:"output_dir"`
+	TimeoutSeconds int    `json:"timeout_seconds,omitempty"`
+	Scrub          *Scrub `json:"scrub,omitempty"`
 
-	// Plan-specific config
-	Config Config
+	// plan-specific config
 
-	// New plan-specific config
-	// TODO: new format for all tasks
-	DockerRunCommand       *DockerRunCommandOptions       `json:"docker.run-command,omitempty"`
+	CoreLoadavg     *CoreLoadavgOptions     `json:"os.loadavg,omitempty"`
+	CoreHostname    *CoreHostnameOptions    `json:"os.hostname,omitempty"`
+	CoreUptime      *CoreUptimeOptions      `json:"os.uptime,omitempty"`
+	CoreReadFile    *CoreReadFileOptions    `json:"os.read-file,omitempty"`
+	CoreRunCommand  *CoreRunCommandOptions  `json:"os.run-command,omitempty"`
+	CoreHTTPRequest *CoreHTTPRequestOptions `json:"os.http-request,omitempty"`
+
+	JournaldLogs *JournaldLogsOptions `json:"journald.logs,omitempty"`
+
+	DockerInfo             *DockerInfoOptions             `json:"docker.info,omitempty"`
+	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
+	DockerPs               *DockerContainerLsOptions      `json:"docker.ps,omitempty"`     // canonical: docker.container-ls
+	DockerImages           *DockerImageLsOptions          `json:"docker.images,omitempty"` // canonical: docker.image-ls
+	DockerImageLs          *DockerImageLsOptions          `json:"docker.image-ls,omitempty"`
+	DockerContainerLs      *DockerContainerLsOptions      `json:"docker.container-ls,omitempty"`
 	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
-	DockerSwarmOptions     *DockerSwarmOptions            `json:"docker.swarm-options,omitempty"`
-	HTTPRequestCommand     *HTTPRequestCommandOptions     `json:"core.http-request,omitempty"`
-	JournaldLogs           *JournaldLogs                  `json:"journald.logs,omitempty"`
-	RetracedEventsCommand  *RetracedEventsOptions         `json:"retraced.events,omitempty"`
+	DockerContainerCp      *DockerContainerCpOptions      `json:"docker.container-cp,omitempty"`
+	DockerContainerExec    *DockerContainerExecOptions    `json:"docker.container-exec,omitempty"`
+	DockerContainerRun     *DockerContainerRunOptions     `json:"docker.container-run,omitempty"`
+	DockerServiceLs        *DockerServiceLsOptions        `json:"docker.service-ls,omitempty"`
+	DockerServiceLogs      *DockerServiceLogsOptions      `json:"docker.service-logs,omitempty"`
+	DockerNodeLs           *DockerNodeLsOptions           `json:"docker.node-ls,omitempty"`
+	DockerServicePs        *DockerServicePsOptions        `json:"docker.service-ps,omitempty"` // TODO: is there a more canonical way to get service tasks?
+	// DockerStackServices *DockerStackServicesOptions `json:"docker.stack-services,omitempty"`
+	// DockerStackServiceLogs *DockerStackServiceLogsOptions `json:"docker.stack-service-logs,omitempty"`
+	// DockerStackTasks *DockerStackTasksOptions `json:"docker.stack-tasks,omitempty"`
+	// DockerStackTaskLogs *DockerStackTaskLogsOptions `json:"docker.stack-task-logs,omitempty"`
 
-	KubernetesContainerLogsOptions *KubernetesContainerLogsOptions `json:"kubernetes.logs,omitempty"`
-	KubernetesResourceCommand      *KubernetesResourceCommand      `json:"kubernetes.resource,omitempty"`
+	KubernetesLogs     *KubernetesLogsOptions     `json:"kubernetes.logs,omitempty"`
+	KubernetesResource *KubernetesResourceOptions `json:"kubernetes.resource,omitempty"`
+
+	RetracedEvents *RetracedEventsOptions `json:"retraced.events,omitempty"`
+}
+
+type Meta struct {
+	Name   string            `json:"name,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 type Config struct {
@@ -44,40 +67,33 @@ type Config struct {
 	ContainerID   string   `json:"container_id"`
 	ContainerName string   `json:"container_name"`
 	Command       string   `json:"command"`
-	Scrub         Scrub    `json:"scrub"` // TODO: should we pull scrub up one level into Spec?
 }
 
-type KubernetesResourceCommand struct {
-	Type      string `json:"type"`
-	Namespace string `json:"namespace,omitempty"`
+// plugin.core options
+
+type CoreLoadavgOptions struct {
+	Template string `json:"template"`
 }
 
-type KubernetesContainerLogsOptions struct {
-	PodName       string `json:"pod_name"`
-	ContainerName string `json:"container_name,omitempty"`
-	Namespace     string `json:"namespace,omitempty"`
-	Scrub         Scrub  `json:"scrub"`
+type CoreHostnameOptions struct {
 }
 
-type DockerRunCommandOptions struct {
-	ContainerCreateConfig dockertypes.ContainerCreateConfig
-	EnablePull            bool
+type CoreUptimeOptions struct {
+	Template string `json:"template"`
 }
 
-type DockerContainerLogsOptions struct {
-	ContainerListOptions ContainerListOptions `json:"container_list_options"`
+type CoreReadFileOptions struct {
+	Filepath string `json:"filepath"`
 }
 
-type DockerContainerInspectOptions struct {
-	ContainerListOptions ContainerListOptions `json:"container_list_options"`
+type CoreRunCommandOptions struct {
+	Name string   `json:"name"`
+	Args []string `json:"args,omitempty"`
+	Env  []string `json:"env,omitempty"`
+	Dir  string   `json:"dir,omitempty"`
 }
 
-type DockerSwarmOptions struct {
-	ServiceName string `json:"service_name"`
-	Namespace   string `json:"namespace"`
-}
-
-type HTTPRequestCommandOptions struct {
+type CoreHTTPRequestOptions struct {
 	URL      string              `json:"url"`
 	Method   string              `json:"method,omitempty"` // default "get"
 	Body     string              `json:"body,omitempty"`
@@ -85,24 +101,30 @@ type HTTPRequestCommandOptions struct {
 	Insecure bool                `json:"insecure,omitempty"`
 }
 
-type RetracedEventsOptions struct {
-	APIEndpoint string                    `json:"api_endpoint"`
-	ProjectID   string                    `json:"project_id,omitempty"`
-	APIToken    string                    `json:"api_token,omitempty"`
-	Insecure    bool                      `json:"insecure,omitempty"`
-	Mask        *retraced.EventNodeMask   `json:"mask,omitempty"`
-	Query       *retraced.StructuredQuery `json:"query,omitempty"`
-}
+// plugin.journald options
 
-type JournaldLogs struct {
+type JournaldLogsOptions struct {
 	Unit  string
 	Since string
 }
 
-type Scrub struct {
-	Regex   string `json:"regex"`
-	Replace string `json:"replace"`
+// plugin.docker options
+
+type DockerInfoOptions struct {
 }
+
+type DockerVersionOptions struct {
+}
+
+type DockerImageLsOptions struct {
+}
+
+type DockerContainerLsOptions struct {
+}
+
+type DockerContainerLogsOptions ContainerListOptions
+
+type DockerContainerInspectOptions ContainerListOptions
 
 type ContainerListOptions struct {
 	dockertypes.ContainerListOptions
@@ -123,4 +145,67 @@ func FiltersToArgs(f map[string][]string) filters.Args {
 		}
 	}
 	return args
+}
+
+type DockerContainerCpOptions struct {
+}
+
+type DockerContainerExecOptions struct {
+}
+
+type DockerContainerRunOptions struct {
+	ContainerCreateConfig dockertypes.ContainerCreateConfig
+	EnablePull            bool
+}
+
+type DockerServiceLsOptions struct {
+}
+
+type DockerServiceLogsOptions struct {
+}
+
+type DockerNodeLsOptions struct {
+}
+
+type DockerServicePsOptions struct {
+}
+
+type DockerStackServicesOptions struct {
+}
+
+type DockerStackServiceLogsOptions struct {
+}
+
+type DockerStackTasksOptions struct {
+}
+
+type DockerStackTaskLogsOptions struct {
+}
+
+// plugin.kubernetes options
+
+type KubernetesLogsOptions struct {
+	PodName       string `json:"pod_name"`
+	ContainerName string `json:"container_name,omitempty"`
+	Namespace     string `json:"namespace,omitempty"`
+	Scrub         Scrub  `json:"scrub"`
+}
+
+type KubernetesResourceOptions struct {
+	Type      string `json:"type"`
+	Namespace string `json:"namespace,omitempty"`
+}
+
+type RetracedEventsOptions struct {
+	APIEndpoint string                    `json:"api_endpoint"`
+	ProjectID   string                    `json:"project_id,omitempty"`
+	APIToken    string                    `json:"api_token,omitempty"`
+	Insecure    bool                      `json:"insecure,omitempty"`
+	Mask        *retraced.EventNodeMask   `json:"mask,omitempty"`
+	Query       *retraced.StructuredQuery `json:"query,omitempty"`
+}
+
+type Scrub struct {
+	Regex   string `json:"regex"`
+	Replace string `json:"replace"`
 }

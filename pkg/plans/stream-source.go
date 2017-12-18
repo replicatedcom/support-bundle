@@ -10,6 +10,8 @@ import (
 
 // StreamSource is a Task that gets its data as an io.Reader
 type StreamSource struct {
+	Spec types.Spec
+
 	// Producer provides the seed data for this task as an io.Reader
 	Producer func(context.Context) (io.Reader, error)
 	// StreamFormat describe stream format returned by Producer.  Only "" and "tar" are supported.
@@ -33,6 +35,7 @@ type StreamSource struct {
 
 func (task *StreamSource) Exec(ctx context.Context, rootDir string) []*types.Result {
 	s := StreamsSource{
+		Spec:         task.Spec,
 		StreamFormat: task.StreamFormat,
 		RawScrubber:  task.RawScrubber,
 		Parser:       task.Parser,

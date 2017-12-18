@@ -98,7 +98,7 @@ func GetResultFromBundle(path string) *types.Result {
 func GetResultFromBundleErrors(path string) *types.Result {
 	results := GetResultsFromBundleErrors()
 	for _, result := range results {
-		if result.Description == "/"+path {
+		if result.Path == "/"+path {
 			return result
 		}
 	}

@@ -36,8 +36,8 @@ func init() {
 	}
 }
 
-func HTTPRequest(opts types.HTTPRequestCommandOptions) types.StreamProducer {
-	return func(ctx context.Context) (io.Reader, error) {
+func HTTPRequest(opts types.CoreHTTPRequestOptions) types.StreamsProducer {
+	return func(ctx context.Context) (map[string]io.Reader, error) {
 		body := bytes.NewBuffer([]byte(opts.Body))
 		if opts.Method != "" {
 			jww.DEBUG.Printf("Making request to %s with method %s\n", opts.URL, opts.Method)
@@ -64,6 +64,6 @@ func HTTPRequest(opts types.HTTPRequestCommandOptions) types.StreamProducer {
 		if resp.StatusCode >= 300 {
 			return nil, fmt.Errorf("unexpected status %s", resp.Status)
 		}
-		return resp.Body, nil
+		return map[string]io.Reader{"body": resp.Body}, nil
 	}
 }
