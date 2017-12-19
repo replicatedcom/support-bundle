@@ -6,13 +6,19 @@ import (
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func (d *Docker) ImageLs(spec types.Spec) []types.Task {
 	if spec.DockerImageLs == nil {
-		err := errors.New("spec for docker.image-ls options required")
-		task := plans.PreparedError(err, spec)
-		return []types.Task{task}
+		if spec.DockerImages != nil {
+			jww.DEBUG.Println("spec for docker.image-ls aliased from docker.images")
+			spec.DockerImageLs = spec.DockerImages
+		} else {
+			err := errors.New("spec for docker.image-ls options required")
+			task := plans.PreparedError(err, spec)
+			return []types.Task{task}
+		}
 	}
 
 	task := plans.StructuredSource{

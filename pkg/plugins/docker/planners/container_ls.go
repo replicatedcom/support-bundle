@@ -6,13 +6,19 @@ import (
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func (d *Docker) ContainerLs(spec types.Spec) []types.Task {
 	if spec.DockerContainerLs == nil {
-		err := errors.New("spec for docker.container-ls options required")
-		task := plans.PreparedError(err, spec)
-		return []types.Task{task}
+		if spec.DockerPs != nil {
+			jww.DEBUG.Println("spec for docker.container-ls aliased from docker.ps")
+			spec.DockerContainerLs = spec.DockerPs
+		} else {
+			err := errors.New("spec for docker.container-ls options required")
+			task := plans.PreparedError(err, spec)
+			return []types.Task{task}
+		}
 	}
 
 	task := plans.StructuredSource{
