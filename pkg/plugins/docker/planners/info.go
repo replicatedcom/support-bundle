@@ -9,6 +9,7 @@ import (
 
 func (d *Docker) Info(spec types.Spec) []types.Task {
 	task := plans.StructuredSource{
+		Spec:      spec,
 		Producer:  d.producers.Info,
 		RawPath:   filepath.Join(spec.OutputDir, "docker_info.raw"),
 		JSONPath:  filepath.Join(spec.OutputDir, "docker_info.json"),

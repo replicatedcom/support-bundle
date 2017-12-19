@@ -14,6 +14,8 @@ import (
 // StructuredSource is a Task that gets its data as a structured object ready to
 // be jsonified or used as a context in a human template.
 type StructuredSource struct {
+	Spec types.Spec
+
 	// Producer provides the seed data for this task
 	Producer func(context.Context) (interface{}, error)
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data

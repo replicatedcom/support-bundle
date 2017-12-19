@@ -117,9 +117,11 @@ type DockerVersionOptions struct {
 }
 
 type DockerImageLsOptions struct {
+	dockertypes.ImageListOptions `json:",inline,omitempty"`
 }
 
 type DockerContainerLsOptions struct {
+	dockertypes.ContainerListOptions `json:",inline,omitempty"`
 }
 
 type DockerContainerLogsOptions ContainerListOptions
@@ -127,8 +129,8 @@ type DockerContainerLogsOptions ContainerListOptions
 type DockerContainerInspectOptions ContainerListOptions
 
 type ContainerListOptions struct {
-	dockertypes.ContainerListOptions
-	Filters map[string][]string
+	dockertypes.ContainerListOptions `json:",inline,omitempty"`
+	Filters                          map[string][]string `json:"filters,omitempty"`
 }
 
 func (opts ContainerListOptions) ToDockerContainerListOptions() dockertypes.ContainerListOptions {
