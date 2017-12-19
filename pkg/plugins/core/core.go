@@ -5,7 +5,14 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func Plan(spec types.Spec) types.Planner {
+type Core struct {
+}
+
+func New() (*Core, error) {
+	return &Core{}, nil
+}
+
+func (p *Core) Plan(spec types.Spec) types.Planner {
 	switch {
 	case spec.CoreHostname != nil:
 		return planners.Hostname

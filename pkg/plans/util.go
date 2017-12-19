@@ -4,12 +4,43 @@ import (
 	"bufio"
 	"io"
 	"regexp"
+	"time"
 
 	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
+
+func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsSource, error) {
+	if task.RawPath == "" {
+		task.RawPath = spec.OutputDir
+	}
+	scrubber, err := RawScrubber(spec.Scrub)
+	if err != nil {
+		return task, errors.Wrap(err, "create scrubber")
+	}
+	task.RawScrubber = scrubber
+	if spec.TimeoutSeconds != 0 {
+		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	}
+	return task, nil
+}
+
+func SetCommonFieldsStructuredSource(task StructuredSource, spec types.Spec) (StructuredSource, error) {
+	if task.RawPath == "" {
+		task.RawPath = spec.OutputDir
+	}
+	scrubber, err := RawScrubber(spec.Scrub)
+	if err != nil {
+		return task, errors.Wrap(err, "create scrubber")
+	}
+	task.RawScrubber = scrubber
+	if spec.TimeoutSeconds != 0 {
+		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	}
+	return task, nil
+}
 
 // add an error to every result, returning the results argument
 // skips results that already have an error

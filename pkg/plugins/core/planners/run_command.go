@@ -1,8 +1,6 @@
 package planners
 
 import (
-	"time"
-
 	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
@@ -27,23 +25,10 @@ func RunCommand(spec types.Spec) []types.Task {
 		Producer: producers.RunCommand(*spec.CoreRunCommand),
 	}
 	var err error
-	task, err = setCommonFieldsStreamsSource(task, spec)
+	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}
 	return []types.Task{&task}
-}
-
-func setCommonFieldsStreamsSource(task plans.StreamsSource, spec types.Spec) (plans.StreamsSource, error) {
-	task.RawPath = spec.OutputDir
-	scrubber, err := plans.RawScrubber(spec.Scrub)
-	if err != nil {
-		return task, errors.Wrap(err, "create scrubber")
-	}
-	task.RawScrubber = scrubber
-	if spec.TimeoutSeconds != 0 {
-		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
-	}
-	return task, nil
 }

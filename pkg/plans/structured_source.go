@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"time"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -47,7 +48,8 @@ func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types
 	}
 	if task.Producer != nil {
 		structured, structuredErr := task.Producer(ctx)
-		s.Parser = func(_ io.Reader) (interface{}, error) {
+		s.Parser = func(r io.Reader) (interface{}, error) {
+			_, _ = ioutil.ReadAll(r)
 			return structured, structuredErr
 		}
 		s.Producer = func(context.Context) (map[string]io.Reader, error) {

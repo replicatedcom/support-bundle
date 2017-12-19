@@ -63,7 +63,6 @@ specs:
 			"--skip-default=true",
 			"--timeout=10",
 		}
-		fmt.Println(args)
 		cmd.SetArgs(args)
 		err := cmd.Execute()
 		Expect(err).NotTo(HaveOccurred())

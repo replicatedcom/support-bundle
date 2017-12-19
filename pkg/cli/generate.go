@@ -6,6 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
@@ -45,10 +47,15 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		specs = append(defaultSpecs, specs...)
 	}
 
-	// d, err := docker.New()
-	// if err != nil {
-	// 	return errors.Wrap(err, "Failed to initialize docker plugin")
-	// }
+	pluginCore, err := core.New()
+	if err != nil {
+		return errors.Wrap(err, "Failed to initialize core plugin")
+	}
+
+	pluginDocker, err := docker.New()
+	if err != nil {
+		return errors.Wrap(err, "Failed to initialize docker plugin")
+	}
 
 	// j, err := journald.New()
 	// if err != nil {
@@ -56,13 +63,8 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 	// }
 
 	planner := bundle.Planner{
-		Plugins: map[string]types.Plugin{
-		// "core": core.New(),
-		// "docker":        d,
-		// "retraced":      retraced.New(),
-		// "journald":      j,
-		// "supportbundle": supportbundle.New(),
-		},
+		Core:   pluginCore,
+		Docker: pluginDocker,
 	}
 
 	// if enableKubernetes {

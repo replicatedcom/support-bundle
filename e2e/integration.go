@@ -102,7 +102,6 @@ func TestGenerate(t *testing.T) {
 		)
 	}
 	got, _ := ioutil.TempFile("", "generate-test-bundle")
-	// fmt.Println(got.Name())
 	defer os.Remove(got.Name())
 
 	err = bundle.Generate(tasks, time.Duration(time.Second*2), got.Name())

@@ -25,7 +25,7 @@ func HTTPRequest(spec types.Spec) []types.Task {
 		Producer: producers.HTTPRequest(*spec.CoreHTTPRequest),
 	}
 	var err error
-	task, err = setCommonFieldsStreamsSource(task, spec)
+	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}

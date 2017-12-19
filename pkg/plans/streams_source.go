@@ -2,6 +2,7 @@ package plans
 
 import (
 	"archive/tar"
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -172,14 +173,13 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 
 	var structured interface{}
 	if parser {
-		pr, pw := io.Pipe()
-		tr := io.TeeReader(reader, pw)
+		buf := bytes.NewBuffer(nil)
+		tr := io.TeeReader(reader, buf)
 		var err error
 		structured, err = task.Parser(tr)
-		reader = pr
+		reader = buf
 		if err != nil {
 			jsonResult.Error = err
-
 			if humanTemplated || humanYAML {
 				humanResult.Error = err
 				// nothing left to do
