@@ -36,12 +36,8 @@ func (p *Docker) Plan(spec types.Spec) types.Planner {
 		return p.planner.ContainerLs
 	case spec.DockerVersion != nil:
 		return p.planner.Version
-
-	// DockerPs               *DockerContainerLsOptions      `json:"docker.ps,omitempty"`     // canonical: docker.container-ls
-	// DockerImages           *DockerImageLsOptions          `json:"docker.images,omitempty"` // canonical: docker.image-ls
-	// DockerImageLs          *DockerImageLsOptions          `json:"docker.image-ls,omitempty"`
-	// DockerContainerLs      *DockerContainerLsOptions      `json:"docker.container-ls,omitempty"`
-
+	case spec.DockerContainerLogs != nil:
+		return p.planner.ContainerLogs
 	default:
 		return nil
 	}

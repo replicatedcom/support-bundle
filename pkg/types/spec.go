@@ -19,12 +19,12 @@ type Spec struct {
 
 	// plan-specific config
 
-	CoreLoadavg     *CoreLoadavgOptions     `json:"os.loadavg,omitempty"`
 	CoreHostname    *CoreHostnameOptions    `json:"os.hostname,omitempty"`
-	CoreUptime      *CoreUptimeOptions      `json:"os.uptime,omitempty"`
+	CoreHTTPRequest *CoreHTTPRequestOptions `json:"os.http-request,omitempty"`
+	CoreLoadavg     *CoreLoadavgOptions     `json:"os.loadavg,omitempty"`
 	CoreReadFile    *CoreReadFileOptions    `json:"os.read-file,omitempty"`
 	CoreRunCommand  *CoreRunCommandOptions  `json:"os.run-command,omitempty"`
-	CoreHTTPRequest *CoreHTTPRequestOptions `json:"os.http-request,omitempty"`
+	CoreUptime      *CoreUptimeOptions      `json:"os.uptime,omitempty"`
 
 	JournaldLogs *JournaldLogsOptions `json:"journald.logs,omitempty"`
 
@@ -124,19 +124,42 @@ type DockerContainerLsOptions struct {
 	dockertypes.ContainerListOptions `json:",inline,omitempty"`
 }
 
-type DockerContainerLogsOptions ContainerListOptions
-
-type DockerContainerInspectOptions ContainerListOptions
-
-type ContainerListOptions struct {
-	dockertypes.ContainerListOptions `json:",inline,omitempty"`
-	Filters                          map[string][]string `json:"filters,omitempty"`
+type DockerContainerLogsOptions struct {
+	ID                   string                            `json:"id,omitempty"`
+	Name                 string                            `json:"name,omitempty"`
+	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerListOptions *ContainerListOptions             `json:"container_list_options,omitempty"`
 }
 
-func (opts ContainerListOptions) ToDockerContainerListOptions() dockertypes.ContainerListOptions {
-	dockerOpts := opts.ContainerListOptions
-	dockerOpts.Filters = FiltersToArgs(opts.Filters)
-	return dockerOpts
+type DockerContainerInspectOptions struct {
+	ID                   string                `json:"id,omitempty"`
+	Name                 string                `json:"name,omitempty"`
+	ContainerListOptions *ContainerListOptions `json:"container_list_options,omitempty"`
+}
+
+type ContainerListOptions struct {
+	Quiet   bool
+	Size    bool
+	All     bool
+	Latest  bool
+	Since   string
+	Before  string
+	Limit   int
+	Filters map[string][]string
+}
+
+func (opts *ContainerListOptions) ToDockerContainerListOptions() dockertypes.ContainerListOptions {
+	// Because filters.Args will not marshal
+	return dockertypes.ContainerListOptions{
+		Quiet:   opts.Quiet,
+		Size:    opts.Size,
+		All:     opts.All,
+		Latest:  opts.Latest,
+		Since:   opts.Since,
+		Before:  opts.Before,
+		Limit:   opts.Limit,
+		Filters: FiltersToArgs(opts.Filters),
+	}
 }
 
 func FiltersToArgs(f map[string][]string) filters.Args {

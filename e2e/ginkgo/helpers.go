@@ -204,19 +204,22 @@ func CloseLogErr(c io.Closer) {
 
 // MakeDockerContainer makes a docker container to be used in tests, returning the container ID.
 // name and labels are optional
-func MakeDockerContainer(name string, labels map[string]string) string {
+func MakeDockerContainer(name string, labels map[string]string, cmd []string) string {
 	client, err := client.NewEnvClient()
 	Expect(err).NotTo(HaveOccurred())
 
-	containerSettings := dockercontainertypes.Config{
+	config := dockercontainertypes.Config{
 		Image:  "ubuntu:latest",
-		Cmd:    []string{"sleep", "infinity"},
+		Cmd:    cmd,
 		Labels: labels,
 	}
-	hostSettings := dockercontainertypes.HostConfig{}
-	networkSettings := dockernetworktypes.NetworkingConfig{}
+	if config.Cmd == nil {
+		config.Cmd = []string{"sleep", "infinity"}
+	}
+	hostConfig := dockercontainertypes.HostConfig{}
+	networkConfig := dockernetworktypes.NetworkingConfig{}
 
-	container, err := client.ContainerCreate(context.Background(), &containerSettings, &hostSettings, &networkSettings, name)
+	container, err := client.ContainerCreate(context.Background(), &config, &hostConfig, &networkConfig, name)
 	Expect(err).NotTo(HaveOccurred())
 	Expect(container.Warnings).To(BeEmpty())
 

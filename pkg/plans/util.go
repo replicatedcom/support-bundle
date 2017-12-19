@@ -27,6 +27,21 @@ func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsS
 	return task, nil
 }
 
+func SetCommonFieldsStreamSource(task StreamSource, spec types.Spec) (StreamSource, error) {
+	if task.RawPath == "" {
+		task.RawPath = spec.OutputDir
+	}
+	scrubber, err := RawScrubber(spec.Scrub)
+	if err != nil {
+		return task, errors.Wrap(err, "create scrubber")
+	}
+	task.RawScrubber = scrubber
+	if spec.TimeoutSeconds != 0 {
+		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	}
+	return task, nil
+}
+
 func SetCommonFieldsStructuredSource(task StructuredSource, spec types.Spec) (StructuredSource, error) {
 	if task.RawPath == "" {
 		task.RawPath = spec.OutputDir
