@@ -36,6 +36,8 @@ func (p *Docker) Plan(spec types.Spec) types.Planner {
 		return p.planner.ContainerLs
 	case spec.DockerVersion != nil:
 		return p.planner.Version
+	case spec.DockerContainerInspect != nil:
+		return p.planner.ContainerInspect
 	case spec.DockerContainerLogs != nil:
 		return p.planner.ContainerLogs
 	default:
