@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
+	dockertypes "github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -30,7 +32,7 @@ func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 		return []types.Task{d.containerLogsTask(containerID, []string{spec.DockerContainerLogs.Name}, spec)}
 	}
 
-	var tasks []types.Task
+	var ts []types.Task
 	containers, err := d.client.ContainerList(
 		context.Background(),
 		spec.DockerContainerLogs.ContainerListOptions.ToDockerContainerListOptions())
@@ -40,9 +42,9 @@ func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 	for _, container := range containers {
-		tasks = append(tasks, d.containerLogsTask(container.ID, container.Names, spec))
+		ts = append(ts, d.containerLogsTask(container.ID, container.Names, spec))
 	}
-	return tasks
+	return ts
 }
 
 func (d *Docker) containerLogsTask(id string, names []string, spec types.Spec) types.Task {
@@ -61,4 +63,20 @@ func (d *Docker) containerLogsTask(id string, names []string, spec types.Spec) t
 		return plans.PreparedError(err, spec)
 	}
 	return &task
+}
+
+// get the ID of a container given the name
+func (d *Docker) getContainerID(ctx context.Context, name string) (string, error) {
+	filter := filters.NewArgs()
+	filter.Add("name", name)
+	containers, err := d.client.ContainerList(ctx, dockertypes.ContainerListOptions{
+		All:     true,
+		Filters: filter,
+	})
+	if err != nil {
+		return "", err
+	} else if len(containers) == 0 {
+		return "", fmt.Errorf("unable to find container with name %s", name)
+	}
+	return containers[0].ID, nil
 }

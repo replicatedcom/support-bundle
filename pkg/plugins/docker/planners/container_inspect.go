@@ -30,7 +30,7 @@ func (d *Docker) ContainerInspect(spec types.Spec) []types.Task {
 		return []types.Task{d.containerInspectTask(containerID, []string{spec.DockerContainerInspect.Name}, spec)}
 	}
 
-	var tasks []types.Task
+	var ts []types.Task
 	containers, err := d.client.ContainerList(
 		context.Background(),
 		spec.DockerContainerInspect.ContainerListOptions.ToDockerContainerListOptions())
@@ -40,9 +40,9 @@ func (d *Docker) ContainerInspect(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 	for _, container := range containers {
-		tasks = append(tasks, d.containerInspectTask(container.ID, container.Names, spec))
+		ts = append(ts, d.containerInspectTask(container.ID, container.Names, spec))
 	}
-	return tasks
+	return ts
 }
 
 func (d *Docker) containerInspectTask(id string, names []string, spec types.Spec) types.Task {

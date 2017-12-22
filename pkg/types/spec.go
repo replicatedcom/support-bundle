@@ -35,19 +35,19 @@ type Spec struct {
 	DockerInfo             *DockerInfoOptions             `json:"docker.info,omitempty"`
 	DockerNodeLs           *DockerNodeLsOptions           `json:"docker.node-ls,omitempty"`
 	DockerPs               *DockerContainerLsOptions      `json:"docker.ps,omitempty"` // canonical: docker.container-ls
+	DockerServiceLogs      *DockerServiceLogsOptions      `json:"docker.service-logs,omitempty"`
 	DockerServiceLs        *DockerServiceLsOptions        `json:"docker.service-ls,omitempty"`
 	DockerServicePs        *DockerServicePsOptions        `json:"docker.service-ps,omitempty"` // TODO: is there a more canonical way to get service tasks?
 	DockerStackServiceLs   *DockerStackServiceLsOptions   `json:"docker.stack-service-ls,omitempty"`
 	DockerStackServicePs   *DockerStackServicePsOptions   `json:"docker.stack-service-ps,omitempty"`
+	DockerTaskLogs         *DockerTaskLogsOptions         `json:"docker.task-logs,omitempty"`
 	DockerTaskLs           *DockerTaskLsOptions           `json:"docker.task-ls,omitempty"`
 	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
 
 	DockerContainerCp   *DockerContainerCpOptions   `json:"docker.container-cp,omitempty"`
 	DockerContainerExec *DockerContainerExecOptions `json:"docker.container-exec,omitempty"`
 	DockerContainerRun  *DockerContainerRunOptions  `json:"docker.container-run,omitempty"`
-	DockerServiceLogs   *DockerServiceLogsOptions   `json:"docker.service-logs,omitempty"`
 	// DockerStackServiceLogs *DockerStackServiceLogsOptions `json:"docker.stack-service-logs,omitempty"`
-	// DockerStackTasks *DockerStackTasksOptions `json:"docker.stack-tasks,omitempty"`
 	// DockerStackTaskLogs *DockerStackTaskLogsOptions `json:"docker.stack-task-logs,omitempty"`
 
 	KubernetesLogs     *KubernetesLogsOptions     `json:"kubernetes.logs,omitempty"`
@@ -130,6 +130,13 @@ type DockerNodeLsOptions struct {
 	NodeListOptions `json:",inline,omitempty"`
 }
 
+type DockerServiceLogsOptions struct {
+	ID                   string                            `json:"id,omitempty"`
+	Name                 string                            `json:"name,omitempty"`
+	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ServiceListOptions   *ServiceListOptions               `json:"service_list_options,omitempty"`
+}
+
 type DockerServiceLsOptions struct {
 	ServiceListOptions `json:",inline,omitempty"`
 }
@@ -150,6 +157,12 @@ type DockerStackServicePsOptions struct {
 	*DockerServicePsOptions `json:"task_list_options,omitempty"`
 }
 
+type DockerTaskLogsOptions struct {
+	ID                   string                            `json:"id,omitempty"`
+	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	TaskListOptions      *TaskListOptions                  `json:"task_list_options,omitempty"`
+}
+
 type DockerTaskLsOptions struct {
 	TaskListOptions `json:",inline,omitempty"`
 }
@@ -168,16 +181,7 @@ type DockerContainerRunOptions struct {
 	EnablePull            bool
 }
 
-type DockerServiceLogsOptions struct {
-}
-
-type DockerStackServicesOptions struct {
-}
-
 type DockerStackServiceLogsOptions struct {
-}
-
-type DockerStackTasksOptions struct {
 }
 
 type DockerStackTaskLogsOptions struct {

@@ -45,11 +45,10 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 	var resultsWithError []*types.Result
 
 	for _, r := range results {
-		if r.Path != "" {
-			resultsWithOutput = append(resultsWithOutput, r)
-		}
 		if r.Error != nil {
 			resultsWithError = append(resultsWithError, r)
+		} else {
+			resultsWithOutput = append(resultsWithOutput, r)
 		}
 	}
 
