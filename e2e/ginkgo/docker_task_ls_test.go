@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("docker.service-ps", func() {
+var _ = Describe("docker.task-ls", func() {
 
 	var _ = Describe("swarm", func() {
 
@@ -23,6 +23,8 @@ var _ = Describe("docker.service-ps", func() {
 
 				WriteBundleConfig(`
 specs:
+  - docker.task-ls: {}
+    output_dir: /docker/task-ls/
   - docker.service-ps: {}
     output_dir: /docker/service-ps/
   - docker.stack-service-ps:
@@ -34,6 +36,18 @@ specs:
 				var contents string
 				var m interface{}
 				var err error
+
+				_ = GetResultFromBundle("docker/task-ls/task_ls.raw")
+				contents = GetFileFromBundle("docker/task-ls/task_ls.raw")
+				Expect(contents).To(ContainSubstring("ContainerSpec"))
+				_ = GetResultFromBundle("docker/task-ls/task_ls.json")
+				contents = GetFileFromBundle("docker/task-ls/task_ls.json")
+				Expect(contents).To(ContainSubstring("ContainerSpec"))
+				err = json.Unmarshal([]byte(contents), &m)
+				Expect(err).NotTo(HaveOccurred())
+				_ = GetResultFromBundle("docker/task-ls/task_ls.human")
+				contents = GetFileFromBundle("docker/task-ls/task_ls.human")
+				Expect(contents).To(ContainSubstring("ContainerSpec"))
 
 				_ = GetResultFromBundle("docker/service-ps/service_ps.raw")
 				contents = GetFileFromBundle("docker/service-ps/service_ps.raw")

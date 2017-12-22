@@ -39,6 +39,7 @@ type Spec struct {
 	DockerServicePs        *DockerServicePsOptions        `json:"docker.service-ps,omitempty"` // TODO: is there a more canonical way to get service tasks?
 	DockerStackServiceLs   *DockerStackServiceLsOptions   `json:"docker.stack-service-ls,omitempty"`
 	DockerStackServicePs   *DockerStackServicePsOptions   `json:"docker.stack-service-ps,omitempty"`
+	DockerTaskLs           *DockerTaskLsOptions           `json:"docker.task-ls,omitempty"`
 	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
 
 	DockerContainerCp   *DockerContainerCpOptions   `json:"docker.container-cp,omitempty"`
@@ -134,7 +135,7 @@ type DockerServiceLsOptions struct {
 }
 
 type DockerServicePsOptions struct {
-	TaskListOptions `json:",inline,omitempty"`
+	DockerTaskLsOptions `json:",inline,omitempty"`
 }
 
 type DockerStackServiceLsOptions struct {
@@ -147,6 +148,10 @@ type DockerStackServicePsOptions struct {
 	Namespace string `json:"namespace"`
 	// TODO: filters.Args will panic
 	*DockerServicePsOptions `json:"task_list_options,omitempty"`
+}
+
+type DockerTaskLsOptions struct {
+	TaskListOptions `json:",inline,omitempty"`
 }
 
 type DockerVersionOptions struct {

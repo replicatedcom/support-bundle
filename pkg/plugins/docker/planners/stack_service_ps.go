@@ -26,7 +26,7 @@ func (d *Docker) StackServicePs(spec types.Spec) []types.Task {
 	opts.Filters = dockerStackNamespaceFilter(opts.Filters, spec.DockerStackServicePs.Namespace)
 	task := plans.StructuredSource{
 		Spec:      spec,
-		Producer:  d.producers.ServicePs(*opts),
+		Producer:  d.producers.TaskLs(opts.DockerTaskLsOptions),
 		RawPath:   filepath.Join(spec.OutputDir, "service_ps.raw"),
 		JSONPath:  filepath.Join(spec.OutputDir, "service_ps.json"),
 		HumanPath: filepath.Join(spec.OutputDir, "service_ps.human"),
