@@ -75,7 +75,7 @@ func (d *Docker) ReadHostFile(image string, path string) types.StreamProducer {
 				// (see comment on StdCopy)
 				stdoutW.CloseWithError(err)
 				if err != nil {
-					jww.ERROR.Printf("error copying %s: %v: %s\n", path, err, stderrW.Bytes())
+					jww.ERROR.Printf("error copying %s: %v: %s", path, err, stderrW.Bytes())
 				}
 			}()
 

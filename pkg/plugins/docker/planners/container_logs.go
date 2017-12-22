@@ -53,7 +53,6 @@ func (d *Docker) containerLogsTask(id string, names []string, spec types.Spec) t
 		basename = names[0]
 	}
 	task := plans.StreamSource{
-		Spec:     spec,
 		Producer: d.producers.ContainerLogs(id, spec.DockerContainerLogs.ContainerLogsOptions),
 		RawPath:  filepath.Join(spec.OutputDir, basename+".raw"),
 	}

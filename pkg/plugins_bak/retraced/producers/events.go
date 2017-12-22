@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	"github.com/retracedhq/retraced-go"
-	"github.com/spf13/jwalterweatherman"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 var (
@@ -42,7 +42,7 @@ func Events(spec types.Spec) types.StreamProducer {
 			}()
 			err = client.ExportCSV(ctx, writer, query, mask)
 			if err != nil {
-				jwalterweatherman.ERROR.Printf("Failed to collect retraced events %v", err)
+				jww.ERROR.Printf("Failed to collect retraced events %v", err)
 			}
 		}()
 

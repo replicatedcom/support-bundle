@@ -10,12 +10,13 @@ import (
 )
 
 func (d *Docker) StackTaskLogs(spec types.Spec) []types.Task {
+	var err error
 	if spec.DockerStackTaskLogs == nil {
-		err := errors.New("spec for docker.stack-task-logs options required")
-		task := plans.PreparedError(err, spec)
-		return []types.Task{task}
+		err = errors.New("spec for docker.stack-task-logs options required")
 	} else if spec.DockerStackTaskLogs.Namespace == "" {
-		err := errors.New("spec for docker.stack-task-logs namespace required")
+		err = errors.New("spec for docker.stack-task-logs namespace required")
+	}
+	if err != nil {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}

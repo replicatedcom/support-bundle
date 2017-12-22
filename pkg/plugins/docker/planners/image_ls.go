@@ -22,7 +22,6 @@ func (d *Docker) ImageLs(spec types.Spec) []types.Task {
 	}
 
 	task := plans.StructuredSource{
-		Spec:      spec,
 		Producer:  d.producers.ImageLs(*spec.DockerImageLs),
 		RawPath:   filepath.Join(spec.OutputDir, "image_ls.raw"),
 		JSONPath:  filepath.Join(spec.OutputDir, "image_ls.json"),

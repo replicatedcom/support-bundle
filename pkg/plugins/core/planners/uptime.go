@@ -23,7 +23,6 @@ Idle Time (seconds): {{ .IdleSeconds }}`
 
 func Uptime(spec types.Spec) []types.Task {
 	task := plans.StreamsSource{
-		Spec:     spec,
 		Producer: producers.ReadFile(types.CoreReadFileOptions{Filepath: "/proc/uptime"}),
 		Template: uptimeTemplate,
 		Parser:   parseUptime,

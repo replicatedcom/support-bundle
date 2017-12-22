@@ -28,7 +28,7 @@ func (p *Planner) Plan(specs []types.Spec) []types.Task {
 				continue
 			}
 		}
-		jww.ERROR.Printf("Producer not defined for spec %v\n", spec)
+		jww.ERROR.Printf("Producer not defined for spec %+v", spec)
 	}
 
 	return tasks

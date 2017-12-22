@@ -30,7 +30,6 @@ const loadavgTemplate = `
 
 func Loadavg(spec types.Spec) []types.Task {
 	task := plans.StreamsSource{
-		Spec:     spec,
 		Producer: producers.ReadFile(types.CoreReadFileOptions{Filepath: "/proc/loadavg"}),
 		Template: loadavgTemplate,
 		Parser:   parseLoadavg,

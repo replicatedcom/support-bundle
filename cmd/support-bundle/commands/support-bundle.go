@@ -51,7 +51,7 @@ func initConfig(opts supportBundleOptions) {
 		viper.SetConfigName(".support-bundle")
 		home, err := homedir.Dir()
 		if err != nil {
-			jww.ERROR.Printf("Failed to find the user's home directory: %v\n", err)
+			jww.ERROR.Printf("Failed to find the user's home directory: %v", err)
 		} else {
 			viper.AddConfigPath(home)
 		}

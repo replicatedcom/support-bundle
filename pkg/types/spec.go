@@ -30,14 +30,16 @@ type Spec struct {
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
 	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerLs      *DockerContainerLsOptions      `json:"docker.container-ls,omitempty"`
+	DockerContainerRun     *DockerContainerRunOptions     `json:"docker.container-run,omitempty"`
 	DockerImageLs          *DockerImageLsOptions          `json:"docker.image-ls,omitempty"`
 	DockerImages           *DockerImageLsOptions          `json:"docker.images,omitempty"` // canonical: docker.image-ls
 	DockerInfo             *DockerInfoOptions             `json:"docker.info,omitempty"`
 	DockerNodeLs           *DockerNodeLsOptions           `json:"docker.node-ls,omitempty"`
-	DockerPs               *DockerContainerLsOptions      `json:"docker.ps,omitempty"` // canonical: docker.container-ls
+	DockerPs               *DockerContainerLsOptions      `json:"docker.ps,omitempty"`  // canonical: docker.container-ls
+	DockerRun              *DockerContainerRunOptions     `json:"docker.run,omitempty"` // canonical: docker.container-run
 	DockerServiceLogs      *DockerServiceLogsOptions      `json:"docker.service-logs,omitempty"`
 	DockerServiceLs        *DockerServiceLsOptions        `json:"docker.service-ls,omitempty"`
-	DockerServicePs        *DockerServicePsOptions        `json:"docker.service-ps,omitempty"` // TODO: is there a more canonical way to get service tasks?
+	DockerServicePs        *DockerServicePsOptions        `json:"docker.service-ps,omitempty"`
 	DockerStackServiceLogs *DockerStackServiceLogsOptions `json:"docker.stack-service-logs,omitempty"`
 	DockerStackServiceLs   *DockerStackServiceLsOptions   `json:"docker.stack-service-ls,omitempty"`
 	DockerStackServicePs   *DockerStackServicePsOptions   `json:"docker.stack-service-ps,omitempty"`
@@ -48,7 +50,6 @@ type Spec struct {
 
 	DockerContainerCp   *DockerContainerCpOptions   `json:"docker.container-cp,omitempty"`
 	DockerContainerExec *DockerContainerExecOptions `json:"docker.container-exec,omitempty"`
-	DockerContainerRun  *DockerContainerRunOptions  `json:"docker.container-run,omitempty"`
 
 	KubernetesLogs     *KubernetesLogsOptions     `json:"kubernetes.logs,omitempty"`
 	KubernetesResource *KubernetesResourceOptions `json:"kubernetes.resource,omitempty"`
@@ -119,6 +120,11 @@ type DockerContainerLsOptions struct {
 	ContainerListOptions `json:",inline,omitempty"`
 }
 
+type DockerContainerRunOptions struct {
+	dockertypes.ContainerCreateConfig
+	EnablePull bool
+}
+
 type DockerImageLsOptions struct {
 	ImageListOptions `json:",inline,omitempty"`
 }
@@ -184,11 +190,6 @@ type DockerContainerCpOptions struct {
 }
 
 type DockerContainerExecOptions struct {
-}
-
-type DockerContainerRunOptions struct {
-	ContainerCreateConfig dockertypes.ContainerCreateConfig
-	EnablePull            bool
 }
 
 // plugin.kubernetes options

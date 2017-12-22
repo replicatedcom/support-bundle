@@ -86,9 +86,9 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 	}
 
 	if !skipDefault {
-		jww.FEEDBACK.Printf("Support bundle generated at %s and does contain the default files\n", bundlePath)
+		jww.FEEDBACK.Printf("Support bundle generated at %s and does contain the default files", bundlePath)
 	} else {
-		jww.FEEDBACK.Printf("Support bundle generated at %s and does not contain the default files\n", bundlePath)
+		jww.FEEDBACK.Printf("Support bundle generated at %s and does not contain the default files", bundlePath)
 	}
 
 	return nil

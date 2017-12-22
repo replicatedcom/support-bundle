@@ -51,7 +51,6 @@ func (d *Docker) containerInspectTask(id string, names []string, spec types.Spec
 		basename = names[0]
 	}
 	task := plans.StructuredSource{
-		Spec:      spec,
 		Producer:  d.producers.ContainerInspect(id),
 		RawPath:   filepath.Join(spec.OutputDir, basename+".raw"),
 		JSONPath:  filepath.Join(spec.OutputDir, basename+".json"),

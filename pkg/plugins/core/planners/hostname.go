@@ -14,7 +14,6 @@ func Hostname(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 	task := plans.StreamsSource{
-		Spec:     spec,
 		Producer: producers.RunCommand(types.CoreRunCommandOptions{Name: "hostname"}),
 	}
 	var err error

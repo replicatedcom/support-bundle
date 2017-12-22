@@ -54,7 +54,6 @@ func (d *Docker) serviceLogsTask(id string, name string, spec types.Spec, opts *
 		basename = name
 	}
 	task := plans.StreamSource{
-		Spec:     spec,
 		Producer: d.producers.ServiceLogs(id, opts),
 		RawPath:  filepath.Join(spec.OutputDir, basename+".raw"),
 	}

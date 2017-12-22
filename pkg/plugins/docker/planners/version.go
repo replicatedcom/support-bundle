@@ -9,7 +9,6 @@ import (
 
 func (d *Docker) Version(spec types.Spec) []types.Task {
 	task := plans.StructuredSource{
-		Spec:      spec,
 		Producer:  d.producers.Version,
 		RawPath:   filepath.Join(spec.OutputDir, "docker_version.raw"),
 		JSONPath:  filepath.Join(spec.OutputDir, "docker_version.json"),

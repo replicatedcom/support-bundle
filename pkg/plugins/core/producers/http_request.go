@@ -40,9 +40,9 @@ func HTTPRequest(opts types.CoreHTTPRequestOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
 		body := bytes.NewBuffer([]byte(opts.Body))
 		if opts.Method != "" {
-			jww.DEBUG.Printf("Making request to %s with method %s\n", opts.URL, opts.Method)
+			jww.DEBUG.Printf("Making request to %s with method %s", opts.URL, opts.Method)
 		} else {
-			jww.DEBUG.Printf("Making request to %s\n", opts.URL)
+			jww.DEBUG.Printf("Making request to %s", opts.URL)
 		}
 		req, err := http.NewRequest(strings.ToUpper(opts.Method), opts.URL, body)
 		if err != nil {

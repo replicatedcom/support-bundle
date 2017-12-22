@@ -16,7 +16,6 @@ func (d *Docker) NodeLs(spec types.Spec) []types.Task {
 	}
 
 	task := plans.StructuredSource{
-		Spec:      spec,
 		Producer:  d.producers.NodeLs(*spec.DockerNodeLs),
 		RawPath:   filepath.Join(spec.OutputDir, "node_ls.raw"),
 		JSONPath:  filepath.Join(spec.OutputDir, "node_ls.json"),

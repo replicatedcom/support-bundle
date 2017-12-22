@@ -9,22 +9,20 @@ import (
 )
 
 func HTTPRequest(spec types.Spec) []types.Task {
+	var err error
 	if spec.CoreHTTPRequest == nil {
-		err := errors.New("spec for os.http-request options required")
-		task := plans.PreparedError(err, spec)
-		return []types.Task{task}
+		err = errors.New("spec for os.http-request options required")
+	} else if spec.CoreHTTPRequest.URL == "" {
+		err = errors.New("spec for os.http-request url required")
 	}
-	if spec.CoreHTTPRequest.URL == "" {
-		err := errors.New("spec for os.http-request url required")
+	if err != nil {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}
 
 	task := plans.StreamsSource{
-		Spec:     spec,
 		Producer: producers.HTTPRequest(*spec.CoreHTTPRequest),
 	}
-	var err error
 	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {
 		task := plans.PreparedError(err, spec)

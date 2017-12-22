@@ -54,9 +54,9 @@ func CleanupDir() {
 
 func LogResultsFomBundle() {
 	contents := GetFileFromBundle("index.json")
-	jww.DEBUG.Printf("Index: %s\n", contents)
+	jww.DEBUG.Printf("Index: %s", contents)
 	contents = GetFileFromBundle("error.json")
-	jww.DEBUG.Printf("Errors: %s\n", contents)
+	jww.DEBUG.Printf("Errors: %s", contents)
 }
 
 func WriteFile(path string, contents string) {
@@ -198,7 +198,7 @@ func ReadFileFromBundle(archivePath, targetFile string) (string, error) {
 
 func CloseLogErr(c io.Closer) {
 	if err := c.Close(); err != nil {
-		jww.ERROR.Print(err)
+		jww.ERROR.Printf("Failed to close closer: %v", err)
 	}
 }
 

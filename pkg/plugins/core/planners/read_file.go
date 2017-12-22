@@ -8,22 +8,20 @@ import (
 )
 
 func ReadFile(spec types.Spec) []types.Task {
+	var err error
 	if spec.CoreReadFile == nil {
-		err := errors.New("spec for os.read-file options required")
-		task := plans.PreparedError(err, spec)
-		return []types.Task{task}
+		err = errors.New("spec for os.read-file options required")
+	} else if spec.CoreReadFile.Filepath == "" {
+		err = errors.New("spec for os.read-file filepath required")
 	}
-	if spec.CoreReadFile.Filepath == "" {
-		err := errors.New("spec for os.read-file filepath required")
+	if err != nil {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}
 
 	task := plans.StreamsSource{
-		Spec:     spec,
 		Producer: producers.ReadFile(*spec.CoreReadFile),
 	}
-	var err error
 	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {
 		task := plans.PreparedError(err, spec)

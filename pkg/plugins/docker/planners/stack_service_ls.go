@@ -9,12 +9,13 @@ import (
 )
 
 func (d *Docker) StackServiceLs(spec types.Spec) []types.Task {
+	var err error
 	if spec.DockerStackServiceLs == nil {
-		err := errors.New("spec for docker.stack-service-ls options required")
-		task := plans.PreparedError(err, spec)
-		return []types.Task{task}
+		err = errors.New("spec for docker.stack-service-ls options required")
 	} else if spec.DockerStackServiceLs.Namespace == "" {
-		err := errors.New("spec for docker.stack-service-ls namespace required")
+		err = errors.New("spec for docker.stack-service-ls namespace required")
+	}
+	if err != nil {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}
@@ -25,13 +26,11 @@ func (d *Docker) StackServiceLs(spec types.Spec) []types.Task {
 	}
 	opts.Filters = dockerStackNamespaceFilter(opts.Filters, spec.DockerStackServiceLs.Namespace)
 	task := plans.StructuredSource{
-		Spec:      spec,
 		Producer:  d.producers.ServiceLs(*opts),
 		RawPath:   filepath.Join(spec.OutputDir, "service_ls.raw"),
 		JSONPath:  filepath.Join(spec.OutputDir, "service_ls.json"),
 		HumanPath: filepath.Join(spec.OutputDir, "service_ls.human"),
 	}
-	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)
 	if err != nil {
 		task := plans.PreparedError(err, spec)

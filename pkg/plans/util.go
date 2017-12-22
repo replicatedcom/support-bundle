@@ -13,6 +13,7 @@ import (
 )
 
 func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsSource, error) {
+	task.Spec = spec
 	if task.RawPath == "" {
 		task.RawPath = spec.OutputDir
 	}
@@ -28,6 +29,7 @@ func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsS
 }
 
 func SetCommonFieldsStreamSource(task StreamSource, spec types.Spec) (StreamSource, error) {
+	task.Spec = spec
 	if task.RawPath == "" {
 		task.RawPath = spec.OutputDir
 	}
@@ -43,6 +45,7 @@ func SetCommonFieldsStreamSource(task StreamSource, spec types.Spec) (StreamSour
 }
 
 func SetCommonFieldsStructuredSource(task StructuredSource, spec types.Spec) (StructuredSource, error) {
+	task.Spec = spec
 	if task.RawPath == "" {
 		task.RawPath = spec.OutputDir
 	}
@@ -72,7 +75,7 @@ func resultsWithErr(err error, results []*types.Result) []*types.Result {
 // closseLogErr
 func closeLogErr(c io.Closer) {
 	if err := c.Close(); err != nil {
-		jww.ERROR.Print(err)
+		jww.ERROR.Printf("Failed to close closer: %v", err)
 	}
 }
 
