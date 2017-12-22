@@ -38,8 +38,10 @@ type Spec struct {
 	DockerServiceLogs      *DockerServiceLogsOptions      `json:"docker.service-logs,omitempty"`
 	DockerServiceLs        *DockerServiceLsOptions        `json:"docker.service-ls,omitempty"`
 	DockerServicePs        *DockerServicePsOptions        `json:"docker.service-ps,omitempty"` // TODO: is there a more canonical way to get service tasks?
+	DockerStackServiceLogs *DockerStackServiceLogsOptions `json:"docker.stack-service-logs,omitempty"`
 	DockerStackServiceLs   *DockerStackServiceLsOptions   `json:"docker.stack-service-ls,omitempty"`
 	DockerStackServicePs   *DockerStackServicePsOptions   `json:"docker.stack-service-ps,omitempty"`
+	DockerStackTaskLogs    *DockerStackTaskLogsOptions    `json:"docker.stack-task-logs,omitempty"`
 	DockerTaskLogs         *DockerTaskLogsOptions         `json:"docker.task-logs,omitempty"`
 	DockerTaskLs           *DockerTaskLsOptions           `json:"docker.task-ls,omitempty"`
 	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
@@ -47,8 +49,6 @@ type Spec struct {
 	DockerContainerCp   *DockerContainerCpOptions   `json:"docker.container-cp,omitempty"`
 	DockerContainerExec *DockerContainerExecOptions `json:"docker.container-exec,omitempty"`
 	DockerContainerRun  *DockerContainerRunOptions  `json:"docker.container-run,omitempty"`
-	// DockerStackServiceLogs *DockerStackServiceLogsOptions `json:"docker.stack-service-logs,omitempty"`
-	// DockerStackTaskLogs *DockerStackTaskLogsOptions `json:"docker.stack-task-logs,omitempty"`
 
 	KubernetesLogs     *KubernetesLogsOptions     `json:"kubernetes.logs,omitempty"`
 	KubernetesResource *KubernetesResourceOptions `json:"kubernetes.resource,omitempty"`
@@ -145,16 +145,26 @@ type DockerServicePsOptions struct {
 	DockerTaskLsOptions `json:",inline,omitempty"`
 }
 
+type DockerStackServiceLogsOptions struct {
+	Namespace              string                            `json:"namespace"`
+	ContainerLogsOptions   *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	DockerServiceLsOptions *DockerServiceLsOptions           `json:"service_list_options,omitempty"`
+}
+
 type DockerStackServiceLsOptions struct {
-	Namespace string `json:"namespace"`
-	// TODO: filters.Args will panic
-	*DockerServiceLsOptions `json:"service_list_options,omitempty"`
+	Namespace              string                  `json:"namespace"`
+	DockerServiceLsOptions *DockerServiceLsOptions `json:"service_list_options,omitempty"`
 }
 
 type DockerStackServicePsOptions struct {
-	Namespace string `json:"namespace"`
-	// TODO: filters.Args will panic
-	*DockerServicePsOptions `json:"task_list_options,omitempty"`
+	Namespace              string                  `json:"namespace"`
+	DockerServicePsOptions *DockerServicePsOptions `json:"task_list_options,omitempty"`
+}
+
+type DockerStackTaskLogsOptions struct {
+	Namespace              string                            `json:"namespace"`
+	ContainerLogsOptions   *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	DockerServicePsOptions *DockerServicePsOptions           `json:"task_list_options,omitempty"`
 }
 
 type DockerTaskLogsOptions struct {
@@ -179,12 +189,6 @@ type DockerContainerExecOptions struct {
 type DockerContainerRunOptions struct {
 	ContainerCreateConfig dockertypes.ContainerCreateConfig
 	EnablePull            bool
-}
-
-type DockerStackServiceLogsOptions struct {
-}
-
-type DockerStackTaskLogsOptions struct {
 }
 
 // plugin.kubernetes options

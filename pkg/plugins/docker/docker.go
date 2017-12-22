@@ -49,10 +49,14 @@ func (p *Docker) Plan(spec types.Spec) types.Planner {
 		return p.planner.ServiceLs
 	case spec.DockerServicePs != nil:
 		return p.planner.ServicePs
+	case spec.DockerStackServiceLogs != nil:
+		return p.planner.StackServiceLogs
 	case spec.DockerStackServiceLs != nil:
 		return p.planner.StackServiceLs
 	case spec.DockerStackServicePs != nil:
 		return p.planner.StackServicePs
+	case spec.DockerStackTaskLogs != nil:
+		return p.planner.StackTaskLogs
 	case spec.DockerTaskLogs != nil:
 		return p.planner.TaskLogs
 	case spec.DockerTaskLs != nil:

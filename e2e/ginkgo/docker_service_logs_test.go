@@ -29,11 +29,13 @@ specs:
     output_dir: /docker/service-logs-by-name/
   - docker.service-logs:
       service_list_options:
-        all: true
         filters:
           label:
             - com.docker.stack.namespace=test-stack
-    output_dir: /docker/service-logs-by-labels/`)
+    output_dir: /docker/service-logs-by-labels/
+  - docker.stack-service-logs:
+      namespace: test-stack
+    output_dir: /docker/stack-service-logs/`)
 
 				GenerateBundle()
 
@@ -49,6 +51,10 @@ specs:
 
 				_ = GetResultFromBundle("docker/service-logs-by-labels/test-stack_visualizer.raw")
 				contents = GetFileFromBundle("docker/service-logs-by-labels/test-stack_visualizer.raw")
+				Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
+
+				_ = GetResultFromBundle("docker/stack-service-logs/test-stack_visualizer.raw")
+				contents = GetFileFromBundle("docker/stack-service-logs/test-stack_visualizer.raw")
 				Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 			})
 		})

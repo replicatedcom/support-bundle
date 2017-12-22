@@ -20,7 +20,7 @@ func (d *Docker) ServiceLogs(spec types.Spec) []types.Task {
 	}
 
 	if spec.DockerServiceLogs.ID != "" {
-		return []types.Task{d.serviceLogsTask(spec.DockerServiceLogs.ID, "", spec)}
+		return []types.Task{d.serviceLogsTask(spec.DockerServiceLogs.ID, "", spec, spec.DockerServiceLogs.ContainerLogsOptions)}
 	}
 
 	if spec.DockerServiceLogs.Name != "" {
@@ -29,10 +29,9 @@ func (d *Docker) ServiceLogs(spec types.Spec) []types.Task {
 			task := plans.PreparedError(err, spec)
 			return []types.Task{task}
 		}
-		return []types.Task{d.serviceLogsTask(serviceID, spec.DockerServiceLogs.Name, spec)}
+		return []types.Task{d.serviceLogsTask(serviceID, spec.DockerServiceLogs.Name, spec, spec.DockerServiceLogs.ContainerLogsOptions)}
 	}
 
-	var ts []types.Task
 	services, err := d.client.ServiceList(
 		context.Background(),
 		spec.DockerServiceLogs.ServiceListOptions.ToDockerServiceListOptions())
@@ -41,20 +40,22 @@ func (d *Docker) ServiceLogs(spec types.Spec) []types.Task {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}
+
+	var ts []types.Task
 	for _, service := range services {
-		ts = append(ts, d.serviceLogsTask(service.ID, service.Spec.Name, spec))
+		ts = append(ts, d.serviceLogsTask(service.ID, service.Spec.Name, spec, spec.DockerServiceLogs.ContainerLogsOptions))
 	}
 	return ts
 }
 
-func (d *Docker) serviceLogsTask(id string, name string, spec types.Spec) types.Task {
+func (d *Docker) serviceLogsTask(id string, name string, spec types.Spec, opts *dockertypes.ContainerLogsOptions) types.Task {
 	basename := id
 	if name != "" {
 		basename = name
 	}
 	task := plans.StreamSource{
 		Spec:     spec,
-		Producer: d.producers.ServiceLogs(id, spec.DockerServiceLogs.ContainerLogsOptions),
+		Producer: d.producers.ServiceLogs(id, opts),
 		RawPath:  filepath.Join(spec.OutputDir, basename+".raw"),
 	}
 	var err error

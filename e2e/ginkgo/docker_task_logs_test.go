@@ -26,12 +26,13 @@ specs:
     output_dir: /docker/task-logs-by-id/
   - docker.task-logs:
       task_list_options:
-        all: true
         filters:
           label:
             - com.docker.stack.namespace=test-stack
-    output_dir: /docker/task-logs-by-labels/`)
-
+    output_dir: /docker/task-logs-by-labels/
+  - docker.stack-task-logs:
+      namespace: test-stack
+    output_dir: /docker/stack-task-logs/`)
 				GenerateBundle()
 
 				var contents string
@@ -42,6 +43,10 @@ specs:
 
 				_ = GetResultFromBundle("docker/task-logs-by-labels/manrfdu40g5sy6vd9ygpjx8tw.raw")
 				contents = GetFileFromBundle("docker/task-logs-by-labels/manrfdu40g5sy6vd9ygpjx8tw.raw")
+				Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
+
+				_ = GetResultFromBundle("docker/stack-task-logs/manrfdu40g5sy6vd9ygpjx8tw.raw")
+				contents = GetFileFromBundle("docker/stack-task-logs/manrfdu40g5sy6vd9ygpjx8tw.raw")
 				Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 			})
 		})

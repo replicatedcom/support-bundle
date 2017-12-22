@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	dockertypes "github.com/docker/docker/api/types"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -18,10 +19,9 @@ func (d *Docker) TaskLogs(spec types.Spec) []types.Task {
 	}
 
 	if spec.DockerTaskLogs.ID != "" {
-		return []types.Task{d.taskLogsTask(spec.DockerTaskLogs.ID, spec)}
+		return []types.Task{d.taskLogsTask(spec.DockerTaskLogs.ID, spec, spec.DockerTaskLogs.ContainerLogsOptions)}
 	}
 
-	var ts []types.Task
 	tasks, err := d.client.TaskList(
 		context.Background(),
 		spec.DockerTaskLogs.TaskListOptions.ToDockerTaskListOptions())
@@ -30,17 +30,19 @@ func (d *Docker) TaskLogs(spec types.Spec) []types.Task {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}
+
+	var ts []types.Task
 	for _, task := range tasks {
-		ts = append(ts, d.taskLogsTask(task.ID, spec))
+		ts = append(ts, d.taskLogsTask(task.ID, spec, spec.DockerTaskLogs.ContainerLogsOptions))
 	}
 	return ts
 }
 
-func (d *Docker) taskLogsTask(id string, spec types.Spec) types.Task {
+func (d *Docker) taskLogsTask(id string, spec types.Spec, opts *dockertypes.ContainerLogsOptions) types.Task {
 	basename := id
 	task := plans.StreamSource{
 		Spec:     spec,
-		Producer: d.producers.TaskLogs(basename, spec.DockerTaskLogs.ContainerLogsOptions),
+		Producer: d.producers.TaskLogs(basename, opts),
 		RawPath:  filepath.Join(spec.OutputDir, basename+".raw"),
 	}
 	var err error
