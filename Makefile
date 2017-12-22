@@ -129,6 +129,20 @@ e2e-docker: build-dirs
 	        ./build/e2e.sh $(SRC_DIRS)                                      \
 	    "
 
+e2e-swarm: build-dirs
+	@docker run                                                             \
+	    -ti                                                                 \
+	    --rm                                                                \
+	    -v "$$(pwd)/.go:/go"                                                \
+	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+		-v /var/run/docker.sock:/var/run/docker.sock                        \
+	    -w /go/src/$(PKG)                                                   \
+		golang:1.9                                                          \
+	    /bin/sh -c "                                                        \
+			SWARM=1                                                        \
+	        ./build/e2e.sh $(SRC_DIRS)                                      \
+	    "
+
 build-dirs:
 	@mkdir -p bin/$(ARCH)
 	@mkdir -p .go/src/$(PKG) .go/pkg .go/bin .go/std/$(ARCH)

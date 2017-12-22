@@ -204,8 +204,7 @@ func CloseLogErr(c io.Closer) {
 
 // MakeDockerContainer makes a docker container to be used in tests, returning the container ID.
 // name and labels are optional
-func MakeDockerContainer(name string, labels map[string]string, cmd []string) string {
-	client, err := client.NewEnvClient()
+func MakeDockerContainer(client client.CommonAPIClient, name string, labels map[string]string, cmd []string) string {
 	Expect(err).NotTo(HaveOccurred())
 
 	config := dockercontainertypes.Config{
@@ -230,10 +229,7 @@ func MakeDockerContainer(name string, labels map[string]string, cmd []string) st
 }
 
 // RemoveDockerContainer removes a docker container by ID as cleanup.
-func RemoveDockerContainer(ID string) {
-	client, err := client.NewEnvClient()
-	Expect(err).NotTo(HaveOccurred())
-
-	err = client.ContainerRemove(context.Background(), ID, dockertypes.ContainerRemoveOptions{Force: true})
+func RemoveDockerContainer(client client.CommonAPIClient, containerID string) {
+	err = client.ContainerRemove(context.Background(), containerID, dockertypes.ContainerRemoveOptions{Force: true})
 	Expect(err).NotTo(HaveOccurred())
 }

@@ -1,16 +1,23 @@
 package ginkgo
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"time"
 
+	"github.com/docker/docker/client"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/satori/go.uuid"
 )
 
 var _ = Describe("docker.container-logs", func() {
+	dockerClient, err := client.NewEnvClient()
+	if err != nil {
+		panic(err)
+	}
+	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(LogResultsFomBundle)
@@ -24,14 +31,14 @@ var _ = Describe("docker.container-logs", func() {
 	cmd := []string{"echo", "Hello World!"}
 	var container1ID, container2ID, container3ID string
 	BeforeEach(func() {
-		container1ID = MakeDockerContainer(container1Name, labels, cmd)
-		container2ID = MakeDockerContainer(container2Name, labels, cmd)
-		container3ID = MakeDockerContainer(uuid.NewV4().String(), nil, cmd)
+		container1ID = MakeDockerContainer(dockerClient, container1Name, labels, cmd)
+		container2ID = MakeDockerContainer(dockerClient, container2Name, labels, cmd)
+		container3ID = MakeDockerContainer(dockerClient, uuid.NewV4().String(), nil, cmd)
 	})
 	AfterEach(func() {
-		RemoveDockerContainer(container1ID)
-		RemoveDockerContainer(container2ID)
-		RemoveDockerContainer(container3ID)
+		RemoveDockerContainer(dockerClient, container1ID)
+		RemoveDockerContainer(dockerClient, container2ID)
+		RemoveDockerContainer(dockerClient, container3ID)
 	})
 
 	Context("When the spec is run", func() {

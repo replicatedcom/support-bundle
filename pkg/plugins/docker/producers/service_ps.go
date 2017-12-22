@@ -6,8 +6,8 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func (d *Docker) ImageLs(opts types.DockerImageLsOptions) types.StructuredProducer {
+func (d *Docker) ServicePs(opts types.DockerServicePsOptions) types.StructuredProducer {
 	return func(ctx context.Context) (interface{}, error) {
-		return d.client.ImageList(ctx, opts.ToDockerImageListOptions())
+		return d.client.TaskList(ctx, opts.ToDockerTaskListOptions())
 	}
 }

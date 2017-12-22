@@ -2,7 +2,6 @@ package types
 
 import (
 	dockertypes "github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/filters"
 	"github.com/retracedhq/retraced-go"
 )
 
@@ -28,22 +27,24 @@ type Spec struct {
 
 	JournaldLogs *JournaldLogsOptions `json:"journald.logs,omitempty"`
 
-	DockerInfo             *DockerInfoOptions             `json:"docker.info,omitempty"`
-	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
-	DockerPs               *DockerContainerLsOptions      `json:"docker.ps,omitempty"`     // canonical: docker.container-ls
-	DockerImages           *DockerImageLsOptions          `json:"docker.images,omitempty"` // canonical: docker.image-ls
-	DockerImageLs          *DockerImageLsOptions          `json:"docker.image-ls,omitempty"`
-	DockerContainerLs      *DockerContainerLsOptions      `json:"docker.container-ls,omitempty"`
-	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
-	DockerContainerCp      *DockerContainerCpOptions      `json:"docker.container-cp,omitempty"`
-	DockerContainerExec    *DockerContainerExecOptions    `json:"docker.container-exec,omitempty"`
-	DockerContainerRun     *DockerContainerRunOptions     `json:"docker.container-run,omitempty"`
-	DockerServiceLs        *DockerServiceLsOptions        `json:"docker.service-ls,omitempty"`
-	DockerServiceLogs      *DockerServiceLogsOptions      `json:"docker.service-logs,omitempty"`
+	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
+	DockerContainerLs      *DockerContainerLsOptions      `json:"docker.container-ls,omitempty"`
+	DockerImageLs          *DockerImageLsOptions          `json:"docker.image-ls,omitempty"`
+	DockerImages           *DockerImageLsOptions          `json:"docker.images,omitempty"` // canonical: docker.image-ls
+	DockerInfo             *DockerInfoOptions             `json:"docker.info,omitempty"`
 	DockerNodeLs           *DockerNodeLsOptions           `json:"docker.node-ls,omitempty"`
+	DockerPs               *DockerContainerLsOptions      `json:"docker.ps,omitempty"` // canonical: docker.container-ls
+	DockerServiceLs        *DockerServiceLsOptions        `json:"docker.service-ls,omitempty"`
 	DockerServicePs        *DockerServicePsOptions        `json:"docker.service-ps,omitempty"` // TODO: is there a more canonical way to get service tasks?
-	// DockerStackServices *DockerStackServicesOptions `json:"docker.stack-services,omitempty"`
+	DockerStackServiceLs   *DockerStackServiceLsOptions   `json:"docker.stack-service-ls,omitempty"`
+	DockerStackServicePs   *DockerStackServicePsOptions   `json:"docker.stack-service-ps,omitempty"`
+	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
+
+	DockerContainerCp   *DockerContainerCpOptions   `json:"docker.container-cp,omitempty"`
+	DockerContainerExec *DockerContainerExecOptions `json:"docker.container-exec,omitempty"`
+	DockerContainerRun  *DockerContainerRunOptions  `json:"docker.container-run,omitempty"`
+	DockerServiceLogs   *DockerServiceLogsOptions   `json:"docker.service-logs,omitempty"`
 	// DockerStackServiceLogs *DockerStackServiceLogsOptions `json:"docker.stack-service-logs,omitempty"`
 	// DockerStackTasks *DockerStackTasksOptions `json:"docker.stack-tasks,omitempty"`
 	// DockerStackTaskLogs *DockerStackTaskLogsOptions `json:"docker.stack-task-logs,omitempty"`
@@ -59,26 +60,20 @@ type Meta struct {
 	Labels map[string]string `json:"labels,omitempty"`
 }
 
-type Config struct {
-	FilePath      string   `json:"file_path"`
-	Args          []string `json:"args"`
-	Image         string   `json:"image"`
-	EnablePull    bool     `json:"enable_pull"`
-	ContainerID   string   `json:"container_id"`
-	ContainerName string   `json:"container_name"`
-	Command       string   `json:"command"`
-}
-
 // plugin.core options
-
-type CoreLoadavgOptions struct {
-	Template string `json:"template"`
-}
 
 type CoreHostnameOptions struct {
 }
 
-type CoreUptimeOptions struct {
+type CoreHTTPRequestOptions struct {
+	URL      string              `json:"url"`
+	Method   string              `json:"method,omitempty"` // default "get"
+	Body     string              `json:"body,omitempty"`
+	Header   map[string][]string `json:"header,omitempty"`
+	Insecure bool                `json:"insecure,omitempty"`
+}
+
+type CoreLoadavgOptions struct {
 	Template string `json:"template"`
 }
 
@@ -93,12 +88,8 @@ type CoreRunCommandOptions struct {
 	Dir  string   `json:"dir,omitempty"`
 }
 
-type CoreHTTPRequestOptions struct {
-	URL      string              `json:"url"`
-	Method   string              `json:"method,omitempty"` // default "get"
-	Body     string              `json:"body,omitempty"`
-	Header   map[string][]string `json:"header,omitempty"`
-	Insecure bool                `json:"insecure,omitempty"`
+type CoreUptimeOptions struct {
+	Template string `json:"template"`
 }
 
 // plugin.journald options
@@ -110,18 +101,10 @@ type JournaldLogsOptions struct {
 
 // plugin.docker options
 
-type DockerInfoOptions struct {
-}
-
-type DockerVersionOptions struct {
-}
-
-type DockerImageLsOptions struct {
-	dockertypes.ImageListOptions `json:",inline,omitempty"`
-}
-
-type DockerContainerLsOptions struct {
-	dockertypes.ContainerListOptions `json:",inline,omitempty"`
+type DockerContainerInspectOptions struct {
+	ID                   string                `json:"id,omitempty"`
+	Name                 string                `json:"name,omitempty"`
+	ContainerListOptions *ContainerListOptions `json:"container_list_options,omitempty"`
 }
 
 type DockerContainerLogsOptions struct {
@@ -131,45 +114,42 @@ type DockerContainerLogsOptions struct {
 	ContainerListOptions *ContainerListOptions             `json:"container_list_options,omitempty"`
 }
 
-type DockerContainerInspectOptions struct {
-	ID                   string                `json:"id,omitempty"`
-	Name                 string                `json:"name,omitempty"`
-	ContainerListOptions *ContainerListOptions `json:"container_list_options,omitempty"`
+type DockerContainerLsOptions struct {
+	ContainerListOptions `json:",inline,omitempty"`
 }
 
-type ContainerListOptions struct {
-	Quiet   bool
-	Size    bool
-	All     bool
-	Latest  bool
-	Since   string
-	Before  string
-	Limit   int
-	Filters map[string][]string
+type DockerImageLsOptions struct {
+	ImageListOptions `json:",inline,omitempty"`
 }
 
-func (opts *ContainerListOptions) ToDockerContainerListOptions() dockertypes.ContainerListOptions {
-	// Because filters.Args will not marshal
-	return dockertypes.ContainerListOptions{
-		Quiet:   opts.Quiet,
-		Size:    opts.Size,
-		All:     opts.All,
-		Latest:  opts.Latest,
-		Since:   opts.Since,
-		Before:  opts.Before,
-		Limit:   opts.Limit,
-		Filters: FiltersToArgs(opts.Filters),
-	}
+type DockerInfoOptions struct {
 }
 
-func FiltersToArgs(f map[string][]string) filters.Args {
-	args := filters.NewArgs()
-	for k, vList := range f {
-		for _, v := range vList {
-			args.Add(k, v)
-		}
-	}
-	return args
+type DockerNodeLsOptions struct {
+	NodeListOptions `json:",inline,omitempty"`
+}
+
+type DockerServiceLsOptions struct {
+	ServiceListOptions `json:",inline,omitempty"`
+}
+
+type DockerServicePsOptions struct {
+	TaskListOptions `json:",inline,omitempty"`
+}
+
+type DockerStackServiceLsOptions struct {
+	Namespace string `json:"namespace"`
+	// TODO: filters.Args will panic
+	*DockerServiceLsOptions `json:"service_list_options,omitempty"`
+}
+
+type DockerStackServicePsOptions struct {
+	Namespace string `json:"namespace"`
+	// TODO: filters.Args will panic
+	*DockerServicePsOptions `json:"task_list_options,omitempty"`
+}
+
+type DockerVersionOptions struct {
 }
 
 type DockerContainerCpOptions struct {
@@ -183,16 +163,7 @@ type DockerContainerRunOptions struct {
 	EnablePull            bool
 }
 
-type DockerServiceLsOptions struct {
-}
-
 type DockerServiceLogsOptions struct {
-}
-
-type DockerNodeLsOptions struct {
-}
-
-type DockerServicePsOptions struct {
 }
 
 type DockerStackServicesOptions struct {
