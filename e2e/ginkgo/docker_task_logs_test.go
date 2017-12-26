@@ -22,7 +22,7 @@ var _ = Describe("docker.task-logs", func() {
 				WriteBundleConfig(`
 specs:
   - docker.task-logs:
-      id: manrfdu40g5sy6vd9ygpjx8tw
+      id: x1xzye79vohgp2a9dly0iigqc
     output_dir: /docker/task-logs-by-id/
   - docker.task-logs:
       task_list_options:
@@ -37,16 +37,16 @@ specs:
 
 				var contents string
 
-				_ = GetResultFromBundle("docker/task-logs-by-id/manrfdu40g5sy6vd9ygpjx8tw.raw")
-				contents = GetFileFromBundle("docker/task-logs-by-id/manrfdu40g5sy6vd9ygpjx8tw.raw")
+				_ = GetResultFromBundle("docker/task-logs-by-id/x1xzye79vohgp2a9dly0iigqc.raw")
+				contents = GetFileFromBundle("docker/task-logs-by-id/x1xzye79vohgp2a9dly0iigqc.raw")
 				Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 
-				_ = GetResultFromBundle("docker/task-logs-by-labels/manrfdu40g5sy6vd9ygpjx8tw.raw")
-				contents = GetFileFromBundle("docker/task-logs-by-labels/manrfdu40g5sy6vd9ygpjx8tw.raw")
+				_ = GetResultFromBundle("docker/task-logs-by-labels/x1xzye79vohgp2a9dly0iigqc.raw")
+				contents = GetFileFromBundle("docker/task-logs-by-labels/x1xzye79vohgp2a9dly0iigqc.raw")
 				Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 
-				_ = GetResultFromBundle("docker/stack-task-logs/manrfdu40g5sy6vd9ygpjx8tw.raw")
-				contents = GetFileFromBundle("docker/stack-task-logs/manrfdu40g5sy6vd9ygpjx8tw.raw")
+				_ = GetResultFromBundle("docker/stack-task-logs/x1xzye79vohgp2a9dly0iigqc.raw")
+				contents = GetFileFromBundle("docker/stack-task-logs/x1xzye79vohgp2a9dly0iigqc.raw")
 				Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 			})
 		})

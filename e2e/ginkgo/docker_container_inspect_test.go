@@ -48,10 +48,10 @@ var _ = Describe("docker.container-inspect", func() {
 			WriteBundleConfig(fmt.Sprintf(`
 specs:
   - docker.container-inspect:
-      id: %s
+      container: %s
     output_dir: /docker/container-inspect-by-id/
   - docker.container-inspect:
-      name: %s
+      container: %s
     output_dir: /docker/container-inspect-by-name/
   - docker.container-inspect:
       container_list_options:

@@ -22,10 +22,10 @@ var _ = Describe("docker.service-logs", func() {
 				WriteBundleConfig(`
 specs:
   - docker.service-logs:
-      id: 02cxslno3h9liblktnr0o6li7
+      service: uxa1uzb3wd6khtu3qv4nbqpbe
     output_dir: /docker/service-logs-by-id/
   - docker.service-logs:
-      name: test-stack_visualizer
+      service: test-stack_visualizer
     output_dir: /docker/service-logs-by-name/
   - docker.service-logs:
       service_list_options:
@@ -41,8 +41,8 @@ specs:
 
 				var contents string
 
-				_ = GetResultFromBundle("docker/service-logs-by-id/02cxslno3h9liblktnr0o6li7.raw")
-				contents = GetFileFromBundle("docker/service-logs-by-id/02cxslno3h9liblktnr0o6li7.raw")
+				_ = GetResultFromBundle("docker/service-logs-by-id/uxa1uzb3wd6khtu3qv4nbqpbe.raw")
+				contents = GetFileFromBundle("docker/service-logs-by-id/uxa1uzb3wd6khtu3qv4nbqpbe.raw")
 				Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 
 				_ = GetResultFromBundle("docker/service-logs-by-name/test-stack_visualizer.raw")

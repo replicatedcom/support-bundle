@@ -19,17 +19,8 @@ func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	if spec.DockerContainerLogs.ID != "" {
-		return []types.Task{d.containerLogsTask(spec.DockerContainerLogs.ID, nil, spec)}
-	}
-
-	if spec.DockerContainerLogs.Name != "" {
-		containerID, err := d.getContainerID(context.Background(), spec.DockerContainerLogs.Name)
-		if err != nil {
-			task := plans.PreparedError(err, spec)
-			return []types.Task{task}
-		}
-		return []types.Task{d.containerLogsTask(containerID, []string{spec.DockerContainerLogs.Name}, spec)}
+	if spec.DockerContainerLogs.Container != "" {
+		return []types.Task{d.containerLogsTask(spec.DockerContainerLogs.Container, nil, spec)}
 	}
 
 	var ts []types.Task

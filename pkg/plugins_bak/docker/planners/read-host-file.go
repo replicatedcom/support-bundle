@@ -42,7 +42,7 @@ func (d *Docker) ReadHostFile(spec types.Spec) []types.Task {
 
 	task := &plans.StreamSource{
 		Producer:     producer,
-		StreamFormat: "tar",
+		StreamFormat: plans.StreamFormatTar,
 		RawScrubber:  scrubber,
 		RawPath:      spec.Raw,
 		JSONPath:     spec.JSON,

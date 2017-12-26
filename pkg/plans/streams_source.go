@@ -81,7 +81,7 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 			case "":
 				moreResults = task.execStream(ctx, rootDir, name, reader)
 
-			case "tar":
+			case StreamFormatTar:
 				moreResults = task.execTarStream(ctx, rootDir, name, reader)
 
 			default:

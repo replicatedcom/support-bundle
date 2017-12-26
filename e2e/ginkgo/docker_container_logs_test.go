@@ -48,10 +48,10 @@ var _ = Describe("docker.container-logs", func() {
 			WriteBundleConfig(fmt.Sprintf(`
 specs:
   - docker.container-logs:
-      id: %s
+      container: %s
     output_dir: /docker/container-logs-by-id/
   - docker.container-logs:
-      name: %s
+      container: %s
     output_dir: /docker/container-logs-by-name/
   - docker.container-logs:
       container_list_options:

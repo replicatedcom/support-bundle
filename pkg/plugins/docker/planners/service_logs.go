@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	dockertypes "github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/filters"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -19,17 +18,8 @@ func (d *Docker) ServiceLogs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	if spec.DockerServiceLogs.ID != "" {
-		return []types.Task{d.serviceLogsTask(spec.DockerServiceLogs.ID, "", spec, spec.DockerServiceLogs.ContainerLogsOptions)}
-	}
-
-	if spec.DockerServiceLogs.Name != "" {
-		serviceID, err := d.getServiceID(context.Background(), spec.DockerServiceLogs.Name)
-		if err != nil {
-			task := plans.PreparedError(err, spec)
-			return []types.Task{task}
-		}
-		return []types.Task{d.serviceLogsTask(serviceID, spec.DockerServiceLogs.Name, spec, spec.DockerServiceLogs.ContainerLogsOptions)}
+	if spec.DockerServiceLogs.Service != "" {
+		return []types.Task{d.serviceLogsTask(spec.DockerServiceLogs.Service, "", spec, spec.DockerServiceLogs.ContainerLogsOptions)}
 	}
 
 	services, err := d.client.ServiceList(
@@ -63,19 +53,4 @@ func (d *Docker) serviceLogsTask(id string, name string, spec types.Spec, opts *
 		return plans.PreparedError(err, spec)
 	}
 	return &task
-}
-
-// get the ID of a service given the name
-func (d *Docker) getServiceID(ctx context.Context, name string) (string, error) {
-	filter := filters.NewArgs()
-	filter.Add("name", name)
-	services, err := d.client.ServiceList(ctx, dockertypes.ServiceListOptions{
-		Filters: filter,
-	})
-	if err != nil {
-		return "", err
-	} else if len(services) == 0 {
-		return "", fmt.Errorf("unable to find service with name %s", name)
-	}
-	return services[0].ID, nil
 }

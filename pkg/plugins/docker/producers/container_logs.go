@@ -8,7 +8,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func (d *Docker) ContainerLogs(containerID string, opts *dockertypes.ContainerLogsOptions) types.StreamProducer {
+func (d *Docker) ContainerLogs(container string, opts *dockertypes.ContainerLogsOptions) types.StreamProducer {
 	return func(ctx context.Context) (io.Reader, error) {
 		if opts == nil {
 			opts = &dockertypes.ContainerLogsOptions{}
@@ -18,6 +18,6 @@ func (d *Docker) ContainerLogs(containerID string, opts *dockertypes.ContainerLo
 			opts.ShowStderr = true
 		}
 		opts.Timestamps = true
-		return d.client.ContainerLogs(ctx, containerID, *opts)
+		return d.client.ContainerLogs(ctx, container, *opts)
 	}
 }

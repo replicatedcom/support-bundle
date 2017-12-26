@@ -27,6 +27,7 @@ type Spec struct {
 
 	JournaldLogs *JournaldLogsOptions `json:"journald.logs,omitempty"`
 
+	DockerContainerCp      *DockerContainerCpOptions      `json:"docker.container-cp,omitempty"`
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
 	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerLs      *DockerContainerLsOptions      `json:"docker.container-ls,omitempty"`
@@ -48,7 +49,6 @@ type Spec struct {
 	DockerTaskLs           *DockerTaskLsOptions           `json:"docker.task-ls,omitempty"`
 	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
 
-	DockerContainerCp   *DockerContainerCpOptions   `json:"docker.container-cp,omitempty"`
 	DockerContainerExec *DockerContainerExecOptions `json:"docker.container-exec,omitempty"`
 
 	KubernetesLogs     *KubernetesLogsOptions     `json:"kubernetes.logs,omitempty"`
@@ -103,15 +103,18 @@ type JournaldLogsOptions struct {
 
 // plugin.docker options
 
+type DockerContainerCpOptions struct {
+	Container string `json:"container,omitempty"`
+	SrcPath   string `json:"src_path,omitempty"`
+}
+
 type DockerContainerInspectOptions struct {
-	ID                   string                `json:"id,omitempty"`
-	Name                 string                `json:"name,omitempty"`
+	Container            string                `json:"container,omitempty"`
 	ContainerListOptions *ContainerListOptions `json:"container_list_options,omitempty"`
 }
 
 type DockerContainerLogsOptions struct {
-	ID                   string                            `json:"id,omitempty"`
-	Name                 string                            `json:"name,omitempty"`
+	Container            string                            `json:"container,omitempty"`
 	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	ContainerListOptions *ContainerListOptions             `json:"container_list_options,omitempty"`
 }
@@ -137,8 +140,7 @@ type DockerNodeLsOptions struct {
 }
 
 type DockerServiceLogsOptions struct {
-	ID                   string                            `json:"id,omitempty"`
-	Name                 string                            `json:"name,omitempty"`
+	Service              string                            `json:"service,omitempty"`
 	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	ServiceListOptions   *ServiceListOptions               `json:"service_list_options,omitempty"`
 }
@@ -184,9 +186,6 @@ type DockerTaskLsOptions struct {
 }
 
 type DockerVersionOptions struct {
-}
-
-type DockerContainerCpOptions struct {
 }
 
 type DockerContainerExecOptions struct {

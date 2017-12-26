@@ -27,6 +27,8 @@ func New() (*Docker, error) {
 
 func (p *Docker) Plan(spec types.Spec) types.Planner {
 	switch {
+	case spec.DockerContainerCp != nil:
+		return p.planner.ContainerCp
 	case spec.DockerContainerInspect != nil:
 		return p.planner.ContainerInspect
 	case spec.DockerContainerLs != nil:

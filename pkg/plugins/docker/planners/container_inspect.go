@@ -17,17 +17,8 @@ func (d *Docker) ContainerInspect(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	if spec.DockerContainerInspect.ID != "" {
-		return []types.Task{d.containerInspectTask(spec.DockerContainerInspect.ID, nil, spec)}
-	}
-
-	if spec.DockerContainerInspect.Name != "" {
-		containerID, err := d.getContainerID(context.Background(), spec.DockerContainerInspect.Name)
-		if err != nil {
-			task := plans.PreparedError(err, spec)
-			return []types.Task{task}
-		}
-		return []types.Task{d.containerInspectTask(containerID, []string{spec.DockerContainerInspect.Name}, spec)}
+	if spec.DockerContainerInspect.Container != "" {
+		return []types.Task{d.containerInspectTask(spec.DockerContainerInspect.Container, nil, spec)}
 	}
 
 	var ts []types.Task
