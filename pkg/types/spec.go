@@ -18,6 +18,8 @@ type Spec struct {
 
 	// plan-specific config
 
+	SupportBundleVersion *SupportBundleVersionOptions `json:"version,omitempty"`
+
 	CoreHostname    *CoreHostnameOptions    `json:"os.hostname,omitempty"`
 	CoreHTTPRequest *CoreHTTPRequestOptions `json:"os.http-request,omitempty"`
 	CoreLoadavg     *CoreLoadavgOptions     `json:"os.loadavg,omitempty"`
@@ -60,6 +62,11 @@ type Spec struct {
 type Meta struct {
 	Name   string            `json:"name,omitempty"`
 	Labels map[string]string `json:"labels,omitempty"`
+}
+
+// plugin.supportbundle options
+
+type SupportBundleVersionOptions struct {
 }
 
 // plugin.core options

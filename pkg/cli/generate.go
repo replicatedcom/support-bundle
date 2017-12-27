@@ -8,6 +8,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
@@ -47,6 +48,11 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		specs = append(defaultSpecs, specs...)
 	}
 
+	pluginSupportBundle, err := supportbundle.New()
+	if err != nil {
+		return errors.Wrap(err, "Failed to initialize supportbundle plugin")
+	}
+
 	pluginCore, err := core.New()
 	if err != nil {
 		return errors.Wrap(err, "Failed to initialize core plugin")
@@ -63,8 +69,9 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 	// }
 
 	planner := bundle.Planner{
-		Core:   pluginCore,
-		Docker: pluginDocker,
+		SupportBundle: pluginSupportBundle,
+		Core:          pluginCore,
+		Docker:        pluginDocker,
 	}
 
 	// if enableKubernetes {
