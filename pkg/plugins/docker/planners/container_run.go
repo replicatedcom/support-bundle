@@ -20,9 +20,9 @@ func (d *Docker) ContainerRun(spec types.Spec) []types.Task {
 	}
 	var err error
 	if spec.DockerContainerRun.ContainerCreateConfig.Config == nil {
-		err = errors.New("spec for docker.container-run ContainerCreateConfig.Config required")
+		err = errors.New("spec for docker.container-run container_create_config.Config required")
 	} else if spec.DockerContainerRun.ContainerCreateConfig.Config.Image == "" {
-		err = errors.New("spec for docker.container-run ContainerCreateConfig.Config.Image required")
+		err = errors.New("spec for docker.container-run container_create_config.Config.Image required")
 	}
 	if err != nil {
 		task := plans.PreparedError(err, spec)

@@ -7,10 +7,10 @@ import (
 	"github.com/docker/docker/client"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
-var _ = Describe("docker.container-cp", func() {
+var _ = Describe("docker.container-exec", func() {
 	dockerClient, err := client.NewEnvClient()
 	if err != nil {
 		panic(err)
@@ -36,30 +36,30 @@ var _ = Describe("docker.container-cp", func() {
 
 			WriteBundleConfig(fmt.Sprintf(`
 specs:
-  - docker.container-cp:
+  - docker.container-exec:
       container: %s
-      src_path: /etc/default/halt
-    output_dir: /docker/container-cp-file/
-  - docker.container-cp:
+      exec_config:
+        Cmd: ["echo", "Hello World!"]
+    output_dir: /docker/container-exec/
+  - docker.exec:
       container: %s
-      src_path: /etc/default/
-    output_dir: /docker/container-cp-dir/`, containerID, containerName))
+      exec_config:
+        Cmd: ["echo", "foo bar"]
+    output_dir: /docker/exec/`, containerID, containerName))
 
 			GenerateBundle()
 
 			var contents string
 
-			_ = GetResultFromBundle("docker/container-cp-file/halt")
-			contents = GetFileFromBundle("docker/container-cp-file/halt")
-			Expect(contents).To(Equal(`# Default behaviour of shutdown -h / halt. Set to "halt" or "poweroff".
-HALT=poweroff
-`))
+			_ = GetResultFromBundle("docker/container-exec/stdout.raw")
+			_ = GetResultFromBundle("docker/container-exec/stderr.raw")
+			contents = GetFileFromBundle("docker/container-exec/stdout.raw")
+			Expect(contents).To(Equal("Hello World!\n"))
 
-			_ = GetResultFromBundle("docker/container-cp-dir/default/halt")
-			contents = GetFileFromBundle("docker/container-cp-dir/default/halt")
-			Expect(contents).To(Equal(`# Default behaviour of shutdown -h / halt. Set to "halt" or "poweroff".
-HALT=poweroff
-`))
+			_ = GetResultFromBundle("docker/exec/stdout.raw")
+			_ = GetResultFromBundle("docker/exec/stderr.raw")
+			contents = GetFileFromBundle("docker/exec/stdout.raw")
+			Expect(contents).To(Equal("foo bar\n"))
 		})
 	})
 })

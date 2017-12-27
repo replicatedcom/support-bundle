@@ -28,10 +28,12 @@ type Spec struct {
 	JournaldLogs *JournaldLogsOptions `json:"journald.logs,omitempty"`
 
 	DockerContainerCp      *DockerContainerCpOptions      `json:"docker.container-cp,omitempty"`
+	DockerContainerExec    *DockerContainerExecOptions    `json:"docker.container-exec,omitempty"`
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`
 	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerLs      *DockerContainerLsOptions      `json:"docker.container-ls,omitempty"`
 	DockerContainerRun     *DockerContainerRunOptions     `json:"docker.container-run,omitempty"`
+	DockerExec             *DockerContainerExecOptions    `json:"docker.exec,omitempty"`
 	DockerImageLs          *DockerImageLsOptions          `json:"docker.image-ls,omitempty"`
 	DockerImages           *DockerImageLsOptions          `json:"docker.images,omitempty"` // canonical: docker.image-ls
 	DockerInfo             *DockerInfoOptions             `json:"docker.info,omitempty"`
@@ -48,8 +50,6 @@ type Spec struct {
 	DockerTaskLogs         *DockerTaskLogsOptions         `json:"docker.task-logs,omitempty"`
 	DockerTaskLs           *DockerTaskLsOptions           `json:"docker.task-ls,omitempty"`
 	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
-
-	DockerContainerExec *DockerContainerExecOptions `json:"docker.container-exec,omitempty"`
 
 	KubernetesLogs     *KubernetesLogsOptions     `json:"kubernetes.logs,omitempty"`
 	KubernetesResource *KubernetesResourceOptions `json:"kubernetes.resource,omitempty"`
@@ -108,6 +108,11 @@ type DockerContainerCpOptions struct {
 	SrcPath   string `json:"src_path,omitempty"`
 }
 
+type DockerContainerExecOptions struct {
+	Container  string                 `json:"container"`
+	ExecConfig dockertypes.ExecConfig `json:"exec_config"`
+}
+
 type DockerContainerInspectOptions struct {
 	Container            string                `json:"container,omitempty"`
 	ContainerListOptions *ContainerListOptions `json:"container_list_options,omitempty"`
@@ -124,8 +129,8 @@ type DockerContainerLsOptions struct {
 }
 
 type DockerContainerRunOptions struct {
-	dockertypes.ContainerCreateConfig
-	EnablePull bool
+	ContainerCreateConfig dockertypes.ContainerCreateConfig `json:"container_create_config"`
+	EnablePull            bool                              `json:"enable_pull,omitempty"`
 }
 
 type DockerImageLsOptions struct {
@@ -186,9 +191,6 @@ type DockerTaskLsOptions struct {
 }
 
 type DockerVersionOptions struct {
-}
-
-type DockerContainerExecOptions struct {
 }
 
 // plugin.kubernetes options

@@ -18,16 +18,18 @@ var _ = Describe("docker.container-run", func() {
 			WriteBundleConfig(`
 specs:
   - docker.container-run:
-      Config:
-        Image: alpine:latest
-        Cmd: ["echo", "Hello World!"]
-      EnablePull: true
+      container_create_config:
+        Config:
+          Image: alpine:latest
+          Cmd: ["echo", "Hello World!"]
+      enable_pull: true
     output_dir: /docker/container-run/
   - docker.run:
-      Config:
-        Image: alpine:latest
-        Cmd: ["echo", "foo bar"]
-      EnablePull: true
+      container_create_config:
+        Config:
+          Image: alpine:latest
+          Cmd: ["echo", "foo bar"]
+      enable_pull: true
     output_dir: /docker/run/`)
 
 			GenerateBundle()
