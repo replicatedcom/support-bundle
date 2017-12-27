@@ -10,7 +10,7 @@ import (
 
 func (d *Docker) ContainerRun(opts types.DockerContainerRunOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
-		stdout, stderr, err := util.ContainerRun(ctx, d.client, opts.ContainerCreateConfig, opts.EnablePull)
+		stdout, stderr, _, err := util.ContainerRun(ctx, d.client, opts.ContainerCreateConfig, opts.EnablePull)
 		if err != nil {
 			return nil, err
 		}

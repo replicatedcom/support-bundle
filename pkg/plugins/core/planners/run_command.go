@@ -4,11 +4,10 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func RunCommand(spec types.Spec) []types.Task {
+func (c *Core) RunCommand(spec types.Spec) []types.Task {
 	var err error
 	if spec.CoreRunCommand == nil {
 		err = errors.New("spec for os.run-command options required")
@@ -21,7 +20,7 @@ func RunCommand(spec types.Spec) []types.Task {
 	}
 
 	task := plans.StreamsSource{
-		Producer: producers.RunCommand(*spec.CoreRunCommand),
+		Producer: c.producers.RunCommand(*spec.CoreRunCommand),
 	}
 	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {

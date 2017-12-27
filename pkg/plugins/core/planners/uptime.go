@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
@@ -21,9 +20,9 @@ const uptimeTemplate = `
 Total Time (seconds): {{ .TotalSeconds }}
 Idle Time (seconds): {{ .IdleSeconds }}`
 
-func Uptime(spec types.Spec) []types.Task {
+func (c *Core) Uptime(spec types.Spec) []types.Task {
 	task := plans.StreamsSource{
-		Producer: producers.ReadFile(types.CoreReadFileOptions{Filepath: "/proc/uptime"}),
+		Producer: c.producers.ReadFile(types.CoreReadFileOptions{Filepath: "/proc/uptime"}),
 		Template: uptimeTemplate,
 		Parser:   parseUptime,
 	}

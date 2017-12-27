@@ -30,7 +30,7 @@ archive:
   - CHANGELOG*
 dockers:
   - image: registry.replicated.com/library/support-bundle
-    dockerfile: hack/Dockerfile-release
+    dockerfile: build/Dockerfile-release
     latest: true
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}

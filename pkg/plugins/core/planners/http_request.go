@@ -4,11 +4,10 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func HTTPRequest(spec types.Spec) []types.Task {
+func (c *Core) HTTPRequest(spec types.Spec) []types.Task {
 	var err error
 	if spec.CoreHTTPRequest == nil {
 		err = errors.New("spec for os.http-request options required")
@@ -21,7 +20,7 @@ func HTTPRequest(spec types.Spec) []types.Task {
 	}
 
 	task := plans.StreamsSource{
-		Producer: producers.HTTPRequest(*spec.CoreHTTPRequest),
+		Producer: c.producers.HTTPRequest(*spec.CoreHTTPRequest),
 	}
 	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {

@@ -11,12 +11,12 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container string, config dockertypes.ExecConfig) (io.Reader, io.Reader, error) {
+func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container string, config dockertypes.ExecConfig) (io.Reader, io.Reader, <-chan ContainerCmdError, error) {
 	config.AttachStdout = true
 	config.AttachStderr = true
 	exec, err := client.ContainerExecCreate(ctx, container, config)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "exec create")
+		return nil, nil, nil, errors.Wrap(err, "exec create")
 	}
 
 	startConfig := dockertypes.ExecStartCheck{
@@ -25,18 +25,33 @@ func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container
 	}
 	resp, err := client.ContainerExecAttach(ctx, exec.ID, startConfig)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "exec attach")
+		return nil, nil, nil, errors.Wrap(err, "exec attach")
 	}
 
 	if err := client.ContainerExecStart(ctx, exec.ID, startConfig); err != nil {
 		resp.Close()
-		return nil, nil, errors.Wrap(err, "exec start")
+		return nil, nil, nil, errors.Wrap(err, "exec start")
 	}
+
+	doneCh := make(chan struct{})
+
+	errorCh := make(chan ContainerCmdError, 1)
+	go func() {
+		<-doneCh
+		resp, err := client.ContainerExecInspect(ctx, exec.ID)
+		if err != nil {
+			errorCh <- ContainerCmdError{0, err}
+		} else {
+			errorCh <- ContainerCmdError{int64(resp.ExitCode), nil}
+		}
+	}()
 
 	stdoutR, stdoutW := io.Pipe()
 	stderrR, stderrW := io.Pipe()
 
 	go func() {
+		defer close(doneCh)
+
 		// TODO context interruptible
 		_, err := stdcopy.StdCopy(stdoutW, stderrW, resp.Reader)
 		resp.Close()
@@ -48,5 +63,5 @@ func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container
 		}
 	}()
 
-	return stdoutR, stderrR, nil
+	return stdoutR, stderrR, errorCh, nil
 }

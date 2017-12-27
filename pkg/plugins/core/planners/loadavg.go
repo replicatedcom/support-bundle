@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
@@ -28,9 +27,9 @@ const loadavgTemplate = `
 {{ with .ProcessCountRunning }}Running Processes: {{ .}}{{ end }}
 {{ with .ProcessCountTotal }}Total Processes: {{ . }}{{ end }}`
 
-func Loadavg(spec types.Spec) []types.Task {
+func (c *Core) Loadavg(spec types.Spec) []types.Task {
 	task := plans.StreamsSource{
-		Producer: producers.ReadFile(types.CoreReadFileOptions{Filepath: "/proc/loadavg"}),
+		Producer: c.producers.ReadFile(types.CoreReadFileOptions{Filepath: "/proc/loadavg"}),
 		Template: loadavgTemplate,
 		Parser:   parseLoadavg,
 	}

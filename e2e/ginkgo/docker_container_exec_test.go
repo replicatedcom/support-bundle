@@ -45,8 +45,12 @@ specs:
       container: %s
       exec_config:
         Cmd: ["echo", "foo bar"]
-    output_dir: /docker/exec/`, containerID, containerName))
-
+    output_dir: /docker/exec/
+  - docker.container-exec:
+      container: %s
+      exec_config:
+        Cmd: ["foobar", "bah"]
+    output_dir: /docker/container-exec-notexist/`, containerID, containerName, containerID))
 			GenerateBundle()
 
 			var contents string
@@ -60,6 +64,11 @@ specs:
 			_ = GetResultFromBundle("docker/exec/stderr.raw")
 			contents = GetFileFromBundle("docker/exec/stdout.raw")
 			Expect(contents).To(Equal("foo bar\n"))
+
+			_ = GetResultFromBundle("docker/container-exec-notexist/stdout.raw")
+			_ = GetResultFromBundle("docker/container-exec-notexist/stderr.raw")
+			contents = GetFileFromBundle("docker/container-exec-notexist/stdout.raw") // FIXME: stdout and no error!
+			Expect(contents).To(ContainSubstring("executable file not found in"))
 		})
 	})
 })

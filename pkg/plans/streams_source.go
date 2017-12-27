@@ -119,7 +119,13 @@ func (task *StreamsSource) execTarStream(ctx context.Context, rootDir string, fi
 			continue
 		}
 
-		moreResults := task.execStream(ctx, rootDir, hdr.Name, tarReader)
+		var fp string
+		if filePath != "" {
+			fp = filePath
+		} else {
+			fp = hdr.Name
+		}
+		moreResults := task.execStream(ctx, rootDir, fp, tarReader)
 		results = append(results, moreResults...)
 	}
 

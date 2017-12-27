@@ -36,7 +36,7 @@ func init() {
 	}
 }
 
-func HTTPRequest(opts types.CoreHTTPRequestOptions) types.StreamsProducer {
+func (c *Core) HTTPRequest(opts types.CoreHTTPRequestOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
 		body := bytes.NewBuffer([]byte(opts.Body))
 		if opts.Method != "" {

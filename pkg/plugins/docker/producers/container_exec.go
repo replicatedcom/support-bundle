@@ -10,7 +10,7 @@ import (
 
 func (d *Docker) ContainerExec(opts types.DockerContainerExecOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
-		stdout, stderr, err := util.ContainerExec(ctx, d.client, opts.Container, opts.ExecConfig)
+		stdout, stderr, _, err := util.ContainerExec(ctx, d.client, opts.Container, opts.ExecConfig)
 		if err != nil {
 			return nil, err
 		}
