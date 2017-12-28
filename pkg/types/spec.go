@@ -104,8 +104,9 @@ type CoreUptimeOptions struct {
 // plugin.journald options
 
 type JournaldLogsOptions struct {
-	Unit  string
-	Since string
+	Unit    string `json:"unit,omitempty"`
+	Since   string `json:"since,omitempty"`
+	Reverse bool   `json:"reverse,omitempty"`
 }
 
 // plugin.docker options

@@ -42,7 +42,7 @@ func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container
 		if err != nil {
 			errorCh <- ContainerCmdError{0, err}
 		} else {
-			errorCh <- ContainerCmdError{int64(resp.ExitCode), nil}
+			errorCh <- ContainerCmdError{resp.ExitCode, nil}
 		}
 	}()
 

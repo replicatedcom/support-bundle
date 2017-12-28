@@ -13,12 +13,12 @@ import (
 )
 
 var (
-	thisContainer   *dockertypes.Container
+	thisContainer   *dockertypes.ContainerJSON
 	thisContainerMu sync.Mutex
 )
 
 // ThisContainer will find a running container with image containing "support-bundle"
-func ThisContainer(ctx context.Context, client docker.CommonAPIClient) (*dockertypes.Container, error) {
+func ThisContainer(ctx context.Context, client docker.CommonAPIClient) (*dockertypes.ContainerJSON, error) {
 	thisContainerMu.Lock()
 	defer thisContainerMu.Unlock()
 
@@ -28,14 +28,18 @@ func ThisContainer(ctx context.Context, client docker.CommonAPIClient) (*dockert
 
 	containers, err := client.ContainerList(ctx, dockertypes.ContainerListOptions{})
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "container list")
 	}
 	for _, container := range containers {
 		b, _ := json.Marshal(container)
 		fmt.Println(string(b))
 		// TODO: LABEL "com.replicated.support-bundle"="true"
 		if strings.Contains(container.Image, "support-bundle") {
-			thisContainer = &container
+			c, err := client.ContainerInspect(ctx, container.ID)
+			if err != nil {
+				return nil, errors.Wrapf(err, "container inspect %s", container.ID)
+			}
+			thisContainer = &c
 			return thisContainer, nil
 		}
 	}

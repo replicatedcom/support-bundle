@@ -68,7 +68,7 @@ func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config doc
 			if body.Error != nil {
 				err = errors.New(body.Error.Message)
 			}
-			errorCh <- ContainerCmdError{body.StatusCode, err}
+			errorCh <- ContainerCmdError{int(body.StatusCode), err}
 
 		case err := <-errCh:
 			errorCh <- ContainerCmdError{0, err}

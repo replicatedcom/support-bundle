@@ -16,7 +16,7 @@ import (
 	dockertypes "github.com/docker/docker/api/types"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	dockernetworktypes "github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/client"
+	docker "github.com/docker/docker/client"
 	. "github.com/onsi/gomega"
 	cmd "github.com/replicatedcom/support-bundle/cmd/support-bundle/commands"
 	"github.com/replicatedcom/support-bundle/pkg/cli"
@@ -76,8 +76,11 @@ func GenerateBundle() {
 		"generate",
 		fmt.Sprintf("--spec-file=%s", filepath.Join(tmpdir, "config.yml")),
 		fmt.Sprintf("--out=%s", filepath.Join(tmpdir, "bundle.tar.gz")),
-		"--skip-default=true",
 		"--timeout=10",
+		"--skip-default",
+		"--journald",
+		"--kubernetes",
+		"--retraced",
 	})
 	err := cmd.Execute()
 	Expect(err).NotTo(HaveOccurred())
@@ -204,7 +207,7 @@ func CloseLogErr(c io.Closer) {
 
 // MakeDockerContainer makes a docker container to be used in tests, returning the container ID.
 // name and labels are optional
-func MakeDockerContainer(client client.CommonAPIClient, name string, labels map[string]string, cmd []string) string {
+func MakeDockerContainer(client docker.CommonAPIClient, name string, labels map[string]string, cmd []string) string {
 	Expect(err).NotTo(HaveOccurred())
 
 	config := dockercontainertypes.Config{
@@ -229,7 +232,7 @@ func MakeDockerContainer(client client.CommonAPIClient, name string, labels map[
 }
 
 // RemoveDockerContainer removes a docker container by ID as cleanup.
-func RemoveDockerContainer(client client.CommonAPIClient, containerID string) {
+func RemoveDockerContainer(client docker.CommonAPIClient, containerID string) {
 	err = client.ContainerRemove(context.Background(), containerID, dockertypes.ContainerRemoveOptions{Force: true})
 	Expect(err).NotTo(HaveOccurred())
 }

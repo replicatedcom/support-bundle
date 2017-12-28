@@ -1,6 +1,6 @@
 package util
 
 type ContainerCmdError struct {
-	StatusCode int64
+	StatusCode int
 	Error      error
 }

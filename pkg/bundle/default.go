@@ -141,6 +141,14 @@ specs:
     file_path: /etc/centos-release
 `
 
+func SupportBundleVersionSpec() types.Spec {
+	return types.Spec{
+		Description:          "Support bundle version information",
+		OutputDir:            "/",
+		SupportBundleVersion: &types.SupportBundleVersionOptions{},
+	}
+}
+
 func DefaultSpecs() ([]types.Spec, error) {
 	unconditionalSpecs, err := spec.Parse([]byte(unconditionalYaml))
 	defaultSpecs := unconditionalSpecs

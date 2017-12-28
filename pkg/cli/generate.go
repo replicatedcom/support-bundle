@@ -8,17 +8,33 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string, skipDefault bool, timeoutSeconds int, enableKubernetes bool) error {
-	jww.FEEDBACK.Println("Generating a new support bundle")
-	var specs []types.Spec
+type GenerateOptions struct {
+	CfgFiles         []string
+	CfgDocs          []string
+	BundlePath       string
+	SkipDefault      bool
+	TimeoutSeconds   int
+	EnableCore       bool
+	EnableDocker     bool
+	EnableJournald   bool
+	EnableKubernetes bool
+	EnableRetraced   bool
+}
 
-	for _, cfgFile := range cfgFiles {
+func (cli *Cli) Generate(opts GenerateOptions) error {
+	jww.FEEDBACK.Println("Generating a new support bundle")
+
+	// Always include version
+	specs := []types.Spec{bundle.SupportBundleVersionSpec()}
+
+	for _, cfgFile := range opts.CfgFiles {
 		yaml, err := ioutil.ReadFile(cfgFile)
 		if err != nil {
 			return errors.Wrap(err, "Failed to read spec file")
@@ -31,7 +47,7 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		specs = append(specs, fileSpecs...)
 	}
 
-	for _, cfgDoc := range cfgDocs {
+	for _, cfgDoc := range opts.CfgDocs {
 		argSpecs, err := spec.Parse([]byte(cfgDoc))
 		if err != nil {
 			return errors.Wrap(err, "Failed to parse spec")
@@ -39,7 +55,7 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		specs = append(specs, argSpecs...)
 	}
 
-	if !skipDefault {
+	if !opts.SkipDefault {
 		defaultSpecs, err := bundle.DefaultSpecs()
 		if err != nil {
 			return errors.Wrap(err, "Failed to get default specs")
@@ -48,39 +64,52 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		specs = append(defaultSpecs, specs...)
 	}
 
+	var planner bundle.Planner
+
 	pluginSupportBundle, err := supportbundle.New()
 	if err != nil {
 		return errors.Wrap(err, "Failed to initialize supportbundle plugin")
 	}
+	planner.AddPlugin(pluginSupportBundle)
 
-	pluginCore, err := core.New()
-	if err != nil {
-		return errors.Wrap(err, "Failed to initialize core plugin")
+	if opts.EnableCore {
+		pluginCore, err := core.New()
+		if err != nil {
+			return errors.Wrap(err, "Failed to initialize core plugin")
+		}
+		planner.AddPlugin(pluginCore)
 	}
 
-	pluginDocker, err := docker.New()
-	if err != nil {
-		return errors.Wrap(err, "Failed to initialize docker plugin")
+	if opts.EnableDocker {
+		pluginDocker, err := docker.New()
+		if err != nil {
+			return errors.Wrap(err, "Failed to initialize docker plugin")
+		}
+		planner.AddPlugin(pluginDocker)
 	}
 
-	// j, err := journald.New()
-	// if err != nil {
-	// 	return errors.Wrap(err, "Failed to initialize journald plugin")
-	// }
-
-	planner := bundle.Planner{
-		SupportBundle: pluginSupportBundle,
-		Core:          pluginCore,
-		Docker:        pluginDocker,
+	if opts.EnableJournald {
+		pluginJournald, err := journald.New()
+		if err != nil {
+			return errors.Wrap(err, "Failed to initialize journald plugin")
+		}
+		planner.AddPlugin(pluginJournald)
 	}
 
-	// if enableKubernetes {
-	// 	k, err := kubernetes.New()
+	// if opts.EnableKubernetes {
+	// 	pluginKubernetes, err := kubernetes.New()
 	// 	if err != nil {
 	// 		return errors.Wrap(err, "Failed to initialize kubernetes plugin")
 	// 	}
+	// 	planner.AddPlugin(pluginKubernetes)
+	// }
 
-	// 	planner.Plugins["kubernetes"] = k
+	// if opts.EnableRetraced {
+	// 	pluginRetraced, err := retraced.New()
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "Failed to initialize retraced plugin")
+	// 	}
+	// 	planner.AddPlugin(pluginRetraced)
 	// }
 
 	var tasks = planner.Plan(specs)
@@ -88,14 +117,14 @@ func (cli *Cli) Generate(cfgFiles []string, cfgDocs []string, bundlePath string,
 		return errors.New("No tasks defined")
 	}
 
-	if err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(timeoutSeconds)), bundlePath); err != nil {
+	if err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath); err != nil {
 		return errors.Wrap(err, "Failed to generate bundle")
 	}
 
-	if !skipDefault {
-		jww.FEEDBACK.Printf("Support bundle generated at %s and does contain the default files", bundlePath)
+	if !opts.SkipDefault {
+		jww.FEEDBACK.Printf("Support bundle generated at %s and does contain the default files", opts.BundlePath)
 	} else {
-		jww.FEEDBACK.Printf("Support bundle generated at %s and does not contain the default files", bundlePath)
+		jww.FEEDBACK.Printf("Support bundle generated at %s and does not contain the default files", opts.BundlePath)
 	}
 
 	return nil

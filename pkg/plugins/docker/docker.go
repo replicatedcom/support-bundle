@@ -3,7 +3,7 @@ package docker
 import (
 	"context"
 
-	"github.com/docker/docker/client"
+	docker "github.com/docker/docker/client"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker/planners"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -14,7 +14,7 @@ type Docker struct {
 }
 
 func New() (*Docker, error) {
-	c, err := client.NewEnvClient()
+	c, err := docker.NewEnvClient()
 	if err != nil {
 		return nil, err
 	}
