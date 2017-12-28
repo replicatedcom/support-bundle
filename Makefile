@@ -35,8 +35,6 @@ generate:
 #
 #  RETRACED_INSECURE_SKIP_VERIFY=1
 #
-integration-test-retraced:
-	ginkgo -v -r -p --focus="retraced.events" tests/ginkgo
 
 build-%:
 	@$(MAKE) --no-print-directory ARCH=$* build
@@ -140,6 +138,20 @@ e2e-swarm: build-dirs
 		golang:1.9                                                          \
 	    /bin/sh -c "                                                        \
 			SWARM=1                                                        \
+	        ./build/e2e.sh $(SRC_DIRS)                                      \
+	    "
+
+e2e-retraced: build-dirs
+	@docker run                                                             \
+	    -ti                                                                 \
+	    --rm                                                                \
+	    -v "$$(pwd)/.go:/go"                                                \
+	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+		-v /var/run/docker.sock:/var/run/docker.sock                        \
+	    -w /go/src/$(PKG)                                                   \
+		golang:1.9                                                          \
+	    /bin/sh -c "                                                        \
+			RETRACED=1                                                        \
 	        ./build/e2e.sh $(SRC_DIRS)                                      \
 	    "
 
