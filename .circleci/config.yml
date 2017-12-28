@@ -19,6 +19,7 @@ jobs:
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
+      - run: apt-get update && apt-get install -y systemd
       - run: ./build/e2e.sh
 
   e2e_docker:
@@ -28,6 +29,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: apt-get update && apt-get install -y systemd
       - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" registry.replicated.com
       - run: docker pull ubuntu:latest
       - run: docker pull registry.replicated.com/library/support-bundle:latest

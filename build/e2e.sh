@@ -19,7 +19,7 @@ elif [ -n "${RETRACED+x}" ]; then
 else
     echo "Running e2e tests (core enabled):"
     ginkgo -v -r -p --skip="docker" e2e/core
-    # ginkgo -v -r -p --skip="docker" e2e/journald
+    ginkgo -v -r -p --skip="docker" e2e/journald
     ginkgo -v -r -p e2e/supportbundle
 fi
 echo

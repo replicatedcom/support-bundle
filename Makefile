@@ -137,7 +137,7 @@ e2e-swarm: build-dirs
 	    -w /go/src/$(PKG)                                                   \
 		golang:1.9                                                          \
 	    /bin/sh -c "                                                        \
-			SWARM=1                                                        \
+			SWARM=1                                                         \
 	        ./build/e2e.sh $(SRC_DIRS)                                      \
 	    "
 
@@ -151,7 +151,7 @@ e2e-retraced: build-dirs
 	    -w /go/src/$(PKG)                                                   \
 		golang:1.9                                                          \
 	    /bin/sh -c "                                                        \
-			RETRACED=1                                                        \
+			RETRACED=1                                                      \
 	        ./build/e2e.sh $(SRC_DIRS)                                      \
 	    "
 
