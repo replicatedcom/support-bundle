@@ -8,13 +8,19 @@ import (
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 	if spec.DockerContainerLogs == nil {
-		err := errors.New("spec for docker.container-logs required")
-		task := plans.PreparedError(err, spec)
-		return []types.Task{task}
+		if spec.DockerLogs != nil {
+			jww.DEBUG.Println("spec for docker.container-logs aliased from docker.logs")
+			spec.DockerContainerLogs = spec.DockerLogs
+		} else {
+			err := errors.New("spec for docker.container-logs required")
+			task := plans.PreparedError(err, spec)
+			return []types.Task{task}
+		}
 	}
 
 	if spec.DockerContainerLogs.Container != "" {

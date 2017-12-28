@@ -47,6 +47,8 @@ func (p *Docker) Plan(spec types.Spec) types.Planner {
 		return p.planner.ImageLs
 	case spec.DockerInfo != nil:
 		return p.planner.Info
+	case spec.DockerLogs != nil:
+		return p.planner.ContainerLogs
 	case spec.DockerNodeLs != nil:
 		return p.planner.NodeLs
 	case spec.DockerPs != nil:

@@ -51,6 +51,9 @@ specs:
   - docker.container-logs:
       container: %s
     output_dir: /docker/container-logs-by-id/
+  - docker.logs:
+      container: %s
+    output_dir: /docker/logs-by-id/
   - docker.container-logs:
       container: %s
     output_dir: /docker/container-logs-by-name/
@@ -61,7 +64,7 @@ specs:
           label:
             - foo=bar
     output_dir: /docker/container-logs-by-labels/`,
-				container1ID, container2Name))
+				container1ID, container1ID, container2Name))
 
 			GenerateBundle()
 
@@ -69,6 +72,10 @@ specs:
 
 			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-id/%s.raw", container1ID))
 			contents = GetFileFromBundle(fmt.Sprintf("docker/container-logs-by-id/%s.raw", container1ID))
+			Expect(contents).To(ContainSubstring("Hello World!"))
+
+			_ = GetResultFromBundle(fmt.Sprintf("docker/logs-by-id/%s.raw", container1ID))
+			contents = GetFileFromBundle(fmt.Sprintf("docker/logs-by-id/%s.raw", container1ID))
 			Expect(contents).To(ContainSubstring("Hello World!"))
 
 			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-name/%s.raw", container2Name))

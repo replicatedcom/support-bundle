@@ -8,21 +8,19 @@ import (
 	. "github.com/replicatedcom/support-bundle/e2e/ginkgo"
 )
 
-var _ = Describe("docker.service-ls", func() {
+var _ = Describe("docker.service-ls swarm", func() {
 
-	var _ = Describe("swarm", func() {
+	// FIXME: deploy test-stack
 
-		// FIXME: deploy test-stack
+	BeforeEach(EnterNewTempDir)
+	AfterEach(LogResultsFomBundle)
+	AfterEach(CleanupDir)
 
-		BeforeEach(EnterNewTempDir)
-		AfterEach(LogResultsFomBundle)
-		AfterEach(CleanupDir)
+	Context("When the spec is run", func() {
 
-		Context("When the spec is run", func() {
+		It("should output the correct files in the bundle", func() {
 
-			It("should output the correct files in the bundle", func() {
-
-				WriteBundleConfig(`
+			WriteBundleConfig(`
 specs:
   - docker.service-ls: {}
     output_dir: /docker/service-ls/
@@ -30,36 +28,35 @@ specs:
       namespace: test-stack
     output_dir: /docker/stack-service-ls/`)
 
-				GenerateBundle()
+			GenerateBundle()
 
-				var contents string
-				var m interface{}
-				var err error
+			var contents string
+			var m interface{}
+			var err error
 
-				_ = GetResultFromBundle("docker/service-ls/service_ls.raw")
-				contents = GetFileFromBundle("docker/service-ls/service_ls.raw")
-				Expect(contents).To(ContainSubstring("TaskTemplate"))
-				_ = GetResultFromBundle("docker/service-ls/service_ls.json")
-				contents = GetFileFromBundle("docker/service-ls/service_ls.json")
-				Expect(contents).To(ContainSubstring("TaskTemplate"))
-				err = json.Unmarshal([]byte(contents), &m)
-				Expect(err).NotTo(HaveOccurred())
-				_ = GetResultFromBundle("docker/service-ls/service_ls.human")
-				contents = GetFileFromBundle("docker/service-ls/service_ls.human")
-				Expect(contents).To(ContainSubstring("TaskTemplate"))
+			_ = GetResultFromBundle("docker/service-ls/service_ls.raw")
+			contents = GetFileFromBundle("docker/service-ls/service_ls.raw")
+			Expect(contents).To(ContainSubstring("TaskTemplate"))
+			_ = GetResultFromBundle("docker/service-ls/service_ls.json")
+			contents = GetFileFromBundle("docker/service-ls/service_ls.json")
+			Expect(contents).To(ContainSubstring("TaskTemplate"))
+			err = json.Unmarshal([]byte(contents), &m)
+			Expect(err).NotTo(HaveOccurred())
+			_ = GetResultFromBundle("docker/service-ls/service_ls.human")
+			contents = GetFileFromBundle("docker/service-ls/service_ls.human")
+			Expect(contents).To(ContainSubstring("TaskTemplate"))
 
-				_ = GetResultFromBundle("docker/stack-service-ls/service_ls.raw")
-				contents = GetFileFromBundle("docker/stack-service-ls/service_ls.raw")
-				Expect(contents).To(ContainSubstring("TaskTemplate"))
-				_ = GetResultFromBundle("docker/stack-service-ls/service_ls.json")
-				contents = GetFileFromBundle("docker/stack-service-ls/service_ls.json")
-				Expect(contents).To(ContainSubstring("TaskTemplate"))
-				err = json.Unmarshal([]byte(contents), &m)
-				Expect(err).NotTo(HaveOccurred())
-				_ = GetResultFromBundle("docker/stack-service-ls/service_ls.human")
-				contents = GetFileFromBundle("docker/stack-service-ls/service_ls.human")
-				Expect(contents).To(ContainSubstring("TaskTemplate"))
-			})
+			_ = GetResultFromBundle("docker/stack-service-ls/service_ls.raw")
+			contents = GetFileFromBundle("docker/stack-service-ls/service_ls.raw")
+			Expect(contents).To(ContainSubstring("TaskTemplate"))
+			_ = GetResultFromBundle("docker/stack-service-ls/service_ls.json")
+			contents = GetFileFromBundle("docker/stack-service-ls/service_ls.json")
+			Expect(contents).To(ContainSubstring("TaskTemplate"))
+			err = json.Unmarshal([]byte(contents), &m)
+			Expect(err).NotTo(HaveOccurred())
+			_ = GetResultFromBundle("docker/stack-service-ls/service_ls.human")
+			contents = GetFileFromBundle("docker/stack-service-ls/service_ls.human")
+			Expect(contents).To(ContainSubstring("TaskTemplate"))
 		})
 	})
 })

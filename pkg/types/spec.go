@@ -35,10 +35,12 @@ type Spec struct {
 	DockerContainerLogs    *DockerContainerLogsOptions    `json:"docker.container-logs,omitempty"`
 	DockerContainerLs      *DockerContainerLsOptions      `json:"docker.container-ls,omitempty"`
 	DockerContainerRun     *DockerContainerRunOptions     `json:"docker.container-run,omitempty"`
-	DockerExec             *DockerContainerExecOptions    `json:"docker.exec,omitempty"`
+	DockerExec             *DockerContainerExecOptions    `json:"docker.exec,omitempty"` // canonical: docker.container-exec
 	DockerImageLs          *DockerImageLsOptions          `json:"docker.image-ls,omitempty"`
 	DockerImages           *DockerImageLsOptions          `json:"docker.images,omitempty"` // canonical: docker.image-ls
 	DockerInfo             *DockerInfoOptions             `json:"docker.info,omitempty"`
+	// TODO: docker.inspect
+	DockerLogs             *DockerContainerLogsOptions    `json:"docker.logs,omitempty"` // canonical: docker.container-logs
 	DockerNodeLs           *DockerNodeLsOptions           `json:"docker.node-ls,omitempty"`
 	DockerPs               *DockerContainerLsOptions      `json:"docker.ps,omitempty"`  // canonical: docker.container-ls
 	DockerRun              *DockerContainerRunOptions     `json:"docker.run,omitempty"` // canonical: docker.container-run
@@ -52,6 +54,10 @@ type Spec struct {
 	DockerTaskLogs         *DockerTaskLogsOptions         `json:"docker.task-logs,omitempty"`
 	DockerTaskLs           *DockerTaskLsOptions           `json:"docker.task-ls,omitempty"`
 	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
+
+	KubernetesAPIVersions *KubernetesAPIVersionsOptions `json:"kubernetes.api-versions,omitempty"`
+	KubernetesClusterInfo *KubernetesClusterInfoOptions `json:"kubernetes.cluster-info,omitempty"`
+	KubernetesVersion     *KubernetesVersionOptions     `json:"kubernetes.version,omitempty"`
 
 	KubernetesLogs     *KubernetesLogsOptions     `json:"kubernetes.logs,omitempty"`
 	KubernetesResource *KubernetesResourceOptions `json:"kubernetes.resource,omitempty"`
@@ -202,6 +208,15 @@ type DockerVersionOptions struct {
 }
 
 // plugin.kubernetes options
+
+type KubernetesAPIVersionsOptions struct {
+}
+
+type KubernetesClusterInfoOptions struct {
+}
+
+type KubernetesVersionOptions struct {
+}
 
 type KubernetesLogsOptions struct {
 	PodName       string `json:"pod_name"`
