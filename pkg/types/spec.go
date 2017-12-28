@@ -216,12 +216,16 @@ type KubernetesResourceOptions struct {
 }
 
 type RetracedEventsOptions struct {
-	APIEndpoint string                    `json:"api_endpoint"`
-	ProjectID   string                    `json:"project_id,omitempty"`
-	APIToken    string                    `json:"api_token,omitempty"`
-	Insecure    bool                      `json:"insecure,omitempty"`
-	Mask        *retraced.EventNodeMask   `json:"mask,omitempty"`
-	Query       *retraced.StructuredQuery `json:"query,omitempty"`
+	RetracedAPIClientOptions `json:",inline"`
+	Mask                     *retraced.EventNodeMask   `json:"mask,omitempty"`
+	Query                    *retraced.StructuredQuery `json:"query,omitempty"`
+}
+
+type RetracedAPIClientOptions struct {
+	APIEndpoint string `json:"api_endpoint"`
+	ProjectID   string `json:"project_id,omitempty"`
+	APIToken    string `json:"api_token,omitempty"`
+	Insecure    bool   `json:"insecure,omitempty"`
 }
 
 type Scrub struct {

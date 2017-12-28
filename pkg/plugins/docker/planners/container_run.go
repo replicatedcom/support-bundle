@@ -13,7 +13,7 @@ func (d *Docker) ContainerRun(spec types.Spec) []types.Task {
 			jww.DEBUG.Println("spec for docker.container-run aliased from docker.run")
 			spec.DockerContainerRun = spec.DockerRun
 		} else {
-			err := errors.New("spec for docker.container-run options required")
+			err := errors.New("spec for docker.container-run required")
 			task := plans.PreparedError(err, spec)
 			return []types.Task{task}
 		}

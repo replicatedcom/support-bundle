@@ -10,7 +10,7 @@ import (
 
 func (d *Docker) ServiceLs(spec types.Spec) []types.Task {
 	if spec.DockerServiceLs == nil {
-		err := errors.New("spec for docker.service-ls options required")
+		err := errors.New("spec for docker.service-ls required")
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}

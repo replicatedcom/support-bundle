@@ -15,7 +15,7 @@ func (d *Docker) ImageLs(spec types.Spec) []types.Task {
 			jww.DEBUG.Println("spec for docker.image-ls aliased from docker.images")
 			spec.DockerImageLs = spec.DockerImages
 		} else {
-			err := errors.New("spec for docker.image-ls options required")
+			err := errors.New("spec for docker.image-ls required")
 			task := plans.PreparedError(err, spec)
 			return []types.Task{task}
 		}

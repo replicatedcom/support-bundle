@@ -10,7 +10,7 @@ import (
 
 func (d *Docker) ServicePs(spec types.Spec) []types.Task {
 	if spec.DockerServicePs == nil {
-		err := errors.New("spec for docker.service-ps options required")
+		err := errors.New("spec for docker.service-ps required")
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}

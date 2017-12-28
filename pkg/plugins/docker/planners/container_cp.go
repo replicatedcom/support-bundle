@@ -10,7 +10,7 @@ import (
 func (d *Docker) ContainerCp(spec types.Spec) []types.Task {
 	var err error
 	if spec.DockerContainerCp == nil {
-		err = errors.New("spec for docker.container-cp options required")
+		err = errors.New("spec for docker.container-cp required")
 	} else if spec.DockerContainerCp.Container == "" {
 		err = errors.New("spec for docker.container-cp container required")
 	} else if spec.DockerContainerCp.SrcPath == "" {

@@ -14,7 +14,7 @@ func (d *Docker) ContainerExec(spec types.Spec) []types.Task {
 			jww.DEBUG.Println("spec for docker.container-exec aliased from docker.exec")
 			spec.DockerContainerExec = spec.DockerExec
 		} else {
-			err := errors.New("spec for docker.container-exec options required")
+			err := errors.New("spec for docker.container-exec required")
 			task := plans.PreparedError(err, spec)
 			return []types.Task{task}
 		}

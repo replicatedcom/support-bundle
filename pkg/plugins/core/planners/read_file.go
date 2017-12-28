@@ -10,7 +10,7 @@ import (
 func (c *Core) ReadFile(spec types.Spec) []types.Task {
 	var err error
 	if spec.CoreReadFile == nil {
-		err = errors.New("spec for os.read-file options required")
+		err = errors.New("spec for os.read-file required")
 	} else if spec.CoreReadFile.Filepath == "" {
 		err = errors.New("spec for os.read-file filepath required")
 	}

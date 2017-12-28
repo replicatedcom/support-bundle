@@ -41,14 +41,18 @@ func EnterNewTempDir() {
 	Expect(err).NotTo(HaveOccurred())
 	tmpdir, err = ioutil.TempDir("", "support-bundle")
 	Expect(err).NotTo(HaveOccurred())
-	err = os.Chdir(tmpdir)
+	err = os.Chdir(GetTempDir())
 	Expect(err).NotTo(HaveOccurred())
+}
+
+func GetTempDir() string {
+	return tmpdir
 }
 
 func CleanupDir() {
 	err = os.Chdir(cwd)
 	Expect(err).NotTo(HaveOccurred())
-	err = os.RemoveAll(tmpdir)
+	err = os.RemoveAll(GetTempDir())
 	Expect(err).NotTo(HaveOccurred())
 }
 
@@ -74,8 +78,8 @@ func GenerateBundle() {
 	cmd.SetOutput(buf)
 	cmd.SetArgs([]string{
 		"generate",
-		fmt.Sprintf("--spec-file=%s", filepath.Join(tmpdir, "config.yml")),
-		fmt.Sprintf("--out=%s", filepath.Join(tmpdir, "bundle.tar.gz")),
+		fmt.Sprintf("--spec-file=%s", filepath.Join(GetTempDir(), "config.yml")),
+		fmt.Sprintf("--out=%s", filepath.Join(GetTempDir(), "bundle.tar.gz")),
 		"--timeout=10",
 		"--skip-default",
 		"--journald",
@@ -119,7 +123,7 @@ func GetResultsFromBundleErrors() []*types.Result {
 
 func getResultsFromBundleIndex(index string) (results []*types.Result) {
 	contents, err := ReadFileFromBundle(
-		filepath.Join(tmpdir, "bundle.tar.gz"),
+		filepath.Join(GetTempDir(), "bundle.tar.gz"),
 		index,
 	)
 	Expect(err).NotTo(HaveOccurred())
@@ -142,7 +146,7 @@ func ExpectBundleErrorToHaveOccured(path, reStr string) {
 
 func GetFileFromBundle(pathInBundle string) string {
 	contents, err := ReadFileFromBundle(
-		filepath.Join(tmpdir, "bundle.tar.gz"),
+		filepath.Join(GetTempDir(), "bundle.tar.gz"),
 		pathInBundle,
 	)
 	Expect(err).NotTo(HaveOccurred())
@@ -151,7 +155,7 @@ func GetFileFromBundle(pathInBundle string) string {
 
 func ExpectFileNotInBundle(pathInBundle string) {
 	_, err := ReadFileFromBundle(
-		filepath.Join(tmpdir, "bundle.tar.gz"),
+		filepath.Join(GetTempDir(), "bundle.tar.gz"),
 		pathInBundle,
 	)
 	Expect(err).To(HaveOccurred())

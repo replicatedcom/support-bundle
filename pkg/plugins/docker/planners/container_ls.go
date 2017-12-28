@@ -15,7 +15,7 @@ func (d *Docker) ContainerLs(spec types.Spec) []types.Task {
 			jww.DEBUG.Println("spec for docker.container-ls aliased from docker.ps")
 			spec.DockerContainerLs = spec.DockerPs
 		} else {
-			err := errors.New("spec for docker.container-ls options required")
+			err := errors.New("spec for docker.container-ls required")
 			task := plans.PreparedError(err, spec)
 			return []types.Task{task}
 		}

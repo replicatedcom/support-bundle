@@ -11,7 +11,7 @@ import (
 func (d *Docker) StackServicePs(spec types.Spec) []types.Task {
 	var err error
 	if spec.DockerStackServicePs == nil {
-		err = errors.New("spec for docker.stack-service-ps options required")
+		err = errors.New("spec for docker.stack-service-ps required")
 	} else if spec.DockerStackServicePs.Namespace == "" {
 		err = errors.New("spec for docker.stack-service-ps namespace required")
 	}

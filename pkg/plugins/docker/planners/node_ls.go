@@ -10,7 +10,7 @@ import (
 
 func (d *Docker) NodeLs(spec types.Spec) []types.Task {
 	if spec.DockerNodeLs == nil {
-		err := errors.New("spec for docker.node-ls options required")
+		err := errors.New("spec for docker.node-ls required")
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}

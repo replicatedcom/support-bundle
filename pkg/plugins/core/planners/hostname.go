@@ -8,7 +8,7 @@ import (
 
 func (c *Core) Hostname(spec types.Spec) []types.Task {
 	if spec.CoreHostname == nil {
-		err := errors.New("spec for os.hostname options required")
+		err := errors.New("spec for os.hostname required")
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}

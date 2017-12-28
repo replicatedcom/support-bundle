@@ -10,7 +10,7 @@ import (
 func (c *Core) HTTPRequest(spec types.Spec) []types.Task {
 	var err error
 	if spec.CoreHTTPRequest == nil {
-		err = errors.New("spec for os.http-request options required")
+		err = errors.New("spec for os.http-request required")
 	} else if spec.CoreHTTPRequest.URL == "" {
 		err = errors.New("spec for os.http-request url required")
 	}

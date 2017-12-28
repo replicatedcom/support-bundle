@@ -10,7 +10,7 @@ import (
 
 func (d *Docker) TaskLs(spec types.Spec) []types.Task {
 	if spec.DockerTaskLs == nil {
-		err := errors.New("spec for docker.task-ls options required")
+		err := errors.New("spec for docker.task-ls required")
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}

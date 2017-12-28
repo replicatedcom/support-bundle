@@ -12,7 +12,7 @@ import (
 
 func (d *Docker) ContainerInspect(spec types.Spec) []types.Task {
 	if spec.DockerContainerInspect == nil {
-		err := errors.New("spec for docker.container-inspect options required")
+		err := errors.New("spec for docker.container-inspect required")
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}

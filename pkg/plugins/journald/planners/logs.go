@@ -12,7 +12,7 @@ import (
 func (j *Journald) Logs(spec types.Spec) []types.Task {
 	var err error
 	if spec.JournaldLogs == nil {
-		err = errors.New("spec for journald.logs options required")
+		err = errors.New("spec for journald.logs required")
 	}
 	if err != nil {
 		task := plans.PreparedError(err, spec)

@@ -12,7 +12,7 @@ import (
 
 func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 	if spec.DockerContainerLogs == nil {
-		err := errors.New("spec for docker.container-logs options required")
+		err := errors.New("spec for docker.container-logs required")
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}

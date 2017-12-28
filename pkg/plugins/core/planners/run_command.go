@@ -10,7 +10,7 @@ import (
 func (c *Core) RunCommand(spec types.Spec) []types.Task {
 	var err error
 	if spec.CoreRunCommand == nil {
-		err = errors.New("spec for os.run-command options required")
+		err = errors.New("spec for os.run-command required")
 	} else if spec.CoreRunCommand.Name == "" {
 		err = errors.New("spec for os.run-command name required")
 	}
