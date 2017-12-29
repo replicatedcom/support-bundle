@@ -34,7 +34,7 @@ specs:
       reverse: true
     output_dir: /journald/logs/docker/`)
 
-			GenerateBundle()
+			GenerateBundle("--journald")
 
 			_ = GetResultFromBundle("journald/logs/docker/logs.raw")
 			contents := GetFileFromBundle("journald/logs/docker/logs.raw")
@@ -69,7 +69,7 @@ specs:
       reverse: true
     output_dir: /journald/logs/docker/`)
 
-			GenerateBundle()
+			GenerateBundle("--journald")
 
 			_ = GetResultFromBundle("journald/logs/docker/logs.raw")
 			contents := GetFileFromBundle("journald/logs/docker/logs.raw")

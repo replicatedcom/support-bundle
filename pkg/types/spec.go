@@ -3,6 +3,8 @@ package types
 import (
 	dockertypes "github.com/docker/docker/api/types"
 	"github.com/retracedhq/retraced-go"
+	"k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type Doc struct {
@@ -55,12 +57,11 @@ type Spec struct {
 	DockerTaskLs           *DockerTaskLsOptions           `json:"docker.task-ls,omitempty"`
 	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
 
-	KubernetesAPIVersions *KubernetesAPIVersionsOptions `json:"kubernetes.api-versions,omitempty"`
-	KubernetesClusterInfo *KubernetesClusterInfoOptions `json:"kubernetes.cluster-info,omitempty"`
-	KubernetesVersion     *KubernetesVersionOptions     `json:"kubernetes.version,omitempty"`
-
-	KubernetesLogs     *KubernetesLogsOptions     `json:"kubernetes.logs,omitempty"`
-	KubernetesResource *KubernetesResourceOptions `json:"kubernetes.resource,omitempty"`
+	KubernetesAPIVersions  *KubernetesAPIVersionsOptions  `json:"kubernetes.api-versions,omitempty"`
+	KubernetesClusterInfo  *KubernetesClusterInfoOptions  `json:"kubernetes.cluster-info,omitempty"`
+	KubernetesLogs         *KubernetesLogsOptions         `json:"kubernetes.logs,omitempty"`
+	KubernetesResourceList *KubernetesResourceListOptions `json:"kubernetes.resource-list,omitempty"`
+	KubernetesVersion      *KubernetesVersionOptions      `json:"kubernetes.version,omitempty"`
 
 	RetracedEvents *RetracedEventsOptions `json:"retraced.events,omitempty"`
 }
@@ -219,15 +220,15 @@ type KubernetesVersionOptions struct {
 }
 
 type KubernetesLogsOptions struct {
-	PodName       string `json:"pod_name"`
-	ContainerName string `json:"container_name,omitempty"`
-	Namespace     string `json:"namespace,omitempty"`
-	Scrub         Scrub  `json:"scrub"`
+	Pod           string            `json:"pod"`
+	Namespace     string            `json:"namespace,omitempty"`
+	PodLogOptions *v1.PodLogOptions `json:"pod_log_options,omitempty"`
 }
 
-type KubernetesResourceOptions struct {
-	Type      string `json:"type"`
-	Namespace string `json:"namespace,omitempty"`
+type KubernetesResourceListOptions struct {
+	Kind        string              `json:"kind"`
+	Namespace   string              `json:"namespace,omitempty"`
+	ListOptions *metav1.ListOptions `json:"resource_list_options,omitempty"`
 }
 
 type RetracedEventsOptions struct {

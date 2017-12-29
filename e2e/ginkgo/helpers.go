@@ -72,20 +72,17 @@ func WriteBundleConfig(config string) {
 	WriteFile("config.yml", config)
 }
 
-func GenerateBundle() {
+func GenerateBundle(args ...string) {
 	cmd := cmd.NewSupportBundleCommand(cli.NewCli())
 	buf := new(bytes.Buffer)
 	cmd.SetOutput(buf)
-	cmd.SetArgs([]string{
+	cmd.SetArgs(append([]string{
 		"generate",
 		fmt.Sprintf("--spec-file=%s", filepath.Join(GetTempDir(), "config.yml")),
 		fmt.Sprintf("--out=%s", filepath.Join(GetTempDir(), "bundle.tar.gz")),
 		"--timeout=10",
 		"--skip-default",
-		"--journald",
-		"--kubernetes",
-		"--retraced",
-	})
+	}, args...))
 	err := cmd.Execute()
 	Expect(err).NotTo(HaveOccurred())
 	// output := buf.String()

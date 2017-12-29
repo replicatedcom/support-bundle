@@ -9,6 +9,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
@@ -97,13 +98,13 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		planner.AddPlugin(pluginJournald)
 	}
 
-	// if opts.EnableKubernetes {
-	// 	pluginKubernetes, err := kubernetes.New()
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Failed to initialize kubernetes plugin")
-	// 	}
-	// 	planner.AddPlugin(pluginKubernetes)
-	// }
+	if opts.EnableKubernetes {
+		pluginKubernetes, err := kubernetes.New()
+		if err != nil {
+			return errors.Wrap(err, "Failed to initialize kubernetes plugin")
+		}
+		planner.AddPlugin(pluginKubernetes)
+	}
 
 	if opts.EnableRetraced {
 		pluginRetraced, err := retraced.New()

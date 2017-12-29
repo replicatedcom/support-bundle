@@ -14,7 +14,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/cli"
 )
 
-var _ = Describe("supportbundle.version", func() {
+var _ = Describe("supportbundle.multiple-specs", func() {
 
 	inContainer := os.Getenv("IN_CONTAINER")
 	BeforeEach(func() {

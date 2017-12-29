@@ -41,7 +41,7 @@ specs:
         project_id: ` + opts.ProjectID + `
         insecure: ` + fmt.Sprintf("%v", opts.Insecure))
 
-		GenerateBundle()
+		GenerateBundle("--retraced")
 
 		errors := GetFileFromBundle("error.json")
 		Expect(errors).To(Equal("null"))
