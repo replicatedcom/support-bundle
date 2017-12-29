@@ -2,9 +2,6 @@ package util
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"strings"
 	"sync"
 
 	dockertypes "github.com/docker/docker/api/types"
@@ -31,10 +28,7 @@ func ThisContainer(ctx context.Context, client docker.CommonAPIClient) (*dockert
 		return nil, errors.Wrap(err, "container list")
 	}
 	for _, container := range containers {
-		b, _ := json.Marshal(container)
-		fmt.Println(string(b))
-		// TODO: LABEL "com.replicated.support-bundle"="true"
-		if strings.Contains(container.Image, "support-bundle") {
+		if ok := container.Labels["com.replicated.support-bundle"]; ok == "true" {
 			c, err := client.ContainerInspect(ctx, container.ID)
 			if err != nil {
 				return nil, errors.Wrapf(err, "container inspect %s", container.ID)
