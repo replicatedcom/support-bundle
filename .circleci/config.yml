@@ -29,6 +29,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true circleci/golang:1.9 -c "sleep infinity"
       - run: sudo apt-get update && sudo apt-get install -y systemd
       - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" registry.replicated.com
       - run: docker pull ubuntu:latest
