@@ -9,7 +9,7 @@ import (
 )
 
 var _ = Describe("journald.logs", func() {
-
+	Skip("journal.logs implementation pending")
 	inContainer := os.Getenv("IN_CONTAINER")
 	BeforeEach(func() {
 		os.Setenv("IN_CONTAINER", "")
@@ -44,7 +44,7 @@ specs:
 })
 
 var _ = Describe("journald.logs docker", func() {
-
+	Skip("journal.logs implementation pending")
 	inContainer := os.Getenv("IN_CONTAINER")
 	BeforeEach(func() {
 		os.Setenv("IN_CONTAINER", "1")
