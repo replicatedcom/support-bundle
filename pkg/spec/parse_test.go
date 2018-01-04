@@ -11,40 +11,34 @@ import (
 func TestParse(t *testing.T) {
 	yml := `
 specs:
-  - builtin: core.loadavg
-    raw: /raw/metrics/loadavg
-    json: /json/metrics/loadavg.json
-    human: /human/metrics/loadavg
-  - builtin: docker.logs
-    raw: /raw/containers/testExample/logs.txt
-    config:
-      container_id: testExample
-  - builtin: docker.daemon
-    raw: /raw/docker/
-    json: /json/docker/
+  - os.loadavg: {}
+    output_dir: /metrics/loadavg/
+  - docker.container-logs:
+      container: testExample
+    output_dir: /docker/container/logs/testExample/
+  - docker.info: {}
+    output_dir: /docker/info/
 `
 
-	specs, err := Parse([]byte(yml))
+	actual, err := Parse([]byte(yml))
 	require.NoError(t, err)
 
-	require.Contains(t, specs, types.Spec{
-		Builtin: "core.loadavg",
-		Raw:     "/raw/metrics/loadavg",
-		JSON:    "/json/metrics/loadavg.json",
-		Human:   "/human/metrics/loadavg",
-	})
-
-	logsSpec := types.Spec{
-		Builtin: "docker.logs",
-		Raw:     "/raw/containers/testExample/logs.txt",
+	expected := []types.Spec{
+		types.Spec{
+			CoreLoadavg: &types.CoreLoadavgOptions{},
+			OutputDir:   "/metrics/loadavg/",
+		},
+		types.Spec{
+			DockerContainerLogs: &types.DockerContainerLogsOptions{
+				Container: "testExample",
+			},
+			OutputDir: "/docker/container/logs/testExample/",
+		},
+		types.Spec{
+			DockerInfo: &types.DockerInfoOptions{},
+			OutputDir:  "/docker/info/",
+		},
 	}
-	logsSpec.Config.ContainerID = "testExample"
 
-	require.Contains(t, specs, logsSpec)
-
-	require.Contains(t, specs, types.Spec{
-		Builtin: "docker.daemon",
-		Raw:     "/raw/docker/",
-		JSON:    "/json/docker/",
-	})
+	require.EqualValues(t, expected, actual)
 }

@@ -13,10 +13,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/divolgin/archiver/compressor"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/types"
-
-	"github.com/divolgin/archiver/compressor"
 )
 
 // Generate a new support bundle and write the results as an archive at pathname
@@ -46,11 +45,10 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 	var resultsWithError []*types.Result
 
 	for _, r := range results {
-		if r.Path != "" {
-			resultsWithOutput = append(resultsWithOutput, r)
-		}
 		if r.Error != nil {
 			resultsWithError = append(resultsWithError, r)
+		} else {
+			resultsWithOutput = append(resultsWithOutput, r)
 		}
 	}
 

@@ -24,24 +24,11 @@ func (p Prepared) Exec(ctx context.Context, rootDir string) []*types.Result {
 
 // Prepare results for an incomplete spec
 func PreparedError(err error, spec types.Spec) Prepared {
-	results := []*types.Result{}
-
-	if spec.Raw != "" {
-		results = append(results, &types.Result{
+	results := []*types.Result{
+		&types.Result{
 			Error: err,
-		})
+		},
 	}
-	if spec.JSON != "" {
-		results = append(results, &types.Result{
-			Error: err,
-		})
-	}
-	if spec.Human != "" {
-		results = append(results, &types.Result{
-			Error: err,
-		})
-	}
-
 	return Prepared{
 		results: results,
 	}

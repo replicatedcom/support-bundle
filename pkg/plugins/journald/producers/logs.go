@@ -2,66 +2,75 @@ package producers
 
 import (
 	"context"
+	"io"
 
 	dockertypes "github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	docker "github.com/docker/docker/client"
+	dockercontainertypes "github.com/docker/docker/api/types/container"
 	"github.com/pkg/errors"
+	coreutil "github.com/replicatedcom/support-bundle/pkg/plugins/core/util"
 	dockerutil "github.com/replicatedcom/support-bundle/pkg/plugins/docker/util"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-// Logs gets journalctl logs by mounting the ephemeral and persistent journald
-// data directories into the support bundle container, which has the journalctl
-// command. It attempts to find the image and SELinux label to use to run the
-// support bundle container by checking if the current process is in a container
-// and, if so, copying the image and SELinux label of that container.
-func Logs(client *docker.Client, opts types.JournaldLogs) types.BytesProducer {
-	return func(ctx context.Context) ([]byte, error) {
-		// defaults if values can't be pulled from current container
-		image := "registry.replicated.com/library/support-bundle"
-		secOpts := []string{"label=type:spc_t"}
-		c, err := dockerutil.ThisContainer(context.Background(), client)
-		if err == nil {
-			image = c.Image
-			details, err := client.ContainerInspect(context.Background(), c.ID)
-			if err == nil {
-				secOpts = details.HostConfig.SecurityOpt
-			}
+func (j *Journald) Logs(opts types.JournaldLogsOptions) types.StreamProducer {
+	return func(ctx context.Context) (io.Reader, error) {
+		opts := types.CoreRunCommandOptions{
+			Name: "journalctl",
+			Args: buildLogsCmdArgs(opts),
 		}
+		stdoutR, _, _, err := coreutil.RunCommand(ctx, opts)
+		if err != nil {
+			return nil, errors.Wrap(err, "run command")
+		}
+		return stdoutR, nil
+	}
+}
 
-		since := "-7 days"
-		if opts.Since != "" {
-			since = opts.Since
+// DockerLogs gets journalctl logs by mounting the ephemeral and persistent
+// journald data directories into the support bundle container, which has the
+// journalctl command. It attempts to find the image and SELinux label to use to
+// run the support bundle container by checking if the current process is in a
+// container and, if so, copying the image and SELinux label of that container.
+func (j *Journald) DockerLogs(opts types.JournaldLogsOptions) types.StreamProducer {
+	return func(ctx context.Context) (io.Reader, error) {
+		container, err := dockerutil.ThisContainer(ctx, j.dockerClient)
+		if err != nil {
+			return nil, errors.Wrap(err, "this container")
 		}
 
 		config := dockertypes.ContainerCreateConfig{
-			Config: &container.Config{
+			Config: &dockercontainertypes.Config{
+				Image:      container.Image,
 				Entrypoint: []string{"journalctl"},
-				Cmd: []string{
-					"--reverse",
-					"--merge",
-					"--no-pager",
-					"--since", since,
-					"-u",
-					opts.Unit,
-				},
-				Image: image,
+				Cmd:        buildLogsCmdArgs(opts),
 			},
-			HostConfig: &container.HostConfig{
+			HostConfig: &dockercontainertypes.HostConfig{
 				Binds: []string{
 					"/var/log/journal:/var/log/journal",
 					"/run/log/journal:/run/log/journal",
 				},
-				SecurityOpt: secOpts,
+				SecurityOpt: container.HostConfig.SecurityOpt,
 			},
 		}
 
-		logs, err := dockerutil.RunCommand(ctx, client, config)
+		stdoutR, _, _, err := dockerutil.ContainerRun(ctx, j.dockerClient, config, false)
 		if err != nil {
-			return nil, errors.Wrapf(err, "journald.logs")
+			return nil, errors.Wrap(err, "container run")
 		}
-
-		return logs, nil
+		return stdoutR, nil
 	}
+}
+
+func buildLogsCmdArgs(opts types.JournaldLogsOptions) []string {
+	var cmd []string
+	if opts.Unit != "" {
+		cmd = append(cmd, "--unit", opts.Unit)
+	}
+	if opts.Since != "" {
+		cmd = append(cmd, "--since", opts.Since)
+	}
+	if opts.Reverse {
+		cmd = append(cmd, "--reverse")
+	}
+	return cmd
 }

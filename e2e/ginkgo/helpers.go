@@ -16,7 +16,7 @@ import (
 	dockertypes "github.com/docker/docker/api/types"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	dockernetworktypes "github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/client"
+	docker "github.com/docker/docker/client"
 	. "github.com/onsi/gomega"
 	cmd "github.com/replicatedcom/support-bundle/cmd/support-bundle/commands"
 	"github.com/replicatedcom/support-bundle/pkg/cli"
@@ -41,22 +41,26 @@ func EnterNewTempDir() {
 	Expect(err).NotTo(HaveOccurred())
 	tmpdir, err = ioutil.TempDir("", "support-bundle")
 	Expect(err).NotTo(HaveOccurred())
-	err = os.Chdir(tmpdir)
+	err = os.Chdir(GetTempDir())
 	Expect(err).NotTo(HaveOccurred())
+}
+
+func GetTempDir() string {
+	return tmpdir
 }
 
 func CleanupDir() {
 	err = os.Chdir(cwd)
 	Expect(err).NotTo(HaveOccurred())
-	err = os.RemoveAll(tmpdir)
+	err = os.RemoveAll(GetTempDir())
 	Expect(err).NotTo(HaveOccurred())
 }
 
 func LogResultsFomBundle() {
 	contents := GetFileFromBundle("index.json")
-	jww.DEBUG.Printf("Index: %s\n", contents)
+	jww.DEBUG.Printf("Index: %s", contents)
 	contents = GetFileFromBundle("error.json")
-	jww.DEBUG.Printf("Errors: %s\n", contents)
+	jww.DEBUG.Printf("Errors: %s", contents)
 }
 
 func WriteFile(path string, contents string) {
@@ -68,17 +72,17 @@ func WriteBundleConfig(config string) {
 	WriteFile("config.yml", config)
 }
 
-func GenerateBundle() {
+func GenerateBundle(args ...string) {
 	cmd := cmd.NewSupportBundleCommand(cli.NewCli())
 	buf := new(bytes.Buffer)
 	cmd.SetOutput(buf)
-	cmd.SetArgs([]string{
+	cmd.SetArgs(append([]string{
 		"generate",
-		fmt.Sprintf("--spec-file=%s", filepath.Join(tmpdir, "config.yml")),
-		fmt.Sprintf("--out=%s", filepath.Join(tmpdir, "bundle.tar.gz")),
-		"--skip-default=true",
+		fmt.Sprintf("--spec-file=%s", filepath.Join(GetTempDir(), "config.yml")),
+		fmt.Sprintf("--out=%s", filepath.Join(GetTempDir(), "bundle.tar.gz")),
 		"--timeout=10",
-	})
+		"--skip-default",
+	}, args...))
 	err := cmd.Execute()
 	Expect(err).NotTo(HaveOccurred())
 	// output := buf.String()
@@ -98,7 +102,7 @@ func GetResultFromBundle(path string) *types.Result {
 func GetResultFromBundleErrors(path string) *types.Result {
 	results := GetResultsFromBundleErrors()
 	for _, result := range results {
-		if result.Description == "/"+path {
+		if result.Path == "/"+path {
 			return result
 		}
 	}
@@ -116,7 +120,7 @@ func GetResultsFromBundleErrors() []*types.Result {
 
 func getResultsFromBundleIndex(index string) (results []*types.Result) {
 	contents, err := ReadFileFromBundle(
-		filepath.Join(tmpdir, "bundle.tar.gz"),
+		filepath.Join(GetTempDir(), "bundle.tar.gz"),
 		index,
 	)
 	Expect(err).NotTo(HaveOccurred())
@@ -139,7 +143,7 @@ func ExpectBundleErrorToHaveOccured(path, reStr string) {
 
 func GetFileFromBundle(pathInBundle string) string {
 	contents, err := ReadFileFromBundle(
-		filepath.Join(tmpdir, "bundle.tar.gz"),
+		filepath.Join(GetTempDir(), "bundle.tar.gz"),
 		pathInBundle,
 	)
 	Expect(err).NotTo(HaveOccurred())
@@ -148,7 +152,7 @@ func GetFileFromBundle(pathInBundle string) string {
 
 func ExpectFileNotInBundle(pathInBundle string) {
 	_, err := ReadFileFromBundle(
-		filepath.Join(tmpdir, "bundle.tar.gz"),
+		filepath.Join(GetTempDir(), "bundle.tar.gz"),
 		pathInBundle,
 	)
 	Expect(err).To(HaveOccurred())
@@ -198,25 +202,27 @@ func ReadFileFromBundle(archivePath, targetFile string) (string, error) {
 
 func CloseLogErr(c io.Closer) {
 	if err := c.Close(); err != nil {
-		jww.ERROR.Print(err)
+		jww.ERROR.Printf("Failed to close closer: %v", err)
 	}
 }
 
 // MakeDockerContainer makes a docker container to be used in tests, returning the container ID.
 // name and labels are optional
-func MakeDockerContainer(name string, labels map[string]string) string {
-	client, err := client.NewEnvClient()
+func MakeDockerContainer(client docker.CommonAPIClient, name string, labels map[string]string, cmd []string) string {
 	Expect(err).NotTo(HaveOccurred())
 
-	containerSettings := dockercontainertypes.Config{
+	config := dockercontainertypes.Config{
 		Image:  "ubuntu:latest",
-		Cmd:    []string{"sleep", "infinity"},
+		Cmd:    cmd,
 		Labels: labels,
 	}
-	hostSettings := dockercontainertypes.HostConfig{}
-	networkSettings := dockernetworktypes.NetworkingConfig{}
+	if config.Cmd == nil {
+		config.Cmd = []string{"sleep", "infinity"}
+	}
+	hostConfig := dockercontainertypes.HostConfig{}
+	networkConfig := dockernetworktypes.NetworkingConfig{}
 
-	container, err := client.ContainerCreate(context.Background(), &containerSettings, &hostSettings, &networkSettings, name)
+	container, err := client.ContainerCreate(context.Background(), &config, &hostConfig, &networkConfig, name)
 	Expect(err).NotTo(HaveOccurred())
 	Expect(container.Warnings).To(BeEmpty())
 
@@ -227,10 +233,7 @@ func MakeDockerContainer(name string, labels map[string]string) string {
 }
 
 // RemoveDockerContainer removes a docker container by ID as cleanup.
-func RemoveDockerContainer(ID string) {
-	client, err := client.NewEnvClient()
-	Expect(err).NotTo(HaveOccurred())
-
-	err = client.ContainerRemove(context.Background(), ID, dockertypes.ContainerRemoveOptions{Force: true})
+func RemoveDockerContainer(client docker.CommonAPIClient, containerID string) {
+	err = client.ContainerRemove(context.Background(), containerID, dockertypes.ContainerRemoveOptions{Force: true})
 	Expect(err).NotTo(HaveOccurred())
 }

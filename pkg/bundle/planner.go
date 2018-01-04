@@ -1,35 +1,30 @@
 package bundle
 
 import (
-	"strings"
-
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
 
 type Planner struct {
-	Plugins map[string]types.Plugin
+	Plugins []types.Plugin
 }
 
-func (p Planner) Plan(specs []types.Spec) []types.Task {
+func (p *Planner) AddPlugin(plugin types.Plugin) {
+	p.Plugins = append(p.Plugins, plugin)
+}
+
+func (p *Planner) Plan(specs []types.Spec) []types.Task {
 	var tasks []types.Task
 
+Loop:
 	for _, spec := range specs {
-		parts := strings.Split(spec.Builtin, ".")
-		if len(parts) != 2 {
-			continue
+		for _, plugin := range p.Plugins {
+			if planner := plugin.Plan(spec); planner != nil {
+				tasks = append(tasks, planner(spec)...)
+				continue Loop
+			}
 		}
-		plugin, ok := p.Plugins[parts[0]]
-		if !ok {
-			jww.ERROR.Printf("Plugin %s not defined\n", parts[0])
-			continue
-		}
-		planner, ok := plugin[parts[1]]
-		if !ok {
-			jww.ERROR.Printf("Planner %s not defined\n", parts[1])
-			continue
-		}
-		tasks = append(tasks, planner(spec)...)
+		jww.ERROR.Printf("Producer not defined for spec %+v", spec)
 	}
 
 	return tasks

@@ -3,9 +3,9 @@ package producers
 import "k8s.io/client-go/kubernetes"
 
 type Kubernetes struct {
-	client *kubernetes.Clientset
+	client kubernetes.Interface
 }
 
-func New(client *kubernetes.Clientset) *Kubernetes {
+func New(client kubernetes.Interface) *Kubernetes {
 	return &Kubernetes{client}
 }

@@ -10,9 +10,9 @@ import (
 
 	"github.com/divolgin/archiver/extractor"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/require"
-
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // TestGenerate runs stub tasks to ensure results are being parsed and packed properly
@@ -22,8 +22,8 @@ func TestGenerate(t *testing.T) {
 		elapse: time.Nanosecond,
 		results: []*types.Result{
 			{
-				Description: "Testing single",
-				Path:        "/testSingle.txt",
+				Spec: types.Spec{Description: "Testing single"},
+				Path: "/testSingle.txt",
 			},
 		},
 	}
@@ -31,17 +31,17 @@ func TestGenerate(t *testing.T) {
 		elapse: time.Nanosecond,
 		results: []*types.Result{
 			{
-				Description: "Testing mixed results pass result",
-				Path:        "/testPass.txt",
+				Spec: types.Spec{Description: "Testing mixed results pass result"},
+				Path: "/testPass.txt",
 			},
 			{
-				Description: "Testing mixed results fail result",
-				Error:       errors.New("This was destined to fail"),
+				Spec:  types.Spec{Description: "Testing mixed results fail result"},
+				Error: errors.New("This was destined to fail"),
 			},
 			{
-				Description: "Testing mixed results other fail result",
-				Path:        "/testFail.txt",
-				Error:       errors.New("This was also meant to fail"),
+				Spec:  types.Spec{Description: "Testing mixed results other fail result"},
+				Path:  "/testFail.txt",
+				Error: errors.New("This was also meant to fail"),
 			},
 		},
 	}
@@ -82,9 +82,10 @@ func TestGenerate(t *testing.T) {
 	require.NoError(t, err)
 
 	type testResult struct {
-		Description string `json:"description"`
-		Path        string `json:"path"`
-		Error       string `json:"error,omitempty"`
+		Description string     `json:"description"`
+		Path        string     `json:"path"`
+		Spec        types.Spec `json:"spec"`
+		Error       string     `json:"error,omitempty"`
 	}
 
 	var indexAll []testResult
@@ -96,14 +97,14 @@ func TestGenerate(t *testing.T) {
 	require.NoError(t, err)
 
 	// everything that includes a path
-	require.Contains(t, indexAll, testResult{Description: "Testing single", Path: "/testSingle.txt"})
-	require.Contains(t, indexAll, testResult{Description: "Testing mixed results pass result", Path: "/testPass.txt"})
-	require.NotContains(t, indexAll, testResult{Description: "Testing mixed results fail result", Error: "This was destined to fail"})
-	require.Contains(t, indexAll, testResult{Description: "Testing mixed results other fail result", Path: "/testFail.txt", Error: "This was also meant to fail"})
+	assert.Contains(t, indexAll, testResult{Spec: types.Spec{Description: "Testing single"}, Path: "/testSingle.txt"})
+	assert.Contains(t, indexAll, testResult{Spec: types.Spec{Description: "Testing mixed results pass result"}, Path: "/testPass.txt"})
+	assert.NotContains(t, indexAll, testResult{Spec: types.Spec{Description: "Testing mixed results fail result"}, Error: "This was destined to fail"})
+	assert.NotContains(t, indexAll, testResult{Spec: types.Spec{Description: "Testing mixed results other fail result"}, Path: "/testFail.txt", Error: "This was also meant to fail"})
 
 	// everything that includes an error
-	require.NotContains(t, errorAll, testResult{Description: "Testing single", Path: "/testSingle.txt"})
-	require.NotContains(t, errorAll, testResult{Description: "Testing mixed results pass result", Path: "/testPass.txt"})
-	require.Contains(t, errorAll, testResult{Description: "Testing mixed results fail result", Error: "This was destined to fail"})
-	require.Contains(t, errorAll, testResult{Description: "Testing mixed results other fail result", Path: "/testFail.txt", Error: "This was also meant to fail"})
+	assert.NotContains(t, errorAll, testResult{Spec: types.Spec{Description: "Testing single"}, Path: "/testSingle.txt"})
+	assert.NotContains(t, errorAll, testResult{Spec: types.Spec{Description: "Testing mixed results pass result"}, Path: "/testPass.txt"})
+	assert.Contains(t, errorAll, testResult{Spec: types.Spec{Description: "Testing mixed results fail result"}, Error: "This was destined to fail"})
+	assert.Contains(t, errorAll, testResult{Spec: types.Spec{Description: "Testing mixed results other fail result"}, Path: "/testFail.txt", Error: "This was also meant to fail"})
 }

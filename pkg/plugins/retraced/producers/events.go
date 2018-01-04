@@ -2,14 +2,11 @@ package producers
 
 import (
 	"context"
-	"crypto/tls"
 	"io"
-	"net/http"
 
-	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	"github.com/retracedhq/retraced-go"
-	"github.com/spf13/jwalterweatherman"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 var (
@@ -23,67 +20,39 @@ var (
 	}
 )
 
-func Events(spec types.Spec) types.StreamProducer {
+func (r *Retraced) Events(client *retraced.Client, opts types.RetracedEventsOptions) types.StreamProducer {
 	return func(ctx context.Context) (io.Reader, error) {
 
-		client, err := getClient(spec)
-		if err != nil {
-			return nil, errors.Wrap(err, "create retraced client")
-		}
-
-		query := getQuery(spec)
-		mask := getMask(spec)
+		query := getQuery(opts)
+		mask := getMask(opts)
 		reader, writer := io.Pipe()
 
 		go func() {
-			var err error
-			defer func() {
-				writer.CloseWithError(err)
-			}()
-			err = client.ExportCSV(ctx, writer, query, mask)
+			err := client.ExportCSV(ctx, writer, query, mask)
 			if err != nil {
-				jwalterweatherman.ERROR.Printf("Failed to collect retraced events %v", err)
+				jww.ERROR.Printf("Failed to collect retraced events: %v", err)
 			}
+			writer.CloseWithError(err)
 		}()
 
 		return reader, nil
 	}
 }
-func getClient(spec types.Spec) (*retraced.Client, error) {
-	client, err := retraced.NewClient(spec.RetracedEventsCommand.ProjectID, spec.RetracedEventsCommand.APIToken)
-	if err != nil {
-		return nil, err
-	}
 
-	client.Endpoint = spec.RetracedEventsCommand.APIEndpoint
-
-	if spec.RetracedEventsCommand.Insecure {
-		client.HttpClient = &http.Client{
-			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: true,
-				},
-			},
-		}
-	}
-
-	return client, nil
-}
-
-func getQuery(spec types.Spec) *retraced.StructuredQuery {
+func getQuery(opts types.RetracedEventsOptions) *retraced.StructuredQuery {
 	var query *retraced.StructuredQuery
-	if spec.RetracedEventsCommand.Query != nil {
-		query = spec.RetracedEventsCommand.Query
+	if opts.Query != nil {
+		query = opts.Query
 	} else {
 		query = defaultQuery
 	}
 	return query
 }
 
-func getMask(spec types.Spec) *retraced.EventNodeMask {
+func getMask(opts types.RetracedEventsOptions) *retraced.EventNodeMask {
 	var mask *retraced.EventNodeMask
-	if spec.RetracedEventsCommand.Mask != nil {
-		mask = spec.RetracedEventsCommand.Mask
+	if opts.Mask != nil {
+		mask = opts.Mask
 	} else {
 		mask = defaultMask
 	}

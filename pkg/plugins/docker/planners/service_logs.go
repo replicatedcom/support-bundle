@@ -1,43 +1,56 @@
 package planners
 
 import (
-	"time"
+	"context"
+	"fmt"
+	"path/filepath"
 
+	dockertypes "github.com/docker/docker/api/types"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-// ServiceLogs gets the logs of a service, as with `docker service logs SERVICENAME`
 func (d *Docker) ServiceLogs(spec types.Spec) []types.Task {
-	scrubber, err := plans.RawScrubber(spec.Config.Scrub)
+	if spec.DockerServiceLogs == nil {
+		err := errors.New("spec for docker.service-logs required")
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
+	}
+
+	if spec.DockerServiceLogs.Service != "" {
+		return []types.Task{d.serviceLogsTask(spec.DockerServiceLogs.Service, "", spec, spec.DockerServiceLogs.ContainerLogsOptions)}
+	}
+
+	services, err := d.client.ServiceList(
+		context.Background(),
+		spec.DockerServiceLogs.ServiceListOptions.ToDockerServiceListOptions())
 	if err != nil {
-		err = errors.Wrap(err, "create scrubber for docker.swarm")
+		err := fmt.Errorf("failed to list services: %v", err)
 		task := plans.PreparedError(err, spec)
-
 		return []types.Task{task}
 	}
 
-	if spec.DockerSwarmOptions.ServiceName == "" {
-		err := errors.New("spec for docker.service-logs requires a service name")
-		task := plans.PreparedError(err, spec)
-
-		return []types.Task{task}
+	var ts []types.Task
+	for _, service := range services {
+		ts = append(ts, d.serviceLogsTask(service.ID, service.Spec.Name, spec, spec.DockerServiceLogs.ContainerLogsOptions))
 	}
+	return ts
+}
 
-	logs := &plans.StreamSource{
-		Producer:    d.producers.ServiceLogs(spec.DockerSwarmOptions.ServiceName),
-		RawScrubber: scrubber,
-		RawPath:     spec.Raw,
-		JSONPath:    spec.JSON,
-		HumanPath:   spec.Human,
+func (d *Docker) serviceLogsTask(id string, name string, spec types.Spec, opts *dockertypes.ContainerLogsOptions) types.Task {
+	basename := id
+	if name != "" {
+		basename = name
 	}
-
-	if spec.TimeoutSeconds != 0 {
-		logs.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	task := plans.StreamSource{
+		Producer: d.producers.ServiceLogs(id, opts),
+		RawPath:  filepath.Join(spec.OutputDir, basename+".raw"),
 	}
-
-	return []types.Task{
-		logs,
+	var err error
+	task, err = plans.SetCommonFieldsStreamSource(task, spec)
+	if err != nil {
+		return plans.PreparedError(err, spec)
 	}
+	return &task
 }

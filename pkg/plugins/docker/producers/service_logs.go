@@ -9,8 +9,16 @@ import (
 	dockertypes "github.com/docker/docker/api/types"
 )
 
-func (d *Docker) ServiceLogs(name string) types.StreamProducer {
+func (d *Docker) ServiceLogs(serviceID string, opts *dockertypes.ContainerLogsOptions) types.StreamProducer {
 	return func(ctx context.Context) (io.Reader, error) {
-		return d.client.ServiceLogs(ctx, name, dockertypes.ContainerLogsOptions{ShowStderr: true, ShowStdout: true})
+		if opts == nil {
+			opts = &dockertypes.ContainerLogsOptions{}
+		}
+		if !opts.ShowStdout && !opts.ShowStderr {
+			opts.ShowStdout = true
+			opts.ShowStderr = true
+		}
+		opts.Timestamps = true
+		return d.client.ServiceLogs(ctx, serviceID, *opts)
 	}
 }

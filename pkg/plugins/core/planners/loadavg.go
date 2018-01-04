@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/replicatedcom/support-bundle/pkg/plans"
-	"github.com/replicatedcom/support-bundle/pkg/plugins/core/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
@@ -20,7 +19,7 @@ type LoadAverage struct {
 	ProcessCountTotal   int
 }
 
-const loadAverageTemplate = `
+const loadavgTemplate = `
  1 Minute: {{ .MinuteOne }}
  5 Minute: {{ .MinuteFive }}
 10 Minute: {{ .MinuteTen }}
@@ -28,21 +27,22 @@ const loadAverageTemplate = `
 {{ with .ProcessCountRunning }}Running Processes: {{ .}}{{ end }}
 {{ with .ProcessCountTotal }}Total Processes: {{ . }}{{ end }}`
 
-func PlanLoadAverage(spec types.Spec) []types.Task {
-	producer := types.BytesProducerFromStreamProducer(producers.ReadFile("/proc/loadavg"))
-	task := &plans.ByteSource{
-		Producer:  producer,
-		Template:  loadAverageTemplate,
-		Parser:    parseLoadAvg,
-		RawPath:   spec.Raw,
-		JSONPath:  spec.JSON,
-		HumanPath: spec.Human,
+func (c *Core) Loadavg(spec types.Spec) []types.Task {
+	task := plans.StreamsSource{
+		Producer: c.producers.ReadFile(types.CoreReadFileOptions{Filepath: "/proc/loadavg"}),
+		Template: loadavgTemplate,
+		Parser:   parseLoadavg,
 	}
-
-	return []types.Task{task}
+	var err error
+	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
+	if err != nil {
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
+	}
+	return []types.Task{&task}
 }
 
-func parseLoadAvg(r io.Reader) (interface{}, error) {
+func parseLoadavg(r io.Reader) (interface{}, error) {
 
 	// # cat /proc/loadavg
 	// 0.02 0.01 0.00 4/229 5
