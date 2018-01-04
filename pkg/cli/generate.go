@@ -28,6 +28,7 @@ type GenerateOptions struct {
 	EnableJournald   bool
 	EnableKubernetes bool
 	EnableRetraced   bool
+	CustomerID       string
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
