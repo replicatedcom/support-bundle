@@ -3,24 +3,24 @@ package cli
 import (
 	"time"
 
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
+	"github.com/replicatedcom/support-bundle/pkg/graphql"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/retraced"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
+	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
-	"github.com/replicatedcom/support-bundle/pkg/graphql"
-	"encoding/json"
-	"bytes"
-	"net/http"
-	"fmt"
-	"encoding/base64"
 	"io/ioutil"
-	"github.com/replicatedcom/support-bundle/pkg/spec"
+	"net/http"
 )
 
 type GenerateOptions struct {
@@ -141,7 +141,7 @@ func resolveSpecs(customerID string) ([]types.Spec, error) {
 
 	sbs := &graphql.SupportBundleSpec{
 		CustomerID: customerID,
-		Endpoint: "https://pg.staging.replicated.com/graphql",
+		Endpoint:   "https://pg.staging.replicated.com/graphql",
 	}
 
 	remoteSpecBody, err := sbs.Get()

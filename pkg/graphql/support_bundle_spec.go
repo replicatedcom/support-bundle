@@ -1,12 +1,12 @@
 package graphql
 
 import (
-	"encoding/json"
 	"bytes"
-	"fmt"
 	"encoding/base64"
-	"io/ioutil"
+	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -24,7 +24,7 @@ var defaultRequest = Request{
 
 type SupportBundleSpec struct {
 	CustomerID string
-	Endpoint string
+	Endpoint   string
 }
 
 func (s *SupportBundleSpec) Get() ([]byte, error) {
