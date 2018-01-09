@@ -27,5 +27,6 @@ type SupportBundleResult struct {
 }
 
 type SupportBundle struct {
-	Spec string `json:"spec"`
+	Spec     string `json:"spec"`
+	Hydrated string `json:"hydrated"`
 }

@@ -14,7 +14,8 @@ import (
 const query = `
 query {
   supportBundleSpec {
-    spec
+	spec
+	hydrated
   }
 }
 `
@@ -70,7 +71,7 @@ func (s *SupportBundleSpec) Get() ([]byte, error) {
 	}
 
 	if specBody.Errors != nil && len(specBody.Errors) > 0 {
-		return nil, errors.New(fmt.Sprintf("%v", specBody.Errors))
+		return nil, fmt.Errorf("%v", specBody.Errors)
 	}
 
 	return []byte(specBody.Data.Spec), nil
