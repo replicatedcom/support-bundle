@@ -43,6 +43,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: docker pull debian:stretch-slim # make sure it's fresh
       - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" registry.replicated.com
       - deploy:
           command: curl -sL https://git.io/goreleaser | bash

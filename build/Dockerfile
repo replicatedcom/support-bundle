@@ -3,8 +3,9 @@ WORKDIR /go/src/github.com/replicatedcom/support-bundle/
 COPY . .
 RUN make build
 
-FROM debian:9
+FROM debian:stretch-slim
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y \
+  sensible-utils \
   ca-certificates \
   procps \
   systemd \
