@@ -6,6 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
+	"github.com/replicatedcom/support-bundle/pkg/graphql"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
@@ -34,37 +35,9 @@ type GenerateOptions struct {
 func (cli *Cli) Generate(opts GenerateOptions) error {
 	jww.FEEDBACK.Println("Generating a new support bundle")
 
-	// Always include version
-	specs := []types.Spec{bundle.SupportBundleVersionSpec()}
-
-	for _, cfgFile := range opts.CfgFiles {
-		yaml, err := ioutil.ReadFile(cfgFile)
-		if err != nil {
-			return errors.Wrap(err, "Failed to read spec file")
-		}
-
-		fileSpecs, err := spec.Parse(yaml)
-		if err != nil {
-			return errors.Wrap(err, "Failed to parse spec")
-		}
-		specs = append(specs, fileSpecs...)
-	}
-
-	for _, cfgDoc := range opts.CfgDocs {
-		argSpecs, err := spec.Parse([]byte(cfgDoc))
-		if err != nil {
-			return errors.Wrap(err, "Failed to parse spec")
-		}
-		specs = append(specs, argSpecs...)
-	}
-
-	if !opts.SkipDefault {
-		defaultSpecs, err := bundle.DefaultSpecs()
-		if err != nil {
-			return errors.Wrap(err, "Failed to get default specs")
-		}
-
-		specs = append(defaultSpecs, specs...)
+	specs, err := resolveSpecs(opts)
+	if err != nil {
+		return errors.Wrap(err, "failed to resolve specs")
 	}
 
 	var planner bundle.Planner
@@ -124,11 +97,61 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.Wrap(err, "Failed to generate bundle")
 	}
 
-	if !opts.SkipDefault {
-		jww.FEEDBACK.Printf("Support bundle generated at %s and does contain the default files", opts.BundlePath)
-	} else {
-		jww.FEEDBACK.Printf("Support bundle generated at %s and does not contain the default files", opts.BundlePath)
-	}
+	jww.FEEDBACK.Printf("Support bundle generated at %s", opts.BundlePath)
 
 	return nil
+}
+
+func resolveSpecs(opts GenerateOptions) ([]types.Spec, error) {
+	specs := []types.Spec{bundle.SupportBundleVersionSpec()}
+
+	if opts.CustomerID != "" {
+		sbs := &graphql.SupportBundleSpec{
+			CustomerID: opts.CustomerID,
+		}
+
+		remoteSpecBody, err := sbs.Get()
+		if err != nil {
+			return nil, errors.Wrap(err, "getting remote spec")
+		}
+
+		customerSpecs, err := spec.Parse(remoteSpecBody)
+		if err != nil {
+			return nil, errors.Wrap(err, "parsing customer spec")
+		}
+
+		specs = append(specs, customerSpecs...)
+	}
+
+	for _, cfgFile := range opts.CfgFiles {
+		yaml, err := ioutil.ReadFile(cfgFile)
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to read spec file")
+		}
+
+		fileSpecs, err := spec.Parse(yaml)
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to parse spec")
+		}
+		specs = append(specs, fileSpecs...)
+	}
+
+	for _, cfgDoc := range opts.CfgDocs {
+		argSpecs, err := spec.Parse([]byte(cfgDoc))
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to parse spec")
+		}
+		specs = append(specs, argSpecs...)
+	}
+
+	if !opts.SkipDefault {
+		defaultSpecs, err := bundle.DefaultSpecs()
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to get default specs")
+		}
+
+		specs = append(defaultSpecs, specs...)
+	}
+
+	return specs, nil
 }
