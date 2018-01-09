@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"io/ioutil"
 	"time"
 
 	"github.com/pkg/errors"
@@ -21,6 +22,7 @@ type GenerateOptions struct {
 	CfgFiles         []string
 	CfgDocs          []string
 	BundlePath       string
+	SkipDefault      bool
 	TimeoutSeconds   int
 	EnableCore       bool
 	EnableDocker     bool
@@ -33,7 +35,7 @@ type GenerateOptions struct {
 func (cli *Cli) Generate(opts GenerateOptions) error {
 	jww.FEEDBACK.Println("Generating a new support bundle")
 
-	specs, err := resolveSpecs(opts.CustomerID)
+	specs, err := resolveSpecs(opts)
 	if err != nil {
 		return errors.Wrap(err, "failed to resolve specs")
 	}
@@ -100,24 +102,58 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	return nil
 }
 
-func resolveSpecs(customerID string) ([]types.Spec, error) {
-	baseSpecs := []types.Spec{bundle.SupportBundleVersionSpec()}
+func resolveSpecs(opts GenerateOptions) ([]types.Spec, error) {
+	specs := []types.Spec{bundle.SupportBundleVersionSpec()}
 
-	sbs := &graphql.SupportBundleSpec{
-		CustomerID: customerID,
+	if opts.CustomerID != "" {
+		sbs := &graphql.SupportBundleSpec{
+			CustomerID: opts.CustomerID,
+		}
+
+		remoteSpecBody, err := sbs.Get()
+		if err != nil {
+			return nil, errors.Wrap(err, "getting remote spec")
+		}
+
+		customerSpecs, err := spec.Parse(remoteSpecBody)
+		if err != nil {
+			return nil, errors.Wrap(err, "parsing customer spec")
+		}
+
+		specs = append(specs, customerSpecs...)
 	}
 
-	remoteSpecBody, err := sbs.Get()
-	if err != nil {
-		return nil, errors.Wrap(err, "getting remote spec")
+	for _, cfgFile := range opts.CfgFiles {
+		yaml, err := ioutil.ReadFile(cfgFile)
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to read spec file")
+		}
+
+		fileSpecs, err := spec.Parse(yaml)
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to parse spec")
+		}
+		specs = append(specs, fileSpecs...)
 	}
 
-	customerSpecs, err := spec.Parse(remoteSpecBody)
-	if err != nil {
-		return nil, errors.Wrap(err, "parsing customer spec")
+	for _, cfgDoc := range opts.CfgDocs {
+		argSpecs, err := spec.Parse([]byte(cfgDoc))
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to parse spec")
+		}
+		specs = append(specs, argSpecs...)
 	}
 
-	return merge(baseSpecs, customerSpecs), nil
+	if !opts.SkipDefault {
+		defaultSpecs, err := bundle.DefaultSpecs()
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to get default specs")
+		}
+
+		specs = append(defaultSpecs, specs...)
+	}
+
+	return specs, nil
 }
 
 func merge(specs ...[]types.Spec) []types.Spec {

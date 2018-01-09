@@ -24,8 +24,8 @@ var _ = Describe("docker.container-inspect", func() {
 	AfterEach(LogResultsFomBundle)
 	AfterEach(CleanupDir)
 
-	now := strconv.FormatInt(time.Now().Unix(), 10)
-	container1Name, container2Name := "container1-name-"+now, "container2-name-"+now
+	now := strconv.FormatInt(time.Now().UnixNano(), 20)
+	container1Name, container2Name := "c1-name-"+now, "c2-name-"+now
 	labels := map[string]string{
 		"foo": "bar",
 	}

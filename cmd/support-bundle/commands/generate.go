@@ -26,6 +26,7 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().BoolVar(&opts.EnableJournald, "journald", false, "Enable Journald plugin")
 	cmd.Flags().BoolVar(&opts.EnableKubernetes, "kubernetes", false, "Enable Kubernetes plugin")
 	cmd.Flags().BoolVar(&opts.EnableRetraced, "retraced", false, "Enable Retraced plugin")
+	cmd.Flags().BoolVar(&opts.SkipDefault, "skip-default", false, "If present, skip the default support bundle files")
 	cmd.Flags().StringVar(&opts.CustomerID, "customer-id", "", "Replicated Customer ID")
 
 	return cmd
