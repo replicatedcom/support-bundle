@@ -109,10 +109,6 @@ func resolveSpecs(gqlClient *graphql.Client, opts GenerateOptions) ([]types.Spec
 	specs := []types.Spec{bundle.SupportBundleVersionSpec()}
 
 	if opts.CustomerID != "" {
-		sbs := &graphql.SupportBundleSpec{
-			CustomerID: opts.CustomerID,
-		}
-
 		remoteSpecBody, err := gqlClient.GetCustomerSpec(opts.CustomerID)
 		if err != nil {
 			return nil, errors.Wrap(err, "getting remote spec")
