@@ -16,4 +16,10 @@ func TestSupportBundleSpec(t *testing.T) {
 		CustomerID: "123456",
 		Endpoint:   ts.URL,
 	}
+
+	specs, err := sbs.Get()
+
+	if err != nil {
+		t.Fail()
+	}
 }

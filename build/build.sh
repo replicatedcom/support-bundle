@@ -33,5 +33,6 @@ go install \
     -ldflags " \
     -X ${PKG}/pkg/version.version=${VERSION} \
     -X ${PKG}/pkg/version.gitSHA=${SHA} \
-    -X ${PKG}/pkg/version.buildTime=${BUILD_TIME}" \
+    -X ${PKG}/pkg/version.buildTime=${BUILD_TIME} \
+    -X ${PKG}/pkg/graphql.endpoint=https://pg.staging.replicated.com/graphql" \
     ./cmd/...

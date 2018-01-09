@@ -45,13 +45,13 @@ func (s *SupportBundleSpec) Get() ([]byte, error) {
 
 	bodyReader := bytes.NewReader(body)
 
-	req, err := http.NewRequest("GET", endpoint, bodyReader)
+	req, err := http.NewRequest("POST", endpoint, bodyReader)
 	if err != nil {
 		return nil, errors.Wrap(err, "creating http request")
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("%s:", base64.StdEncoding.EncodeToString([]byte(s.CustomerID))))
+	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(s.CustomerID+":"))))
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -65,7 +65,7 @@ func (s *SupportBundleSpec) Get() ([]byte, error) {
 	}
 
 	specBody := SupportBundleResponse{}
-
+	fmt.Println(string(respBody))
 	if err := json.Unmarshal(respBody, &specBody); err != nil {
 		return nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
@@ -74,5 +74,5 @@ func (s *SupportBundleSpec) Get() ([]byte, error) {
 		return nil, fmt.Errorf("%v", specBody.Errors)
 	}
 
-	return []byte(specBody.Data.Spec), nil
+	return []byte(specBody.Data.Hydrated), nil
 }

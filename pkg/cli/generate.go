@@ -105,10 +105,12 @@ func resolveSpecs(customerID string) ([]types.Spec, error) {
 
 	sbs := &graphql.SupportBundleSpec{
 		CustomerID: customerID,
-		Endpoint:   "https://pg.staging.replicated.com/graphql",
 	}
 
 	remoteSpecBody, err := sbs.Get()
+	if err != nil {
+		return nil, errors.Wrap(err, "getting remote spec")
+	}
 
 	customerSpecs, err := spec.Parse(remoteSpecBody)
 	if err != nil {
