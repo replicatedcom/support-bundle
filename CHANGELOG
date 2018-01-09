@@ -43,3 +43,6 @@
         docker.stack-services, docker.stack-services-logs, docker.stack-tasks, docker.stack-tasks-logs
     * Updated docker client library to latest
     * Docker client now negotiates a version
+
+0.10.1 /2018-01-08
+    * Patch CVE-2017-17512 sensible-utils-0.0.9
