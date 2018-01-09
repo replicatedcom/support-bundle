@@ -38,36 +38,6 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.Wrap(err, "failed to resolve specs")
 	}
 
-	// for _, cfgFile := range opts.CfgFiles {
-	// 	yaml, err := ioutil.ReadFile(cfgFile)
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Failed to read spec file")
-	// 	}
-
-	// 	fileSpecs, err := spec.Parse(yaml)
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Failed to parse spec")
-	// 	}
-	// 	specs = append(specs, fileSpecs...)
-	// }
-
-	// for _, cfgDoc := range opts.CfgDocs {
-	// 	argSpecs, err := spec.Parse([]byte(cfgDoc))
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Failed to parse spec")
-	// 	}
-	// 	specs = append(specs, argSpecs...)
-	// }
-
-	// if !opts.SkipDefault {
-	// 	defaultSpecs, err := bundle.DefaultSpecs()
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Failed to get default specs")
-	// 	}
-
-	// 	specs = append(defaultSpecs, specs...)
-	// }
-
 	var planner bundle.Planner
 
 	pluginSupportBundle, err := supportbundle.New()

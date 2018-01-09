@@ -25,12 +25,11 @@ var defaultRequest = Request{
 
 type SupportBundleSpec struct {
 	CustomerID string
-	Endpoint   string
 }
 
 func (s *SupportBundleSpec) Get() ([]byte, error) {
-	if s.Endpoint == "" {
-		return nil, errors.New("endpoint must be defined to fetch a support bundle spec")
+	if endpoint == "" {
+		panic("endpoint not defined, this should have been defined at build")
 	}
 
 	if s.CustomerID == "" {
@@ -45,7 +44,7 @@ func (s *SupportBundleSpec) Get() ([]byte, error) {
 
 	bodyReader := bytes.NewReader(body)
 
-	req, err := http.NewRequest("GET", s.Endpoint, bodyReader)
+	req, err := http.NewRequest("GET", endpoint, bodyReader)
 	if err != nil {
 		return nil, errors.Wrap(err, "creating http request")
 	}
