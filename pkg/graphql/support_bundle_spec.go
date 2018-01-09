@@ -29,7 +29,7 @@ type SupportBundleSpec struct {
 
 func (s *SupportBundleSpec) Get() ([]byte, error) {
 	if endpoint == "" {
-		panic("endpoint not defined, this should have been defined at build")
+		panic("endpoint not defined, this should have been defined at build, define the environment variable REPLICATED_API_ENDPOINT to override")
 	}
 
 	if s.CustomerID == "" {
