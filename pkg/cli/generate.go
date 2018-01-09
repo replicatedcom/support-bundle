@@ -3,10 +3,6 @@ package cli
 import (
 	"time"
 
-	"bytes"
-	"encoding/base64"
-	"encoding/json"
-	"fmt"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/graphql"
@@ -19,8 +15,6 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	jww "github.com/spf13/jwalterweatherman"
-	"io/ioutil"
-	"net/http"
 )
 
 type GenerateOptions struct {
