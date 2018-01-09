@@ -155,12 +155,3 @@ func resolveSpecs(opts GenerateOptions) ([]types.Spec, error) {
 
 	return specs, nil
 }
-
-func merge(specs ...[]types.Spec) []types.Spec {
-	newSpecs := []types.Spec{}
-	for _, specs := range specs {
-		newSpecs = append(newSpecs, specs...)
-	}
-
-	return newSpecs
-}
