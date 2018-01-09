@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -28,15 +27,23 @@ type SupportBundleSpec struct {
 	CustomerID string
 }
 
-func (s *SupportBundleSpec) Get() ([]byte, error) {
-	if endpoint == "" {
-		panic("endpoint not defined, this should have been defined at build, define the environment variable REPLICATED_API_ENDPOINT to override")
+type Client struct {
+	endpoint string
+	client   *http.Client
+}
+
+func NewClient(endpoint string, client *http.Client) *Client {
+	if client == nil {
+		client = http.DefaultClient
 	}
 
-	if s.CustomerID == "" {
-		return nil, errors.New("customer id must be defined to fetch a support bundle spec")
+	return &Client{
+		endpoint: endpoint,
+		client:   client,
 	}
+}
 
+func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 	body, err := json.Marshal(defaultRequest)
 
 	if err != nil {
@@ -51,22 +58,17 @@ func (s *SupportBundleSpec) Get() ([]byte, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(s.CustomerID+":"))))
+	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(id+":"))))
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "reading response body")
-	}
-
+	decoder := json.NewDecoder(resp.Body)
 	specBody := SupportBundleResponse{}
-	fmt.Println(string(respBody))
-	if err := json.Unmarshal(respBody, &specBody); err != nil {
+
+	if err := decoder.Decode(&specBody); err != nil {
 		return nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 

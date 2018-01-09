@@ -1,11 +1,5 @@
 package graphql
 
-import "net/url"
-
-type Client struct {
-	GQLServer *url.URL
-}
-
 type Request struct {
 	Query         string            `json:"query"`
 	Variables     map[string]string `json:"variables"`
