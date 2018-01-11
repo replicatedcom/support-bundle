@@ -98,20 +98,20 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.New("No tasks defined")
 	}
 
-	size, pathname, err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath)
+	fileInfo, err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath)
 
 	if err != nil {
 		return errors.Wrap(err, "Failed to generate bundle")
 	}
 
 	if opts.CustomerID != "" {
-		bundleID, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, size)
+		bundleID, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, fileInfo.Size())
 
 		if err != nil {
 			return errors.Wrap(err, "Get presigned URL")
 		}
 
-		err = putObject(pathname, size, url)
+		err = putObject(fileInfo.Name(), fileInfo.Size(), url)
 		if err != nil {
 			return errors.Wrap(err, "uploading to presigned URL")
 		}
