@@ -30,7 +30,7 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) (os.Fi
 
 	collectDir, err := ioutil.TempDir(filepath.Dir(pathname), "")
 	if err != nil {
-		return nil, errors.Wrap(err, "Creating a temporary directory to store results failed")
+		return nil, errors.Wrap(err, "creating a temporary directory to store results failed")
 	}
 	defer os.RemoveAll(collectDir)
 
