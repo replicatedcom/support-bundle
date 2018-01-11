@@ -108,10 +108,10 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		bundleID, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, fileInfo.Size())
 
 		if err != nil {
-			return errors.Wrap(err, "Get presigned URL")
+			return errors.Wrap(err, "get presigned URL")
 		}
 
-		err = putObject(fileInfo.Name(), fileInfo.Size(), url)
+		err = putObject(fileInfo, url)
 		if err != nil {
 			return errors.Wrap(err, "uploading to presigned URL")
 		}
@@ -126,20 +126,18 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	return nil
 }
 
-func putObject(pathname string, size int64, url *url.URL) error {
-	file, err := os.Open(pathname)
+func putObject(fi os.FileInfo, url *url.URL) error {
+	file, err := os.Open(fi.Name())
 	if err != nil {
 		return errors.Wrap(err, "opening file for upload")
 	}
 	defer file.Close()
 
-	info, _ := file.Stat()
-
 	req, err := http.NewRequest("PUT", url.String(), file)
 	if err != nil {
 		return errors.Wrap(err, "making request")
 	}
-	req.ContentLength = info.Size()
+	req.ContentLength = fi.Size()
 	req.Header.Set("Content-Type", "application/tar+gzip")
 
 	res, err := http.DefaultClient.Do(req)
