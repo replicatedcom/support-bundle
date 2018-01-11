@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const query = `
+const customerSpecQuery = `
 query {
   supportBundleSpec {
 	spec
@@ -32,16 +32,12 @@ mutation GetPresignedURI($size: Int) {
 `
 
 const finishUploadMutation = `
-mutation SetBundleStatus($id: String, $status: String) {
+mutation SetBundleStatus($id: String!, $status: String!) {
   updateSupportBundle(id: $id, status: $status) {
     id
   }
 }
 `
-
-var defaultRequest = Request{
-	Query: query,
-}
 
 type SupportBundleSpec struct {
 	CustomerID string
@@ -64,27 +60,13 @@ func NewClient(endpoint string, client *http.Client) *Client {
 }
 
 func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
-	body, err := json.Marshal(defaultRequest)
+	resp, err := c.executeGraphQLQuery(id, Request{
+		Query: customerSpecQuery,
+	})
 
-	if err != nil {
-		return nil, errors.Wrap(err, "marshalling graphql request")
-	}
-
-	bodyReader := bytes.NewReader(body)
-
-	req, err := http.NewRequest("POST", endpoint, bodyReader)
-	if err != nil {
-		return nil, errors.Wrap(err, "creating http request")
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(id+":"))))
-
-	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
 	}
-
 	decoder := json.NewDecoder(resp.Body)
 	specBody := SupportBundleResponse{}
 
@@ -100,28 +82,13 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 }
 
 func (c *Client) GetSupportBundleUploadURI(id string, size int64) (string, *url.URL, error) {
-	body, err := json.Marshal(Request{
+	resp, err := c.executeGraphQLQuery(id, Request{
 		Query: startUploadMutation,
 		Variables: map[string]interface{}{
 			"size": size,
 		},
 	})
 
-	if err != nil {
-		return "", nil, errors.Wrap(err, "marshalling graphql request")
-	}
-
-	bodyReader := bytes.NewReader(body)
-
-	req, err := http.NewRequest("POST", endpoint, bodyReader)
-	if err != nil {
-		return "", nil, errors.Wrap(err, "creating http request")
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(id+":"))))
-
-	resp, err := c.client.Do(req)
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
 	}
@@ -146,16 +113,33 @@ func (c *Client) GetSupportBundleUploadURI(id string, size int64) (string, *url.
 }
 
 func (c *Client) UpdateSupportBundleStatus(id string, status string) error {
-	_, err := json.Marshal(Request{
-		Query: startUploadMutation,
+	_, err := c.executeGraphQLQuery(id, Request{
+		Query: finishUploadMutation,
 		Variables: map[string]interface{}{
 			"id":     id,
 			"status": status,
 		},
 	})
+
+	return err
+}
+
+func (c *Client) executeGraphQLQuery(auth string, gr Request) (*http.Response, error) {
+	body, err := json.Marshal(gr)
+
 	if err != nil {
-		return errors.Wrap(err, "creating support bundle status query")
+		return nil, errors.Wrap(err, "marshalling graphql request")
 	}
 
-	return nil
+	bodyReader := bytes.NewReader(body)
+
+	req, err := http.NewRequest("POST", endpoint, bodyReader)
+	if err != nil {
+		return nil, errors.Wrap(err, "creating http request")
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth+":"))))
+
+	return c.client.Do(req)
 }

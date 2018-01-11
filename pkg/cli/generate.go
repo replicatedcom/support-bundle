@@ -1,10 +1,8 @@
 package cli
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"os"
 	"time"
@@ -107,7 +105,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	}
 
 	if opts.CustomerID != "" {
-		_, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, size)
+		bundleID, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, size)
 
 		if err != nil {
 			return errors.Wrap(err, "Get presigned URL")
@@ -116,6 +114,10 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		err = putObject(pathname, size, url)
 		if err != nil {
 			return errors.Wrap(err, "uploading to presigned URL")
+		}
+
+		if err = graphQLClient.UpdateSupportBundleStatus(bundleID, "uploaded"); err != nil {
+			return errors.Wrap(err, "updating bundle status")
 		}
 	}
 
@@ -139,17 +141,15 @@ func putObject(pathname string, size int64, url *url.URL) error {
 	}
 	req.ContentLength = info.Size()
 	req.Header.Set("Content-Type", "application/tar+gzip")
-	dumped, _ := httputil.DumpRequestOut(req, false)
-	fmt.Println(string(dumped))
 
-	respBody, err := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "completing request")
 	}
 
-	res, _ := ioutil.ReadAll(respBody.Body)
-	fmt.Println(string(res))
-
+	if res.StatusCode != http.StatusOK {
+		return errors.Errorf("Error uploading support bundle, got %s", res.Status)
+	}
 	return nil
 }
 
