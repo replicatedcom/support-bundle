@@ -9,10 +9,10 @@ import (
 
 type Doc struct {
 	Specs     []Spec
-	Lifecycle []Task
+	Lifecycle []LifecycleTask
 }
 
-type Task struct {
+type LifecycleTask struct {
 	Generate      *GenerateOptions      `json:"generate,omitempty"`
 	Message       *MessageOptions       `json:"message,omitempty"`
 	BooleanPrompt *BooleanPromptOptions `json:"message,omitempty"`

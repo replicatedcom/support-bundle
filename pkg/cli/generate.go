@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
@@ -18,7 +17,6 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
-	jww "github.com/spf13/jwalterweatherman"
 )
 
 type GenerateOptions struct {
@@ -37,14 +35,6 @@ type GenerateOptions struct {
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
-	jww.FEEDBACK.Println("Generating a new support bundle")
-
-	graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
-	specs, err := resolveSpecs(graphQLClient, opts)
-	if err != nil {
-		return errors.Wrap(err, "failed to resolve specs")
-	}
-
 	var planner bundle.Planner
 
 	pluginSupportBundle, err := supportbundle.New()
@@ -93,35 +83,56 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		planner.AddPlugin(pluginRetraced)
 	}
 
-	var tasks = planner.Plan(specs)
-	if len(tasks) == 0 {
-		return errors.New("No tasks defined")
-	}
-
-	fileInfo, err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath)
-
+	graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
+	specs, err := resolveLocalSpecs(opts)
 	if err != nil {
-		return errors.Wrap(err, "generate bundle")
+		return errors.Wrap(err, "failed to resolve specs")
 	}
 
 	if opts.CustomerID != "" {
-		bundleID, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, fileInfo.Size())
-
+		remoteSpecs, err := getCustomerSpecs(graphQLClient, opts.CustomerID)
 		if err != nil {
-			return errors.Wrap(err, "get presigned URL")
+			return errors.Wrap(err, "get customer specs")
 		}
+		specs = append(specs, remoteSpecs...)
 
-		err = putObject(fileInfo, url)
-		if err != nil {
-			return errors.Wrap(err, "uploading to presigned URL")
-		}
+		// lifecycleTasks, err := lifecycle.Plan(remoteSpecs.Lifecycle)
 
-		if err = graphQLClient.UpdateSupportBundleStatus(opts.CustomerID, bundleID, "uploaded"); err != nil {
-			return errors.Wrap(err, "updating bundle status")
-		}
+		return nil
 	}
 
-	jww.FEEDBACK.Printf("Support bundle generated at %s", opts.BundlePath)
+	// var tasks = planner.Plan(specs)
+	// if len(tasks) == 0 {
+	// 	return errors.New("No tasks defined")
+	// }
+
+	// lifecycleTasks, err := lifecycle.Build()
+	// if err != nil {
+	// 	return errors.Wrap("build lifecycle tasks")
+	// }
+
+	// fileInfo, err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath)
+
+	// if err != nil {
+	// 	return errors.Wrap(err, "generate bundle")
+	// }
+
+	// if opts.CustomerID != "" {
+	// 	bundleID, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, fileInfo.Size())
+
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "get presigned URL")
+	// 	}
+
+	// 	err = putObject(fileInfo, url)
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "uploading to presigned URL")
+	// 	}
+
+	// 	if err = graphQLClient.UpdateSupportBundleStatus(opts.CustomerID, bundleID, "uploaded"); err != nil {
+	// 		return errors.Wrap(err, "updating bundle status")
+	// 	}
+	// }
 
 	return nil
 }
@@ -151,23 +162,8 @@ func putObject(fi os.FileInfo, url *url.URL) error {
 	return nil
 }
 
-func resolveSpecs(gqlClient *graphql.Client, opts GenerateOptions) ([]types.Spec, error) {
+func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
 	specs := []types.Spec{bundle.SupportBundleVersionSpec()}
-
-	if opts.CustomerID != "" {
-		remoteSpecBody, err := gqlClient.GetCustomerSpec(opts.CustomerID)
-		if err != nil {
-			return nil, errors.Wrap(err, "get remote spec")
-		}
-
-		customerSpecs, err := spec.Parse(remoteSpecBody)
-		if err != nil {
-			return nil, errors.Wrap(err, "parse customer spec")
-		}
-
-		specs = append(specs, customerSpecs...)
-		specs = append(specs, bundle.CustomerJsonSpec(opts.CustomerID))
-	}
 
 	for _, cfgFile := range opts.CfgFiles {
 		yaml, err := ioutil.ReadFile(cfgFile)
@@ -200,4 +196,18 @@ func resolveSpecs(gqlClient *graphql.Client, opts GenerateOptions) ([]types.Spec
 	}
 
 	return specs, nil
+}
+
+func getCustomerSpecs(gqlClient *graphql.Client, customerID string) ([]types.Spec, error) {
+	remoteSpecBody, err := gqlClient.GetCustomerSpec(customerID)
+	if err != nil {
+		return nil, errors.Wrap(err, "get remote spec")
+	}
+
+	customerSpecs, err := spec.Parse(remoteSpecBody)
+	if err != nil {
+		return nil, errors.Wrap(err, "parse customer spec")
+	}
+
+	return customerSpecs, nil
 }
