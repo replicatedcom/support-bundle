@@ -3,6 +3,8 @@ package cli
 import (
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"os"
 	"time"
 
 	"github.com/pkg/errors"
@@ -47,14 +49,14 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	pluginSupportBundle, err := supportbundle.New()
 	if err != nil {
-		return errors.Wrap(err, "Failed to initialize supportbundle plugin")
+		return errors.Wrap(err, "initialize supportbundle plugin")
 	}
 	planner.AddPlugin(pluginSupportBundle)
 
 	if opts.EnableCore {
 		pluginCore, err := core.New()
 		if err != nil {
-			return errors.Wrap(err, "Failed to initialize core plugin")
+			return errors.Wrap(err, "initialize core plugin")
 		}
 		planner.AddPlugin(pluginCore)
 	}
@@ -62,7 +64,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	if opts.EnableDocker {
 		pluginDocker, err := docker.New()
 		if err != nil {
-			return errors.Wrap(err, "Failed to initialize docker plugin")
+			return errors.Wrap(err, "initialize docker plugin")
 		}
 		planner.AddPlugin(pluginDocker)
 	}
@@ -70,7 +72,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	if opts.EnableJournald {
 		pluginJournald, err := journald.New()
 		if err != nil {
-			return errors.Wrap(err, "Failed to initialize journald plugin")
+			return errors.Wrap(err, "initialize journald plugin")
 		}
 		planner.AddPlugin(pluginJournald)
 	}
@@ -78,7 +80,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	if opts.EnableKubernetes {
 		pluginKubernetes, err := kubernetes.New()
 		if err != nil {
-			return errors.Wrap(err, "Failed to initialize kubernetes plugin")
+			return errors.Wrap(err, "initialize kubernetes plugin")
 		}
 		planner.AddPlugin(pluginKubernetes)
 	}
@@ -86,7 +88,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	if opts.EnableRetraced {
 		pluginRetraced, err := retraced.New()
 		if err != nil {
-			return errors.Wrap(err, "Failed to initialize retraced plugin")
+			return errors.Wrap(err, "initialize retraced plugin")
 		}
 		planner.AddPlugin(pluginRetraced)
 	}
@@ -96,12 +98,56 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.New("No tasks defined")
 	}
 
-	if err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath); err != nil {
-		return errors.Wrap(err, "Failed to generate bundle")
+	fileInfo, err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath)
+
+	if err != nil {
+		return errors.Wrap(err, "generate bundle")
+	}
+
+	if opts.CustomerID != "" {
+		bundleID, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, fileInfo.Size())
+
+		if err != nil {
+			return errors.Wrap(err, "get presigned URL")
+		}
+
+		err = putObject(fileInfo, url)
+		if err != nil {
+			return errors.Wrap(err, "uploading to presigned URL")
+		}
+
+		if err = graphQLClient.UpdateSupportBundleStatus(opts.CustomerID, bundleID, "uploaded"); err != nil {
+			return errors.Wrap(err, "updating bundle status")
+		}
 	}
 
 	jww.FEEDBACK.Printf("Support bundle generated at %s", opts.BundlePath)
 
+	return nil
+}
+
+func putObject(fi os.FileInfo, url *url.URL) error {
+	file, err := os.Open(fi.Name())
+	if err != nil {
+		return errors.Wrap(err, "opening file for upload")
+	}
+	defer file.Close()
+
+	req, err := http.NewRequest("PUT", url.String(), file)
+	if err != nil {
+		return errors.Wrap(err, "making request")
+	}
+	req.ContentLength = fi.Size()
+	req.Header.Set("Content-Type", "application/tar+gzip")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "completing request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return errors.Errorf("Error uploading support bundle, got %s", res.Status)
+	}
 	return nil
 }
 
@@ -111,12 +157,12 @@ func resolveSpecs(gqlClient *graphql.Client, opts GenerateOptions) ([]types.Spec
 	if opts.CustomerID != "" {
 		remoteSpecBody, err := gqlClient.GetCustomerSpec(opts.CustomerID)
 		if err != nil {
-			return nil, errors.Wrap(err, "getting remote spec")
+			return nil, errors.Wrap(err, "get remote spec")
 		}
 
 		customerSpecs, err := spec.Parse(remoteSpecBody)
 		if err != nil {
-			return nil, errors.Wrap(err, "parsing customer spec")
+			return nil, errors.Wrap(err, "parse customer spec")
 		}
 
 		specs = append(specs, customerSpecs...)
@@ -125,12 +171,12 @@ func resolveSpecs(gqlClient *graphql.Client, opts GenerateOptions) ([]types.Spec
 	for _, cfgFile := range opts.CfgFiles {
 		yaml, err := ioutil.ReadFile(cfgFile)
 		if err != nil {
-			return nil, errors.Wrap(err, "Failed to read spec file")
+			return nil, errors.Wrap(err, "read spec file")
 		}
 
 		fileSpecs, err := spec.Parse(yaml)
 		if err != nil {
-			return nil, errors.Wrap(err, "Failed to parse spec")
+			return nil, errors.Wrap(err, "parse config file spec")
 		}
 		specs = append(specs, fileSpecs...)
 	}
@@ -138,15 +184,15 @@ func resolveSpecs(gqlClient *graphql.Client, opts GenerateOptions) ([]types.Spec
 	for _, cfgDoc := range opts.CfgDocs {
 		argSpecs, err := spec.Parse([]byte(cfgDoc))
 		if err != nil {
-			return nil, errors.Wrap(err, "Failed to parse spec")
+			return nil, errors.Wrap(err, "parse config doc spec")
 		}
 		specs = append(specs, argSpecs...)
 	}
 
-	if !opts.SkipDefault {
+	if opts.CustomerID == "" && !opts.SkipDefault {
 		defaultSpecs, err := bundle.DefaultSpecs()
 		if err != nil {
-			return nil, errors.Wrap(err, "Failed to get default specs")
+			return nil, errors.Wrap(err, "get default specs")
 		}
 
 		specs = append(defaultSpecs, specs...)

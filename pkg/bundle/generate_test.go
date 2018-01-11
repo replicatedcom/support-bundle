@@ -51,7 +51,7 @@ func TestGenerate(t *testing.T) {
 	got, _ := ioutil.TempFile("", "generate-test-bundle")
 	defer os.Remove(got.Name())
 
-	err := Generate(tasks, time.Duration(time.Second*2), got.Name())
+	_, err := Generate(tasks, time.Duration(time.Second*2), got.Name())
 	require.NoError(t, err)
 
 	testDir, err := ioutil.TempDir("", "generate-test")

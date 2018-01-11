@@ -19,7 +19,7 @@ import (
 )
 
 // Generate a new support bundle and write the results as an archive at pathname
-func Generate(tasks []types.Task, timeout time.Duration, pathname string) error {
+func Generate(tasks []types.Task, timeout time.Duration, pathname string) (os.FileInfo, error) {
 	var isURL bool
 
 	callbackURL, err := url.Parse(pathname)
@@ -30,7 +30,7 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 
 	collectDir, err := ioutil.TempDir(filepath.Dir(pathname), "")
 	if err != nil {
-		return errors.Wrap(err, "Creating a temporary directory to store results failed")
+		return nil, errors.Wrap(err, "creating a temporary directory to store results failed")
 	}
 	defer os.RemoveAll(collectDir)
 
@@ -55,13 +55,13 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 	//write index and error json files
 	indexJSON, err := json.MarshalIndent(resultsWithOutput, "", "  ")
 	if err != nil {
-		return errors.Wrap(err, "Marshalling index.json failed")
+		return nil, errors.Wrap(err, "marshalled index.json")
 	}
 	ioutil.WriteFile(filepath.Join(collectDir, "index.json"), indexJSON, 0666)
 
 	errorJSON, err := json.MarshalIndent(resultsWithError, "", "  ")
 	if err != nil {
-		return errors.Wrap(err, "Marshalling error.json failed")
+		return nil, errors.Wrap(err, "marshalled error.json")
 	}
 	ioutil.WriteFile(filepath.Join(collectDir, "error.json"), errorJSON, 0666)
 
@@ -70,32 +70,33 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 	// trailing slash keeps the parent directory from being included in archive
 
 	if err := comp.Compress(collectDir+"/", pathname); err != nil {
-		return errors.Wrap(err, "Compressing results directory failed")
+		return nil, errors.Wrap(err, "compressed results directory")
 	}
+
+	file, err := os.Open(pathname)
+	if err != nil {
+		return nil, errors.Wrap(err, "open compressed file")
+	}
+	defer file.Close()
 
 	if isURL {
 		var b bytes.Buffer
 		w := multipart.NewWriter(&b)
 
-		file, err := os.Open(pathname)
-		if err != nil {
-			return errors.Wrap(err, "finding the file that was just compressed")
-		}
-		defer file.Close()
 		fw, err := w.CreateFormFile("file", pathname)
 		if err != nil {
-			return errors.Wrap(err, "creating multipart form")
+			return nil, errors.Wrap(err, "multipart form")
 		}
 
 		if _, err = io.Copy(fw, file); err != nil {
-			return errors.Wrap(err, "copying buffer")
+			return nil, errors.Wrap(err, "copy buffer")
 		}
 
 		w.Close()
 
 		req, err := http.NewRequest("POST", callbackURL.String(), &b)
 		if err != nil {
-			return errors.Wrap(err, "making request")
+			return nil, errors.Wrap(err, "post to callback url")
 		}
 
 		req.Header.Set("Content-Type", w.FormDataContentType())
@@ -103,9 +104,16 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) error 
 		client := &http.Client{}
 		_, err = client.Do(req)
 		if err != nil {
-			return errors.Wrap(err, "completing request")
+			return nil, errors.Wrap(err, "post request request")
 		}
+
+		return nil, nil
 	}
 
-	return nil
+	fi, err := file.Stat()
+	if err != nil {
+		return nil, errors.Wrap(err, "file stats")
+	}
+
+	return fi, nil
 }
