@@ -133,7 +133,7 @@ func (c *Client) executeGraphQLQuery(auth string, gr Request) (*http.Response, e
 
 	bodyReader := bytes.NewReader(body)
 
-	req, err := http.NewRequest("POST", endpoint, bodyReader)
+	req, err := http.NewRequest("POST", c.endpoint, bodyReader)
 	if err != nil {
 		return nil, errors.Wrap(err, "creating http request")
 	}
