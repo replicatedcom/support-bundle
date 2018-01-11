@@ -8,7 +8,30 @@ import (
 )
 
 type Doc struct {
-	Specs []Spec
+	Specs     []Spec
+	Lifecycle []Task
+}
+
+type Task struct {
+	Generate      *GenerateOptions      `json:"generate,omitempty"`
+	Message       *MessageOptions       `json:"message,omitempty"`
+	BooleanPrompt *BooleanPromptOptions `json:"message,omitempty"`
+	UploadOptions *BooleanPromptOptions `json:"message,omitempty"`
+}
+
+type GenerateOptions struct {
+}
+
+type MessageOptions struct {
+	Contents string `json:"contents,omitempty"`
+}
+
+type BooleanPromptOptions struct {
+	Contents string `json:"contents,omitempty"`
+	Default  rune   `json:"default,omitempty"`
+}
+
+type UploadOptions struct {
 }
 
 type Spec struct {
