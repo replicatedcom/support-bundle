@@ -1,8 +1,12 @@
 package cli
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"os"
 	"time"
 
 	"github.com/pkg/errors"
@@ -96,11 +100,55 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.New("No tasks defined")
 	}
 
-	if err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath); err != nil {
+	size, pathname, err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath)
+
+	if err != nil {
 		return errors.Wrap(err, "Failed to generate bundle")
 	}
 
+	if opts.CustomerID != "" {
+		_, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, size)
+
+		if err != nil {
+			return errors.Wrap(err, "Get presigned URL")
+		}
+
+		err = putObject(pathname, size, url)
+		if err != nil {
+			return errors.Wrap(err, "uploading to presigned URL")
+		}
+	}
+
 	jww.FEEDBACK.Printf("Support bundle generated at %s", opts.BundlePath)
+
+	return nil
+}
+
+func putObject(pathname string, size int64, url *url.URL) error {
+	file, err := os.Open(pathname)
+	if err != nil {
+		return errors.Wrap(err, "opening file for upload")
+	}
+	defer file.Close()
+
+	info, _ := file.Stat()
+
+	req, err := http.NewRequest("PUT", url.String(), file)
+	if err != nil {
+		return errors.Wrap(err, "making request")
+	}
+	req.ContentLength = info.Size()
+	req.Header.Set("Content-Type", "application/tar+gzip")
+	dumped, _ := httputil.DumpRequestOut(req, false)
+	fmt.Println(string(dumped))
+
+	respBody, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "completing request")
+	}
+
+	res, _ := ioutil.ReadAll(respBody.Body)
+	fmt.Println(string(res))
 
 	return nil
 }
