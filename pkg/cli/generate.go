@@ -2,6 +2,7 @@ package cli
 
 import (
 	"io/ioutil"
+	"net/http"
 	"time"
 
 	"github.com/pkg/errors"
@@ -30,12 +31,14 @@ type GenerateOptions struct {
 	EnableKubernetes bool
 	EnableRetraced   bool
 	CustomerID       string
+	CustomerEndpoint string
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
 	jww.FEEDBACK.Println("Generating a new support bundle")
 
-	specs, err := resolveSpecs(opts)
+	graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
+	specs, err := resolveSpecs(graphQLClient, opts)
 	if err != nil {
 		return errors.Wrap(err, "failed to resolve specs")
 	}
@@ -102,15 +105,11 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	return nil
 }
 
-func resolveSpecs(opts GenerateOptions) ([]types.Spec, error) {
+func resolveSpecs(gqlClient *graphql.Client, opts GenerateOptions) ([]types.Spec, error) {
 	specs := []types.Spec{bundle.SupportBundleVersionSpec()}
 
 	if opts.CustomerID != "" {
-		sbs := &graphql.SupportBundleSpec{
-			CustomerID: opts.CustomerID,
-		}
-
-		remoteSpecBody, err := sbs.Get()
+		remoteSpecBody, err := gqlClient.GetCustomerSpec(opts.CustomerID)
 		if err != nil {
 			return nil, errors.Wrap(err, "getting remote spec")
 		}
