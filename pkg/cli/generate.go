@@ -116,7 +116,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 			return errors.Wrap(err, "uploading to presigned URL")
 		}
 
-		if err = graphQLClient.UpdateSupportBundleStatus(bundleID, "uploaded"); err != nil {
+		if err = graphQLClient.UpdateSupportBundleStatus(opts.CustomerID, bundleID, "uploaded"); err != nil {
 			return errors.Wrap(err, "updating bundle status")
 		}
 	}

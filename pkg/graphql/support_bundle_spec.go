@@ -112,11 +112,11 @@ func (c *Client) GetSupportBundleUploadURI(id string, size int64) (string, *url.
 	return uploadBody.Data.ID, uri, nil
 }
 
-func (c *Client) UpdateSupportBundleStatus(id string, status string) error {
-	_, err := c.executeGraphQLQuery(id, Request{
+func (c *Client) UpdateSupportBundleStatus(customerID string, bundleID, status string) error {
+	_, err := c.executeGraphQLQuery(customerID, Request{
 		Query: finishUploadMutation,
 		Variables: map[string]interface{}{
-			"id":     id,
+			"id":     bundleID,
 			"status": status,
 		},
 	})
