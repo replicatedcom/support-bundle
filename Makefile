@@ -117,6 +117,7 @@ e2e-docker: build-dirs
 	@docker run                                                             \
 	    -ti                                                                 \
 	    --rm                                                                \
+		--label com.replicated.support-bundle=true                          \
 	    -v "$$(pwd)/.go:/go"                                                \
 	    -v "$$(pwd):/go/src/$(PKG)"                                         \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
