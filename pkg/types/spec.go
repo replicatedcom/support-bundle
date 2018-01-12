@@ -21,6 +21,7 @@ type Spec struct {
 	// plan-specific config
 
 	SupportBundleVersion *SupportBundleVersionOptions `json:"version,omitempty"`
+	CustomerMeta         *CustomerMetaOptions         `json:"meta.customer,omitempty"`
 
 	CoreHostname    *CoreHostnameOptions    `json:"os.hostname,omitempty"`
 	CoreHTTPRequest *CoreHTTPRequestOptions `json:"os.http-request,omitempty"`
@@ -74,6 +75,14 @@ type Meta struct {
 // plugin.supportbundle options
 
 type SupportBundleVersionOptions struct {
+}
+
+// meta.customer
+
+type CustomerMetaOptions struct {
+	CustomerID     string `json:"customer_id,omitempty"`
+	InstallationID string `json:"installation_id,omitempty"`
+	CustomerName   string `json:"customer_name,omitempty"`
 }
 
 // plugin.core options

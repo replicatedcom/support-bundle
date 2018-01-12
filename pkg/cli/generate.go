@@ -166,6 +166,7 @@ func resolveSpecs(gqlClient *graphql.Client, opts GenerateOptions) ([]types.Spec
 		}
 
 		specs = append(specs, customerSpecs...)
+		specs = append(specs, bundle.CustomerJsonSpec(opts.CustomerID))
 	}
 
 	for _, cfgFile := range opts.CfgFiles {
