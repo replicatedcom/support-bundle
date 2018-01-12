@@ -21,6 +21,8 @@ func (p *SupportBundle) Plan(spec types.Spec) types.Planner {
 	switch {
 	case spec.SupportBundleVersion != nil:
 		return p.planner.Version
+	case spec.CustomerMeta != nil:
+		return p.planner.CustomerMeta
 	default:
 		return nil
 	}

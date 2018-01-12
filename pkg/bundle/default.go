@@ -149,6 +149,16 @@ func SupportBundleVersionSpec() types.Spec {
 	}
 }
 
+func CustomerJsonSpec(customerID string) types.Spec {
+	return types.Spec{
+		Description: "Support Bundle Customer Metadata",
+		OutputDir:   "/",
+		CustomerMeta: &types.CustomerMetaOptions{
+			CustomerID: customerID,
+		},
+	}
+}
+
 func DefaultSpecs() ([]types.Spec, error) {
 	unconditionalSpecs, err := spec.Parse([]byte(unconditionalYaml))
 	defaultSpecs := unconditionalSpecs
