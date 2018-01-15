@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/graphql"
+	"github.com/replicatedcom/support-bundle/pkg/lifecycle"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/core"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/plugins/journald"
@@ -83,23 +84,31 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		planner.AddPlugin(pluginRetraced)
 	}
 
-	graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
-	specs, err := resolveLocalSpecs(opts)
-	if err != nil {
-		return errors.Wrap(err, "failed to resolve specs")
+	lifecycleTasks := types.DefaultLifecycle
+
+	builtTasks := lifecycle.Build(lifecycleTasks)
+
+	if err = lifecycle.Run(builtTasks); err != nil {
+		return errors.Wrap(err, "running tasks")
 	}
 
-	if opts.CustomerID != "" {
-		remoteSpecs, err := getCustomerSpecs(graphQLClient, opts.CustomerID)
-		if err != nil {
-			return errors.Wrap(err, "get customer specs")
-		}
-		specs = append(specs, remoteSpecs...)
+	// graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
+	// specs, err := resolveLocalSpecs(opts)
+	// if err != nil {
+	// 	return errors.Wrap(err, "failed to resolve specs")
+	// }
 
-		// lifecycleTasks, err := lifecycle.Plan(remoteSpecs.Lifecycle)
+	// if opts.CustomerID != "" {
+	// 	remoteSpecs, err := getCustomerSpecs(graphQLClient, opts.CustomerID)
+	// 	if err != nil {
+	// 		return errors.Wrap(err, "get customer specs")
+	// 	}
+	// 	specs = append(specs, remoteSpecs...)
 
-		return nil
-	}
+	// 	// lifecycleTasks, err := lifecycle.Plan(remoteSpecs.Lifecycle)
+
+	// 	return nil
+	// }
 
 	// var tasks = planner.Plan(specs)
 	// if len(tasks) == 0 {

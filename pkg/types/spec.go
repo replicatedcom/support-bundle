@@ -16,7 +16,7 @@ type LifecycleTask struct {
 	Generate      *GenerateOptions      `json:"generate,omitempty"`
 	Message       *MessageOptions       `json:"message,omitempty"`
 	BooleanPrompt *BooleanPromptOptions `json:"boolean,omitempty"`
-	Upload        *BooleanPromptOptions `json:"upload,omitempty"`
+	Upload        *UploadOptions        `json:"upload,omitempty"`
 }
 
 type GenerateOptions struct {
@@ -28,7 +28,7 @@ type MessageOptions struct {
 
 type BooleanPromptOptions struct {
 	Contents string `json:"contents,omitempty"`
-	Default  rune   `json:"default,omitempty"`
+	Default  bool   `json:"default,omitempty"`
 }
 
 type UploadOptions struct {
