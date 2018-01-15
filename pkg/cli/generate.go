@@ -163,7 +163,7 @@ func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
 	return specs, nil
 }
 
-func getCustomerDoc(gqlClient *graphql.Client, customerID string) (types.Doc, error) {
+func getCustomerDoc(gqlClient *graphql.Client, customerID string) (*types.Doc, error) {
 	remoteSpecBody, err := gqlClient.GetCustomerSpec(customerID)
 	if err != nil {
 		return nil, errors.Wrap(err, "get remote spec")
