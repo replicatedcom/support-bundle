@@ -15,7 +15,7 @@ type Doc struct {
 type LifecycleTask struct {
 	Generate      *GenerateOptions      `json:"generate,omitempty"`
 	Message       *MessageOptions       `json:"message,omitempty"`
-	BooleanPrompt *BooleanPromptOptions `json:"boolean,omitempty"`
+	BooleanPrompt *BooleanPromptOptions `json:"prompt,omitempty"`
 	Upload        *UploadOptions        `json:"upload,omitempty"`
 }
 
