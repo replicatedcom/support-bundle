@@ -1,6 +1,6 @@
 package types
 
-var DefaultLifecycle = []*LifecycleTask{
+var DefaultLifecycleTasks = []*LifecycleTask{
 	{
 		Message: &MessageOptions{"Starting support bundle collection..."},
 	},
@@ -15,5 +15,8 @@ var DefaultLifecycle = []*LifecycleTask{
 	},
 	{
 		Upload: &UploadOptions{},
+	},
+	{
+		Message: &MessageOptions{"Upload complete! Check the analyzed bundle for more information"},
 	},
 }

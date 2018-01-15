@@ -3,8 +3,6 @@ package cli
 import (
 	"io/ioutil"
 	"net/http"
-	"net/url"
-	"os"
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/bundle"
@@ -84,90 +82,38 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		planner.AddPlugin(pluginRetraced)
 	}
 
-	lifecycleTasks := types.DefaultLifecycle
+	graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
+	specs, err := resolveLocalSpecs(opts)
+	if err != nil {
+		return errors.Wrap(err, "failed to resolve specs")
+	}
 
-	builtTasks := lifecycle.Build(lifecycleTasks)
+	if opts.CustomerID != "" {
+		remoteSpecs, err := getCustomerSpecs(graphQLClient, opts.CustomerID)
+		if err != nil {
+			return errors.Wrap(err, "get customer specs")
+		}
+		specs = append(specs, remoteSpecs...)
+	}
 
-	if err = lifecycle.Run(builtTasks); err != nil {
+	var tasks = planner.Plan(specs)
+	if len(tasks) == 0 {
+		return errors.New("No tasks defined")
+	}
+
+	lf := lifecycle.Lifecycle{
+		BundleTasks:        tasks,
+		GenerateTimeout:    opts.TimeoutSeconds,
+		GenerateBundlePath: opts.BundlePath,
+		GraphQLClient:      graphQLClient,
+		UploadCustomerID:   opts.CustomerID,
+	}
+	lf.Build(types.DefaultLifecycleTasks)
+
+	if err = lf.Run(); err != nil {
 		return errors.Wrap(err, "running tasks")
 	}
 
-	// graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
-	// specs, err := resolveLocalSpecs(opts)
-	// if err != nil {
-	// 	return errors.Wrap(err, "failed to resolve specs")
-	// }
-
-	// if opts.CustomerID != "" {
-	// 	remoteSpecs, err := getCustomerSpecs(graphQLClient, opts.CustomerID)
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "get customer specs")
-	// 	}
-	// 	specs = append(specs, remoteSpecs...)
-
-	// 	// lifecycleTasks, err := lifecycle.Plan(remoteSpecs.Lifecycle)
-
-	// 	return nil
-	// }
-
-	// var tasks = planner.Plan(specs)
-	// if len(tasks) == 0 {
-	// 	return errors.New("No tasks defined")
-	// }
-
-	// lifecycleTasks, err := lifecycle.Build()
-	// if err != nil {
-	// 	return errors.Wrap("build lifecycle tasks")
-	// }
-
-	// fileInfo, err := bundle.Generate(tasks, time.Duration(time.Second*time.Duration(opts.TimeoutSeconds)), opts.BundlePath)
-
-	// if err != nil {
-	// 	return errors.Wrap(err, "generate bundle")
-	// }
-
-	// if opts.CustomerID != "" {
-	// 	bundleID, url, err := graphQLClient.GetSupportBundleUploadURI(opts.CustomerID, fileInfo.Size())
-
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "get presigned URL")
-	// 	}
-
-	// 	err = putObject(fileInfo, url)
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "uploading to presigned URL")
-	// 	}
-
-	// 	if err = graphQLClient.UpdateSupportBundleStatus(opts.CustomerID, bundleID, "uploaded"); err != nil {
-	// 		return errors.Wrap(err, "updating bundle status")
-	// 	}
-	// }
-
-	return nil
-}
-
-func putObject(fi os.FileInfo, url *url.URL) error {
-	file, err := os.Open(fi.Name())
-	if err != nil {
-		return errors.Wrap(err, "opening file for upload")
-	}
-	defer file.Close()
-
-	req, err := http.NewRequest("PUT", url.String(), file)
-	if err != nil {
-		return errors.Wrap(err, "making request")
-	}
-	req.ContentLength = fi.Size()
-	req.Header.Set("Content-Type", "application/tar+gzip")
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return errors.Wrap(err, "completing request")
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return errors.Errorf("Error uploading support bundle, got %s", res.Status)
-	}
 	return nil
 }
 

@@ -7,8 +7,8 @@ import (
 )
 
 func MessageTask(task *types.LifecycleTask) Task {
-	return func() error {
+	return func(l *Lifecycle) (bool, error) {
 		fmt.Println(task.Message.Contents)
-		return nil
+		return true, nil
 	}
 }

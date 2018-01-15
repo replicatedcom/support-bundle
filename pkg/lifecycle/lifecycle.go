@@ -1,23 +1,33 @@
 package lifecycle
 
 import (
+	"os"
+
 	"github.com/pkg/errors"
+	"github.com/replicatedcom/support-bundle/pkg/graphql"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
+type Lifecycle struct {
+	BundleTasks        []types.Task
+	GenerateTimeout    int
+	GenerateBundlePath string
+	tasks              []Task
+	FileInfo           os.FileInfo
+	UploadCustomerID   string
+	GraphQLClient      *graphql.Client
+}
+
 type Event func(*types.LifecycleTask) Task
 
-type Task func() error
+type Task func(*Lifecycle) (bool, error)
 
-func Build(tasks []*types.LifecycleTask) []Task {
-	var t []Task
+func (l *Lifecycle) Build(tasks []*types.LifecycleTask) {
 
 	for _, task := range tasks {
 		eventFn := resolveEvent(task)
-		t = append(t, eventFn(task))
+		l.tasks = append(l.tasks, eventFn(task))
 	}
-
-	return t
 }
 
 func resolveEvent(t *types.LifecycleTask) Event {
@@ -35,10 +45,16 @@ func resolveEvent(t *types.LifecycleTask) Event {
 	return nil
 }
 
-func Run(tasks []Task) error {
-	for _, t := range tasks {
-		if err := t(); err != nil {
+func (l *Lifecycle) Run() error {
+	for _, t := range l.tasks {
+		cont, err := t(l)
+
+		if err != nil {
 			return errors.Wrap(err, "running task")
+		}
+
+		if !cont {
+			break
 		}
 	}
 
