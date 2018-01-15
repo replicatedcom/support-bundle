@@ -108,7 +108,10 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		GraphQLClient:      graphQLClient,
 		UploadCustomerID:   opts.CustomerID,
 	}
-	lf.Build(types.DefaultLifecycleTasks)
+
+	if err = lf.Build(types.DefaultLifecycleTasks); err != nil {
+		return errors.Wrap(err, "build lifecycle events")
+	}
 
 	if err = lf.Run(); err != nil {
 		return errors.Wrap(err, "running tasks")

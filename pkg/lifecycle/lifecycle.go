@@ -22,27 +22,30 @@ type Event func(*types.LifecycleTask) Task
 
 type Task func(*Lifecycle) (bool, error)
 
-func (l *Lifecycle) Build(tasks []*types.LifecycleTask) {
+func (l *Lifecycle) Build(tasks []*types.LifecycleTask) error {
 
 	for _, task := range tasks {
-		eventFn := resolveEvent(task)
+		eventFn, err := resolveEvent(task)
+		if err != nil {
+			return errors.Wrap(err, "resolve event")
+		}
 		l.tasks = append(l.tasks, eventFn(task))
 	}
 }
 
-func resolveEvent(t *types.LifecycleTask) Event {
+func resolveEvent(t *types.LifecycleTask) (Event, error) {
 	switch {
 	case t.Message != nil:
-		return MessageTask
+		return MessageTask, nil
 	case t.BooleanPrompt != nil:
-		return PromptTask
+		return PromptTask, nil
 	case t.Generate != nil:
-		return GenerateTask
+		return GenerateTask, nil
 	case t.Upload != nil:
-		return UploadTask
+		return UploadTask, nil
 	}
 
-	return nil
+	return nil, errors.New("no valid event found, requires one of: generate, message, boolean, upload")
 }
 
 func (l *Lifecycle) Run() error {
