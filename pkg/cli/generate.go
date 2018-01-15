@@ -88,10 +88,10 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.Wrap(err, "failed to resolve specs")
 	}
 
-	var customerDoc types.Doc
+	var customerDoc *types.Doc
 
 	if opts.CustomerID != "" {
-		customerDoc, err := getCustomerDoc(graphQLClient, opts.CustomerID)
+		customerDoc, err = getCustomerDoc(graphQLClient, opts.CustomerID)
 		if err != nil {
 			return errors.Wrap(err, "get customer specs")
 		}
@@ -112,7 +112,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	}
 
 	lt := types.DefaultLifecycleTasks
-	if customerDoc.Lifecycle != nil {
+	if customerDoc != nil && customerDoc.Lifecycle != nil {
 		lt = customerDoc.Lifecycle
 	}
 
