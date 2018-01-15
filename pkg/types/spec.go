@@ -8,8 +8,8 @@ import (
 )
 
 type Doc struct {
-	Specs     []Spec
-	Lifecycle []*LifecycleTask
+	Specs     []Spec           `json:"specs,omitempty"`
+	Lifecycle []*LifecycleTask `json:"lifecycle,omitempty"`
 }
 
 type LifecycleTask struct {
