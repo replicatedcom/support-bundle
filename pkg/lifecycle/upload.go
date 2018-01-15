@@ -38,6 +38,9 @@ func UploadTask(task *types.LifecycleTask) Task {
 
 		if task.Upload.Prompt.AcceptMessage != "" {
 			err = runTemplate(os.Stdout, "accept", task.Upload.Prompt.AcceptMessage+"\n", tplOpts)
+			if err != nil {
+				return false, errors.Wrap(err, "run accept template")
+			}
 		}
 
 		if l.UploadCustomerID == "" {
