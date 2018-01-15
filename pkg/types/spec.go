@@ -13,10 +13,9 @@ type Doc struct {
 }
 
 type LifecycleTask struct {
-	Generate      *GenerateOptions      `json:"generate,omitempty"`
-	Message       *MessageOptions       `json:"message,omitempty"`
-	BooleanPrompt *BooleanPromptOptions `json:"prompt,omitempty"`
-	Upload        *UploadOptions        `json:"upload,omitempty"`
+	Generate *GenerateOptions `json:"generate,omitempty"`
+	Message  *MessageOptions  `json:"message,omitempty"`
+	Upload   *UploadOptions   `json:"upload,omitempty"`
 }
 
 type GenerateOptions struct {
@@ -26,12 +25,15 @@ type MessageOptions struct {
 	Contents string `json:"contents,omitempty"`
 }
 
-type BooleanPromptOptions struct {
-	Contents string `json:"contents,omitempty"`
-	Default  bool   `json:"default,omitempty"`
+type PromptOptions struct {
+	Message        string `json:"message,omitempty"`
+	Default        bool   `json:"default,omitempty"`
+	AcceptMessage  string `json:"accept,omitempty"`
+	DeclineMessage string `json:"decline,omitempty"`
 }
 
 type UploadOptions struct {
+	Prompt *PromptOptions `json:"prompt,omitempty"`
 }
 
 type Spec struct {

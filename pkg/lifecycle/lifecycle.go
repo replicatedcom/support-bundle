@@ -9,13 +9,14 @@ import (
 )
 
 type Lifecycle struct {
-	BundleTasks        []types.Task
 	GenerateTimeout    int
+	SkipPrompts        bool
 	GenerateBundlePath string
-	tasks              []Task
-	FileInfo           os.FileInfo
 	UploadCustomerID   string
 	GraphQLClient      *graphql.Client
+	FileInfo           os.FileInfo
+	BundleTasks        []types.Task
+	tasks              []Task
 }
 
 type Event func(*types.LifecycleTask) Task
@@ -39,8 +40,6 @@ func resolveEvent(t *types.LifecycleTask) (Event, error) {
 	switch {
 	case t.Message != nil:
 		return MessageTask, nil
-	case t.BooleanPrompt != nil:
-		return PromptTask, nil
 	case t.Generate != nil:
 		return GenerateTask, nil
 	case t.Upload != nil:
@@ -65,9 +64,3 @@ func (l *Lifecycle) Run() error {
 
 	return nil
 }
-
-// switch {
-// case spec.KubernetesAPIVersions != nil:
-// 	return p.planner.APIVersions
-// case spec.KubernetesClusterInfo != nil:
-// 	retu

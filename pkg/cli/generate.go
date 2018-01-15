@@ -31,6 +31,7 @@ type GenerateOptions struct {
 	EnableRetraced   bool
 	CustomerID       string
 	CustomerEndpoint string
+	SkipPrompts      bool
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
@@ -109,6 +110,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		GenerateBundlePath: opts.BundlePath,
 		GraphQLClient:      graphQLClient,
 		UploadCustomerID:   opts.CustomerID,
+		SkipPrompts:        opts.SkipPrompts,
 	}
 
 	lt := types.DefaultLifecycleTasks
