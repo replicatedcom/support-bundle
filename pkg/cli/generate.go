@@ -116,6 +116,10 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		lt = customerDoc.Lifecycle
 	}
 
+	if opts.CustomerID == "" {
+		lt = types.GenerateOnlyLifecycleTasks
+	}
+
 	if err = lf.Build(lt); err != nil {
 		return errors.Wrap(err, "build lifecycle events")
 	}
