@@ -88,12 +88,14 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.Wrap(err, "failed to resolve specs")
 	}
 
+	var customerDoc types.Doc
+
 	if opts.CustomerID != "" {
-		remoteSpecs, err := getCustomerSpecs(graphQLClient, opts.CustomerID)
+		customerDoc, err := getCustomerDoc(graphQLClient, opts.CustomerID)
 		if err != nil {
 			return errors.Wrap(err, "get customer specs")
 		}
-		specs = append(specs, remoteSpecs...)
+		specs = append(specs, customerDoc.Specs...)
 	}
 
 	var tasks = planner.Plan(specs)
@@ -109,7 +111,12 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		UploadCustomerID:   opts.CustomerID,
 	}
 
-	if err = lf.Build(types.DefaultLifecycleTasks); err != nil {
+	lt := types.DefaultLifecycleTasks
+	if customerDoc.Lifecycle != nil {
+		lt = customerDoc.Lifecycle
+	}
+
+	if err = lf.Build(lt); err != nil {
 		return errors.Wrap(err, "build lifecycle events")
 	}
 
@@ -156,16 +163,16 @@ func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
 	return specs, nil
 }
 
-func getCustomerSpecs(gqlClient *graphql.Client, customerID string) ([]types.Spec, error) {
+func getCustomerDoc(gqlClient *graphql.Client, customerID string) (types.Doc, error) {
 	remoteSpecBody, err := gqlClient.GetCustomerSpec(customerID)
 	if err != nil {
 		return nil, errors.Wrap(err, "get remote spec")
 	}
 
-	customerSpecs, err := spec.Parse(remoteSpecBody)
+	customerDoc, err := spec.Unmarshal(remoteSpecBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "parse customer spec")
 	}
 
-	return customerSpecs, nil
+	return customerDoc, nil
 }

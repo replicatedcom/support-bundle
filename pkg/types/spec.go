@@ -9,7 +9,7 @@ import (
 
 type Doc struct {
 	Specs     []Spec
-	Lifecycle []LifecycleTask
+	Lifecycle []*LifecycleTask
 }
 
 type LifecycleTask struct {
