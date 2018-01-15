@@ -112,7 +112,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	}
 
 	lt := types.DefaultLifecycleTasks
-	if customerDoc.Lifecycle != nil {
+	if customerDoc != nil && customerDoc.Lifecycle != nil {
 		lt = customerDoc.Lifecycle
 	}
 
