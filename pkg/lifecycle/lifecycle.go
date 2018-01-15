@@ -31,6 +31,8 @@ func (l *Lifecycle) Build(tasks []*types.LifecycleTask) error {
 		}
 		l.tasks = append(l.tasks, eventFn(task))
 	}
+
+	return nil
 }
 
 func resolveEvent(t *types.LifecycleTask) (Event, error) {
