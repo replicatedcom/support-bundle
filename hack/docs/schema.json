@@ -1,0 +1,2766 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "lifecycle": {
+      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles.",
+      "type": "array",
+      "items": {
+        "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles.",
+        "type": "object",
+        "properties": {
+          "generate": {
+            "description": "Adds a step that will generate a support bundle. It has no arguments, but should be specified with an empty object `{}`",
+            "type": "object"
+          },
+          "message": {
+            "description": "`message` can be used to print a message to the end customer.",
+            "type": "object",
+            "properties": {
+              "contents": {
+                "description": "`contents` is the message",
+                "examples": [
+                  "This process will collect a number of files from the host system to help you debug your problem",
+                  "Thanks for uploading your bundle! SuperGoodTools will get back to you in 24 hours"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "upload": {
+            "description": "Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor.",
+            "type": "object",
+            "properties": {
+              "prompt": {
+                "description": "Allows configuring an interactive prompt for the user to confirm before uploading",
+                "type": "object",
+                "properties": {
+                  "accept": {
+                    "description": "A message to display if the user accepts the upload prompt",
+                    "examples": [
+                      "Bundle uploaded! SuperGoodTool support will get back to you within 24 hours"
+                    ],
+                    "type": "string"
+                  },
+                  "decline": {
+                    "description": "A message to display if the user declines the upload prompt",
+                    "examples": [
+                      "Bundle was not uploaded, please send your bundle to SuperGoodTool support."
+                    ],
+                    "type": "string"
+                  },
+                  "default": {
+                    "description": "The default answer to the prompt",
+                    "examples": [
+                      true
+                    ],
+                    "type": "boolean"
+                  },
+                  "message": {
+                    "description": "message to display before prompting",
+                    "examples": [
+                      true
+                    ],
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "specs": {
+      "description": "A list of items to include in the support bundle.",
+      "type": "array",
+      "items": {
+        "description": "A list of items to include in the support bundle.",
+        "type": "object",
+        "properties": {
+          "description": {
+            "description": "A description of the file(s) that will be collected by this spec",
+            "examples": [
+              "The contents of any files in /etc/supergoodtool/conf.d, with secrets redacted",
+              "Information about running Docker containers"
+            ],
+            "type": "string"
+          },
+          "docker.container-cp": {
+            "description": "Copy a file from a running docker container",
+            "type": "object",
+            "properties": {
+              "container": {
+                "description": "The name of the container to copy from",
+                "examples": [
+                  "my-sweet-app"
+                ],
+                "type": "string"
+              },
+              "src_path": {
+                "description": "The path of the target file in the container's filesystem",
+                "examples": [
+                  "/var/log/supergoodtool/error.log"
+                ],
+                "type": "string"
+              }
+            }
+          },
+          "docker.container-exec": {
+            "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container",
+            "type": "object",
+            "properties": {
+              "container": {
+                "description": "The name of the container to run the command in",
+                "examples": [
+                  "supergoodtool-www"
+                ],
+                "type": "string"
+              },
+              "exec_config": {
+                "description": "The arguments as would be passed to `docker exec`",
+                "type": "object",
+                "properties": {
+                  "AttachStderr": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "boolean"
+                  },
+                  "AttachStdin": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "boolean"
+                  },
+                  "AttachStdout": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "boolean"
+                  },
+                  "Cmd": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "array",
+                    "items": {
+                      "description": "same as would be passed to `docker exec`",
+                      "type": "string"
+                    }
+                  },
+                  "Detach": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "boolean"
+                  },
+                  "DetachKeys": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "string"
+                  },
+                  "Env": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "array",
+                    "items": {
+                      "description": "same as would be passed to `docker exec`",
+                      "type": "string"
+                    }
+                  },
+                  "Privileged": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "boolean"
+                  },
+                  "Tty": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "boolean"
+                  },
+                  "User": {
+                    "description": "same as would be passed to `docker exec`",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "User",
+                  "Privileged",
+                  "Tty",
+                  "AttachStdin",
+                  "AttachStderr",
+                  "AttachStdout",
+                  "Detach",
+                  "DetachKeys",
+                  "Env",
+                  "Cmd"
+                ]
+              }
+            },
+            "required": [
+              "container",
+              "exec_config"
+            ]
+          },
+          "docker.container-inspect": {
+            "description": "inspect one or more running or stopped containers",
+            "type": "object",
+            "properties": {
+              "container": {
+                "description": "the container name",
+                "type": "string"
+              },
+              "container_list_options": {
+                "description": "Options to be used to filter the list of containers",
+                "type": "object",
+                "properties": {
+                  "All": {
+                    "description": "Same as `-a` option to `docker ps` ",
+                    "type": "boolean"
+                  },
+                  "Before": {
+                    "description": "Same as `--before` option to `docker logs` ",
+                    "type": "string"
+                  },
+                  "Filters": {
+                    "description": "Same as `--filter` option to `docker ps` ",
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "description": "Map of key-value pairs to filter on",
+                        "type": "array"
+                      }
+                    }
+                  },
+                  "Latest": {
+                    "description": "Same as docker cli arg",
+                    "type": "boolean"
+                  },
+                  "Limit": {
+                    "description": "Same as docker cli arg",
+                    "type": "integer"
+                  },
+                  "Quiet": {
+                    "description": "Same as docker cli arg",
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "description": "Same as docker cli arg",
+                    "type": "string"
+                  },
+                  "Size": {
+                    "description": "Same as docker cli arg",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "Quiet",
+                  "Size",
+                  "All",
+                  "Latest",
+                  "Since",
+                  "Before",
+                  "Limit",
+                  "Filters"
+                ]
+              }
+            }
+          },
+          "docker.container-logs": {
+            "description": "Collect the logs from one or more docker containers",
+            "type": "object",
+            "properties": {
+              "container": {
+                "description": "A container name",
+                "type": "string"
+              },
+              "container_list_options": {
+                "description": "Options to be used to filter the list of containers",
+                "type": "object",
+                "properties": {
+                  "All": {
+                    "description": "Same as `-a` option to `docker ps` ",
+                    "type": "boolean"
+                  },
+                  "Before": {
+                    "description": "Same as `--before` option to `docker logs` ",
+                    "type": "string"
+                  },
+                  "Filters": {
+                    "description": "Same as `--filter` option to `docker ps` ",
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "description": "Map of key-value pairs to filter on",
+                        "type": "array"
+                      }
+                    }
+                  },
+                  "Latest": {
+                    "description": "Same as docker cli arg",
+                    "type": "boolean"
+                  },
+                  "Limit": {
+                    "description": "Same as docker cli arg",
+                    "type": "integer"
+                  },
+                  "Quiet": {
+                    "description": "Same as docker cli arg",
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "description": "Same as docker cli arg",
+                    "type": "string"
+                  },
+                  "Size": {
+                    "description": "Same as docker cli arg",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "Quiet",
+                  "Size",
+                  "All",
+                  "Latest",
+                  "Since",
+                  "Before",
+                  "Limit",
+                  "Filters"
+                ]
+              },
+              "container_logs_options": {
+                "description": "Args as would be given to `docker logs`",
+                "type": "object",
+                "properties": {
+                  "Details": {
+                    "description": "Same as `docker logs` cli arg",
+                    "type": "boolean"
+                  },
+                  "Follow": {
+                    "description": "Same as `docker logs` cli arg",
+                    "type": "boolean"
+                  },
+                  "ShowStderr": {
+                    "description": "Same as `docker logs` cli arg",
+                    "type": "boolean"
+                  },
+                  "ShowStdout": {
+                    "description": "Same as `docker logs` cli arg",
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "description": "Same as `docker logs` cli arg",
+                    "type": "string"
+                  },
+                  "Tail": {
+                    "description": "Same as `docker logs` cli arg",
+                    "type": "string"
+                  },
+                  "Timestamps": {
+                    "description": "Same as `docker logs` cli arg",
+                    "type": "boolean"
+                  },
+                  "Until": {
+                    "description": "Same as `docker logs` cli arg",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ShowStdout",
+                  "ShowStderr",
+                  "Since",
+                  "Until",
+                  "Timestamps",
+                  "Follow",
+                  "Tail",
+                  "Details"
+                ]
+              }
+            }
+          },
+          "docker.container-ls": {
+            "description": "List information about one or more containers",
+            "type": "object",
+            "properties": {
+              "All": {
+                "description": "Same as `-a` option to `docker ps` ",
+                "type": "boolean"
+              },
+              "Before": {
+                "description": "Same as `--before` option to `docker logs` ",
+                "type": "string"
+              },
+              "Filters": {
+                "description": "Same as `--filter` option to `docker ps` ",
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "description": "Map of key-value pairs to filter on",
+                    "type": "array"
+                  }
+                }
+              },
+              "Latest": {
+                "description": "Same as docker cli arg",
+                "type": "boolean"
+              },
+              "Limit": {
+                "description": "Same as docker cli arg",
+                "type": "integer"
+              },
+              "Quiet": {
+                "description": "Same as docker cli arg",
+                "type": "boolean"
+              },
+              "Since": {
+                "description": "Same as docker cli arg",
+                "type": "string"
+              },
+              "Size": {
+                "description": "Same as docker cli arg",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "Quiet",
+              "Size",
+              "All",
+              "Latest",
+              "Since",
+              "Before",
+              "Limit",
+              "Filters"
+            ]
+          },
+          "docker.container-run": {
+            "description": "Run a docker container, generating a file from the stdout and/or stderr",
+            "type": "object",
+            "properties": {
+              "container_create_config": {
+                "type": "object",
+                "properties": {
+                  "AdjustCPUShares": {
+                    "type": "boolean"
+                  },
+                  "Config": {
+                    "type": "object",
+                    "properties": {
+                      "ArgsEscaped": {
+                        "type": "boolean"
+                      },
+                      "AttachStderr": {
+                        "type": "boolean"
+                      },
+                      "AttachStdin": {
+                        "type": "boolean"
+                      },
+                      "AttachStdout": {
+                        "type": "boolean"
+                      },
+                      "Cmd": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Domainname": {
+                        "type": "string"
+                      },
+                      "Entrypoint": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Env": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ExposedPorts": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "Healthcheck": {
+                        "type": "object",
+                        "properties": {
+                          "Interval": {
+                            "type": "integer"
+                          },
+                          "Retries": {
+                            "type": "integer"
+                          },
+                          "StartPeriod": {
+                            "type": "integer"
+                          },
+                          "Test": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "Timeout": {
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "Hostname": {
+                        "type": "string"
+                      },
+                      "Image": {
+                        "type": "string"
+                      },
+                      "Labels": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "MacAddress": {
+                        "type": "string"
+                      },
+                      "NetworkDisabled": {
+                        "type": "boolean"
+                      },
+                      "OnBuild": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "OpenStdin": {
+                        "type": "boolean"
+                      },
+                      "Shell": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "StdinOnce": {
+                        "type": "boolean"
+                      },
+                      "StopSignal": {
+                        "type": "string"
+                      },
+                      "StopTimeout": {
+                        "type": "integer"
+                      },
+                      "Tty": {
+                        "type": "boolean"
+                      },
+                      "User": {
+                        "type": "string"
+                      },
+                      "Volumes": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "WorkingDir": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "Hostname",
+                      "Domainname",
+                      "User",
+                      "AttachStdin",
+                      "AttachStdout",
+                      "AttachStderr",
+                      "Tty",
+                      "OpenStdin",
+                      "StdinOnce",
+                      "Env",
+                      "Cmd",
+                      "Image",
+                      "Volumes",
+                      "WorkingDir",
+                      "Entrypoint",
+                      "OnBuild",
+                      "Labels"
+                    ]
+                  },
+                  "HostConfig": {
+                    "type": "object",
+                    "properties": {
+                      "AutoRemove": {
+                        "type": "boolean"
+                      },
+                      "Binds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "BlkioDeviceReadBps": {
+                        "type": "array"
+                      },
+                      "BlkioDeviceReadIOps": {
+                        "type": "array"
+                      },
+                      "BlkioDeviceWriteBps": {
+                        "type": "array"
+                      },
+                      "BlkioDeviceWriteIOps": {
+                        "type": "array"
+                      },
+                      "BlkioWeight": {
+                        "type": "integer"
+                      },
+                      "BlkioWeightDevice": {
+                        "type": "array"
+                      },
+                      "CapAdd": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "CapDrop": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Cgroup": {
+                        "type": "string"
+                      },
+                      "CgroupParent": {
+                        "type": "string"
+                      },
+                      "ConsoleSize": {},
+                      "ContainerIDFile": {
+                        "type": "string"
+                      },
+                      "CpuCount": {
+                        "type": "integer"
+                      },
+                      "CpuPercent": {
+                        "type": "integer"
+                      },
+                      "CpuPeriod": {
+                        "type": "integer"
+                      },
+                      "CpuQuota": {
+                        "type": "integer"
+                      },
+                      "CpuRealtimePeriod": {
+                        "type": "integer"
+                      },
+                      "CpuRealtimeRuntime": {
+                        "type": "integer"
+                      },
+                      "CpuShares": {
+                        "type": "integer"
+                      },
+                      "CpusetCpus": {
+                        "type": "string"
+                      },
+                      "CpusetMems": {
+                        "type": "string"
+                      },
+                      "DeviceCgroupRules": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Devices": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "CgroupPermissions": {
+                              "type": "string"
+                            },
+                            "PathInContainer": {
+                              "type": "string"
+                            },
+                            "PathOnHost": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "PathOnHost",
+                            "PathInContainer",
+                            "CgroupPermissions"
+                          ]
+                        }
+                      },
+                      "DiskQuota": {
+                        "type": "integer"
+                      },
+                      "Dns": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "DnsOptions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "DnsSearch": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ExtraHosts": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "GroupAdd": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "IOMaximumBandwidth": {
+                        "type": "integer"
+                      },
+                      "IOMaximumIOps": {
+                        "type": "integer"
+                      },
+                      "Init": {
+                        "type": "boolean"
+                      },
+                      "IpcMode": {
+                        "type": "string"
+                      },
+                      "Isolation": {
+                        "type": "string"
+                      },
+                      "KernelMemory": {
+                        "type": "integer"
+                      },
+                      "Links": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "LogConfig": {
+                        "type": "object",
+                        "properties": {
+                          "Config": {
+                            "type": "object",
+                            "properties": {
+                              ".*": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "Type": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "Type",
+                          "Config"
+                        ]
+                      },
+                      "Memory": {
+                        "type": "integer"
+                      },
+                      "MemoryReservation": {
+                        "type": "integer"
+                      },
+                      "MemorySwap": {
+                        "type": "integer"
+                      },
+                      "MemorySwappiness": {
+                        "type": "integer"
+                      },
+                      "Mounts": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "BindOptions": {
+                              "type": "object",
+                              "properties": {
+                                "Propagation": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "Consistency": {
+                              "type": "string"
+                            },
+                            "ReadOnly": {
+                              "type": "boolean"
+                            },
+                            "Source": {
+                              "type": "string"
+                            },
+                            "Target": {
+                              "type": "string"
+                            },
+                            "TmpfsOptions": {
+                              "type": "object",
+                              "properties": {
+                                "Mode": {
+                                  "type": "integer"
+                                },
+                                "SizeBytes": {
+                                  "type": "integer"
+                                }
+                              }
+                            },
+                            "Type": {
+                              "type": "string"
+                            },
+                            "VolumeOptions": {
+                              "type": "object",
+                              "properties": {
+                                "DriverConfig": {
+                                  "type": "object",
+                                  "properties": {
+                                    "Name": {
+                                      "type": "string"
+                                    },
+                                    "Options": {
+                                      "type": "object",
+                                      "properties": {
+                                        ".*": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "Labels": {
+                                  "type": "object",
+                                  "properties": {
+                                    ".*": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "NoCopy": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "NanoCpus": {
+                        "type": "integer"
+                      },
+                      "NetworkMode": {
+                        "type": "string"
+                      },
+                      "OomKillDisable": {
+                        "type": "boolean"
+                      },
+                      "OomScoreAdj": {
+                        "type": "integer"
+                      },
+                      "PidMode": {
+                        "type": "string"
+                      },
+                      "PidsLimit": {
+                        "type": "integer"
+                      },
+                      "PortBindings": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "array"
+                          }
+                        }
+                      },
+                      "Privileged": {
+                        "type": "boolean"
+                      },
+                      "PublishAllPorts": {
+                        "type": "boolean"
+                      },
+                      "ReadonlyRootfs": {
+                        "type": "boolean"
+                      },
+                      "RestartPolicy": {
+                        "type": "object",
+                        "properties": {
+                          "MaximumRetryCount": {
+                            "type": "integer"
+                          },
+                          "Name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "Name",
+                          "MaximumRetryCount"
+                        ]
+                      },
+                      "Runtime": {
+                        "type": "string"
+                      },
+                      "SecurityOpt": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ShmSize": {
+                        "type": "integer"
+                      },
+                      "StorageOpt": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "Sysctls": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "Tmpfs": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "UTSMode": {
+                        "type": "string"
+                      },
+                      "Ulimits": {
+                        "type": "array"
+                      },
+                      "UsernsMode": {
+                        "type": "string"
+                      },
+                      "VolumeDriver": {
+                        "type": "string"
+                      },
+                      "VolumesFrom": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "Binds",
+                      "ContainerIDFile",
+                      "LogConfig",
+                      "NetworkMode",
+                      "PortBindings",
+                      "RestartPolicy",
+                      "AutoRemove",
+                      "VolumeDriver",
+                      "VolumesFrom",
+                      "CapAdd",
+                      "CapDrop",
+                      "Dns",
+                      "DnsOptions",
+                      "DnsSearch",
+                      "ExtraHosts",
+                      "GroupAdd",
+                      "IpcMode",
+                      "Cgroup",
+                      "Links",
+                      "OomScoreAdj",
+                      "PidMode",
+                      "Privileged",
+                      "PublishAllPorts",
+                      "ReadonlyRootfs",
+                      "SecurityOpt",
+                      "UTSMode",
+                      "UsernsMode",
+                      "ShmSize",
+                      "ConsoleSize",
+                      "Isolation",
+                      "CpuShares",
+                      "Memory",
+                      "NanoCpus",
+                      "CgroupParent",
+                      "BlkioWeight",
+                      "BlkioWeightDevice",
+                      "BlkioDeviceReadBps",
+                      "BlkioDeviceWriteBps",
+                      "BlkioDeviceReadIOps",
+                      "BlkioDeviceWriteIOps",
+                      "CpuPeriod",
+                      "CpuQuota",
+                      "CpuRealtimePeriod",
+                      "CpuRealtimeRuntime",
+                      "CpusetCpus",
+                      "CpusetMems",
+                      "Devices",
+                      "DeviceCgroupRules",
+                      "DiskQuota",
+                      "KernelMemory",
+                      "MemoryReservation",
+                      "MemorySwap",
+                      "MemorySwappiness",
+                      "OomKillDisable",
+                      "PidsLimit",
+                      "Ulimits",
+                      "CpuCount",
+                      "CpuPercent",
+                      "IOMaximumIOps",
+                      "IOMaximumBandwidth"
+                    ]
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "NetworkingConfig": {
+                    "type": "object",
+                    "properties": {
+                      "EndpointsConfig": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "required": [
+                      "EndpointsConfig"
+                    ]
+                  }
+                },
+                "required": [
+                  "Name",
+                  "Config",
+                  "HostConfig",
+                  "NetworkingConfig",
+                  "AdjustCPUShares"
+                ]
+              },
+              "enable_pull": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "container_create_config"
+            ]
+          },
+          "docker.exec": {
+            "type": "object",
+            "properties": {
+              "container": {
+                "type": "string"
+              },
+              "exec_config": {
+                "type": "object",
+                "properties": {
+                  "AttachStderr": {
+                    "type": "boolean"
+                  },
+                  "AttachStdin": {
+                    "type": "boolean"
+                  },
+                  "AttachStdout": {
+                    "type": "boolean"
+                  },
+                  "Cmd": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Detach": {
+                    "type": "boolean"
+                  },
+                  "DetachKeys": {
+                    "type": "string"
+                  },
+                  "Env": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Privileged": {
+                    "type": "boolean"
+                  },
+                  "Tty": {
+                    "type": "boolean"
+                  },
+                  "User": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "User",
+                  "Privileged",
+                  "Tty",
+                  "AttachStdin",
+                  "AttachStderr",
+                  "AttachStdout",
+                  "Detach",
+                  "DetachKeys",
+                  "Env",
+                  "Cmd"
+                ]
+              }
+            },
+            "required": [
+              "container",
+              "exec_config"
+            ]
+          },
+          "docker.image-ls": {
+            "type": "object",
+            "properties": {
+              "All": {
+                "type": "boolean"
+              },
+              "Filters": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "array"
+                  }
+                }
+              }
+            },
+            "required": [
+              "All",
+              "Filters"
+            ]
+          },
+          "docker.images": {
+            "type": "object",
+            "properties": {
+              "All": {
+                "type": "boolean"
+              },
+              "Filters": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "array"
+                  }
+                }
+              }
+            },
+            "required": [
+              "All",
+              "Filters"
+            ]
+          },
+          "docker.info": {
+            "type": "object"
+          },
+          "docker.logs": {
+            "type": "object",
+            "properties": {
+              "container": {
+                "type": "string"
+              },
+              "container_list_options": {
+                "type": "object",
+                "properties": {
+                  "All": {
+                    "type": "boolean"
+                  },
+                  "Before": {
+                    "type": "string"
+                  },
+                  "Filters": {
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "type": "array"
+                      }
+                    }
+                  },
+                  "Latest": {
+                    "type": "boolean"
+                  },
+                  "Limit": {
+                    "type": "integer"
+                  },
+                  "Quiet": {
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "type": "string"
+                  },
+                  "Size": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "Quiet",
+                  "Size",
+                  "All",
+                  "Latest",
+                  "Since",
+                  "Before",
+                  "Limit",
+                  "Filters"
+                ]
+              },
+              "container_logs_options": {
+                "type": "object",
+                "properties": {
+                  "Details": {
+                    "type": "boolean"
+                  },
+                  "Follow": {
+                    "type": "boolean"
+                  },
+                  "ShowStderr": {
+                    "type": "boolean"
+                  },
+                  "ShowStdout": {
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "type": "string"
+                  },
+                  "Tail": {
+                    "type": "string"
+                  },
+                  "Timestamps": {
+                    "type": "boolean"
+                  },
+                  "Until": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ShowStdout",
+                  "ShowStderr",
+                  "Since",
+                  "Until",
+                  "Timestamps",
+                  "Follow",
+                  "Tail",
+                  "Details"
+                ]
+              }
+            }
+          },
+          "docker.node-ls": {
+            "type": "object",
+            "properties": {
+              "Filters": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "array"
+                  }
+                }
+              }
+            },
+            "required": [
+              "Filters"
+            ]
+          },
+          "docker.ps": {
+            "type": "object",
+            "properties": {
+              "All": {
+                "type": "boolean"
+              },
+              "Before": {
+                "type": "string"
+              },
+              "Filters": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "array"
+                  }
+                }
+              },
+              "Latest": {
+                "type": "boolean"
+              },
+              "Limit": {
+                "type": "integer"
+              },
+              "Quiet": {
+                "type": "boolean"
+              },
+              "Since": {
+                "type": "string"
+              },
+              "Size": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "Quiet",
+              "Size",
+              "All",
+              "Latest",
+              "Since",
+              "Before",
+              "Limit",
+              "Filters"
+            ]
+          },
+          "docker.run": {
+            "type": "object",
+            "properties": {
+              "container_create_config": {
+                "type": "object",
+                "properties": {
+                  "AdjustCPUShares": {
+                    "type": "boolean"
+                  },
+                  "Config": {
+                    "type": "object",
+                    "properties": {
+                      "ArgsEscaped": {
+                        "type": "boolean"
+                      },
+                      "AttachStderr": {
+                        "type": "boolean"
+                      },
+                      "AttachStdin": {
+                        "type": "boolean"
+                      },
+                      "AttachStdout": {
+                        "type": "boolean"
+                      },
+                      "Cmd": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Domainname": {
+                        "type": "string"
+                      },
+                      "Entrypoint": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Env": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ExposedPorts": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "Healthcheck": {
+                        "type": "object",
+                        "properties": {
+                          "Interval": {
+                            "type": "integer"
+                          },
+                          "Retries": {
+                            "type": "integer"
+                          },
+                          "StartPeriod": {
+                            "type": "integer"
+                          },
+                          "Test": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "Timeout": {
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "Hostname": {
+                        "type": "string"
+                      },
+                      "Image": {
+                        "type": "string"
+                      },
+                      "Labels": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "MacAddress": {
+                        "type": "string"
+                      },
+                      "NetworkDisabled": {
+                        "type": "boolean"
+                      },
+                      "OnBuild": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "OpenStdin": {
+                        "type": "boolean"
+                      },
+                      "Shell": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "StdinOnce": {
+                        "type": "boolean"
+                      },
+                      "StopSignal": {
+                        "type": "string"
+                      },
+                      "StopTimeout": {
+                        "type": "integer"
+                      },
+                      "Tty": {
+                        "type": "boolean"
+                      },
+                      "User": {
+                        "type": "string"
+                      },
+                      "Volumes": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "WorkingDir": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "Hostname",
+                      "Domainname",
+                      "User",
+                      "AttachStdin",
+                      "AttachStdout",
+                      "AttachStderr",
+                      "Tty",
+                      "OpenStdin",
+                      "StdinOnce",
+                      "Env",
+                      "Cmd",
+                      "Image",
+                      "Volumes",
+                      "WorkingDir",
+                      "Entrypoint",
+                      "OnBuild",
+                      "Labels"
+                    ]
+                  },
+                  "HostConfig": {
+                    "type": "object",
+                    "properties": {
+                      "AutoRemove": {
+                        "type": "boolean"
+                      },
+                      "Binds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "BlkioDeviceReadBps": {
+                        "type": "array"
+                      },
+                      "BlkioDeviceReadIOps": {
+                        "type": "array"
+                      },
+                      "BlkioDeviceWriteBps": {
+                        "type": "array"
+                      },
+                      "BlkioDeviceWriteIOps": {
+                        "type": "array"
+                      },
+                      "BlkioWeight": {
+                        "type": "integer"
+                      },
+                      "BlkioWeightDevice": {
+                        "type": "array"
+                      },
+                      "CapAdd": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "CapDrop": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Cgroup": {
+                        "type": "string"
+                      },
+                      "CgroupParent": {
+                        "type": "string"
+                      },
+                      "ConsoleSize": {},
+                      "ContainerIDFile": {
+                        "type": "string"
+                      },
+                      "CpuCount": {
+                        "type": "integer"
+                      },
+                      "CpuPercent": {
+                        "type": "integer"
+                      },
+                      "CpuPeriod": {
+                        "type": "integer"
+                      },
+                      "CpuQuota": {
+                        "type": "integer"
+                      },
+                      "CpuRealtimePeriod": {
+                        "type": "integer"
+                      },
+                      "CpuRealtimeRuntime": {
+                        "type": "integer"
+                      },
+                      "CpuShares": {
+                        "type": "integer"
+                      },
+                      "CpusetCpus": {
+                        "type": "string"
+                      },
+                      "CpusetMems": {
+                        "type": "string"
+                      },
+                      "DeviceCgroupRules": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Devices": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "CgroupPermissions": {
+                              "type": "string"
+                            },
+                            "PathInContainer": {
+                              "type": "string"
+                            },
+                            "PathOnHost": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "PathOnHost",
+                            "PathInContainer",
+                            "CgroupPermissions"
+                          ]
+                        }
+                      },
+                      "DiskQuota": {
+                        "type": "integer"
+                      },
+                      "Dns": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "DnsOptions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "DnsSearch": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ExtraHosts": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "GroupAdd": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "IOMaximumBandwidth": {
+                        "type": "integer"
+                      },
+                      "IOMaximumIOps": {
+                        "type": "integer"
+                      },
+                      "Init": {
+                        "type": "boolean"
+                      },
+                      "IpcMode": {
+                        "type": "string"
+                      },
+                      "Isolation": {
+                        "type": "string"
+                      },
+                      "KernelMemory": {
+                        "type": "integer"
+                      },
+                      "Links": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "LogConfig": {
+                        "type": "object",
+                        "properties": {
+                          "Config": {
+                            "type": "object",
+                            "properties": {
+                              ".*": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "Type": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "Type",
+                          "Config"
+                        ]
+                      },
+                      "Memory": {
+                        "type": "integer"
+                      },
+                      "MemoryReservation": {
+                        "type": "integer"
+                      },
+                      "MemorySwap": {
+                        "type": "integer"
+                      },
+                      "MemorySwappiness": {
+                        "type": "integer"
+                      },
+                      "Mounts": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "BindOptions": {
+                              "type": "object",
+                              "properties": {
+                                "Propagation": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "Consistency": {
+                              "type": "string"
+                            },
+                            "ReadOnly": {
+                              "type": "boolean"
+                            },
+                            "Source": {
+                              "type": "string"
+                            },
+                            "Target": {
+                              "type": "string"
+                            },
+                            "TmpfsOptions": {
+                              "type": "object",
+                              "properties": {
+                                "Mode": {
+                                  "type": "integer"
+                                },
+                                "SizeBytes": {
+                                  "type": "integer"
+                                }
+                              }
+                            },
+                            "Type": {
+                              "type": "string"
+                            },
+                            "VolumeOptions": {
+                              "type": "object",
+                              "properties": {
+                                "DriverConfig": {
+                                  "type": "object",
+                                  "properties": {
+                                    "Name": {
+                                      "type": "string"
+                                    },
+                                    "Options": {
+                                      "type": "object",
+                                      "properties": {
+                                        ".*": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "Labels": {
+                                  "type": "object",
+                                  "properties": {
+                                    ".*": {
+                                      "type": "string"
+                                    }
+                                  }
+                                },
+                                "NoCopy": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "NanoCpus": {
+                        "type": "integer"
+                      },
+                      "NetworkMode": {
+                        "type": "string"
+                      },
+                      "OomKillDisable": {
+                        "type": "boolean"
+                      },
+                      "OomScoreAdj": {
+                        "type": "integer"
+                      },
+                      "PidMode": {
+                        "type": "string"
+                      },
+                      "PidsLimit": {
+                        "type": "integer"
+                      },
+                      "PortBindings": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "array"
+                          }
+                        }
+                      },
+                      "Privileged": {
+                        "type": "boolean"
+                      },
+                      "PublishAllPorts": {
+                        "type": "boolean"
+                      },
+                      "ReadonlyRootfs": {
+                        "type": "boolean"
+                      },
+                      "RestartPolicy": {
+                        "type": "object",
+                        "properties": {
+                          "MaximumRetryCount": {
+                            "type": "integer"
+                          },
+                          "Name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "Name",
+                          "MaximumRetryCount"
+                        ]
+                      },
+                      "Runtime": {
+                        "type": "string"
+                      },
+                      "SecurityOpt": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ShmSize": {
+                        "type": "integer"
+                      },
+                      "StorageOpt": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "Sysctls": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "Tmpfs": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "UTSMode": {
+                        "type": "string"
+                      },
+                      "Ulimits": {
+                        "type": "array"
+                      },
+                      "UsernsMode": {
+                        "type": "string"
+                      },
+                      "VolumeDriver": {
+                        "type": "string"
+                      },
+                      "VolumesFrom": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "Binds",
+                      "ContainerIDFile",
+                      "LogConfig",
+                      "NetworkMode",
+                      "PortBindings",
+                      "RestartPolicy",
+                      "AutoRemove",
+                      "VolumeDriver",
+                      "VolumesFrom",
+                      "CapAdd",
+                      "CapDrop",
+                      "Dns",
+                      "DnsOptions",
+                      "DnsSearch",
+                      "ExtraHosts",
+                      "GroupAdd",
+                      "IpcMode",
+                      "Cgroup",
+                      "Links",
+                      "OomScoreAdj",
+                      "PidMode",
+                      "Privileged",
+                      "PublishAllPorts",
+                      "ReadonlyRootfs",
+                      "SecurityOpt",
+                      "UTSMode",
+                      "UsernsMode",
+                      "ShmSize",
+                      "ConsoleSize",
+                      "Isolation",
+                      "CpuShares",
+                      "Memory",
+                      "NanoCpus",
+                      "CgroupParent",
+                      "BlkioWeight",
+                      "BlkioWeightDevice",
+                      "BlkioDeviceReadBps",
+                      "BlkioDeviceWriteBps",
+                      "BlkioDeviceReadIOps",
+                      "BlkioDeviceWriteIOps",
+                      "CpuPeriod",
+                      "CpuQuota",
+                      "CpuRealtimePeriod",
+                      "CpuRealtimeRuntime",
+                      "CpusetCpus",
+                      "CpusetMems",
+                      "Devices",
+                      "DeviceCgroupRules",
+                      "DiskQuota",
+                      "KernelMemory",
+                      "MemoryReservation",
+                      "MemorySwap",
+                      "MemorySwappiness",
+                      "OomKillDisable",
+                      "PidsLimit",
+                      "Ulimits",
+                      "CpuCount",
+                      "CpuPercent",
+                      "IOMaximumIOps",
+                      "IOMaximumBandwidth"
+                    ]
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "NetworkingConfig": {
+                    "type": "object",
+                    "properties": {
+                      "EndpointsConfig": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "required": [
+                      "EndpointsConfig"
+                    ]
+                  }
+                },
+                "required": [
+                  "Name",
+                  "Config",
+                  "HostConfig",
+                  "NetworkingConfig",
+                  "AdjustCPUShares"
+                ]
+              },
+              "enable_pull": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "container_create_config"
+            ]
+          },
+          "docker.service-logs": {
+            "type": "object",
+            "properties": {
+              "container_logs_options": {
+                "type": "object",
+                "properties": {
+                  "Details": {
+                    "type": "boolean"
+                  },
+                  "Follow": {
+                    "type": "boolean"
+                  },
+                  "ShowStderr": {
+                    "type": "boolean"
+                  },
+                  "ShowStdout": {
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "type": "string"
+                  },
+                  "Tail": {
+                    "type": "string"
+                  },
+                  "Timestamps": {
+                    "type": "boolean"
+                  },
+                  "Until": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ShowStdout",
+                  "ShowStderr",
+                  "Since",
+                  "Until",
+                  "Timestamps",
+                  "Follow",
+                  "Tail",
+                  "Details"
+                ]
+              },
+              "service": {
+                "type": "string"
+              },
+              "service_list_options": {
+                "type": "object",
+                "properties": {
+                  "Filters": {
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "Filters"
+                ]
+              }
+            }
+          },
+          "docker.service-ls": {
+            "type": "object",
+            "properties": {
+              "Filters": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "array"
+                  }
+                }
+              }
+            },
+            "required": [
+              "Filters"
+            ]
+          },
+          "docker.service-ps": {
+            "type": "object",
+            "properties": {
+              "Filters": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "array"
+                  }
+                }
+              }
+            },
+            "required": [
+              "Filters"
+            ]
+          },
+          "docker.stack-service-logs": {
+            "type": "object",
+            "properties": {
+              "container_logs_options": {
+                "type": "object",
+                "properties": {
+                  "Details": {
+                    "type": "boolean"
+                  },
+                  "Follow": {
+                    "type": "boolean"
+                  },
+                  "ShowStderr": {
+                    "type": "boolean"
+                  },
+                  "ShowStdout": {
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "type": "string"
+                  },
+                  "Tail": {
+                    "type": "string"
+                  },
+                  "Timestamps": {
+                    "type": "boolean"
+                  },
+                  "Until": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ShowStdout",
+                  "ShowStderr",
+                  "Since",
+                  "Until",
+                  "Timestamps",
+                  "Follow",
+                  "Tail",
+                  "Details"
+                ]
+              },
+              "namespace": {
+                "type": "string"
+              },
+              "service_list_options": {
+                "type": "object",
+                "properties": {
+                  "Filters": {
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "Filters"
+                ]
+              }
+            },
+            "required": [
+              "namespace"
+            ]
+          },
+          "docker.stack-service-ls": {
+            "type": "object",
+            "properties": {
+              "namespace": {
+                "type": "string"
+              },
+              "service_list_options": {
+                "type": "object",
+                "properties": {
+                  "Filters": {
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "Filters"
+                ]
+              }
+            },
+            "required": [
+              "namespace"
+            ]
+          },
+          "docker.stack-service-ps": {
+            "type": "object",
+            "properties": {
+              "namespace": {
+                "type": "string"
+              },
+              "task_list_options": {
+                "type": "object",
+                "properties": {
+                  "Filters": {
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "Filters"
+                ]
+              }
+            },
+            "required": [
+              "namespace"
+            ]
+          },
+          "docker.stack-task-logs": {
+            "type": "object",
+            "properties": {
+              "container_logs_options": {
+                "type": "object",
+                "properties": {
+                  "Details": {
+                    "type": "boolean"
+                  },
+                  "Follow": {
+                    "type": "boolean"
+                  },
+                  "ShowStderr": {
+                    "type": "boolean"
+                  },
+                  "ShowStdout": {
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "type": "string"
+                  },
+                  "Tail": {
+                    "type": "string"
+                  },
+                  "Timestamps": {
+                    "type": "boolean"
+                  },
+                  "Until": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ShowStdout",
+                  "ShowStderr",
+                  "Since",
+                  "Until",
+                  "Timestamps",
+                  "Follow",
+                  "Tail",
+                  "Details"
+                ]
+              },
+              "namespace": {
+                "type": "string"
+              },
+              "task_list_options": {
+                "type": "object",
+                "properties": {
+                  "Filters": {
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "Filters"
+                ]
+              }
+            },
+            "required": [
+              "namespace"
+            ]
+          },
+          "docker.task-logs": {
+            "type": "object",
+            "properties": {
+              "container_logs_options": {
+                "type": "object",
+                "properties": {
+                  "Details": {
+                    "type": "boolean"
+                  },
+                  "Follow": {
+                    "type": "boolean"
+                  },
+                  "ShowStderr": {
+                    "type": "boolean"
+                  },
+                  "ShowStdout": {
+                    "type": "boolean"
+                  },
+                  "Since": {
+                    "type": "string"
+                  },
+                  "Tail": {
+                    "type": "string"
+                  },
+                  "Timestamps": {
+                    "type": "boolean"
+                  },
+                  "Until": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ShowStdout",
+                  "ShowStderr",
+                  "Since",
+                  "Until",
+                  "Timestamps",
+                  "Follow",
+                  "Tail",
+                  "Details"
+                ]
+              },
+              "id": {
+                "type": "string"
+              },
+              "task_list_options": {
+                "type": "object",
+                "properties": {
+                  "Filters": {
+                    "type": "object",
+                    "properties": {
+                      ".*": {
+                        "type": "array"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "Filters"
+                ]
+              }
+            }
+          },
+          "docker.task-ls": {
+            "type": "object",
+            "properties": {
+              "Filters": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "array"
+                  }
+                }
+              }
+            },
+            "required": [
+              "Filters"
+            ]
+          },
+          "docker.version": {
+            "type": "object"
+          },
+          "journald.logs": {
+            "type": "object",
+            "properties": {
+              "reverse": {
+                "type": "boolean"
+              },
+              "since": {
+                "type": "string"
+              },
+              "unit": {
+                "type": "string"
+              }
+            }
+          },
+          "kubernetes.api-versions": {
+            "type": "object"
+          },
+          "kubernetes.cluster-info": {
+            "type": "object"
+          },
+          "kubernetes.logs": {
+            "type": "object",
+            "properties": {
+              "namespace": {
+                "type": "string"
+              },
+              "pod": {
+                "type": "string"
+              },
+              "pod_log_options": {
+                "type": "object",
+                "properties": {
+                  "apiVersion": {
+                    "type": "string"
+                  },
+                  "container": {
+                    "type": "string"
+                  },
+                  "follow": {
+                    "type": "boolean"
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "limitBytes": {
+                    "type": "integer"
+                  },
+                  "previous": {
+                    "type": "boolean"
+                  },
+                  "sinceSeconds": {
+                    "type": "integer"
+                  },
+                  "sinceTime": {
+                    "type": "object"
+                  },
+                  "tailLines": {
+                    "type": "integer"
+                  },
+                  "timestamps": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "required": [
+              "pod"
+            ]
+          },
+          "kubernetes.resource-list": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string"
+              },
+              "namespace": {
+                "type": "string"
+              },
+              "resource_list_options": {
+                "type": "object",
+                "properties": {
+                  "apiVersion": {
+                    "type": "string"
+                  },
+                  "continue": {
+                    "type": "string"
+                  },
+                  "fieldSelector": {
+                    "type": "string"
+                  },
+                  "includeUninitialized": {
+                    "type": "boolean"
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "labelSelector": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  },
+                  "resourceVersion": {
+                    "type": "string"
+                  },
+                  "timeoutSeconds": {
+                    "type": "integer"
+                  },
+                  "watch": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "kubernetes.version": {
+            "type": "object"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "labels": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "string"
+                  }
+                }
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "meta.customer": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string"
+              },
+              "customer_name": {
+                "type": "string"
+              },
+              "installation_id": {
+                "type": "string"
+              }
+            }
+          },
+          "os.hostname": {
+            "type": "object"
+          },
+          "os.http-request": {
+            "type": "object",
+            "properties": {
+              "body": {
+                "type": "string"
+              },
+              "header": {
+                "type": "object",
+                "properties": {
+                  ".*": {
+                    "type": "array"
+                  }
+                }
+              },
+              "insecure": {
+                "type": "boolean"
+              },
+              "method": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          },
+          "os.loadavg": {
+            "type": "object",
+            "properties": {
+              "template": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "template"
+            ]
+          },
+          "os.read-file": {
+            "type": "object",
+            "properties": {
+              "filepath": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "filepath"
+            ]
+          },
+          "os.run-command": {
+            "type": "object",
+            "properties": {
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "dir": {
+                "type": "string"
+              },
+              "env": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "os.uptime": {
+            "type": "object",
+            "properties": {
+              "template": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "template"
+            ]
+          },
+          "output_dir": {
+            "type": "string"
+          },
+          "retraced.events": {
+            "type": "object",
+            "properties": {
+              "api_endpoint": {
+                "type": "string"
+              },
+              "api_token": {
+                "type": "string"
+              },
+              "insecure": {
+                "type": "boolean"
+              },
+              "mask": {
+                "type": "object",
+                "properties": {
+                  "Action": {
+                    "type": "boolean"
+                  },
+                  "ActorFields": {
+                    "type": "boolean"
+                  },
+                  "ActorHref": {
+                    "type": "boolean"
+                  },
+                  "ActorID": {
+                    "type": "boolean"
+                  },
+                  "ActorName": {
+                    "type": "boolean"
+                  },
+                  "CRUD": {
+                    "type": "boolean"
+                  },
+                  "CanonicalTime": {
+                    "type": "boolean"
+                  },
+                  "Component": {
+                    "type": "boolean"
+                  },
+                  "Country": {
+                    "type": "boolean"
+                  },
+                  "Created": {
+                    "type": "boolean"
+                  },
+                  "Description": {
+                    "type": "boolean"
+                  },
+                  "DisplayMarkdown": {
+                    "type": "boolean"
+                  },
+                  "Fields": {
+                    "type": "boolean"
+                  },
+                  "GroupID": {
+                    "type": "boolean"
+                  },
+                  "GroupName": {
+                    "type": "boolean"
+                  },
+                  "ID": {
+                    "type": "boolean"
+                  },
+                  "IsAnonymous": {
+                    "type": "boolean"
+                  },
+                  "IsFailure": {
+                    "type": "boolean"
+                  },
+                  "LocSubdiv1": {
+                    "type": "boolean"
+                  },
+                  "LocSubdiv2": {
+                    "type": "boolean"
+                  },
+                  "Raw": {
+                    "type": "boolean"
+                  },
+                  "Received": {
+                    "type": "boolean"
+                  },
+                  "SourceIP": {
+                    "type": "boolean"
+                  },
+                  "TargetFields": {
+                    "type": "boolean"
+                  },
+                  "TargetHref": {
+                    "type": "boolean"
+                  },
+                  "TargetID": {
+                    "type": "boolean"
+                  },
+                  "TargetName": {
+                    "type": "boolean"
+                  },
+                  "TargetType": {
+                    "type": "boolean"
+                  },
+                  "Version": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "ID",
+                  "Action",
+                  "CRUD",
+                  "Description",
+                  "IsFailure",
+                  "IsAnonymous",
+                  "SourceIP",
+                  "Country",
+                  "LocSubdiv1",
+                  "LocSubdiv2",
+                  "Received",
+                  "Created",
+                  "CanonicalTime",
+                  "Component",
+                  "Version",
+                  "Fields",
+                  "Raw",
+                  "GroupID",
+                  "GroupName",
+                  "ActorID",
+                  "ActorName",
+                  "ActorHref",
+                  "ActorFields",
+                  "TargetID",
+                  "TargetName",
+                  "TargetHref",
+                  "TargetType",
+                  "TargetFields",
+                  "DisplayMarkdown"
+                ]
+              },
+              "project_id": {
+                "type": "string"
+              },
+              "query": {
+                "type": "object",
+                "properties": {
+                  "Action": {
+                    "type": "string"
+                  },
+                  "ActorID": {
+                    "type": "string"
+                  },
+                  "ActorName": {
+                    "type": "string"
+                  },
+                  "CRUD": {
+                    "type": "string"
+                  },
+                  "CreatedEnd": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "CreatedStart": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "Location": {
+                    "type": "string"
+                  },
+                  "ReceivedEnd": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "ReceivedStart": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "Action",
+                  "CRUD",
+                  "ReceivedStart",
+                  "ReceivedEnd",
+                  "CreatedStart",
+                  "CreatedEnd",
+                  "ActorName",
+                  "ActorID",
+                  "Description",
+                  "Location"
+                ]
+              }
+            },
+            "required": [
+              "api_endpoint"
+            ]
+          },
+          "scrub": {
+            "type": "object",
+            "properties": {
+              "regex": {
+                "type": "string"
+              },
+              "replace": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "regex",
+              "replace"
+            ]
+          },
+          "timeout_seconds": {
+            "type": "integer"
+          },
+          "version": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "output_dir"
+        ]
+      }
+    }
+  }
+}

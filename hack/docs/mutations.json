@@ -1,0 +1,494 @@
+[
+  {
+    "path": "properties.lifecycle.items",
+    "merge": {
+      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles."
+    }
+  },
+  {
+    "path": "properties.lifecycle",
+    "merge": {
+      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles."
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties.message",
+    "merge": {
+      "description": "`message` can be used to print a message to the end customer."
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties.message.properties.contents",
+    "merge": {
+      "description": "`contents` is the message",
+      "examples": [
+        "This process will collect a number of files from the host system to help you debug your problem",
+        "Thanks for uploading your bundle! SuperGoodTools will get back to you in 24 hours"
+      ]
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties.generate",
+    "merge": {
+      "description": "Adds a step that will generate a support bundle. It has no arguments, but should be specified with an empty object `{}`"
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties[\"upload\"]",
+    "merge": {
+      "description": "Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor."
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"]",
+    "merge": {
+      "description": "Allows configuring an interactive prompt for the user to confirm before uploading"
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"accept\"]",
+    "merge": {
+      "description": "A message to display if the user accepts the upload prompt",
+      "examples": [
+        "Bundle uploaded! SuperGoodTool support will get back to you within 24 hours"
+      ]
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"decline\"]",
+    "merge": {
+      "description": "A message to display if the user declines the upload prompt",
+      "examples": [
+        "Bundle was not uploaded, please send your bundle to SuperGoodTool support."
+      ]
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"default\"]",
+    "merge": {
+      "description": "The default answer to the prompt",
+      "examples": [
+        true
+      ]
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"message\"]",
+    "merge": {
+      "description": "message to display before prompting",
+      "examples": [
+        true
+      ]
+    }
+  },
+  {
+    "path": "properties.specs",
+    "merge": {
+      "description": "A list of items to include in the support bundle."
+    }
+  },
+  {
+    "path": "properties.specs.items",
+    "merge": {
+      "description": "A list of items to include in the support bundle."
+    },
+    "replace": {
+      "required": ["output_dir"]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties.description",
+    "merge": {
+      "description": "A description of the file(s) that will be collected by this spec",
+      "examples": [
+        "The contents of any files in /etc/supergoodtool/conf.d, with secrets redacted",
+        "Information about running Docker containers"
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-cp\"]",
+    "merge": {
+      "description": "Copy a file from a running docker container"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-cp\"].properties.container",
+    "merge": {
+      "description": "The name of the container to copy from",
+      "examples": [
+        "my-sweet-app"
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-cp\"].properties.src_path",
+    "merge": {
+      "description": "The path of the target file in the container's filesystem",
+      "examples": [
+        "/var/log/supergoodtool/error.log"
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"]",
+    "merge": {
+      "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.container",
+    "merge": {
+      "description": "The name of the container to run the command in",
+      "examples": [
+        "supergoodtool-www"
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config",
+    "merge": {
+      "description": "The arguments as would be passed to `docker exec`"
+    },
+    "replace": {
+      "required": ["Cmd"]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.AttachStderr",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.AttachStdin",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.AttachStdout",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Cmd",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Cmd.items",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Detach",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.DetachKeys",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Env",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Env.items",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Privileged",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Tty",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.User",
+    "merge": {
+      "description": "same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"]",
+    "merge": {
+      "description": "inspect one or more running or stopped containers"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container",
+    "merge": {
+      "description": "the container name"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options",
+    "merge": {
+      "description": "Options to be used to filter the list of containers"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.All",
+    "merge": {
+      "description": "Same as `-a` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Before",
+    "merge": {
+      "description": "Same as `--before` option to `docker logs` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Filters",
+    "merge": {
+      "description": "Same as `--filter` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Map of key-value pairs to filter on"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Latest",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Limit",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Quiet",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Size",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Since",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"]",
+    "merge": {
+      "description": "Collect the logs from one or more docker containers"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container",
+    "merge": {
+      "description": "A container name"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options",
+    "merge": {
+      "description": "Options to be used to filter the list of containers"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.All",
+    "merge": {
+      "description": "Same as `-a` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Before",
+    "merge": {
+      "description": "Same as `--before` option to `docker logs` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Filters",
+    "merge": {
+      "description": "Same as `--filter` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Map of key-value pairs to filter on"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Latest",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Limit",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Quiet",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Size",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Since",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options",
+    "merge": {
+      "description": "Args as would be given to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Details",
+    "merge": {
+      "description": "Same as `docker logs` cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Follow",
+    "merge": {
+      "description": "Same as `docker logs` cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.ShowStderr",
+    "merge": {
+      "description": "Same as `docker logs` cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.ShowStdout",
+    "merge": {
+      "description": "Same as `docker logs` cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Since",
+    "merge": {
+      "description": "Same as `docker logs` cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Tail",
+    "merge": {
+      "description": "Same as `docker logs` cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Timestamps",
+    "merge": {
+      "description": "Same as `docker logs` cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Until",
+    "merge": {
+      "description": "Same as `docker logs` cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"]",
+    "merge": {
+      "description": "List information about one or more containers"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.All",
+    "merge": {
+      "description": "Same as `-a` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Before",
+    "merge": {
+      "description": "Same as `--before` option to `docker logs` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Filters",
+    "merge": {
+      "description": "Same as `--filter` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Map of key-value pairs to filter on"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Latest",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Limit",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Quiet",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Size",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Since",
+    "merge": {
+      "description": "Same as docker cli arg"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"]",
+    "merge": {
+      "description": "Run a docker container, generating a file from the stdout and/or stderr"
+    }
+  },
+  {}
+]

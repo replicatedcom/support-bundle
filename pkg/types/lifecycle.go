@@ -1,6 +1,6 @@
 package types
 
-var GenerateOnlyLifecycleTasks = []*LifecycleTask{
+var GenerateOnlyLifecycleTasks = []LifecycleTask{
 	{
 		Message: &MessageOptions{"Starting support bundle collection..."},
 	},
@@ -12,7 +12,7 @@ var GenerateOnlyLifecycleTasks = []*LifecycleTask{
 	},
 }
 
-var DefaultLifecycleTasks = []*LifecycleTask{
+var DefaultLifecycleTasks = []LifecycleTask{
 	{
 		Message: &MessageOptions{"Starting support bundle collection..."},
 	},

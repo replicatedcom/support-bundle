@@ -8,8 +8,8 @@ import (
 )
 
 type Doc struct {
-	Specs     []Spec           `json:"specs,omitempty"`
-	Lifecycle []*LifecycleTask `json:"lifecycle,omitempty"`
+	Specs     []Spec          `json:"specs,omitempty"`
+	Lifecycle []LifecycleTask `json:"lifecycle,omitempty"`
 }
 
 type LifecycleTask struct {
@@ -37,6 +37,7 @@ type UploadOptions struct {
 }
 
 type Spec struct {
+	// Description describes this spec field
 	Description    string `json:"description,omitempty"`
 	Meta           Meta   `json:"meta,omitempty"`
 	OutputDir      string `json:"output_dir"`
@@ -48,6 +49,7 @@ type Spec struct {
 	SupportBundleVersion *SupportBundleVersionOptions `json:"version,omitempty"`
 	CustomerMeta         *CustomerMetaOptions         `json:"meta.customer,omitempty"`
 
+	// CoreHostname gets the hostname of the machine on which we're running
 	CoreHostname    *CoreHostnameOptions    `json:"os.hostname,omitempty"`
 	CoreHTTPRequest *CoreHTTPRequestOptions `json:"os.http-request,omitempty"`
 	CoreLoadavg     *CoreLoadavgOptions     `json:"os.loadavg,omitempty"`
@@ -57,6 +59,7 @@ type Spec struct {
 
 	JournaldLogs *JournaldLogsOptions `json:"journald.logs,omitempty"`
 
+	// DockerContainerCp copies a file from a running docker container
 	DockerContainerCp      *DockerContainerCpOptions      `json:"docker.container-cp,omitempty"`
 	DockerContainerExec    *DockerContainerExecOptions    `json:"docker.container-exec,omitempty"`
 	DockerContainerInspect *DockerContainerInspectOptions `json:"docker.container-inspect,omitempty"`

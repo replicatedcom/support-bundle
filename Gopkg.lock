@@ -181,6 +181,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/mcuadros/go-jsonschema-generator"
+  packages = ["."]
+  revision = "821f57ef6082dacf56d3354643f2ef36e06ebf29"
+
+[[projects]]
+  branch = "master"
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
   revision = "b8bc1bf767474819792c23f32d8286a45736f1c6"
@@ -361,6 +367,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "155f0beaf3c8fa08d6c2488911314510833b4d3b7d9d46327329286dabe81c44"
+  inputs-digest = "a5bfc449e66de917842f1f20a7556ef4a16b13ba83c9e808c1ec12211af1c363"
   solver-name = "gps-cdcl"
   solver-version = 1
