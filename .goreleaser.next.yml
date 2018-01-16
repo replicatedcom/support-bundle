@@ -1,0 +1,37 @@
+go get github.com/goreleaser/goreleaserproject_name: support-bundle
+release:
+  github:
+    owner: replicatedcom
+    name: support-bundle
+builds:
+- goos:
+  - linux
+  goarch:
+  - amd64
+  - "386"
+  main: cmd/support-bundle/main.go
+  ldflags: -s -w 
+    -X github.com/replicatedcom/support-bundle/pkg/version.version={{.Version}} 
+    -X github.com/replicatedcom/support-bundle/pkg/version.gitSHA={{.Commit}} 
+    -X github.com/replicatedcom/support-bundle/pkg/version.buildTime={{.Date}}
+  binary: support-bundle
+  hooks: {}
+archive:
+  format: tar.gz
+  name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{.Arm }}{{ end }}'
+  files:
+  - licence*
+  - LICENCE*
+  - license*
+  - LICENSE*
+  - readme*
+  - README*
+  - changelog*
+  - CHANGELOG*
+dockers:
+  - image: registry.replicated.com/library/support-bundle
+    dockerfile: build/Dockerfile-release
+    latest: true
+    tag_template: "next"
+snapshot:
+  name_template: SNAPSHOT-{{ .Commit }}
