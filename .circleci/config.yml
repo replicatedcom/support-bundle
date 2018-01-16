@@ -76,7 +76,7 @@ workflows:
               only: /^v[0-9]+(\.[0-9]+)*(-.*)*/
             branches:
               ignore: /.*/
-      - deploy:
+      - deploy_next:
           requires:
             - test
             - e2e
