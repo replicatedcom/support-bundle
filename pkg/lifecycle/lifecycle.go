@@ -23,14 +23,14 @@ type Event func(*types.LifecycleTask) Task
 
 type Task func(*Lifecycle) (bool, error)
 
-func (l *Lifecycle) Build(tasks []*types.LifecycleTask) error {
+func (l *Lifecycle) Build(tasks []types.LifecycleTask) error {
 
 	for _, task := range tasks {
-		eventFn, err := resolveEvent(task)
+		eventFn, err := resolveEvent(&task)
 		if err != nil {
 			return errors.Wrap(err, "resolve event")
 		}
-		l.tasks = append(l.tasks, eventFn(task))
+		l.tasks = append(l.tasks, eventFn(&task))
 	}
 
 	return nil
