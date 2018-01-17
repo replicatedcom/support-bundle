@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as chalk from "chalk";
 import * as process from "process";
 
 export const name = "validate";
@@ -19,7 +20,7 @@ export const handler = (argv) => {
 
 export function validate(schemaType: any, path: string) {
   if (!schemaType.description) {
-    throw new Error(`missing description at ${path}`);
+    throw new Error(`missing description at ${chalk.green(path)}`);
   }
 
   if (schemaType.items) {

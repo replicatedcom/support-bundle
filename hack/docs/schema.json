@@ -423,137 +423,179 @@
             "type": "object",
             "properties": {
               "container_create_config": {
+                "description": "Container create options as would be passed to `docker run`",
                 "type": "object",
                 "properties": {
                   "AdjustCPUShares": {
+                    "description": "Container create options as would be passed to `docker run`",
                     "type": "boolean"
                   },
                   "Config": {
+                    "description": "Container create options as would be passed to `docker run`",
                     "type": "object",
                     "properties": {
                       "ArgsEscaped": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "AttachStderr": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "AttachStdin": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "AttachStdout": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "Cmd": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array",
                         "items": {
+                          "description": "Container create options as would be passed to `docker run`",
                           "type": "string"
                         }
                       },
                       "Domainname": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
                       "Entrypoint": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array",
                         "items": {
+                          "description": "Container create options as would be passed to `docker run`",
                           "type": "string"
                         }
                       },
                       "Env": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array",
                         "items": {
+                          "description": "Container create options as would be passed to `docker run`",
                           "type": "string"
                         }
                       },
                       "ExposedPorts": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "object",
                         "properties": {
                           ".*": {
+                            "description": "Container create options as would be passed to `docker run`",
                             "type": "object"
                           }
                         }
                       },
                       "Healthcheck": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "object",
                         "properties": {
                           "Interval": {
+                            "description": "Container create options as would be passed to `docker run`",
                             "type": "integer"
                           },
                           "Retries": {
+                            "description": "Container create options as would be passed to `docker run`",
                             "type": "integer"
                           },
                           "StartPeriod": {
+                            "description": "Container create options as would be passed to `docker run`",
                             "type": "integer"
                           },
                           "Test": {
+                            "description": "Container create options as would be passed to `docker run`",
                             "type": "array",
                             "items": {
+                              "description": "Container create options as would be passed to `docker run`",
                               "type": "string"
                             }
                           },
                           "Timeout": {
+                            "description": "Container create options as would be passed to `docker run`",
                             "type": "integer"
                           }
                         }
                       },
                       "Hostname": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
                       "Image": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
                       "Labels": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "object",
                         "properties": {
                           ".*": {
+                            "description": "Container create options as would be passed to `docker run`",
                             "type": "string"
                           }
                         }
                       },
                       "MacAddress": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
                       "NetworkDisabled": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "OnBuild": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array",
                         "items": {
+                          "description": "Container create options as would be passed to `docker run`",
                           "type": "string"
                         }
                       },
                       "OpenStdin": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "Shell": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array",
                         "items": {
+                          "description": "Container create options as would be passed to `docker run`",
                           "type": "string"
                         }
                       },
                       "StdinOnce": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "StopSignal": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
                       "StopTimeout": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "integer"
                       },
                       "Tty": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "User": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
                       "Volumes": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "object",
                         "properties": {
                           ".*": {
+                            "description": "Container create options as would be passed to `docker run`",
                             "type": "object"
                           }
                         }
                       },
                       "WorkingDir": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       }
                     },
@@ -578,67 +620,90 @@
                     ]
                   },
                   "HostConfig": {
+                    "description": "Container create options as would be passed to `docker run`",
                     "type": "object",
                     "properties": {
                       "AutoRemove": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "boolean"
                       },
                       "Binds": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array",
                         "items": {
+                          "description": "Container create options as would be passed to `docker run`",
                           "type": "string"
                         }
                       },
                       "BlkioDeviceReadBps": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array"
                       },
                       "BlkioDeviceReadIOps": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array"
                       },
                       "BlkioDeviceWriteBps": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array"
                       },
                       "BlkioDeviceWriteIOps": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array"
                       },
                       "BlkioWeight": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "integer"
                       },
                       "BlkioWeightDevice": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array"
                       },
                       "CapAdd": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array",
                         "items": {
+                          "description": "Container create options as would be passed to `docker run`",
                           "type": "string"
                         }
                       },
                       "CapDrop": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "array",
                         "items": {
+                          "description": "Container create options as would be passed to `docker run`",
                           "type": "string"
                         }
                       },
                       "Cgroup": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
                       "CgroupParent": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
-                      "ConsoleSize": {},
+                      "ConsoleSize": {
+                        "description": "Container create options as would be passed to `docker run`"
+                      },
                       "ContainerIDFile": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "string"
                       },
                       "CpuCount": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "integer"
                       },
                       "CpuPercent": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "integer"
                       },
                       "CpuPeriod": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "integer"
                       },
                       "CpuQuota": {
+                        "description": "Container create options as would be passed to `docker run`",
                         "type": "integer"
                       },
                       "CpuRealtimePeriod": {
