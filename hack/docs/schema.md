@@ -69,7 +69,7 @@ __Allows configuring an interactive prompt for the user to confirm before upload
 | accept | string | A message to display if the user accepts the upload prompt |  |
 | decline | string | A message to display if the user declines the upload prompt |  |
 | [default](#default) | boolean | The default answer to the prompt |  |
-| [message](#message) | string | message to display before prompting |  |
+| [message](#message) | string | Message to display before prompting |  |
 
 *****
 
@@ -84,24 +84,24 @@ Required: output_dir
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | description | string | A description of the file(s) that will be collected by this spec |  |
-| [docker.container-cp](#docker.container-cp) | object | Copy a file from a running docker container |  |
+| [docker.container-cp](#docker.container-cp) | object | Collect a file by copying from a running docker container | `docker.container-cp:  { container: my-sweet-app }` |
 | [docker.container-exec](#docker.container-exec) | object | Collect the stdout and stderr of `exec`-ing a command on a running docker container |  |
-| [docker.container-inspect](#docker.container-inspect) | object | inspect one or more running or stopped containers |  |
+| [docker.container-inspect](#docker.container-inspect) | object | Collect the `docker inspect` output for one or more running or stopped containers |  |
 | [docker.container-logs](#docker.container-logs) | object | Collect the logs from one or more docker containers |  |
-| [docker.container-ls](#docker.container-ls) | object | List information about one or more containers |  |
-| [docker.container-run](#docker.container-run) | object | Run a docker container, generating a file from the stdout and/or stderr |  |
-| [docker.exec](#docker.exec) | object |  |  |
-| [docker.image-ls](#docker.image-ls) | object |  |  |
-| [docker.images](#docker.images) | object |  |  |
-| [docker.info](#docker.info) | object |  |  |
-| [docker.logs](#docker.logs) | object |  |  |
-| [docker.node-ls](#docker.node-ls) | object |  |  |
-| [docker.ps](#docker.ps) | object |  |  |
-| [docker.run](#docker.run) | object |  |  |
-| [docker.service-logs](#docker.service-logs) | object |  |  |
-| [docker.service-ls](#docker.service-ls) | object |  |  |
-| [docker.service-ps](#docker.service-ps) | object |  |  |
-| [docker.stack-service-logs](#docker.stack-service-logs) | object |  |  |
+| [docker.container-ls](#docker.container-ls) | object | Collect information about one or more containers |  |
+| [docker.container-run](#docker.container-run) | object | Collect the stderr/stdout of running a single docker container |  |
+| [docker.exec](#docker.exec) | object | Collect the stdout/stderr of executing a command in an already running docker container |  |
+| [docker.image-ls](#docker.image-ls) | object | Collect a list of docker images present on the server |  |
+| [docker.images](#docker.images) | object | Collect a list of docker images present on the server |  |
+| [docker.info](#docker.info) | object | Collect info about the Docker daemon |  |
+| [docker.logs](#docker.logs) | object | Collect info about the Docker daemon |  |
+| [docker.node-ls](#docker.node-ls) | object | Collect information about the nodes in a Docker Swarm installation |  |
+| [docker.ps](#docker.ps) | object | Collect information about containers |  |
+| [docker.run](#docker.run) | object | Collect the stderr/stdout of running a single docker container |  |
+| [docker.service-logs](#docker.service-logs) | object | Collect logs from a docker swarm service |  |
+| [docker.service-ls](#docker.service-ls) | object | Collect a list of docker swarm services |  |
+| [docker.service-ps](#docker.service-ps) | object | Collect information about the tasks run by one or more services |  |
+| [docker.stack-service-logs](#docker.stack-service-logs) | object | Collect logs from one or more services in a stack |  |
 | [docker.stack-service-ls](#docker.stack-service-ls) | object |  |  |
 | [docker.stack-service-ps](#docker.stack-service-ps) | object |  |  |
 | [docker.stack-task-logs](#docker.stack-task-logs) | object |  |  |
@@ -134,7 +134,7 @@ Required: output_dir
 
 #### Type: object
 
-__Copy a file from a running docker container__
+__Collect a file by copying from a running docker container__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -154,7 +154,7 @@ Required: container, exec_config
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | container | string | The name of the container to run the command in |  |
-| [exec_config](#exec_config) | object | The arguments as would be passed to `docker exec` |  |
+| [exec_config](#exec_config) | object | Same as would be passed to `docker exec` |  |
 
 *****
 
@@ -162,22 +162,22 @@ Required: container, exec_config
 
 #### Type: object
 
-__The arguments as would be passed to `docker exec`undefined__
+__Same as would be passed to `docker exec`Config options as would be passed to `docker exec`__
 
 Required: User, Privileged, Tty, AttachStdin, AttachStderr, AttachStdout, Detach, DetachKeys, Env, Cmd, User, Privileged, Tty, AttachStdin, AttachStderr, AttachStdout, Detach, DetachKeys, Env, Cmd
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| AttachStderr | boolean |  |  |
-| AttachStdin | boolean |  |  |
-| AttachStdout | boolean |  |  |
-| Cmd | array |  |  |
-| Detach | boolean |  |  |
-| DetachKeys | string |  |  |
-| Env | array |  |  |
-| Privileged | boolean |  |  |
-| Tty | boolean |  |  |
-| User | string |  |  |
+| AttachStderr | boolean | Same as would be passed to `docker exec` |  |
+| AttachStdin | boolean | Same as would be passed to `docker exec` |  |
+| AttachStdout | boolean | Same as would be passed to `docker exec` |  |
+| Cmd | array | Same as would be passed to `docker exec` |  |
+| Detach | boolean | Same as would be passed to `docker exec` |  |
+| DetachKeys | string | Same as would be passed to `docker exec` |  |
+| Env | array | Same as would be passed to `docker exec` |  |
+| Privileged | boolean | Same as would be passed to `docker exec` |  |
+| Tty | boolean | Same as would be passed to `docker exec` |  |
+| User | string | Same as would be passed to `docker exec` |  |
 
 *****
 
@@ -185,7 +185,7 @@ Required: User, Privileged, Tty, AttachStdin, AttachStderr, AttachStdout, Detach
 
 #### Type: string
 
-__same as would be passed to `docker exec`undefinedundefinedundefined__
+__Same as would be passed to `docker exec`Container create options as would be passed to `docker run`Same as would be passed to `docker exec`Container create options as would be passed to `docker run`__
 
 
 *****
@@ -194,7 +194,7 @@ __same as would be passed to `docker exec`undefinedundefinedundefined__
 
 #### Type: string
 
-__same as would be passed to `docker exec`undefinedundefinedundefined__
+__Same as would be passed to `docker exec`Container create options as would be passed to `docker run`Same as would be passed to `docker exec`Container create options as would be passed to `docker run`__
 
 
 *****
@@ -203,7 +203,7 @@ __same as would be passed to `docker exec`undefinedundefinedundefined__
 
 #### Type: object
 
-__inspect one or more running or stopped containers__
+__Collect the `docker inspect` output for one or more running or stopped containers__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -216,20 +216,20 @@ __inspect one or more running or stopped containers__
 
 #### Type: object
 
-__Options to be used to filter the list of containersundefined__
+__Options to be used to filter the list of containers__
 
 Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters, Quiet, Size, All, Latest, Since, Before, Limit, Filters, Quiet, Size, All, Latest, Since, Before, Limit, Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| All | boolean |  |  |
-| Before | string |  |  |
-| [Filters](#filters) | object |  |  |
-| Latest | boolean |  |  |
-| Limit | integer |  |  |
-| Quiet | boolean |  |  |
-| Since | string |  |  |
-| Size | boolean |  |  |
+| All | boolean | Same as `-a` option to `docker ps`  |  |
+| Before | string | Same as `--before` option to `docker logs`  |  |
+| [Filters](#filters) | object | Same as `--filter` option to `docker ps`  |  |
+| Latest | boolean | Same as would be passed to `docker ps` |  |
+| Limit | integer | Same as would be passed to `docker ps` |  |
+| Quiet | boolean | Same as would be passed to `docker ps` |  |
+| Since | string | Same as would be passed to `docker ps` |  |
+| Size | boolean | Same as would be passed to `docker ps` |  |
 
 *****
 
@@ -237,7 +237,7 @@ Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters, Quiet, Size, 
 
 #### Type: object
 
-__Same as `--filter` option to `docker ps` undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined__
+__Same as `--filter` option to `docker ps` Same as would be passed to `docker images`Same as would be passed to `docker images`Same as `--filter` option to `docker ps` Same as would be passed to `docker node ls`Same as `--filter` option to `docker ps` Same as would be passed to `docker service ls`Same as would be passed to `docker service ls`Same as would be passed to `docker service ps`undefinedundefinedundefinedundefinedundefinedundefined__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -263,7 +263,7 @@ __Collect the logs from one or more docker containers__
 
 #### Type: object
 
-__Args as would be given to `docker logs`undefinedundefinedundefinedundefinedundefined__
+__Args as would be given to `docker logs`undefinedundefined__
 
 Required: ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details
 
@@ -284,7 +284,7 @@ Required: ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Detail
 
 #### Type: object
 
-__List information about one or more containers__
+__Collect information about one or more containers__
 
 Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
 
@@ -293,11 +293,11 @@ Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
 | All | boolean | Same as `-a` option to `docker ps`  |  |
 | Before | string | Same as `--before` option to `docker logs`  |  |
 | [Filters](#filters) | object | Same as `--filter` option to `docker ps`  |  |
-| Latest | boolean | Same as docker cli arg |  |
-| Limit | integer | Same as docker cli arg |  |
-| Quiet | boolean | Same as docker cli arg |  |
-| Since | string | Same as docker cli arg |  |
-| Size | boolean | Same as docker cli arg |  |
+| Latest | boolean | Same as would be passed to `docker ps` |  |
+| Limit | integer | Same as would be passed to `docker ps` |  |
+| Quiet | boolean | Same as would be passed to `docker ps` |  |
+| Since | string | Same as would be passed to `docker ps` |  |
+| Size | boolean | Same as would be passed to `docker ps` |  |
 
 *****
 
@@ -305,14 +305,14 @@ Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
 
 #### Type: object
 
-__Run a docker container, generating a file from the stdout and/or stderr__
+__Collect the stderr/stdout of running a single docker container__
 
 Required: container_create_config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_create_config](#container_create_config) | object |  |  |
-| enable_pull | boolean |  |  |
+| [container_create_config](#container_create_config) | object | Container create options as would be passed to `docker run` |  |
+| enable_pull | boolean | If `true`, allow this container to be pulled if not present |  |
 
 *****
 
@@ -320,17 +320,17 @@ Required: container_create_config
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 Required: Name, Config, HostConfig, NetworkingConfig, AdjustCPUShares, Name, Config, HostConfig, NetworkingConfig, AdjustCPUShares
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| AdjustCPUShares | boolean |  |  |
-| [Config](#config) | object |  |  |
-| [HostConfig](#hostconfig) | object |  |  |
-| Name | string |  |  |
-| [NetworkingConfig](#networkingconfig) | object |  |  |
+| AdjustCPUShares | boolean | Container create options as would be passed to `docker run` |  |
+| [Config](#config) | object | Container create options as would be passed to `docker run` |  |
+| [HostConfig](#hostconfig) | object | Container create options as would be passed to `docker run` |  |
+| Name | string | Container create options as would be passed to `docker run` |  |
+| [NetworkingConfig](#networkingconfig) | object | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -338,38 +338,38 @@ Required: Name, Config, HostConfig, NetworkingConfig, AdjustCPUShares, Name, Con
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 Required: Hostname, Domainname, User, AttachStdin, AttachStdout, AttachStderr, Tty, OpenStdin, StdinOnce, Env, Cmd, Image, Volumes, WorkingDir, Entrypoint, OnBuild, Labels, Hostname, Domainname, User, AttachStdin, AttachStdout, AttachStderr, Tty, OpenStdin, StdinOnce, Env, Cmd, Image, Volumes, WorkingDir, Entrypoint, OnBuild, Labels
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| ArgsEscaped | boolean |  |  |
-| AttachStderr | boolean |  |  |
-| AttachStdin | boolean |  |  |
-| AttachStdout | boolean |  |  |
-| Cmd | array |  |  |
-| Domainname | string |  |  |
-| Entrypoint | array |  |  |
-| Env | array |  |  |
-| [ExposedPorts](#exposedports) | object |  |  |
-| [Healthcheck](#healthcheck) | object |  |  |
-| Hostname | string |  |  |
-| Image | string |  |  |
-| [Labels](#labels) | object |  |  |
-| MacAddress | string |  |  |
-| NetworkDisabled | boolean |  |  |
-| OnBuild | array |  |  |
-| OpenStdin | boolean |  |  |
-| Shell | array |  |  |
-| StdinOnce | boolean |  |  |
-| StopSignal | string |  |  |
-| StopTimeout | integer |  |  |
-| Tty | boolean |  |  |
-| User | string |  |  |
-| [Volumes](#volumes) | object |  |  |
-| WorkingDir | string |  |  |
-| [.*](#.*) | string |  |  |
+| ArgsEscaped | boolean | Container create options as would be passed to `docker run` |  |
+| AttachStderr | boolean | Container create options as would be passed to `docker run` |  |
+| AttachStdin | boolean | Container create options as would be passed to `docker run` |  |
+| AttachStdout | boolean | Container create options as would be passed to `docker run` |  |
+| Cmd | array | Container create options as would be passed to `docker run` |  |
+| Domainname | string | Container create options as would be passed to `docker run` |  |
+| Entrypoint | array | Container create options as would be passed to `docker run` |  |
+| Env | array | Container create options as would be passed to `docker run` |  |
+| [ExposedPorts](#exposedports) | object | Container create options as would be passed to `docker run` |  |
+| [Healthcheck](#healthcheck) | object | Container create options as would be passed to `docker run` |  |
+| Hostname | string | Container create options as would be passed to `docker run` |  |
+| Image | string | Container create options as would be passed to `docker run` |  |
+| [Labels](#labels) | object | Container create options as would be passed to `docker run` |  |
+| MacAddress | string | Container create options as would be passed to `docker run` |  |
+| NetworkDisabled | boolean | Container create options as would be passed to `docker run` |  |
+| OnBuild | array | Container create options as would be passed to `docker run` |  |
+| OpenStdin | boolean | Container create options as would be passed to `docker run` |  |
+| Shell | array | Container create options as would be passed to `docker run` |  |
+| StdinOnce | boolean | Container create options as would be passed to `docker run` |  |
+| StopSignal | string | Container create options as would be passed to `docker run` |  |
+| StopTimeout | integer | Container create options as would be passed to `docker run` |  |
+| Tty | boolean | Container create options as would be passed to `docker run` |  |
+| User | string | Container create options as would be passed to `docker run` |  |
+| [Volumes](#volumes) | object | Container create options as would be passed to `docker run` |  |
+| WorkingDir | string | Container create options as would be passed to `docker run` |  |
+| [.*](#.*) | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -377,7 +377,7 @@ Required: Hostname, Domainname, User, AttachStdin, AttachStdout, AttachStderr, T
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -386,11 +386,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [.*](#.*) | object |  |  |
+| [.*](#.*) | object | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -398,7 +398,7 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -407,15 +407,15 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| Interval | integer |  |  |
-| Retries | integer |  |  |
-| StartPeriod | integer |  |  |
-| Test | array |  |  |
-| Timeout | integer |  |  |
+| Interval | integer | Container create options as would be passed to `docker run` |  |
+| Retries | integer | Container create options as would be passed to `docker run` |  |
+| StartPeriod | integer | Container create options as would be passed to `docker run` |  |
+| Test | array | Container create options as would be passed to `docker run` |  |
+| Timeout | integer | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -423,7 +423,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -432,11 +432,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [.*](#.*) | string |  |  |
+| [.*](#.*) | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -444,7 +444,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -453,7 +453,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -462,11 +462,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [.*](#.*) | object |  |  |
+| [.*](#.*) | object | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -474,78 +474,78 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 Required: Binds, ContainerIDFile, LogConfig, NetworkMode, PortBindings, RestartPolicy, AutoRemove, VolumeDriver, VolumesFrom, CapAdd, CapDrop, Dns, DnsOptions, DnsSearch, ExtraHosts, GroupAdd, IpcMode, Cgroup, Links, OomScoreAdj, PidMode, Privileged, PublishAllPorts, ReadonlyRootfs, SecurityOpt, UTSMode, UsernsMode, ShmSize, ConsoleSize, Isolation, CpuShares, Memory, NanoCpus, CgroupParent, BlkioWeight, BlkioWeightDevice, BlkioDeviceReadBps, BlkioDeviceWriteBps, BlkioDeviceReadIOps, BlkioDeviceWriteIOps, CpuPeriod, CpuQuota, CpuRealtimePeriod, CpuRealtimeRuntime, CpusetCpus, CpusetMems, Devices, DeviceCgroupRules, DiskQuota, KernelMemory, MemoryReservation, MemorySwap, MemorySwappiness, OomKillDisable, PidsLimit, Ulimits, CpuCount, CpuPercent, IOMaximumIOps, IOMaximumBandwidth, Binds, ContainerIDFile, LogConfig, NetworkMode, PortBindings, RestartPolicy, AutoRemove, VolumeDriver, VolumesFrom, CapAdd, CapDrop, Dns, DnsOptions, DnsSearch, ExtraHosts, GroupAdd, IpcMode, Cgroup, Links, OomScoreAdj, PidMode, Privileged, PublishAllPorts, ReadonlyRootfs, SecurityOpt, UTSMode, UsernsMode, ShmSize, ConsoleSize, Isolation, CpuShares, Memory, NanoCpus, CgroupParent, BlkioWeight, BlkioWeightDevice, BlkioDeviceReadBps, BlkioDeviceWriteBps, BlkioDeviceReadIOps, BlkioDeviceWriteIOps, CpuPeriod, CpuQuota, CpuRealtimePeriod, CpuRealtimeRuntime, CpusetCpus, CpusetMems, Devices, DeviceCgroupRules, DiskQuota, KernelMemory, MemoryReservation, MemorySwap, MemorySwappiness, OomKillDisable, PidsLimit, Ulimits, CpuCount, CpuPercent, IOMaximumIOps, IOMaximumBandwidth
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| AutoRemove | boolean |  |  |
-| Binds | array |  |  |
-| BlkioDeviceReadBps | array |  |  |
-| BlkioDeviceReadIOps | array |  |  |
-| BlkioDeviceWriteBps | array |  |  |
-| BlkioDeviceWriteIOps | array |  |  |
-| BlkioWeight | integer |  |  |
-| BlkioWeightDevice | array |  |  |
-| CapAdd | array |  |  |
-| CapDrop | array |  |  |
-| Cgroup | string |  |  |
-| CgroupParent | string |  |  |
-| ConsoleSize | undefined |  |  |
-| ContainerIDFile | string |  |  |
-| CpuCount | integer |  |  |
-| CpuPercent | integer |  |  |
-| CpuPeriod | integer |  |  |
-| CpuQuota | integer |  |  |
-| CpuRealtimePeriod | integer |  |  |
-| CpuRealtimeRuntime | integer |  |  |
-| CpuShares | integer |  |  |
-| CpusetCpus | string |  |  |
-| CpusetMems | string |  |  |
-| DeviceCgroupRules | array |  |  |
-| Devices | array |  |  |
-| DiskQuota | integer |  |  |
-| Dns | array |  |  |
-| DnsOptions | array |  |  |
-| DnsSearch | array |  |  |
-| ExtraHosts | array |  |  |
-| GroupAdd | array |  |  |
-| IOMaximumBandwidth | integer |  |  |
-| IOMaximumIOps | integer |  |  |
-| Init | boolean |  |  |
-| IpcMode | string |  |  |
-| Isolation | string |  |  |
-| KernelMemory | integer |  |  |
-| Links | array |  |  |
-| [LogConfig](#logconfig) | object |  |  |
-| Memory | integer |  |  |
-| MemoryReservation | integer |  |  |
-| MemorySwap | integer |  |  |
-| MemorySwappiness | integer |  |  |
-| Mounts | array |  |  |
-| NanoCpus | integer |  |  |
-| NetworkMode | string |  |  |
-| OomKillDisable | boolean |  |  |
-| OomScoreAdj | integer |  |  |
-| PidMode | string |  |  |
-| PidsLimit | integer |  |  |
-| [PortBindings](#portbindings) | object |  |  |
-| Privileged | boolean |  |  |
-| PublishAllPorts | boolean |  |  |
-| ReadonlyRootfs | boolean |  |  |
-| [RestartPolicy](#restartpolicy) | object |  |  |
-| Runtime | string |  |  |
-| SecurityOpt | array |  |  |
-| ShmSize | integer |  |  |
-| [StorageOpt](#storageopt) | object |  |  |
-| [Sysctls](#sysctls) | object |  |  |
-| [Tmpfs](#tmpfs) | object |  |  |
-| UTSMode | string |  |  |
-| Ulimits | array |  |  |
-| UsernsMode | string |  |  |
-| VolumeDriver | string |  |  |
-| VolumesFrom | array |  |  |
+| AutoRemove | boolean | Container create options as would be passed to `docker run` |  |
+| Binds | array | Container create options as would be passed to `docker run` |  |
+| BlkioDeviceReadBps | array | Container create options as would be passed to `docker run` |  |
+| BlkioDeviceReadIOps | array | Container create options as would be passed to `docker run` |  |
+| BlkioDeviceWriteBps | array | Container create options as would be passed to `docker run` |  |
+| BlkioDeviceWriteIOps | array | Container create options as would be passed to `docker run` |  |
+| BlkioWeight | integer | Container create options as would be passed to `docker run` |  |
+| BlkioWeightDevice | array | Container create options as would be passed to `docker run` |  |
+| CapAdd | array | Container create options as would be passed to `docker run` |  |
+| CapDrop | array | Container create options as would be passed to `docker run` |  |
+| Cgroup | string | Container create options as would be passed to `docker run` |  |
+| CgroupParent | string | Container create options as would be passed to `docker run` |  |
+| ConsoleSize | undefined | Container create options as would be passed to `docker run` |  |
+| ContainerIDFile | string | Container create options as would be passed to `docker run` |  |
+| CpuCount | integer | Container create options as would be passed to `docker run` |  |
+| CpuPercent | integer | Container create options as would be passed to `docker run` |  |
+| CpuPeriod | integer | Container create options as would be passed to `docker run` |  |
+| CpuQuota | integer | Container create options as would be passed to `docker run` |  |
+| CpuRealtimePeriod | integer | Container create options as would be passed to `docker run` |  |
+| CpuRealtimeRuntime | integer | Container create options as would be passed to `docker run` |  |
+| CpuShares | integer | Container create options as would be passed to `docker run` |  |
+| CpusetCpus | string | Container create options as would be passed to `docker run` |  |
+| CpusetMems | string | Container create options as would be passed to `docker run` |  |
+| DeviceCgroupRules | array | Container create options as would be passed to `docker run` |  |
+| Devices | array | Container create options as would be passed to `docker run` |  |
+| DiskQuota | integer | Container create options as would be passed to `docker run` |  |
+| Dns | array | Container create options as would be passed to `docker run` |  |
+| DnsOptions | array | Container create options as would be passed to `docker run` |  |
+| DnsSearch | array | Container create options as would be passed to `docker run` |  |
+| ExtraHosts | array | Container create options as would be passed to `docker run` |  |
+| GroupAdd | array | Container create options as would be passed to `docker run` |  |
+| IOMaximumBandwidth | integer | Container create options as would be passed to `docker run` |  |
+| IOMaximumIOps | integer | Container create options as would be passed to `docker run` |  |
+| Init | boolean | Container create options as would be passed to `docker run` |  |
+| IpcMode | string | Container create options as would be passed to `docker run` |  |
+| Isolation | string | Container create options as would be passed to `docker run` |  |
+| KernelMemory | integer | Container create options as would be passed to `docker run` |  |
+| Links | array | Container create options as would be passed to `docker run` |  |
+| [LogConfig](#logconfig) | object | Container create options as would be passed to `docker run` |  |
+| Memory | integer | Container create options as would be passed to `docker run` |  |
+| MemoryReservation | integer | Container create options as would be passed to `docker run` |  |
+| MemorySwap | integer | Container create options as would be passed to `docker run` |  |
+| MemorySwappiness | integer | Container create options as would be passed to `docker run` |  |
+| Mounts | array | Container create options as would be passed to `docker run` |  |
+| NanoCpus | integer | Container create options as would be passed to `docker run` |  |
+| NetworkMode | string | Container create options as would be passed to `docker run` |  |
+| OomKillDisable | boolean | Container create options as would be passed to `docker run` |  |
+| OomScoreAdj | integer | Container create options as would be passed to `docker run` |  |
+| PidMode | string | Container create options as would be passed to `docker run` |  |
+| PidsLimit | integer | Container create options as would be passed to `docker run` |  |
+| [PortBindings](#portbindings) | object | Container create options as would be passed to `docker run` |  |
+| Privileged | boolean | Container create options as would be passed to `docker run` |  |
+| PublishAllPorts | boolean | Container create options as would be passed to `docker run` |  |
+| ReadonlyRootfs | boolean | Container create options as would be passed to `docker run` |  |
+| [RestartPolicy](#restartpolicy) | object | Container create options as would be passed to `docker run` |  |
+| Runtime | string | Container create options as would be passed to `docker run` |  |
+| SecurityOpt | array | Container create options as would be passed to `docker run` |  |
+| ShmSize | integer | Container create options as would be passed to `docker run` |  |
+| [StorageOpt](#storageopt) | object | Container create options as would be passed to `docker run` |  |
+| [Sysctls](#sysctls) | object | Container create options as would be passed to `docker run` |  |
+| [Tmpfs](#tmpfs) | object | Container create options as would be passed to `docker run` |  |
+| UTSMode | string | Container create options as would be passed to `docker run` |  |
+| Ulimits | array | Container create options as would be passed to `docker run` |  |
+| UsernsMode | string | Container create options as would be passed to `docker run` |  |
+| VolumeDriver | string | Container create options as would be passed to `docker run` |  |
+| VolumesFrom | array | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -553,7 +553,7 @@ Required: Binds, ContainerIDFile, LogConfig, NetworkMode, PortBindings, RestartP
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -562,7 +562,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -571,7 +571,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -580,7 +580,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -589,15 +589,15 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 Required: PathOnHost, PathInContainer, CgroupPermissions, PathOnHost, PathInContainer, CgroupPermissions
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| CgroupPermissions | string |  |  |
-| PathInContainer | string |  |  |
-| PathOnHost | string |  |  |
+| CgroupPermissions | string | Container create options as would be passed to `docker run` |  |
+| PathInContainer | string | Container create options as would be passed to `docker run` |  |
+| PathOnHost | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -605,7 +605,7 @@ Required: PathOnHost, PathInContainer, CgroupPermissions, PathOnHost, PathInCont
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -614,7 +614,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -623,7 +623,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -632,7 +632,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -641,7 +641,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -650,7 +650,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -659,14 +659,14 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 Required: Type, Config, Type, Config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [Config](#config) | object |  |  |
-| Type | string |  |  |
+| [Config](#config) | object | Container create options as would be passed to `docker run` |  |
+| Type | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -674,18 +674,18 @@ Required: Type, Config, Type, Config
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [BindOptions](#bindoptions) | object |  |  |
-| Consistency | string |  |  |
-| ReadOnly | boolean |  |  |
-| Source | string |  |  |
-| Target | string |  |  |
-| [TmpfsOptions](#tmpfsoptions) | object |  |  |
-| Type | string |  |  |
-| [VolumeOptions](#volumeoptions) | object |  |  |
+| [BindOptions](#bindoptions) | object | Container create options as would be passed to `docker run` |  |
+| Consistency | string | Container create options as would be passed to `docker run` |  |
+| ReadOnly | boolean | Container create options as would be passed to `docker run` |  |
+| Source | string | Container create options as would be passed to `docker run` |  |
+| Target | string | Container create options as would be passed to `docker run` |  |
+| [TmpfsOptions](#tmpfsoptions) | object | Container create options as would be passed to `docker run` |  |
+| Type | string | Container create options as would be passed to `docker run` |  |
+| [VolumeOptions](#volumeoptions) | object | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -693,11 +693,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| Propagation | string |  |  |
+| Propagation | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -705,12 +705,12 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| Mode | integer |  |  |
-| SizeBytes | integer |  |  |
+| Mode | integer | Container create options as would be passed to `docker run` |  |
+| SizeBytes | integer | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -718,13 +718,13 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [DriverConfig](#driverconfig) | object |  |  |
-| [Labels](#labels) | object |  |  |
-| NoCopy | boolean |  |  |
+| [DriverConfig](#driverconfig) | object | Container create options as would be passed to `docker run` |  |
+| [Labels](#labels) | object | Container create options as would be passed to `docker run` |  |
+| NoCopy | boolean | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -732,12 +732,12 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| Name | string |  |  |
-| [Options](#options) | object |  |  |
+| Name | string | Container create options as would be passed to `docker run` |  |
+| [Options](#options) | object | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -745,11 +745,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [.*](#.*) | string |  |  |
+| [.*](#.*) | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -757,11 +757,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [.*](#.*) | array |  |  |
+| [.*](#.*) | array | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -769,14 +769,14 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 Required: Name, MaximumRetryCount, Name, MaximumRetryCount
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| MaximumRetryCount | integer |  |  |
-| Name | string |  |  |
+| MaximumRetryCount | integer | Container create options as would be passed to `docker run` |  |
+| Name | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -784,7 +784,7 @@ Required: Name, MaximumRetryCount, Name, MaximumRetryCount
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -793,11 +793,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [.*](#.*) | string |  |  |
+| [.*](#.*) | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -805,11 +805,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [.*](#.*) | string |  |  |
+| [.*](#.*) | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -817,11 +817,11 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [.*](#.*) | string |  |  |
+| [.*](#.*) | string | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -829,7 +829,7 @@ __add description to json file__
 
 #### Type: string
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -838,13 +838,13 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 Required: EndpointsConfig, EndpointsConfig
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [EndpointsConfig](#endpointsconfig) | object |  |  |
+| [EndpointsConfig](#endpointsconfig) | object | Container create options as would be passed to `docker run` |  |
 
 *****
 
@@ -852,7 +852,7 @@ Required: EndpointsConfig, EndpointsConfig
 
 #### Type: object
 
-__add description to json file__
+__Container create options as would be passed to `docker run`__
 
 
 *****
@@ -861,14 +861,14 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Collect the stdout/stderr of executing a command in an already running docker container__
 
 Required: container, exec_config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| container | string |  |  |
-| [exec_config](#exec_config) | object |  |  |
+| container | string | The container name |  |
+| [exec_config](#exec_config) | object | Config options as would be passed to `docker exec`  |  |
 
 *****
 
@@ -876,14 +876,14 @@ Required: container, exec_config
 
 #### Type: object
 
-__add description to json file__
+__Collect a list of docker images present on the server__
 
 Required: All, Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| All | boolean |  |  |
-| [Filters](#filters) | object |  |  |
+| All | boolean | Same as would be passed to `docker images` |  |
+| [Filters](#filters) | object | Same as would be passed to `docker images` |  |
 
 *****
 
@@ -891,14 +891,14 @@ Required: All, Filters
 
 #### Type: object
 
-__add description to json file__
+__Collect a list of docker images present on the server__
 
 Required: All, Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| All | boolean |  |  |
-| [Filters](#filters) | object |  |  |
+| All | boolean | Same as would be passed to `docker images` |  |
+| [Filters](#filters) | object | Same as would be passed to `docker images` |  |
 
 *****
 
@@ -906,7 +906,7 @@ Required: All, Filters
 
 #### Type: object
 
-__add description to json file__
+__Collect info about the Docker daemon__
 
 
 *****
@@ -915,13 +915,13 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Collect info about the Docker daemon__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| container | string |  |  |
-| [container_list_options](#container_list_options) | object |  |  |
-| [container_logs_options](#container_logs_options) | object |  |  |
+| container | string | A container name |  |
+| [container_list_options](#container_list_options) | object | Options to be used to filter the list of containers |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs` |  |
 
 *****
 
@@ -929,13 +929,13 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Collect information about the nodes in a Docker Swarm installation__
 
 Required: Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [Filters](#filters) | object |  |  |
+| [Filters](#filters) | object | Same as would be passed to `docker node ls` |  |
 
 *****
 
@@ -943,20 +943,20 @@ Required: Filters
 
 #### Type: object
 
-__add description to json file__
+__Collect information about containers__
 
 Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| All | boolean |  |  |
-| Before | string |  |  |
-| [Filters](#filters) | object |  |  |
-| Latest | boolean |  |  |
-| Limit | integer |  |  |
-| Quiet | boolean |  |  |
-| Since | string |  |  |
-| Size | boolean |  |  |
+| All | boolean | Same as `-a` option to `docker ps`  |  |
+| Before | string | Same as `--before` option to `docker logs`  |  |
+| [Filters](#filters) | object | Same as `--filter` option to `docker ps`  |  |
+| Latest | boolean | Same as would be passed to `docker ps` |  |
+| Limit | integer | Same as would be passed to `docker ps` |  |
+| Quiet | boolean | Same as would be passed to `docker ps` |  |
+| Since | string | Same as would be passed to `docker ps` |  |
+| Size | boolean | Same as would be passed to `docker ps` |  |
 
 *****
 
@@ -964,14 +964,14 @@ Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
 
 #### Type: object
 
-__add description to json file__
+__Collect the stderr/stdout of running a single docker container__
 
 Required: container_create_config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_create_config](#container_create_config) | object |  |  |
-| enable_pull | boolean |  |  |
+| [container_create_config](#container_create_config) | object | Container create options as would be passed to `docker run` |  |
+| enable_pull | boolean | If `true`, allow this container to be pulled if not present |  |
 
 *****
 
@@ -979,13 +979,13 @@ Required: container_create_config
 
 #### Type: object
 
-__add description to json file__
+__Collect logs from a docker swarm service__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_logs_options](#container_logs_options) | object |  |  |
-| service | string |  |  |
-| [service_list_options](#service_list_options) | object |  |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs` |  |
+| service | string | A single docker swarm service for which to collect logs |  |
+| [service_list_options](#service_list_options) | object | Options for filtering all swarm services |  |
 
 *****
 
@@ -993,7 +993,7 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Options for filtering all swarm servicesundefinedundefined__
 
 Required: Filters, Filters, Filters
 
@@ -1007,13 +1007,13 @@ Required: Filters, Filters, Filters
 
 #### Type: object
 
-__add description to json file__
+__Collect a list of docker swarm services__
 
 Required: Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [Filters](#filters) | object |  |  |
+| [Filters](#filters) | object | Same as would be passed to `docker service ls` |  |
 
 *****
 
@@ -1021,13 +1021,13 @@ Required: Filters
 
 #### Type: object
 
-__add description to json file__
+__Collect information about the tasks run by one or more services__
 
 Required: Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [Filters](#filters) | object |  |  |
+| [Filters](#filters) | object | Same as would be passed to `docker service ps` |  |
 
 *****
 
@@ -1035,13 +1035,13 @@ Required: Filters
 
 #### Type: object
 
-__add description to json file__
+__Collect logs from one or more services in a stack__
 
 Required: namespace
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_logs_options](#container_logs_options) | object |  |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs` |  |
 | namespace | string |  |  |
 | [service_list_options](#service_list_options) | object |  |  |
 
