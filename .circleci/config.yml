@@ -47,6 +47,17 @@ jobs:
       - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" registry.replicated.com
       - deploy:
           command: curl -sL https://git.io/goreleaser | bash
+  deploy_next:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/replicatedcom/support-bundle
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker pull debian:stretch-slim # make sure it's fresh
+      - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" registry.replicated.com
+      - deploy:
+          command: curl -sL https://git.io/goreleaser | bash -s -- -c .goreleaser.next.yml
 
 workflows:
   version: 2
@@ -65,3 +76,11 @@ workflows:
               only: /^v[0-9]+(\.[0-9]+)*(-.*)*/
             branches:
               ignore: /.*/
+      - deploy_next:
+          requires:
+            - test
+            - e2e
+            - e2e_docker
+          filters:
+            branches:
+              only: /master/
