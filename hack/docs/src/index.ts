@@ -2,6 +2,7 @@
 
 import * as yargs from "yargs";
 import * as merge from "./merge";
+import * as markdown from "./markdown";
 import * as validate from "./validate";
 
 // noinspection BadExpressionStatementJS
@@ -19,5 +20,11 @@ yargs
     validate.describe,
     validate.builder,
     validate.handler,
+  )
+  .command(
+    markdown.name,
+    markdown.describe,
+    markdown.builder,
+    markdown.handler,
   )
   .argv;

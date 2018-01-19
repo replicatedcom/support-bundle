@@ -75,7 +75,7 @@
   {
     "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"message\"]",
     "merge": {
-      "description": "message to display before prompting",
+      "description": "Message to display before prompting",
       "examples": [
         true
       ]
@@ -93,7 +93,9 @@
       "description": "A list of items to include in the support bundle."
     },
     "replace": {
-      "required": ["output_dir"]
+      "required": [
+        "output_dir"
+      ]
     }
   },
   {
@@ -109,13 +111,31 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-cp\"]",
     "merge": {
-      "description": "Copy a file from a running docker container"
+      "description": "Collect a file by copying from a running docker container",
+      "examples": [
+        {
+          "specs": [
+            {
+              "description": "the supergoodtool www site access logs",
+              "docker.container-cp": {
+                "container": "supergoodtool-www",
+                "src_path": "/var/log/nginx/access.log"
+              },
+              "output_dir": "/www/access/"
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        "contents"
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-cp\"].properties.container",
     "merge": {
       "description": "The name of the container to copy from",
+      "example": "my-sweet-app",
       "examples": [
         "my-sweet-app"
       ]
@@ -125,15 +145,36 @@
     "path": "properties.specs.items.properties[\"docker.container-cp\"].properties.src_path",
     "merge": {
       "description": "The path of the target file in the container's filesystem",
+      "example": "/var/log/supergoodtool/access.log",
       "examples": [
-        "/var/log/supergoodtool/error.log"
+        "/var/log/supergoodtool/access.log"
       ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"]",
     "merge": {
-      "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container"
+      "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container",
+      "examples": [
+        {
+          "specs": [
+            {
+              "description": "the supergoodtool debug output",
+              "docker.container-exec": {
+                "container": "supergoodtool-www",
+                "exec_config": {
+                  "Cmd": [
+                    "toolctl",
+                    "info",
+                    "--verbose"
+                  ]
+                }
+              },
+              "output_dir": "/www/debug/"
+            }
+          ]
+        }
+      ]
     }
   },
   {
@@ -148,88 +189,90 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config",
     "merge": {
-      "description": "The arguments as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     },
     "replace": {
-      "required": ["Cmd"]
+      "required": [
+        "Cmd"
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.AttachStderr",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.AttachStdin",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.AttachStdout",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Cmd",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Cmd.items",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Detach",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.DetachKeys",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Env",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Env.items",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Privileged",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.Tty",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config.properties.User",
     "merge": {
-      "description": "same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"]",
     "merge": {
-      "description": "inspect one or more running or stopped containers"
+      "description": "Collect the `docker inspect` output for one or more running or stopped containers"
     }
   },
   {
@@ -271,31 +314,31 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Latest",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Limit",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Quiet",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Size",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Since",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
@@ -343,31 +386,31 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Latest",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Limit",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Quiet",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Size",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Since",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
@@ -379,55 +422,55 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Details",
     "merge": {
-      "description": "Same as `docker logs` cli arg"
+      "description": "Same as would be passed to `docker logs`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Follow",
     "merge": {
-      "description": "Same as `docker logs` cli arg"
+      "description": "Same as would be passed to `docker logs`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.ShowStderr",
     "merge": {
-      "description": "Same as `docker logs` cli arg"
+      "description": "Same as would be passed to `docker logs`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.ShowStdout",
     "merge": {
-      "description": "Same as `docker logs` cli arg"
+      "description": "Same as would be passed to `docker logs`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Since",
     "merge": {
-      "description": "Same as `docker logs` cli arg"
+      "description": "Same as would be passed to `docker logs`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Tail",
     "merge": {
-      "description": "Same as `docker logs` cli arg"
+      "description": "Same as would be passed to `docker logs`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Timestamps",
     "merge": {
-      "description": "Same as `docker logs` cli arg"
+      "description": "Same as would be passed to `docker logs`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Until",
     "merge": {
-      "description": "Same as `docker logs` cli arg"
+      "description": "Same as would be passed to `docker logs`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"]",
     "merge": {
-      "description": "List information about one or more containers"
+      "description": "Collect information about one or more containers"
     }
   },
   {
@@ -457,37 +500,2545 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Latest",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Limit",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Quiet",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Size",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Since",
     "merge": {
-      "description": "Same as docker cli arg"
+      "description": "Same as would be passed to `docker ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-run\"]",
     "merge": {
-      "description": "Run a docker container, generating a file from the stdout and/or stderr"
+      "description": "Collect the stderr/stdout of running a single docker container"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.AdjustCPUShares",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.ArgsEscaped",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.AttachStderr",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.AttachStdin",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.AttachStdout",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Cmd",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Cmd.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Domainname",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Entrypoint",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Entrypoint.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Env",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Env.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.ExposedPorts",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.ExposedPorts.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Interval",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Retries",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.StartPeriod",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Test",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Test.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Timeout",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Hostname",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Image",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Labels",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Labels.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.MacAddress",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.NetworkDisabled",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.OnBuild",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.OnBuild.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.OpenStdin",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Shell",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Shell.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.StdinOnce",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.StopSignal",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.StopTimeout",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Tty",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.User",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Volumes",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Volumes.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.WorkingDir",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.AutoRemove",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Binds",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Binds.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.BlkioDeviceReadBps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.BlkioDeviceReadIOps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.BlkioDeviceWriteBps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.BlkioDeviceWriteIOps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.BlkioWeight",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.BlkioWeightDevice",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CapAdd",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CapAdd.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CapDrop",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CapDrop.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Cgroup",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CgroupParent",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.ConsoleSize",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.ContainerIDFile",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpuCount",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpuPercent",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpuPeriod",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpuQuota",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpuRealtimePeriod",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpuRealtimeRuntime",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpuShares",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpusetCpus",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.CpusetMems",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DeviceCgroupRules",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DeviceCgroupRules.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Devices",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items.properties.CgroupPermissions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items.properties.PathInContainer",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items.properties.PathOnHost",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DiskQuota",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Dns",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Dns.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DnsOptions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DnsOptions.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DnsSearch",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DnsSearch.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.ExtraHosts",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.ExtraHosts.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.GroupAdd",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.GroupAdd.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.IOMaximumBandwidth",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.IOMaximumIOps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Init",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.IpcMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Isolation",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.KernelMemory",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Links",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Links.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.LogConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.LogConfig.properties.Config",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.LogConfig.properties.Config.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.LogConfig.properties.Type",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Memory",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.MemoryReservation",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.MemorySwap",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.MemorySwappiness",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.BindOptions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.BindOptions.properties.Propagation",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Consistency",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.ReadOnly",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Source",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Target",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.TmpfsOptions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.TmpfsOptions.properties.Mode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.TmpfsOptions.properties.SizeBytes",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Type",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.DriverConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.DriverConfig.properties.Name",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.DriverConfig.properties.Options",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.DriverConfig.properties.Options.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.Labels",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.Labels.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.NoCopy",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.NanoCpus",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.NetworkMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.OomKillDisable",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.OomScoreAdj",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.PidMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.PidsLimit",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.PortBindings",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.PortBindings.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Privileged",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.PublishAllPorts",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.ReadonlyRootfs",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.RestartPolicy",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.RestartPolicy.properties.MaximumRetryCount",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.RestartPolicy.properties.Name",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Runtime",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.SecurityOpt",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.SecurityOpt.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.ShmSize",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.StorageOpt",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.StorageOpt.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Sysctls",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Sysctls.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Tmpfs",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Tmpfs.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.UTSMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Ulimits",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.UsernsMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.VolumeDriver",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.VolumesFrom",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.VolumesFrom.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Name",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.NetworkingConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.NetworkingConfig.properties.EndpointsConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.container-run\"].properties.enable_pull",
+    "merge": {
+      "description": "If `true`, allow this container to be pulled if not present"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"]",
+    "merge": {
+      "description": "Collect the stdout/stderr of executing a command in an already running docker container"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.container",
+    "merge": {
+      "description": "The container name"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config",
+    "merge": {
+      "description": "Config options as would be passed to `docker exec` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.AttachStderr",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.AttachStdin",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.AttachStdout",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.Cmd",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.Cmd.items",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.Detach",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.DetachKeys",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.Env",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.Env.items",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.Privileged",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.Tty",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.User",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config.properties.User",
+    "merge": {
+      "description": "Same as would be passed to `docker exec`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.image-ls\"]",
+    "merge": {
+      "description": "Collect a list of docker images present on the server"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.image-ls\"].properties.All",
+    "merge": {
+      "description": "Same as would be passed to `docker images`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.image-ls\"].properties.Filters",
+    "merge": {
+      "description": "Same as would be passed to `docker images`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.image-ls\"].properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Same as would be passed to `docker images`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.images\"]",
+    "merge": {
+      "description": "Collect a list of docker images present on the server"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.images\"].properties.All",
+    "merge": {
+      "description": "Same as would be passed to `docker images`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.images\"].properties.Filters",
+    "merge": {
+      "description": "Same as would be passed to `docker images`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.images\"].properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Same as would be passed to `docker images`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.info\"]",
+    "merge": {
+      "description": "Collect info about the Docker daemon"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"]",
+    "merge": {
+      "description": "Collect info about the Docker daemon"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container",
+    "merge": {
+      "description": "A container name"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options",
+    "merge": {
+      "description": "Options to be used to filter the list of containers"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.All",
+    "merge": {
+      "description": "Same as `-a` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Before",
+    "merge": {
+      "description": "Same as `--before` option to `docker logs` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Filters",
+    "merge": {
+      "description": "Same as `--filter` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Map of key-value pairs to filter on"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Latest",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Limit",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Quiet",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Size",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Since",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options",
+    "merge": {
+      "description": "Args as would be given to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options.properties.Details",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options.properties.Follow",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options.properties.ShowStderr",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options.properties.ShowStdout",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options.properties.Since",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options.properties.Tail",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options.properties.Timestamps",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options.properties.Until",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.node-ls\"]",
+    "merge": {
+      "description": "Collect information about the nodes in a Docker Swarm installation"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.node-ls\"].properties.Filters",
+    "merge": {
+      "description": "Same as would be passed to `docker node ls`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.node-ls\"].properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Same as would be passed to `docker node ls`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"]",
+    "merge": {
+      "description": "Collect information about containers"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.All",
+    "merge": {
+      "description": "Same as `-a` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.Before",
+    "merge": {
+      "description": "Same as `--before` option to `docker logs` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.Filters",
+    "merge": {
+      "description": "Same as `--filter` option to `docker ps` "
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Map of key-value pairs to filter on"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.Latest",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.Limit",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.Quiet",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.Size",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.ps\"].properties.Since",
+    "merge": {
+      "description": "Same as would be passed to `docker ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"]",
+    "merge": {
+      "description": "Collect the stderr/stdout of running a single docker container"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.AdjustCPUShares",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.ArgsEscaped",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.AttachStderr",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.AttachStdin",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.AttachStdout",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Cmd",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Cmd.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Domainname",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Entrypoint",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Entrypoint.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Env",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Env.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.ExposedPorts",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.ExposedPorts.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Interval",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Retries",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.StartPeriod",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Test",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Test.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Timeout",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Hostname",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Image",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Labels",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Labels.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.MacAddress",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.NetworkDisabled",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.OnBuild",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.OnBuild.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.OpenStdin",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Shell",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Shell.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.StdinOnce",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.StopSignal",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.StopTimeout",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Tty",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.User",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Volumes",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Volumes.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.WorkingDir",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.AutoRemove",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Binds",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Binds.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.BlkioDeviceReadBps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.BlkioDeviceReadIOps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.BlkioDeviceWriteBps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.BlkioDeviceWriteIOps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.BlkioWeight",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.BlkioWeightDevice",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CapAdd",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CapAdd.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CapDrop",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CapDrop.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Cgroup",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CgroupParent",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.ConsoleSize",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.ContainerIDFile",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpuCount",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpuPercent",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpuPeriod",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpuQuota",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpuRealtimePeriod",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpuRealtimeRuntime",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpuShares",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpusetCpus",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.CpusetMems",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DeviceCgroupRules",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DeviceCgroupRules.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Devices",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items.properties.CgroupPermissions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items.properties.PathInContainer",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items.properties.PathOnHost",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DiskQuota",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Dns",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Dns.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DnsOptions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DnsOptions.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DnsSearch",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DnsSearch.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.ExtraHosts",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.ExtraHosts.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.GroupAdd",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.GroupAdd.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.IOMaximumBandwidth",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.IOMaximumIOps",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Init",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.IpcMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Isolation",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.KernelMemory",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Links",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Links.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.LogConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.LogConfig.properties.Config",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.LogConfig.properties.Config.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.LogConfig.properties.Type",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Memory",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.MemoryReservation",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.MemorySwap",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.MemorySwappiness",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.BindOptions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.BindOptions.properties.Propagation",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Consistency",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.ReadOnly",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Source",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Target",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.TmpfsOptions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.TmpfsOptions.properties.Mode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.TmpfsOptions.properties.SizeBytes",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Type",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.DriverConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.DriverConfig.properties.Name",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.DriverConfig.properties.Options",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.DriverConfig.properties.Options.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.Labels",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.Labels.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.VolumeOptions.properties.NoCopy",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.NanoCpus",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.NetworkMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.OomKillDisable",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.OomScoreAdj",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.PidMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.PidsLimit",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.PortBindings",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.PortBindings.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Privileged",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.PublishAllPorts",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.ReadonlyRootfs",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.RestartPolicy",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.RestartPolicy.properties.MaximumRetryCount",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.RestartPolicy.properties.Name",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Runtime",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.SecurityOpt",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.SecurityOpt.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.ShmSize",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.StorageOpt",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.StorageOpt.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Sysctls",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Sysctls.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Tmpfs",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Tmpfs.properties[\".*\"]",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.UTSMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Ulimits",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.UsernsMode",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.VolumeDriver",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.VolumesFrom",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.VolumesFrom.items",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Name",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.NetworkingConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.NetworkingConfig.properties.EndpointsConfig",
+    "merge": {
+      "description": "Container create options as would be passed to `docker run`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.run\"].properties.enable_pull",
+    "merge": {
+      "description": "If `true`, allow this container to be pulled if not present"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"]",
+    "merge": {
+      "description": "Collect logs from a docker swarm service"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options",
+    "merge": {
+      "description": "Args as would be given to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.Details",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.Follow",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.ShowStderr",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.ShowStdout",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.Since",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.Tail",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.Timestamps",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.Until",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.service",
+    "merge": {
+      "description": "A single docker swarm service for which to collect logs"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.service_list_options",
+    "merge": {
+      "description": "Options for filtering all swarm services"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.service_list_options.properties.Filters",
+    "merge": {
+      "description": "Same as would be passed to `docker service ls`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.service_list_options.properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Same as would be passed to `docker service ls`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-ls\"]",
+    "merge": {
+      "description": "Collect a list of docker swarm services"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-ls\"].properties.Filters",
+    "merge": {
+      "description": "Same as would be passed to `docker service ls`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-ls\"].properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Same as would be passed to `docker service ls`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-ps\"]",
+    "merge": {
+      "description": "Collect information about the tasks run by one or more services"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-ps\"].properties.Filters",
+    "merge": {
+      "description": "Same as would be passed to `docker service ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.service-ps\"].properties.Filters.properties[\".*\"]",
+    "merge": {
+      "description": "Same as would be passed to `docker service ps`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"]",
+    "merge": {
+      "description": "Collect logs from one or more services in a stack"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options",
+    "merge": {
+      "description": "Args as would be given to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Details",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Follow",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.ShowStderr",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.ShowStdout",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Since",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Tail",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Timestamps",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Until",
+    "merge": {
+      "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.namespace",
+    "merge": {
+      "description": "The stack's namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.service_list_options",
+    "merge": {
+      "description": "Options as would be passed to `docker stack services"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ls\"]",
+    "merge": {
+      "description": "Collect information about services in a swarm stack"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ls\"].properties.namespace",
+    "merge": {
+      "description": "The stack's namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ls\"].properties.service_list_options",
+    "merge": {
+      "description": "Options as would be passed to `docker stack services"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ps\"]",
+    "merge": {
+      "description": "Collect information about the tasks running in a service"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ps\"].properties.namespace",
+    "merge": {
+      "description": "The stack's namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ps\"].properties.task_list_options",
+    "merge": {
+      "description": "Options as would be passed to `docker stack services`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"]",
+    "merge": {
+      "description": "Collect logs from a docker swarm task"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.container_logs_options",
+    "merge": {
+      "description": "Options as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.namespace",
+    "merge": {
+      "description": "The stack namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.task_list_options",
+    "merge": {
+      "description": "Options for filtering stack tasks"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.task-logs\"]",
+    "merge": {
+      "description": "Collect logs from a docker swarm task"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.task-logs\"]",
+    "merge": {
+      "description": "Collect logs from a docker swarm task"
     }
   },
   {}
