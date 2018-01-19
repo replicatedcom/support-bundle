@@ -5,7 +5,7 @@ RUN make build
 
 FROM debian:stretch-slim
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y \
-    sensible-utils \
+    sensible-utils=0.0.9+deb9u1 \
     ca-certificates \
     procps \
     systemd \
