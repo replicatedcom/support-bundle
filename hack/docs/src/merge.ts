@@ -33,20 +33,21 @@ export const handler = (argv) => {
   for (const mutation of mutations) {
     process.stderr.write(`mutation for path ${mutation.path}\n`);
 
-    const target = mutation.path ? _.get(schema, mutation.path) : schema;
+    let target = mutation.path ? _.get(schema, mutation.path) : schema;
     if (!target) {
       throw new Error(`no target found for path ${mutation.path}`)
     }
 
     if (mutation.merge) {
-      const updated = _.merge(mutation.merge, target);
-      _.set(schema, mutation.path, updated);
+      target = _.merge(mutation.merge, target);
+      _.set(schema, mutation.path, target);
     }
 
     if (mutation.replace) {
       for (const key of Object.keys(mutation.replace)) {
         target[key] = mutation.replace[key];
       }
+      _.set(schema, mutation.path, target);
     }
 
   }

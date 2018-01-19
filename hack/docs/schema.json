@@ -87,11 +87,28 @@
           },
           "docker.container-cp": {
             "description": "Collect a file by copying from a running docker container",
-            "example": "`docker.container-cp:  { container: my-sweet-app }`",
+            "examples": [
+              {
+                "specs": [
+                  {
+                    "description": "the supergoodtool www site access logs",
+                    "docker.container-cp": {
+                      "container": "supergoodtool-www",
+                      "src_path": "/var/log/nginx/access.log"
+                    },
+                    "output_dir": "/www/access/"
+                  }
+                ]
+              }
+            ],
+            "outputs": [
+              "contents"
+            ],
             "type": "object",
             "properties": {
               "container": {
                 "description": "The name of the container to copy from",
+                "example": "my-sweet-app",
                 "examples": [
                   "my-sweet-app"
                 ],
@@ -99,8 +116,9 @@
               },
               "src_path": {
                 "description": "The path of the target file in the container's filesystem",
+                "example": "/var/log/supergoodtool/access.log",
                 "examples": [
-                  "/var/log/supergoodtool/error.log"
+                  "/var/log/supergoodtool/access.log"
                 ],
                 "type": "string"
               }
@@ -108,6 +126,26 @@
           },
           "docker.container-exec": {
             "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container",
+            "examples": [
+              {
+                "specs": [
+                  {
+                    "description": "the supergoodtool debug output",
+                    "docker.container-exec": {
+                      "container": "supergoodtool-www",
+                      "exec_config": {
+                        "Cmd": [
+                          "toolctl",
+                          "info",
+                          "--verbose"
+                        ]
+                      }
+                    },
+                    "output_dir": "/www/debug/"
+                  }
+                ]
+              }
+            ],
             "type": "object",
             "properties": {
               "container": {
@@ -171,15 +209,6 @@
                   }
                 },
                 "required": [
-                  "User",
-                  "Privileged",
-                  "Tty",
-                  "AttachStdin",
-                  "AttachStderr",
-                  "AttachStdout",
-                  "Detach",
-                  "DetachKeys",
-                  "Env",
                   "Cmd"
                 ]
               }
@@ -2478,9 +2507,11 @@
                 ]
               },
               "namespace": {
+                "description": "The stack's namespace",
                 "type": "string"
               },
               "service_list_options": {
+                "description": "Options as would be passed to `docker stack services",
                 "type": "object",
                 "properties": {
                   "Filters": {
@@ -2502,12 +2533,15 @@
             ]
           },
           "docker.stack-service-ls": {
+            "description": "Collect information about services in a swarm stack",
             "type": "object",
             "properties": {
               "namespace": {
+                "description": "The stack's namespace",
                 "type": "string"
               },
               "service_list_options": {
+                "description": "Options as would be passed to `docker stack services",
                 "type": "object",
                 "properties": {
                   "Filters": {
@@ -2529,12 +2563,15 @@
             ]
           },
           "docker.stack-service-ps": {
+            "description": "Collect information about the tasks running in a service",
             "type": "object",
             "properties": {
               "namespace": {
+                "description": "The stack's namespace",
                 "type": "string"
               },
               "task_list_options": {
+                "description": "Options as would be passed to `docker stack services`",
                 "type": "object",
                 "properties": {
                   "Filters": {
@@ -2556,9 +2593,11 @@
             ]
           },
           "docker.stack-task-logs": {
+            "description": "Collect logs from a docker swarm task",
             "type": "object",
             "properties": {
               "container_logs_options": {
+                "description": "Options as would be passed to `docker logs`",
                 "type": "object",
                 "properties": {
                   "Details": {
@@ -2598,9 +2637,11 @@
                 ]
               },
               "namespace": {
+                "description": "The stack namespace",
                 "type": "string"
               },
               "task_list_options": {
+                "description": "Options for filtering stack tasks",
                 "type": "object",
                 "properties": {
                   "Filters": {
@@ -2622,6 +2663,7 @@
             ]
           },
           "docker.task-logs": {
+            "description": "Collect logs from a docker swarm task",
             "type": "object",
             "properties": {
               "container_logs_options": {

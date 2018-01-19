@@ -112,14 +112,30 @@
     "path": "properties.specs.items.properties[\"docker.container-cp\"]",
     "merge": {
       "description": "Collect a file by copying from a running docker container",
-      "example": "`docker.container-cp:  { container: my-sweet-app }`"
-
+      "examples": [
+        {
+          "specs": [
+            {
+              "description": "the supergoodtool www site access logs",
+              "docker.container-cp": {
+                "container": "supergoodtool-www",
+                "src_path": "/var/log/nginx/access.log"
+              },
+              "output_dir": "/www/access/"
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        "contents"
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-cp\"].properties.container",
     "merge": {
       "description": "The name of the container to copy from",
+      "example": "my-sweet-app",
       "examples": [
         "my-sweet-app"
       ]
@@ -129,15 +145,36 @@
     "path": "properties.specs.items.properties[\"docker.container-cp\"].properties.src_path",
     "merge": {
       "description": "The path of the target file in the container's filesystem",
+      "example": "/var/log/supergoodtool/access.log",
       "examples": [
-        "/var/log/supergoodtool/error.log"
+        "/var/log/supergoodtool/access.log"
       ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"]",
     "merge": {
-      "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container"
+      "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container",
+      "examples": [
+        {
+          "specs": [
+            {
+              "description": "the supergoodtool debug output",
+              "docker.container-exec": {
+                "container": "supergoodtool-www",
+                "exec_config": {
+                  "Cmd": [
+                    "toolctl",
+                    "info",
+                    "--verbose"
+                  ]
+                }
+              },
+              "output_dir": "/www/debug/"
+            }
+          ]
+        }
+      ]
     }
   },
   {
@@ -2918,6 +2955,90 @@
     "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Until",
     "merge": {
       "description": "Same as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.namespace",
+    "merge": {
+      "description": "The stack's namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.service_list_options",
+    "merge": {
+      "description": "Options as would be passed to `docker stack services"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ls\"]",
+    "merge": {
+      "description": "Collect information about services in a swarm stack"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ls\"].properties.namespace",
+    "merge": {
+      "description": "The stack's namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ls\"].properties.service_list_options",
+    "merge": {
+      "description": "Options as would be passed to `docker stack services"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ps\"]",
+    "merge": {
+      "description": "Collect information about the tasks running in a service"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ps\"].properties.namespace",
+    "merge": {
+      "description": "The stack's namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-ps\"].properties.task_list_options",
+    "merge": {
+      "description": "Options as would be passed to `docker stack services`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"]",
+    "merge": {
+      "description": "Collect logs from a docker swarm task"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.container_logs_options",
+    "merge": {
+      "description": "Options as would be passed to `docker logs`"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.namespace",
+    "merge": {
+      "description": "The stack namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.task_list_options",
+    "merge": {
+      "description": "Options for filtering stack tasks"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.task-logs\"]",
+    "merge": {
+      "description": "Collect logs from a docker swarm task"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.task-logs\"]",
+    "merge": {
+      "description": "Collect logs from a docker swarm task"
     }
   },
   {}

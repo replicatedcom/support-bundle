@@ -1,4 +1,4 @@
-# undefined
+# 
 
 #### Type: object
 
@@ -11,7 +11,7 @@ __add description to json file__
 
 *****
 
-## lifecycle:undefined
+## lifecycle
 
 #### Type: object
 
@@ -73,7 +73,7 @@ __Allows configuring an interactive prompt for the user to confirm before upload
 
 *****
 
-## specs:undefined
+## specs
 
 #### Type: object
 
@@ -84,7 +84,7 @@ Required: output_dir
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | description | string | A description of the file(s) that will be collected by this spec |  |
-| [docker.container-cp](#docker.container-cp) | object | Collect a file by copying from a running docker container | `docker.container-cp:  { container: my-sweet-app }` |
+| [docker.container-cp](#docker.container-cp) | object | Collect a file by copying from a running docker container |  |
 | [docker.container-exec](#docker.container-exec) | object | Collect the stdout and stderr of `exec`-ing a command on a running docker container |  |
 | [docker.container-inspect](#docker.container-inspect) | object | Collect the `docker inspect` output for one or more running or stopped containers |  |
 | [docker.container-logs](#docker.container-logs) | object | Collect the logs from one or more docker containers |  |
@@ -102,10 +102,10 @@ Required: output_dir
 | [docker.service-ls](#docker.service-ls) | object | Collect a list of docker swarm services |  |
 | [docker.service-ps](#docker.service-ps) | object | Collect information about the tasks run by one or more services |  |
 | [docker.stack-service-logs](#docker.stack-service-logs) | object | Collect logs from one or more services in a stack |  |
-| [docker.stack-service-ls](#docker.stack-service-ls) | object |  |  |
-| [docker.stack-service-ps](#docker.stack-service-ps) | object |  |  |
-| [docker.stack-task-logs](#docker.stack-task-logs) | object |  |  |
-| [docker.task-logs](#docker.task-logs) | object |  |  |
+| [docker.stack-service-ls](#docker.stack-service-ls) | object | Collect information about services in a swarm stack |  |
+| [docker.stack-service-ps](#docker.stack-service-ps) | object | Collect information about the tasks running in a service |  |
+| [docker.stack-task-logs](#docker.stack-task-logs) | object | Collect logs from a docker swarm task |  |
+| [docker.task-logs](#docker.task-logs) | object | Collect logs from a docker swarm task |  |
 | [docker.task-ls](#docker.task-ls) | object |  |  |
 | [docker.version](#docker.version) | object |  |  |
 | [journald.logs](#journald.logs) | object |  |  |
@@ -138,8 +138,8 @@ __Collect a file by copying from a running docker container__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| container | string | The name of the container to copy from |  |
-| src_path | string | The path of the target file in the container's filesystem |  |
+| container | string | The name of the container to copy from | my-sweet-app |
+| src_path | string | The path of the target file in the container's filesystem | /var/log/supergoodtool/access.log |
 
 *****
 
@@ -164,7 +164,7 @@ Required: container, exec_config
 
 __Same as would be passed to `docker exec`Config options as would be passed to `docker exec`__
 
-Required: User, Privileged, Tty, AttachStdin, AttachStderr, AttachStdout, Detach, DetachKeys, Env, Cmd, User, Privileged, Tty, AttachStdin, AttachStderr, AttachStdout, Detach, DetachKeys, Env, Cmd
+Required: Cmd, User, Privileged, Tty, AttachStdin, AttachStderr, AttachStdout, Detach, DetachKeys, Env, Cmd
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -181,7 +181,7 @@ Required: User, Privileged, Tty, AttachStdin, AttachStderr, AttachStdout, Detach
 
 *****
 
-## Cmd:undefined
+## Cmd
 
 #### Type: string
 
@@ -190,7 +190,7 @@ __Same as would be passed to `docker exec`Container create options as would be p
 
 *****
 
-## Env:undefined
+## Env
 
 #### Type: string
 
@@ -237,7 +237,7 @@ Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters, Quiet, Size, 
 
 #### Type: object
 
-__Same as `--filter` option to `docker ps` Same as would be passed to `docker images`Same as would be passed to `docker images`Same as `--filter` option to `docker ps` Same as would be passed to `docker node ls`Same as `--filter` option to `docker ps` Same as would be passed to `docker service ls`Same as would be passed to `docker service ls`Same as would be passed to `docker service ps`undefinedundefinedundefinedundefinedundefinedundefined__
+__Same as `--filter` option to `docker ps` Same as would be passed to `docker images`Same as would be passed to `docker images`Same as `--filter` option to `docker ps` Same as would be passed to `docker node ls`Same as `--filter` option to `docker ps` Same as would be passed to `docker service ls`Same as would be passed to `docker service ls`Same as would be passed to `docker service ps`__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -263,7 +263,7 @@ __Collect the logs from one or more docker containers__
 
 #### Type: object
 
-__Args as would be given to `docker logs`undefinedundefined__
+__Args as would be given to `docker logs`Options as would be passed to `docker logs`__
 
 Required: ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details
 
@@ -373,7 +373,7 @@ Required: Hostname, Domainname, User, AttachStdin, AttachStdout, AttachStderr, T
 
 *****
 
-## Entrypoint:undefined
+## Entrypoint
 
 #### Type: string
 
@@ -419,7 +419,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## Test:undefined
+## Test
 
 #### Type: string
 
@@ -440,7 +440,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## OnBuild:undefined
+## OnBuild
 
 #### Type: string
 
@@ -449,7 +449,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## Shell:undefined
+## Shell
 
 #### Type: string
 
@@ -492,7 +492,7 @@ Required: Binds, ContainerIDFile, LogConfig, NetworkMode, PortBindings, RestartP
 | CapDrop | array | Container create options as would be passed to `docker run` |  |
 | Cgroup | string | Container create options as would be passed to `docker run` |  |
 | CgroupParent | string | Container create options as would be passed to `docker run` |  |
-| ConsoleSize | undefined | Container create options as would be passed to `docker run` |  |
+| ConsoleSize |  | Container create options as would be passed to `docker run` |  |
 | ContainerIDFile | string | Container create options as would be passed to `docker run` |  |
 | CpuCount | integer | Container create options as would be passed to `docker run` |  |
 | CpuPercent | integer | Container create options as would be passed to `docker run` |  |
@@ -549,7 +549,7 @@ Required: Binds, ContainerIDFile, LogConfig, NetworkMode, PortBindings, RestartP
 
 *****
 
-## Binds:undefined
+## Binds
 
 #### Type: string
 
@@ -558,7 +558,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## CapAdd:undefined
+## CapAdd
 
 #### Type: string
 
@@ -567,7 +567,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## CapDrop:undefined
+## CapDrop
 
 #### Type: string
 
@@ -576,7 +576,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## DeviceCgroupRules:undefined
+## DeviceCgroupRules
 
 #### Type: string
 
@@ -585,7 +585,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## Devices:undefined
+## Devices
 
 #### Type: object
 
@@ -601,7 +601,7 @@ Required: PathOnHost, PathInContainer, CgroupPermissions, PathOnHost, PathInCont
 
 *****
 
-## Dns:undefined
+## Dns
 
 #### Type: string
 
@@ -610,7 +610,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## DnsOptions:undefined
+## DnsOptions
 
 #### Type: string
 
@@ -619,7 +619,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## DnsSearch:undefined
+## DnsSearch
 
 #### Type: string
 
@@ -628,7 +628,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## ExtraHosts:undefined
+## ExtraHosts
 
 #### Type: string
 
@@ -637,7 +637,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## GroupAdd:undefined
+## GroupAdd
 
 #### Type: string
 
@@ -646,7 +646,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## Links:undefined
+## Links
 
 #### Type: string
 
@@ -670,7 +670,7 @@ Required: Type, Config, Type, Config
 
 *****
 
-## Mounts:undefined
+## Mounts
 
 #### Type: object
 
@@ -780,7 +780,7 @@ Required: Name, MaximumRetryCount, Name, MaximumRetryCount
 
 *****
 
-## SecurityOpt:undefined
+## SecurityOpt
 
 #### Type: string
 
@@ -825,7 +825,7 @@ __Container create options as would be passed to `docker run`__
 
 *****
 
-## VolumesFrom:undefined
+## VolumesFrom
 
 #### Type: string
 
@@ -993,7 +993,7 @@ __Collect logs from a docker swarm service__
 
 #### Type: object
 
-__Options for filtering all swarm servicesundefinedundefined__
+__Options for filtering all swarm servicesOptions as would be passed to `docker stack servicesOptions as would be passed to `docker stack services__
 
 Required: Filters, Filters, Filters
 
@@ -1042,8 +1042,8 @@ Required: namespace
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs` |  |
-| namespace | string |  |  |
-| [service_list_options](#service_list_options) | object |  |  |
+| namespace | string | The stack's namespace |  |
+| [service_list_options](#service_list_options) | object | Options as would be passed to `docker stack services |  |
 
 *****
 
@@ -1051,14 +1051,14 @@ Required: namespace
 
 #### Type: object
 
-__add description to json file__
+__Collect information about services in a swarm stack__
 
 Required: namespace
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| namespace | string |  |  |
-| [service_list_options](#service_list_options) | object |  |  |
+| namespace | string | The stack's namespace |  |
+| [service_list_options](#service_list_options) | object | Options as would be passed to `docker stack services |  |
 
 *****
 
@@ -1066,14 +1066,14 @@ Required: namespace
 
 #### Type: object
 
-__add description to json file__
+__Collect information about the tasks running in a service__
 
 Required: namespace
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| namespace | string |  |  |
-| [task_list_options](#task_list_options) | object |  |  |
+| namespace | string | The stack's namespace |  |
+| [task_list_options](#task_list_options) | object | Options as would be passed to `docker stack services` |  |
 
 *****
 
@@ -1081,7 +1081,7 @@ Required: namespace
 
 #### Type: object
 
-__add description to json file__
+__Options as would be passed to `docker stack services`Options for filtering stack tasks__
 
 Required: Filters, Filters, Filters
 
@@ -1095,15 +1095,15 @@ Required: Filters, Filters, Filters
 
 #### Type: object
 
-__add description to json file__
+__Collect logs from a docker swarm task__
 
 Required: namespace
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_logs_options](#container_logs_options) | object |  |  |
-| namespace | string |  |  |
-| [task_list_options](#task_list_options) | object |  |  |
+| [container_logs_options](#container_logs_options) | object | Options as would be passed to `docker logs` |  |
+| namespace | string | The stack namespace |  |
+| [task_list_options](#task_list_options) | object | Options for filtering stack tasks |  |
 
 *****
 
@@ -1111,7 +1111,7 @@ Required: namespace
 
 #### Type: object
 
-__add description to json file__
+__Collect logs from a docker swarm task__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -1391,7 +1391,7 @@ Required: name
 
 *****
 
-## args:undefined
+## args
 
 #### Type: string
 
@@ -1400,7 +1400,7 @@ __add description to json file__
 
 *****
 
-## env:undefined
+## env
 
 #### Type: string
 
