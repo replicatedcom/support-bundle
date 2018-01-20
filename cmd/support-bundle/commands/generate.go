@@ -29,7 +29,7 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().BoolVar(&opts.SkipDefault, "skip-default", false, "If present, skip the default support bundle files")
 	cmd.Flags().BoolVar(&opts.SkipPrompts, "yes", false, "If present, auto-confirm any prompts")
 	cmd.Flags().StringVar(&opts.CustomerID, "customer-id", "", "Replicated Customer ID")
-	cmd.Flags().StringVar(&opts.CustomerEndpoint, "customer-endpoint", "https://pg.staging.replicated.com/graphql", "Customer API Endpoint")
+	cmd.Flags().StringVar(&opts.CustomerEndpoint, "customer-endpoint", "https://pg.replicated.com/graphql", "Customer API Endpoint")
 
 	return cmd
 }
