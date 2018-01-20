@@ -19,19 +19,21 @@ import (
 )
 
 type GenerateOptions struct {
-	CfgFiles         []string
-	CfgDocs          []string
-	BundlePath       string
-	SkipDefault      bool
-	TimeoutSeconds   int
-	EnableCore       bool
-	EnableDocker     bool
-	EnableJournald   bool
-	EnableKubernetes bool
-	EnableRetraced   bool
-	CustomerID       string
-	CustomerEndpoint string
-	SkipPrompts      bool
+	CfgFiles          []string
+	CfgDocs           []string
+	BundlePath        string
+	SkipDefault       bool
+	TimeoutSeconds    int
+	EnableCore        bool
+	EnableDocker      bool
+	EnableJournald    bool
+	RequireJournald   bool
+	EnableKubernetes  bool
+	RequireKubernetes bool
+	EnableRetraced    bool
+	CustomerID        string
+	CustomerEndpoint  string
+	SkipPrompts       bool
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
@@ -61,7 +63,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	if opts.EnableJournald {
 		pluginJournald, err := journald.New()
-		if err != nil {
+		if err != nil && opts.RequireJournald {
 			return errors.Wrap(err, "initialize journald plugin")
 		}
 		planner.AddPlugin(pluginJournald)
@@ -69,9 +71,11 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	if opts.EnableKubernetes {
 		pluginKubernetes, err := kubernetes.New()
-		if err != nil {
+
+		if err != nil && opts.RequireKubernetes {
 			return errors.Wrap(err, "initialize kubernetes plugin")
 		}
+
 		planner.AddPlugin(pluginKubernetes)
 	}
 
@@ -90,6 +94,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	}
 
 	var customerDoc *types.Doc
+	expectedDefaultTasks := 1 // there is always at least 1 for the version
 
 	if opts.CustomerID != "" {
 		customerDoc, err = getCustomerDoc(graphQLClient, opts.CustomerID)
@@ -97,10 +102,12 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 			return errors.Wrap(err, "get customer specs")
 		}
 		specs = append(specs, customerDoc.Specs...)
+		specs = append(specs, bundle.CustomerJsonSpec(opts.CustomerID))
+		expectedDefaultTasks += 1
 	}
 
 	var tasks = planner.Plan(specs)
-	if len(tasks) == 0 {
+	if len(tasks) < expectedDefaultTasks {
 		return errors.New("No tasks defined")
 	}
 

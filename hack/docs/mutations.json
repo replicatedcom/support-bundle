@@ -2,19 +2,19 @@
   {
     "path": "properties.lifecycle.items",
     "merge": {
-      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles."
+      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles"
     }
   },
   {
     "path": "properties.lifecycle",
     "merge": {
-      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles."
+      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles"
     }
   },
   {
     "path": "properties.lifecycle.items.properties.message",
     "merge": {
-      "description": "`message` can be used to print a message to the end customer."
+      "description": "`message` can be used to print a message to the end customer"
     }
   },
   {
@@ -36,7 +36,7 @@
   {
     "path": "properties.lifecycle.items.properties[\"upload\"]",
     "merge": {
-      "description": "Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor."
+      "description": "Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor"
     }
   },
   {
@@ -59,7 +59,7 @@
     "merge": {
       "description": "A message to display if the user declines the upload prompt",
       "examples": [
-        "Bundle was not uploaded, please send your bundle to SuperGoodTool support."
+        "Bundle was not uploaded, please send your bundle to SuperGoodTool support"
       ]
     }
   },
@@ -84,18 +84,16 @@
   {
     "path": "properties.specs",
     "merge": {
-      "description": "A list of items to include in the support bundle."
+      "description": "A list of items to include in the support bundle"
     }
   },
   {
     "path": "properties.specs.items",
     "merge": {
-      "description": "A list of items to include in the support bundle."
+      "description": "A list of items to include in the support bundle"
     },
     "replace": {
-      "required": [
-        "output_dir"
-      ]
+      "required": []
     }
   },
   {
@@ -110,24 +108,25 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-cp\"]",
+    "replace": {
+      "required": [
+        "container",
+        "src_path",
+        "output_dir"
+      ]
+    },
     "merge": {
       "description": "Collect a file by copying from a running docker container",
       "examples": [
         {
-          "specs": [
-            {
-              "description": "the supergoodtool www site access logs",
-              "docker.container-cp": {
-                "container": "supergoodtool-www",
-                "src_path": "/var/log/nginx/access.log"
-              },
-              "output_dir": "/www/access/"
-            }
-          ]
+          "description": "the supergoodtool www site access logs",
+          "container": "supergoodtool-www",
+          "src_path": "/var/log/nginx/access.log",
+          "output_dir": "/www/access/"
         }
       ],
-      "outputs": [
-        "contents"
+      "_ext_outputs": [
+        { "path": "{{.Name}}", "description": "Output will match the name of the file. If `src_path` is `/var/log/nginx/access.log`, then `output_dir` will contain a file `access.log`"}
       ]
     }
   },
@@ -157,23 +156,19 @@
       "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container",
       "examples": [
         {
-          "specs": [
-            {
-              "description": "the supergoodtool debug output",
-              "docker.container-exec": {
-                "container": "supergoodtool-www",
-                "exec_config": {
-                  "Cmd": [
-                    "toolctl",
-                    "info",
-                    "--verbose"
-                  ]
-                }
-              },
-              "output_dir": "/www/debug/"
-            }
-          ]
+          "container": "supergoodtool-www",
+          "output_dir": "/www/debug/",
+          "exec_config": {
+            "Cmd": [
+              "nginx",
+              "-t"
+            ]
+          }
         }
+      ],
+      "_ext_outputs": [
+        {"path": "stdout.raw", "description": "The standard output of the command"},
+        {"path": "stderr.raw", "description": "The standard error of the command"}
       ]
     }
   },
@@ -189,7 +184,7 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-exec\"].properties.exec_config",
     "merge": {
-      "description": "Same as would be passed to `docker exec`"
+      "description": "Same as would be passed to `docker exec`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go#L43)"
     },
     "replace": {
       "required": [
@@ -272,7 +267,27 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"]",
     "merge": {
-      "description": "Collect the `docker inspect` output for one or more running or stopped containers"
+      "description": "Collect the `docker inspect` output for one or more running or stopped containers. One of `container` or `container_list_options` is required.",
+      "examples": [
+        {
+          "output_dir": "/containers/cooltool/www-stack",
+          "container_list_options": {
+            "All": true,
+            "Filters": {
+              "name": [
+                "www",
+                "nginx",
+                "dnsmasq"
+              ]
+            }
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "{{.Name}}.raw", "description": "The raw output of the inspect call. Will generate this file for each matched container"},
+        {"path": "{{.Name}}.json", "description": "The json output of the inspect call. Will generate this file for each matched container"},
+        {"path": "{{.Name}}.human", "description": "The human-readable output of the inspect call. Will generate this file for each matched container"}
+      ]
     }
   },
   {
@@ -284,13 +299,16 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options",
     "merge": {
-      "description": "Options to be used to filter the list of containers"
+      "description": "Options to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
+    },
+    "replace": {
+      "required": []
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.All",
     "merge": {
-      "description": "Same as `-a` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
@@ -302,7 +320,8 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Filters",
     "merge": {
-      "description": "Same as `--filter` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)",
+      "additionalProperties": true
     }
   },
   {
@@ -314,37 +333,54 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Latest",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Limit",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Quiet",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Size",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-inspect\"].properties.container_list_options.properties.Since",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"]",
     "merge": {
-      "description": "Collect the logs from one or more docker containers"
+      "description": "Collect the stdout/stderr logs from one or more docker containers. One of `container` or `container_list_options` is required.",
+      "examples": [
+        {
+          "output_dir": "/docker/cooltool/logs/www",
+          "container_list_options": {
+            "All": true,
+            "Filters": {
+              "name": [
+                "www",
+                "haproxy"
+              ]
+            }
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "{{.Name}}.raw", "description": "The stdout/stderr multiplexed logs. Will generate this file for each matched container"}
+      ]
     }
   },
   {
@@ -356,13 +392,16 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options",
     "merge": {
-      "description": "Options to be used to filter the list of containers"
+      "description": "Options to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
+    },
+    "replace": {
+      "required": []
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.All",
     "merge": {
-      "description": "Same as `-a` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
@@ -374,7 +413,8 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Filters",
     "merge": {
-      "description": "Same as `--filter` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)",
+      "additionalProperties": true
     }
   },
   {
@@ -386,37 +426,40 @@
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Latest",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Limit",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Quiet",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Size",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_list_options.properties.Since",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-logs\"].properties.container_logs_options",
     "merge": {
-      "description": "Args as would be given to `docker logs`"
+      "description": "Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73)"
+    },
+    "replace": {
+      "required": []
     }
   },
   {
@@ -469,72 +512,131 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"]",
+    "replace": {
+      "required": []
+    },
     "merge": {
-      "description": "Collect information about one or more containers"
+      "description": "Collect information about one or more containers",
+      "examples": [
+        {
+          "output_dir": "/docker/cooltool/containers/",
+          "All": true,
+          "Filters": {
+            "name": [
+              "www",
+              "haproxy"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "container_ls.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "container_ls.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "container_ls.human",
+          "description": "Human-readable output"
+        }
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.All",
     "merge": {
-      "description": "Same as `-a` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Before",
     "merge": {
-      "description": "Same as `--before` option to `docker logs` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Filters",
     "merge": {
-      "description": "Same as `--filter` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)",
+      "additionalProperties": true
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Filters.properties[\".*\"]",
     "merge": {
-      "description": "Map of key-value pairs to filter on"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Latest",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Limit",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Quiet",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Size",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-ls\"].properties.Since",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-run\"]",
     "merge": {
-      "description": "Collect the stderr/stdout of running a single docker container"
+      "description": "Collect the stderr/stdout of running a single docker container",
+      "examples": [
+        {
+          "description": "Listing of host's network interfaces",
+          "output_dir": "/host/network",
+          "container_create_config": {
+            "Config": {
+              "Cmd": [
+                "ip",
+                "addr",
+                "show"
+              ],
+              "Image": "debian:latest"
+            },
+            "HostConfig": {
+              "AutoRemove": true,
+              "NetworkMode": "host"
+            }
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "stdout.raw", "description": "The standard output of the container"},
+        {"path": "stderr.raw", "description": "The standard error of the container"}
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config",
+    "replace": {
+      "required": [
+        "Config"
+      ]
+    },
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
     }
@@ -547,6 +649,11 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config",
+    "replace": {
+      "required": [
+        "Image"
+      ]
+    },
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
     }
@@ -787,6 +894,9 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig",
+    "replace": {
+      "required": []
+    },
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
     }
@@ -1478,7 +1588,24 @@
   {
     "path": "properties.specs.items.properties[\"docker.exec\"]",
     "merge": {
-      "description": "Collect the stdout/stderr of executing a command in an already running docker container"
+      "description": "Collect the stdout/stderr of executing a command in an already running docker container",
+      "examples": [
+        {
+          "container": "supergoodtool-www",
+          "output_dir": "/www/debug/",
+          "exec_config": {
+            "Cmd": [
+              "toolctl",
+              "info",
+              "--verbose"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "stdout.raw", "description": "The standard output of the command"},
+        {"path": "stderr.raw", "description": "The standard error of the command"}
+      ]
     }
   },
   {
@@ -1490,7 +1617,12 @@
   {
     "path": "properties.specs.items.properties[\"docker.exec\"].properties.exec_config",
     "merge": {
-      "description": "Config options as would be passed to `docker exec` "
+      "description": "Config options as would be passed to `docker exec`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go)"
+    },
+    "replace": {
+      "required": [
+        "Cmd"
+      ]
     }
   },
   {
@@ -1573,8 +1705,36 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.image-ls\"]",
+    "replace": {
+      "required": []
+    },
     "merge": {
-      "description": "Collect a list of docker images present on the server"
+      "description": "Collect a list of docker images present on the server",
+      "examples": [
+        {
+          "output_dir": "/cooltool/images/",
+          "All": true,
+          "Filters": {
+            "label": [
+              "com.supercooltool.app=supercooltool-enterprise"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "image_ls.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "image_ls.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "image_ls.human",
+          "description": "Human-readable output"
+        }
+      ]
     }
   },
   {
@@ -1586,7 +1746,8 @@
   {
     "path": "properties.specs.items.properties[\"docker.image-ls\"].properties.Filters",
     "merge": {
-      "description": "Same as would be passed to `docker images`"
+      "description": "Same as would be passed to `docker images`",
+      "additionalProperties": true
     }
   },
   {
@@ -1597,8 +1758,36 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.images\"]",
+    "replace": {
+      "required": []
+    },
     "merge": {
-      "description": "Collect a list of docker images present on the server"
+      "description": "Collect a list of docker images present on the server",
+      "examples": [
+        {
+          "output_dir": "/cooltool/images/",
+          "All": true,
+          "Filters": {
+            "label": [
+              "com.supercooltool.app=supercooltool-enterprise"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "image_ls.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "image_ls.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "image_ls.human",
+          "description": "Human-readable output"
+        }
+      ]
     }
   },
   {
@@ -1610,7 +1799,8 @@
   {
     "path": "properties.specs.items.properties[\"docker.images\"].properties.Filters",
     "merge": {
-      "description": "Same as would be passed to `docker images`"
+      "description": "Same as would be passed to `docker images`",
+      "additionalProperties": true
     }
   },
   {
@@ -1622,13 +1812,55 @@
   {
     "path": "properties.specs.items.properties[\"docker.info\"]",
     "merge": {
-      "description": "Collect info about the Docker daemon"
+      "description": "Collect info about the Docker daemon",
+      "examples": [
+        {
+          "output_dir": "/docker/daemon/",
+          "timeout_seconds": 10,
+          "description": "Info about the docker daemon"
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "docker_info.raw",
+          "description": "The raw JSON from the docker daemon"
+        },
+        {
+          "path": "docker_info.json",
+          "description": "A pretty-printed JSON representation"
+        },
+        {
+          "path": "docker_info.human",
+          "description": "A human-readable representation"
+        }
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.logs\"]",
     "merge": {
-      "description": "Collect info about the Docker daemon"
+      "description": "Collect the stdout/stderr logs from one or more docker containers. One of `container` or `container_list_options` is required.",
+      "examples": [
+        {
+          "description": "The docker logs for all the containers labeled with com.supercooltool.onprem",
+          "output_dir": "/docker/logs",
+          "timeout_seconds": 100,
+          "container_list_options": {
+            "All": true,
+            "Filters": {
+              "label": [
+                "com.supercooltool.onprem=true"
+              ]
+            }
+          },
+          "container_logs_options": {
+            "Timestamps": true
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "{{.Name}}.raw", "description": "The stdout/stderr multiplexed logs. Will generate this file for each matched container"}
+      ]
     }
   },
   {
@@ -1640,13 +1872,16 @@
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options",
     "merge": {
-      "description": "Options to be used to filter the list of containers"
+      "description": "Options to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
+    },
+    "replace": {
+      "required": []
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.All",
     "merge": {
-      "description": "Same as `-a` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
@@ -1658,7 +1893,8 @@
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Filters",
     "merge": {
-      "description": "Same as `--filter` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)",
+      "additionalProperties": true
     }
   },
   {
@@ -1670,37 +1906,40 @@
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Latest",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Limit",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Quiet",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Size",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_list_options.properties.Since",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.logs\"].properties.container_logs_options",
     "merge": {
-      "description": "Args as would be given to `docker logs`"
+      "description": "Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73)"
+    },
+    "replace": {
+      "required": []
     }
   },
   {
@@ -1753,14 +1992,43 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.node-ls\"]",
+    "replace": {
+      "required": []
+    },
     "merge": {
-      "description": "Collect information about the nodes in a Docker Swarm installation"
+      "description": "Collect information about the nodes in a Docker Swarm installation",
+      "examples": [
+        {
+          "description": "List of swarm nodes",
+          "output_dir": "/swarm/nodes/",
+          "Filters": {
+            "name": [
+              "cooltool-docker-swarm-"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "node_ls.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "node_ls.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "node_ls.human",
+          "description": "Human-readable output"
+        }
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.node-ls\"].properties.Filters",
     "merge": {
-      "description": "Same as would be passed to `docker node ls`"
+      "description": "Same as would be passed to `docker node ls`",
+      "additionalProperties": true
     }
   },
   {
@@ -1772,25 +2040,49 @@
   {
     "path": "properties.specs.items.properties[\"docker.ps\"]",
     "merge": {
-      "description": "Collect information about containers"
+      "description": "Collect information about containers",
+      "examples": [
+        {
+          "output_dir": "/docker/ps/",
+          "All": true
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "container_ls.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "container_ls.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "container_ls.human",
+          "description": "Human-readable output"
+        }
+      ]
+    },
+    "replace": {
+      "required": []
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.ps\"].properties.All",
     "merge": {
-      "description": "Same as `-a` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.ps\"].properties.Before",
     "merge": {
-      "description": "Same as `--before` option to `docker logs` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.ps\"].properties.Filters",
     "merge": {
-      "description": "Same as `--filter` option to `docker ps` "
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)",
+      "additionalProperties": true
     }
   },
   {
@@ -1802,43 +2094,72 @@
   {
     "path": "properties.specs.items.properties[\"docker.ps\"].properties.Latest",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.ps\"].properties.Limit",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.ps\"].properties.Quiet",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.ps\"].properties.Size",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.ps\"].properties.Since",
     "merge": {
-      "description": "Same as would be passed to `docker ps`"
+      "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.run\"]",
     "merge": {
-      "description": "Collect the stderr/stdout of running a single docker container"
+      "description": "Collect the stderr/stdout of running a single docker container",
+      "examples": [
+        {
+          "description": "Listing of host's network interfaces",
+          "output_dir": "/host/network",
+          "container_create_config": {
+            "Config": {
+              "Cmd": [
+                "ip",
+                "addr",
+                "show"
+              ],
+              "Image": "debian:latest"
+            },
+            "HostConfig": {
+              "AutoRemove": true,
+              "NetworkMode": "host"
+            }
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "stdout.raw", "description": "The standard output of the container"},
+        {"path": "stderr.raw", "description": "The standard error of the container"}
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config",
     "merge": {
-      "description": "Container create options as would be passed to `docker run`"
+      "description": "Same as would be passed to `docker run`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go#L13)"
+    },
+    "replace": {
+      "required": [
+        "Config"
+      ]
     }
   },
   {
@@ -1851,6 +2172,11 @@
     "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.Config",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
+    },
+    "replace": {
+      "required": [
+        "Image"
+      ]
     }
   },
   {
@@ -2091,6 +2417,9 @@
     "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
+    },
+    "replace": {
+      "required": []
     }
   },
   {
@@ -2763,6 +3092,9 @@
     "path": "properties.specs.items.properties[\"docker.run\"].properties.container_create_config.properties.NetworkingConfig",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
+    },
+    "replace": {
+      "required": []
     }
   },
   {
@@ -2780,13 +3112,49 @@
   {
     "path": "properties.specs.items.properties[\"docker.service-logs\"]",
     "merge": {
-      "description": "Collect logs from a docker swarm service"
+      "description": "Collect logs from a docker swarm service. One of `service` or `service_list_options` is required.",
+      "examples": [
+        {
+          "output_dir": "/swarm/services/www",
+          "service": "cooltool-www"
+        },
+        {
+          "output_dir": "/swarm/services/core-stack",
+          "service_list_options": {
+            "Filters": {
+              "name": [
+                "cooltool-www",
+                "cooltool-api",
+                "cooltool-worker"
+              ]
+            }
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "{{.Name}}.raw", "description": "The raw output of the logs call. Will generate this file for each matched service"}
+      ]
+    },
+    "replace": {
+      "required": [],
+      "oneOf": [
+        {
+          "required": [
+            "service"
+          ]
+        },
+        {
+          "required": [
+            "service_list_options"
+          ]
+        }
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.container_logs_options",
     "merge": {
-      "description": "Args as would be given to `docker logs`"
+      "description": "Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73)"
     }
   },
   {
@@ -2847,12 +3215,18 @@
     "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.service_list_options",
     "merge": {
       "description": "Options for filtering all swarm services"
+    },
+    "replace": {
+      "required": [
+        "Filters"
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.service-logs\"].properties.service_list_options.properties.Filters",
     "merge": {
-      "description": "Same as would be passed to `docker service ls`"
+      "description": "Same as would be passed to `docker service ls`",
+      "additionalProperties": true
     }
   },
   {
@@ -2863,14 +3237,43 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.service-ls\"]",
+    "replace": {
+      "required": []
+    },
     "merge": {
-      "description": "Collect a list of docker swarm services"
+      "description": "Collect a list of docker swarm services",
+      "examples": [
+        {
+          "output_dir": "/swarm/services/list/",
+          "description": "List of all services starting with `cooltool-`",
+          "Filters": {
+            "name": [
+              "cooltool-"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "service_ls.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "service_ls.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "service_ls.human",
+          "description": "Human-readable output"
+        }
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.service-ls\"].properties.Filters",
     "merge": {
-      "description": "Same as would be passed to `docker service ls`"
+      "description": "Same as would be passed to `docker service ls`",
+      "additionalProperties": true
     }
   },
   {
@@ -2882,13 +3285,39 @@
   {
     "path": "properties.specs.items.properties[\"docker.service-ps\"]",
     "merge": {
-      "description": "Collect information about the tasks run by one or more services"
+      "description": "Collect information about the tasks run by one or more services",
+      "examples": [
+        {
+          "output_dir": "/swarm/services/www/tasks/",
+          "description": "List of all services starting with `cooltool-`",
+          "Filters": {
+            "name": [
+              "cooltool-"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "service_ps.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "service_ps.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "service_ps.human",
+          "description": "Human-readable output"
+        }
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.service-ps\"].properties.Filters",
     "merge": {
-      "description": "Same as would be passed to `docker service ps`"
+      "description": "Same as would be passed to `docker service ps`",
+      "additionalProperties": true
     }
   },
   {
@@ -2900,13 +3329,23 @@
   {
     "path": "properties.specs.items.properties[\"docker.stack-service-logs\"]",
     "merge": {
-      "description": "Collect logs from one or more services in a stack"
+      "description": "Collect logs from one or more services in a stack",
+      "examples": [
+        {
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core"
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "{{.StackName}}_{{.ServiceName}}.raw", "description": "The raw output. Will generate this file for each matched service"}
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options",
     "merge": {
-      "description": "Args as would be given to `docker logs`"
+      "description": "Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73)"
     }
   },
   {
@@ -2972,7 +3411,28 @@
   {
     "path": "properties.specs.items.properties[\"docker.stack-service-ls\"]",
     "merge": {
-      "description": "Collect information about services in a swarm stack"
+      "description": "Collect information about services in a swarm stack",
+      "examples": [
+        {
+          "output_dir": "/swarm/stacks/cooltool/services",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core"
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "service_ls.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "service_ls.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "service_ls.human",
+          "description": "Human-readable output"
+        }
+      ]
     }
   },
   {
@@ -2985,12 +3445,44 @@
     "path": "properties.specs.items.properties[\"docker.stack-service-ls\"].properties.service_list_options",
     "merge": {
       "description": "Options as would be passed to `docker stack services"
+    },
+    "replace": {
+      "required": []
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.stack-service-ps\"]",
     "merge": {
-      "description": "Collect information about the tasks running in a service"
+      "description": "Collect information about the tasks running in a service",
+      "examples": [
+        {
+          "output_dir": "/swarm/stacks/cooltool/service-tasks",
+          "description": "Tasks owned by services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "task_list_options": {
+            "Filters": {
+              "label": [
+                "com.cooltool.tier=www",
+                "com.cooltool.tier=api"
+              ]
+            }
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "service_ps.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "service_ps.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "service_ps.human",
+          "description": "Human-readable output"
+        }
+      ]
     }
   },
   {
@@ -3000,21 +3492,53 @@
     }
   },
   {
+    "TODO(dex)": "I don't know how SpecShared is getting into this part of the schema. For now just replace it out",
     "path": "properties.specs.items.properties[\"docker.stack-service-ps\"].properties.task_list_options",
+    "replace": {
+      "required": [],
+      "properties": {
+        "Filters": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
     "merge": {
-      "description": "Options as would be passed to `docker stack services`"
+      "description": "Options as would be passed to `docker stack ps`"
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.stack-task-logs\"]",
     "merge": {
-      "description": "Collect logs from a docker swarm task"
+      "description": "Collect logs from a docker swarm task",
+      "examples": [
+        {
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "task_list_options": {
+            "Filters": {
+              "label": [
+                "com.cooltool.tier=www",
+                "com.cooltool.tier=api"
+              ]
+            }
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "{{.TaskId}}.raw", "description": "The raw output. Will generate this file for each matched service task"}
+      ]
     }
   },
   {
     "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.container_logs_options",
     "merge": {
-      "description": "Options as would be passed to `docker logs`"
+      "description": "Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73)"
     }
   },
   {
@@ -3025,6 +3549,19 @@
   },
   {
     "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.task_list_options",
+    "replace": {
+      "required": [],
+      "properties": {
+        "Filters": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
     "merge": {
       "description": "Options for filtering stack tasks"
     }
@@ -3038,8 +3575,617 @@
   {
     "path": "properties.specs.items.properties[\"docker.task-logs\"]",
     "merge": {
-      "description": "Collect logs from a docker swarm task"
+      "description": "Collect logs from a docker swarm task",
+      "examples": [
+        {
+          "output_dir": "/swarm/tasks/logs",
+          "description": "Logs from cooltool tasks in the www and api tiers",
+          "task_list_options": {
+            "Filters": {
+              "label": [
+                "com.cooltool.tier=www",
+                "com.cooltool.tier=api"
+              ]
+            }
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "{{.TaskId}}.raw", "description": "The raw output. Will generate this file for each matched service task"}
+      ]
     }
   },
-  {}
+  {
+    "path": "properties.specs.items.properties[\"docker.task-logs\"].properties.task_list_options",
+    "replace": {
+      "required": [],
+      "properties": {
+        "Filters": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
+    "merge": {
+      "description": "Options for filtering stack tasks"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.task-logs\"].properties.container_logs_options",
+    "merge": {
+      "description": "Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73)"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.task-logs\"].properties.id",
+    "merge": {
+      "description": "The id of a single task"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.task-ls\"]",
+    "replace": {
+      "required": []
+    },
+    "merge": {
+      "description": "List docker swarm tasks",
+      "examples": [
+        {
+          "output_dir": "/swarm/tasklist",
+          "Filters": {
+            "name": [
+              "cooltool-api-",
+              "cooltool-backend-"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "task_ls.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "task_ls.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "task_ls.human",
+          "description": "Human-readable output"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.task-ls\"].properties.Filters",
+    "merge": {
+      "description": "Filters for tasks",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "array"
+        }
+      }
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.version\"]",
+    "merge": {
+      "description": "Get the version of the docker server",
+      "examples": [
+        {
+          "output_dir": "/docker/version"
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "docker_version.raw",
+          "description": "Raw output"
+        },
+        {
+          "path": "docker_version.json",
+          "description": "JSON output"
+        },
+        {
+          "path": "docker_version.human",
+          "description": "Human-readable output"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"journald.logs\"]",
+    "replace": {
+      "required": [
+        "unit",
+        "output_dir"
+      ]
+    },
+    "merge": {
+      "description": "Collect logs from journald",
+      "examples": [
+        {
+          "output_dir": "/system/journald/cooltool-api",
+          "reverse": true,
+          "unit": "cooltool-api",
+          "since": "2018-01-01"
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "logs.raw", "description": "The raw output the `journald` logs for the unit"}
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"journald.logs\"].properties.reverse",
+    "merge": {
+      "description": "Store logs in reverse chronological order"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"journald.logs\"].properties.since",
+    "merge": {
+      "description": "Since date for log collection"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"journald.logs\"].properties.unit",
+    "merge": {
+      "description": "Systemd unit from which to collect logs"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.api-versions\"]",
+    "merge": {
+      "description": "Get the kubernetes API versions",
+      "examples": [
+        {
+          "output_dir": "/kubernetes/version"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.cluster-info\"]",
+    "merge": {
+      "description": "Get the kubernetes cluster info",
+      "examples": [
+        {
+          "output_dir": "/kubernetes/cluster-info"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.logs\"]",
+    "merge": {
+      "description": "Collect the logs for one or more kubernetes pods",
+      "examples": [
+        {
+          "output_dir": "/kubernetes/api-pod-logs",
+          "pod": "cooltool-api-110212121-ab123ef",
+          "namespace": "default",
+          "pod_log_options": {
+            "timestamps": true,
+            "sinceSeconds": 1000000,
+            "limitBytes": 1000000000
+          },
+          "timeout_seconds": 30
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.logs\"].properties.namespace",
+    "merge": {
+      "description": "The Kubernetes namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.logs\"].properties.pod",
+    "merge": {
+      "description": "The Kubernetes pod"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.logs\"].properties.pod_log_options",
+    "merge": {
+      "description": "The Kubernetes pod log options"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.resource-list\"]",
+    "merge": {
+      "description": "Collect a list of resources managed by the cluster",
+      "examples": [
+        {
+          "output_dir": "/kubernetes/default/deployments",
+          "namespace": "default",
+          "kind": "deployments"
+        },
+        {
+          "output_dir": "/kubernetes/default/services",
+          "namespace": "default",
+          "kind": "svc"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.resource-list\"].properties.kind",
+    "merge": {
+      "description": "The Kubernetes resource kind, as would be passed to `kubectl get`",
+      "examples": [
+        "deployments",
+        "replicasets"
+      ],
+      "pattern": "^(componentstatuses|cs|configmaps|cm|daemonsets|ds|deployments|deploy|endpoints|ep|events|ev|horizontalpodautoscalers|hpa|ingresses|ing|jobs|limitranges|limits|namespaces|ns|networkpolicies|netpol|nodes|no|persistentvolumeclaims|pvc|persistentvolumes|pv|pods|po|podsecuritypolicies|psp|podtemplates|replicasets|rs|replicationcontrollers|rc|resourcequotas|quota|storageclasses|statefulsets|serviceaccounts|sa|services|svc|secrets)$"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.resource-list\"].properties.namespace",
+    "merge": {
+      "description": "The Kubernetes namespace"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.resource-list\"].properties.resource_list_options",
+    "merge": {
+      "description": "An instance of metav1.ListOptions"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"kubernetes.version\"]",
+    "merge": {
+      "description": "Get the kubernetes version",
+      "examples": [
+        {
+          "output_dir": "/k8s/version"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.hostname\"]",
+    "merge": {
+      "description": "Get the hostname",
+      "examples": [
+        {
+          "output_dir": "/system/hostname"
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "stderr",
+          "description": "The stdout from the command"
+        },
+        {
+          "path": "stdout",
+          "description": "The stdin from the command"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.http-request\"]",
+    "replace": {
+      "required": ["url", "method"]
+    },
+    "merge": {
+      "description": "Collect information about the response from making an HTTP request",
+      "examples": [
+        {
+          "output_dir": "/system/ping-ip",
+          "url": "https://api.replicated.com/market/v1/echo/ip",
+          "method": "get",
+          "header": {
+            "User-Agent": [
+              "cooltool/supportbundle 0.11.1"
+            ]
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "body",
+          "description": "The response body"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.http-request\"].properties.body",
+    "merge": {
+      "description": "The request body"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.http-request\"].properties.header",
+    "merge": {
+      "description": "One or more headers to send",
+      "patternProperties": {
+        ".*": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.http-request\"].properties.insecure",
+    "merge": {
+      "description": "Set to `true` to skip TLS verification"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.http-request\"].properties.method",
+    "merge": {
+      "description": "HTTP request method"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.http-request\"].properties.url",
+    "merge": {
+      "description": "The HTTP request URL"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.loadavg\"]",
+    "replace": {
+      "required": []
+    },
+    "merge": {
+      "description": "Collect information about CPU load",
+      "examples": [
+        {
+          "output_dir": "/system/load"
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "contents",
+          "description": "The raw loadavg info ",
+          "examples": [
+            "0.77 0.93 0.90 10/947 12"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.loadavg\"].properties.template",
+    "merge": {
+      "description": "(Optional) a template for the human-readable output"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.read-file\"]",
+    "merge": {
+      "description": "Read a file from the filesystem",
+      "examples": [
+        {
+          "output_dir": "/files/etc/bigtool-conf",
+          "filepath": "/etc/bigtool.conf"
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "contents",
+          "description": "The file contents",
+          "examples": [
+            "{\"setting1\": true, \"setting2\": false}"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.read-file\"].properties.filepath",
+    "merge": {
+      "description": "The file path on the host. If running Support Bundle via docker, this will work, but symlinks are not supported"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.run-command\"]",
+    "merge": {
+      "description": "Run a command. Will be run in the support bundle container if `docker run replicated/support-bundle` is used. To run in a custom container, use `docker.run` instead",
+      "examples": [
+        {
+          "output_dir": "/system/commands/ping-google",
+          "name": "date"
+        },
+        {
+          "output_dir": "/system/commands/ping-google",
+          "name": "cat",
+          "args": [
+            "/etc/os-release"
+          ]
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "stderr",
+          "description": "The standard error of the comand",
+          "examples": [
+            "Usage: ping [-aAbBdDfhLnOqrRUvV] [-c count] [-i interval] [-I interface]\n [-m mark] [-M pmtudisc_option] [-l preload] [-p pattern] [-Q tos]\n [-s packetsize] [-S sndbuf] [-t ttl] [-T timestamp_option]\n [-w deadline] [-W timeout] [hop1 ...] destination"
+          ]
+        },
+        {
+          "path": "stdout",
+          "description": "The standard output of the comand",
+          "examples": [
+            "PING google.com (172.217.11.78) 56(84) bytes of data.\n 64 bytes from lax17s34-in-f14.1e100.net (172.217.11.78): icmp_seq=1 ttl=54 time=203 ms\n 64 bytes from lax17s34-in-f14.1e100.net (172.217.11.78): icmp_seq=2 ttl=54 time=28.0 ms\n 64 bytes from lax17s34-in-f14.1e100.net (172.217.11.78): icmp_seq=3 ttl=54 time=130 ms\n"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.run-command\"].properties.args",
+    "merge": {
+      "description": "The command arguments"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.run-command\"].properties.dir",
+    "merge": {
+      "description": "The working directory of the command"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.run-command\"].properties.env",
+    "merge": {
+      "description": "Specifies additional environment variables"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.run-command\"].properties.name",
+    "merge": {
+      "description": "The command to run"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.uptime\"]",
+    "replace": {
+      "required": [
+        "output_dir"
+      ]
+    },
+    "merge": {
+      "description": "Collect information about the system's uptime",
+      "examples": [
+        {
+          "output_dir": "/system/uptime"
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "contents", "description": "The contents of the uptime file"}
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"os.uptime\"].properties.template",
+    "merge": {
+      "description": "Template for the human-readable output"
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"retraced.events\"]",
+    "replace": {
+      "required": [
+        "output_dir",
+        "api_token",
+        "api_endpoint",
+        "project_id"
+      ]
+
+    },
+    "merge": {
+      "description": "Collect Audit Log events from a running Retraced instance",
+      "examples": [
+        {
+          "output_dir": "/audit/events",
+          "api_endpoint": "https://auditlogs.mycorp.internal:8080",
+          "api_token": "aef342f32f22f3edf1f1f3f3ef",
+          "project_id": "f3edf1f1f3f3efaef342f32f22"
+        },
+        {
+          "output_dir": "/audit/events",
+          "api_endpoint": "https://auditlogs.mycorp.internal:8080",
+          "api_token": "aef342f32f22f3edf1f1f3f3ef",
+          "project_id": "f3edf1f1f3f3efaef342f32f22",
+          "insecure": true,
+          "timeout_seconds": 10,
+          "mask": {
+            "Action": true,
+            "Description": true,
+            "ActorID": true,
+            "ActorName": true,
+            "CanonicalTime": true
+          },
+          "query": {
+            "CRUD": "c,u,d"
+          }
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "audit_events.csv", "description": "The audit events in CSV format"}
+      ]
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"retraced.events\"].properties.api_endpoint",
+    "merge": {
+      "description": "The location of the Audit Logs API endpoint in the form `http(s)://<host>:<port>`"
+    },
+    "replace": {
+      "required": []
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"retraced.events\"].properties.api_token",
+    "merge": {
+      "description": "An API token for communicating with the audit log instance"
+    },
+    "replace": {
+      "required": []
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"retraced.events\"].properties.insecure",
+    "merge": {
+      "description": "Set to `true` to skip SSL verification on the endpoint"
+    },
+    "replace": {
+      "required": []
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"retraced.events\"].properties.project_id",
+    "merge": {
+      "description": "The Audit Log Project ID"
+    },
+    "replace": {
+      "required": []
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"retraced.events\"].properties.query",
+    "merge": {
+      "description": "A structured query for filtering events, as in https://github.com/retracedhq/retraced-go/blob/master/graphql.go#L16"
+    },
+    "replace": {
+      "required": []
+    }
+  },
+  {
+    "path": "properties.specs.items.properties[\"retraced.events\"].properties.mask",
+    "merge": {
+      "description": "A mask to determine what fields to include in the output file, as in https://github.com/retracedhq/retraced-go/blob/master/graphql.go#L160"
+    },
+    "replace": {
+      "required": []
+    }
+  },
+
+
+  { "comment": "last step -- delete internal spec types, delete all the kubernetes stuff, we don't support yet, especially not out-of-cluster"},
+  {
+    "path": "properties.specs.items.properties",
+    "delete": [
+      "kubernetes.cluster-info",
+      "kubernetes.version",
+      "kubernetes.api-versions",
+      "kubernetes.logs",
+      "kubernetes.resource-list",
+      "meta.customer",
+      "version"
+    ]
+  }
 ]
