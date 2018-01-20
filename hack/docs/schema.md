@@ -6,8 +6,8 @@ __add description to json file__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| lifecycle | array | `lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles. |  |
-| specs | array | A list of items to include in the support bundle. |  |
+| lifecycle | array | `lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles |  |
+| specs | array | A list of items to include in the support bundle |  |
 
 *****
 
@@ -15,13 +15,13 @@ __add description to json file__
 
 #### Type: object
 
-__`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles.__
+__`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | [generate](#generate) | object | Adds a step that will generate a support bundle. It has no arguments, but should be specified with an empty object `{}` |  |
-| [message](#message) | object | `message` can be used to print a message to the end customer. |  |
-| [upload](#upload) | object | Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor. |  |
+| [message](#message) | object | `message` can be used to print a message to the end customer |  |
+| [upload](#upload) | object | Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor |  |
 
 *****
 
@@ -38,7 +38,7 @@ __Adds a step that will generate a support bundle. It has no arguments, but shou
 
 #### Type: object
 
-__`message` can be used to print a message to the end customer.__
+__`message` can be used to print a message to the end customer__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -50,7 +50,7 @@ __`message` can be used to print a message to the end customer.__
 
 #### Type: object
 
-__Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor.__
+__Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -77,28 +77,28 @@ __Allows configuring an interactive prompt for the user to confirm before upload
 
 #### Type: object
 
-__A list of items to include in the support bundle.__
+__A list of items to include in the support bundle__
 
-Required: output_dir
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | description | string | A description of the file(s) that will be collected by this spec |  |
 | [docker.container-cp](#docker.container-cp) | object | Collect a file by copying from a running docker container |  |
 | [docker.container-exec](#docker.container-exec) | object | Collect the stdout and stderr of `exec`-ing a command on a running docker container |  |
-| [docker.container-inspect](#docker.container-inspect) | object | Collect the `docker inspect` output for one or more running or stopped containers |  |
-| [docker.container-logs](#docker.container-logs) | object | Collect the logs from one or more docker containers |  |
+| [docker.container-inspect](#docker.container-inspect) | object | Collect the `docker inspect` output for one or more running or stopped containers. One of `container` or `container_list_options` is required. |  |
+| [docker.container-logs](#docker.container-logs) | object | Collect the stdout/stderr logs from one or more docker containers. One of `container` or `container_list_options` is required. |  |
 | [docker.container-ls](#docker.container-ls) | object | Collect information about one or more containers |  |
 | [docker.container-run](#docker.container-run) | object | Collect the stderr/stdout of running a single docker container |  |
 | [docker.exec](#docker.exec) | object | Collect the stdout/stderr of executing a command in an already running docker container |  |
 | [docker.image-ls](#docker.image-ls) | object | Collect a list of docker images present on the server |  |
 | [docker.images](#docker.images) | object | Collect a list of docker images present on the server |  |
 | [docker.info](#docker.info) | object | Collect info about the Docker daemon |  |
-| [docker.logs](#docker.logs) | object | Collect info about the Docker daemon |  |
+| [docker.logs](#docker.logs) | object | Collect the stdout/stderr logs from one or more docker containers. One of `container` or `container_list_options` is required. |  |
 | [docker.node-ls](#docker.node-ls) | object | Collect information about the nodes in a Docker Swarm installation |  |
 | [docker.ps](#docker.ps) | object | Collect information about containers |  |
 | [docker.run](#docker.run) | object | Collect the stderr/stdout of running a single docker container |  |
-| [docker.service-logs](#docker.service-logs) | object | Collect logs from a docker swarm service |  |
+| [docker.service-logs](#docker.service-logs) | object | Collect logs from a docker swarm service. One of `service` or `service_list_options` is required. |  |
 | [docker.service-ls](#docker.service-ls) | object | Collect a list of docker swarm services |  |
 | [docker.service-ps](#docker.service-ps) | object | Collect information about the tasks run by one or more services |  |
 | [docker.stack-service-logs](#docker.stack-service-logs) | object | Collect logs from one or more services in a stack |  |
@@ -106,27 +106,20 @@ Required: output_dir
 | [docker.stack-service-ps](#docker.stack-service-ps) | object | Collect information about the tasks running in a service |  |
 | [docker.stack-task-logs](#docker.stack-task-logs) | object | Collect logs from a docker swarm task |  |
 | [docker.task-logs](#docker.task-logs) | object | Collect logs from a docker swarm task |  |
-| [docker.task-ls](#docker.task-ls) | object |  |  |
-| [docker.version](#docker.version) | object |  |  |
-| [journald.logs](#journald.logs) | object |  |  |
-| [kubernetes.api-versions](#kubernetes.api-versions) | object |  |  |
-| [kubernetes.cluster-info](#kubernetes.cluster-info) | object |  |  |
-| [kubernetes.logs](#kubernetes.logs) | object |  |  |
-| [kubernetes.resource-list](#kubernetes.resource-list) | object |  |  |
-| [kubernetes.version](#kubernetes.version) | object |  |  |
+| [docker.task-ls](#docker.task-ls) | object | List docker swarm tasks |  |
+| [docker.version](#docker.version) | object | Get the version of the docker server |  |
+| [journald.logs](#journald.logs) | object | Collect logs from journald |  |
 | [meta](#meta) | object |  |  |
-| [meta.customer](#meta.customer) | object |  |  |
-| [os.hostname](#os.hostname) | object |  |  |
-| [os.http-request](#os.http-request) | object |  |  |
-| [os.loadavg](#os.loadavg) | object |  |  |
-| [os.read-file](#os.read-file) | object |  |  |
-| [os.run-command](#os.run-command) | object |  |  |
-| [os.uptime](#os.uptime) | object |  |  |
+| [os.hostname](#os.hostname) | object | Get the hostname |  |
+| [os.http-request](#os.http-request) | object | Collect information about the response from making an HTTP request |  |
+| [os.loadavg](#os.loadavg) | object | Collect information about CPU load |  |
+| [os.read-file](#os.read-file) | object | Read a file from the filesystem |  |
+| [os.run-command](#os.run-command) | object | Run a command. Will be run in the support bundle container if `docker run replicated/support-bundle` is used. To run in a custom container, use `docker.run` instead |  |
+| [os.uptime](#os.uptime) | object | Collect information about the system's uptime |  |
 | output_dir | string |  |  |
-| [retraced.events](#retraced.events) | object |  |  |
+| [retraced.events](#retraced.events) | object | Collect Audit Log events from a running Retraced instance |  |
 | [scrub](#scrub) | object |  |  |
 | timeout_seconds | integer |  |  |
-| [version](#version) | object |  |  |
 
 *****
 
@@ -136,10 +129,57 @@ Required: output_dir
 
 __Collect a file by copying from a running docker container__
 
+Required: container, src_path, output_dir
+
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | container | string | The name of the container to copy from | my-sweet-app |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
 | src_path | string | The path of the target file in the container's filesystem | /var/log/supergoodtool/access.log |
+| timeout_seconds | integer |  |  |
+
+*****
+
+## meta
+
+#### Type: object
+
+__add description to json file__
+
+| Name    | Type    | Description | Example |
+| ------- | ------- | ----------- | ------- |
+| [labels](#labels) | object |  |  |
+| name | string |  |  |
+
+*****
+
+## labels
+
+#### Type: object
+
+__add description to json file__
+
+| Name    | Type    | Description | Example |
+| ------- | ------- | ----------- | ------- |
+| [.*](#.*) | string |  |  |
+
+*****
+
+## scrub
+
+#### Type: object
+
+__add description to json file__
+
+Required: regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace, regex, replace
+
+| Name    | Type    | Description | Example |
+| ------- | ------- | ----------- | ------- |
+| regex | string |  |  |
+| replace | string |  |  |
 
 *****
 
@@ -149,12 +189,17 @@ __Collect a file by copying from a running docker container__
 
 __Collect the stdout and stderr of `exec`-ing a command on a running docker container__
 
-Required: container, exec_config
+Required: output_dir, container, exec_config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | container | string | The name of the container to run the command in |  |
-| [exec_config](#exec_config) | object | Same as would be passed to `docker exec` |  |
+| description | string |  |  |
+| [exec_config](#exec_config) | object | Same as would be passed to `docker exec`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go#L43) |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -162,9 +207,9 @@ Required: container, exec_config
 
 #### Type: object
 
-__Same as would be passed to `docker exec`Config options as would be passed to `docker exec`__
+__Same as would be passed to `docker exec`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go#L43)Config options as would be passed to `docker exec`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go)__
 
-Required: Cmd, User, Privileged, Tty, AttachStdin, AttachStderr, AttachStdout, Detach, DetachKeys, Env, Cmd
+Required: Cmd, Cmd
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -203,12 +248,19 @@ __Same as would be passed to `docker exec`Container create options as would be p
 
 #### Type: object
 
-__Collect the `docker inspect` output for one or more running or stopped containers__
+__Collect the `docker inspect` output for one or more running or stopped containers. One of `container` or `container_list_options` is required.__
+
+Required: output_dir
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | container | string | the container name |  |
-| [container_list_options](#container_list_options) | object | Options to be used to filter the list of containers |  |
+| [container_list_options](#container_list_options) | object | Options to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -216,20 +268,20 @@ __Collect the `docker inspect` output for one or more running or stopped contain
 
 #### Type: object
 
-__Options to be used to filter the list of containers__
+__Options to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)__
 
-Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters, Quiet, Size, All, Latest, Since, Before, Limit, Filters, Quiet, Size, All, Latest, Since, Before, Limit, Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| All | boolean | Same as `-a` option to `docker ps`  |  |
+| All | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
 | Before | string | Same as `--before` option to `docker logs`  |  |
-| [Filters](#filters) | object | Same as `--filter` option to `docker ps`  |  |
-| Latest | boolean | Same as would be passed to `docker ps` |  |
-| Limit | integer | Same as would be passed to `docker ps` |  |
-| Quiet | boolean | Same as would be passed to `docker ps` |  |
-| Since | string | Same as would be passed to `docker ps` |  |
-| Size | boolean | Same as would be passed to `docker ps` |  |
+| [Filters](#filters) | object | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Latest | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Limit | integer | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Quiet | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Since | string | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Size | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
 
 *****
 
@@ -237,7 +289,7 @@ Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters, Quiet, Size, 
 
 #### Type: object
 
-__Same as `--filter` option to `docker ps` Same as would be passed to `docker images`Same as would be passed to `docker images`Same as `--filter` option to `docker ps` Same as would be passed to `docker node ls`Same as `--filter` option to `docker ps` Same as would be passed to `docker service ls`Same as would be passed to `docker service ls`Same as would be passed to `docker service ps`__
+__Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)Same as would be passed to `docker images`Same as would be passed to `docker images`Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)Same as would be passed to `docker node ls`Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)Same as would be passed to `docker service ls`Same as would be passed to `docker service ls`Same as would be passed to `docker service ps`Filters for tasks__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -249,13 +301,20 @@ __Same as `--filter` option to `docker ps` Same as would be passed to `docker im
 
 #### Type: object
 
-__Collect the logs from one or more docker containers__
+__Collect the stdout/stderr logs from one or more docker containers. One of `container` or `container_list_options` is required.__
+
+Required: output_dir
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | container | string | A container name |  |
-| [container_list_options](#container_list_options) | object | Options to be used to filter the list of containers |  |
-| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs` |  |
+| [container_list_options](#container_list_options) | object | Options to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73) |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -263,9 +322,9 @@ __Collect the logs from one or more docker containers__
 
 #### Type: object
 
-__Args as would be given to `docker logs`Options as would be passed to `docker logs`__
+__Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73)__
 
-Required: ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details
+Required: ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details, ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Details
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -286,18 +345,23 @@ Required: ShowStdout, ShowStderr, Since, Until, Timestamps, Follow, Tail, Detail
 
 __Collect information about one or more containers__
 
-Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| All | boolean | Same as `-a` option to `docker ps`  |  |
-| Before | string | Same as `--before` option to `docker logs`  |  |
-| [Filters](#filters) | object | Same as `--filter` option to `docker ps`  |  |
-| Latest | boolean | Same as would be passed to `docker ps` |  |
-| Limit | integer | Same as would be passed to `docker ps` |  |
-| Quiet | boolean | Same as would be passed to `docker ps` |  |
-| Since | string | Same as would be passed to `docker ps` |  |
-| Size | boolean | Same as would be passed to `docker ps` |  |
+| All | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Before | string | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| [Filters](#filters) | object | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Latest | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Limit | integer | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Quiet | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Since | string | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Size | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -307,12 +371,17 @@ Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
 
 __Collect the stderr/stdout of running a single docker container__
 
-Required: container_create_config
+Required: output_dir, container_create_config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | [container_create_config](#container_create_config) | object | Container create options as would be passed to `docker run` |  |
+| description | string |  |  |
 | enable_pull | boolean | If `true`, allow this container to be pulled if not present |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -320,9 +389,9 @@ Required: container_create_config
 
 #### Type: object
 
-__Container create options as would be passed to `docker run`__
+__Container create options as would be passed to `docker run`Same as would be passed to `docker run`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go#L13)__
 
-Required: Name, Config, HostConfig, NetworkingConfig, AdjustCPUShares, Name, Config, HostConfig, NetworkingConfig, AdjustCPUShares
+Required: Config, Config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -340,7 +409,7 @@ Required: Name, Config, HostConfig, NetworkingConfig, AdjustCPUShares, Name, Con
 
 __Container create options as would be passed to `docker run`__
 
-Required: Hostname, Domainname, User, AttachStdin, AttachStdout, AttachStderr, Tty, OpenStdin, StdinOnce, Env, Cmd, Image, Volumes, WorkingDir, Entrypoint, OnBuild, Labels, Hostname, Domainname, User, AttachStdin, AttachStdout, AttachStderr, Tty, OpenStdin, StdinOnce, Env, Cmd, Image, Volumes, WorkingDir, Entrypoint, OnBuild, Labels
+Required: Image, Image
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -476,7 +545,7 @@ __Container create options as would be passed to `docker run`__
 
 __Container create options as would be passed to `docker run`__
 
-Required: Binds, ContainerIDFile, LogConfig, NetworkMode, PortBindings, RestartPolicy, AutoRemove, VolumeDriver, VolumesFrom, CapAdd, CapDrop, Dns, DnsOptions, DnsSearch, ExtraHosts, GroupAdd, IpcMode, Cgroup, Links, OomScoreAdj, PidMode, Privileged, PublishAllPorts, ReadonlyRootfs, SecurityOpt, UTSMode, UsernsMode, ShmSize, ConsoleSize, Isolation, CpuShares, Memory, NanoCpus, CgroupParent, BlkioWeight, BlkioWeightDevice, BlkioDeviceReadBps, BlkioDeviceWriteBps, BlkioDeviceReadIOps, BlkioDeviceWriteIOps, CpuPeriod, CpuQuota, CpuRealtimePeriod, CpuRealtimeRuntime, CpusetCpus, CpusetMems, Devices, DeviceCgroupRules, DiskQuota, KernelMemory, MemoryReservation, MemorySwap, MemorySwappiness, OomKillDisable, PidsLimit, Ulimits, CpuCount, CpuPercent, IOMaximumIOps, IOMaximumBandwidth, Binds, ContainerIDFile, LogConfig, NetworkMode, PortBindings, RestartPolicy, AutoRemove, VolumeDriver, VolumesFrom, CapAdd, CapDrop, Dns, DnsOptions, DnsSearch, ExtraHosts, GroupAdd, IpcMode, Cgroup, Links, OomScoreAdj, PidMode, Privileged, PublishAllPorts, ReadonlyRootfs, SecurityOpt, UTSMode, UsernsMode, ShmSize, ConsoleSize, Isolation, CpuShares, Memory, NanoCpus, CgroupParent, BlkioWeight, BlkioWeightDevice, BlkioDeviceReadBps, BlkioDeviceWriteBps, BlkioDeviceReadIOps, BlkioDeviceWriteIOps, CpuPeriod, CpuQuota, CpuRealtimePeriod, CpuRealtimeRuntime, CpusetCpus, CpusetMems, Devices, DeviceCgroupRules, DiskQuota, KernelMemory, MemoryReservation, MemorySwap, MemorySwappiness, OomKillDisable, PidsLimit, Ulimits, CpuCount, CpuPercent, IOMaximumIOps, IOMaximumBandwidth
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -840,7 +909,7 @@ __Container create options as would be passed to `docker run`__
 
 __Container create options as would be passed to `docker run`__
 
-Required: EndpointsConfig, EndpointsConfig
+Required: EndpointsConfig
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -863,12 +932,17 @@ __Container create options as would be passed to `docker run`__
 
 __Collect the stdout/stderr of executing a command in an already running docker container__
 
-Required: container, exec_config
+Required: output_dir, container, exec_config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | container | string | The container name |  |
-| [exec_config](#exec_config) | object | Config options as would be passed to `docker exec`  |  |
+| description | string |  |  |
+| [exec_config](#exec_config) | object | Config options as would be passed to `docker exec`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go) |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -878,12 +952,17 @@ Required: container, exec_config
 
 __Collect a list of docker images present on the server__
 
-Required: All, Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | All | boolean | Same as would be passed to `docker images` |  |
 | [Filters](#filters) | object | Same as would be passed to `docker images` |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -893,12 +972,17 @@ Required: All, Filters
 
 __Collect a list of docker images present on the server__
 
-Required: All, Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | All | boolean | Same as would be passed to `docker images` |  |
 | [Filters](#filters) | object | Same as would be passed to `docker images` |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -908,6 +992,15 @@ Required: All, Filters
 
 __Collect info about the Docker daemon__
 
+Required: output_dir
+
+| Name    | Type    | Description | Example |
+| ------- | ------- | ----------- | ------- |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -915,13 +1008,20 @@ __Collect info about the Docker daemon__
 
 #### Type: object
 
-__Collect info about the Docker daemon__
+__Collect the stdout/stderr logs from one or more docker containers. One of `container` or `container_list_options` is required.__
+
+Required: output_dir
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | container | string | A container name |  |
-| [container_list_options](#container_list_options) | object | Options to be used to filter the list of containers |  |
-| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs` |  |
+| [container_list_options](#container_list_options) | object | Options to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73) |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -931,11 +1031,16 @@ __Collect info about the Docker daemon__
 
 __Collect information about the nodes in a Docker Swarm installation__
 
-Required: Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | [Filters](#filters) | object | Same as would be passed to `docker node ls` |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -945,18 +1050,23 @@ Required: Filters
 
 __Collect information about containers__
 
-Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| All | boolean | Same as `-a` option to `docker ps`  |  |
-| Before | string | Same as `--before` option to `docker logs`  |  |
-| [Filters](#filters) | object | Same as `--filter` option to `docker ps`  |  |
-| Latest | boolean | Same as would be passed to `docker ps` |  |
-| Limit | integer | Same as would be passed to `docker ps` |  |
-| Quiet | boolean | Same as would be passed to `docker ps` |  |
-| Since | string | Same as would be passed to `docker ps` |  |
-| Size | boolean | Same as would be passed to `docker ps` |  |
+| All | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Before | string | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| [Filters](#filters) | object | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Latest | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Limit | integer | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Quiet | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Since | string | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| Size | boolean | Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61) |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -966,12 +1076,17 @@ Required: Quiet, Size, All, Latest, Since, Before, Limit, Filters
 
 __Collect the stderr/stdout of running a single docker container__
 
-Required: container_create_config
+Required: output_dir, container_create_config
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_create_config](#container_create_config) | object | Container create options as would be passed to `docker run` |  |
+| [container_create_config](#container_create_config) | object | Same as would be passed to `docker run`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/configs.go#L13) |  |
+| description | string |  |  |
 | enable_pull | boolean | If `true`, allow this container to be pulled if not present |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -979,13 +1094,22 @@ Required: container_create_config
 
 #### Type: object
 
-__Collect logs from a docker swarm service__
+__Collect logs from a docker swarm service. One of `service` or `service_list_options` is required.__
+
+Required: 
+
+Required one of: service, service_list_options
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs` |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73) |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
 | service | string | A single docker swarm service for which to collect logs |  |
 | [service_list_options](#service_list_options) | object | Options for filtering all swarm services |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -995,11 +1119,16 @@ __Collect logs from a docker swarm service__
 
 __Options for filtering all swarm servicesOptions as would be passed to `docker stack servicesOptions as would be passed to `docker stack services__
 
-Required: Filters, Filters, Filters
+Required: Filters, output_dir, Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | [Filters](#filters) | object |  |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1009,11 +1138,16 @@ Required: Filters, Filters, Filters
 
 __Collect a list of docker swarm services__
 
-Required: Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | [Filters](#filters) | object | Same as would be passed to `docker service ls` |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1023,11 +1157,16 @@ Required: Filters
 
 __Collect information about the tasks run by one or more services__
 
-Required: Filters
+Required: output_dir, output_dir, Filters
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
 | [Filters](#filters) | object | Same as would be passed to `docker service ps` |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1037,13 +1176,18 @@ Required: Filters
 
 __Collect logs from one or more services in a stack__
 
-Required: namespace
+Required: output_dir, namespace
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs` |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73) |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
 | namespace | string | The stack's namespace |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
 | [service_list_options](#service_list_options) | object | Options as would be passed to `docker stack services |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1053,12 +1197,17 @@ Required: namespace
 
 __Collect information about services in a swarm stack__
 
-Required: namespace
+Required: output_dir, namespace
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
 | namespace | string | The stack's namespace |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
 | [service_list_options](#service_list_options) | object | Options as would be passed to `docker stack services |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1068,12 +1217,17 @@ Required: namespace
 
 __Collect information about the tasks running in a service__
 
-Required: namespace
+Required: output_dir, namespace
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
 | namespace | string | The stack's namespace |  |
-| [task_list_options](#task_list_options) | object | Options as would be passed to `docker stack services` |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| [task_list_options](#task_list_options) | object | Options as would be passed to `docker stack ps` |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1081,9 +1235,9 @@ Required: namespace
 
 #### Type: object
 
-__Options as would be passed to `docker stack services`Options for filtering stack tasks__
+__Options as would be passed to `docker stack ps`Options for filtering stack tasksOptions for filtering stack tasks__
 
-Required: Filters, Filters, Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -1097,13 +1251,18 @@ Required: Filters, Filters, Filters
 
 __Collect logs from a docker swarm task__
 
-Required: namespace
+Required: output_dir, namespace
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_logs_options](#container_logs_options) | object | Options as would be passed to `docker logs` |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73) |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
 | namespace | string | The stack namespace |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
 | [task_list_options](#task_list_options) | object | Options for filtering stack tasks |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1113,11 +1272,18 @@ Required: namespace
 
 __Collect logs from a docker swarm task__
 
+Required: output_dir
+
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [container_logs_options](#container_logs_options) | object |  |  |
-| id | string |  |  |
-| [task_list_options](#task_list_options) | object |  |  |
+| [container_logs_options](#container_logs_options) | object | Args as would be given to `docker logs`, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L73) |  |
+| description | string |  |  |
+| id | string | The id of a single task |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| [task_list_options](#task_list_options) | object | Options for filtering stack tasks |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1125,13 +1291,18 @@ __Collect logs from a docker swarm task__
 
 #### Type: object
 
-__add description to json file__
+__List docker swarm tasks__
 
-Required: Filters
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| [Filters](#filters) | object |  |  |
+| [Filters](#filters) | object | Filters for tasks |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1139,8 +1310,17 @@ Required: Filters
 
 #### Type: object
 
-__add description to json file__
+__Get the version of the docker server__
 
+Required: output_dir
+
+| Name    | Type    | Description | Example |
+| ------- | ------- | ----------- | ------- |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1148,162 +1328,20 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Collect logs from journald__
+
+Required: unit, output_dir
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| reverse | boolean |  |  |
-| since | string |  |  |
-| unit | string |  |  |
-
-*****
-
-## kubernetes.api-versions
-
-#### Type: object
-
-__add description to json file__
-
-
-*****
-
-## kubernetes.cluster-info
-
-#### Type: object
-
-__add description to json file__
-
-
-*****
-
-## kubernetes.logs
-
-#### Type: object
-
-__add description to json file__
-
-Required: pod
-
-| Name    | Type    | Description | Example |
-| ------- | ------- | ----------- | ------- |
-| namespace | string |  |  |
-| pod | string |  |  |
-| [pod_log_options](#pod_log_options) | object |  |  |
-
-*****
-
-## pod_log_options
-
-#### Type: object
-
-__add description to json file__
-
-| Name    | Type    | Description | Example |
-| ------- | ------- | ----------- | ------- |
-| apiVersion | string |  |  |
-| container | string |  |  |
-| follow | boolean |  |  |
-| kind | string |  |  |
-| limitBytes | integer |  |  |
-| previous | boolean |  |  |
-| sinceSeconds | integer |  |  |
-| [sinceTime](#sincetime) | object |  |  |
-| tailLines | integer |  |  |
-| timestamps | boolean |  |  |
-
-*****
-
-## sinceTime
-
-#### Type: object
-
-__add description to json file__
-
-
-*****
-
-## kubernetes.resource-list
-
-#### Type: object
-
-__add description to json file__
-
-Required: kind
-
-| Name    | Type    | Description | Example |
-| ------- | ------- | ----------- | ------- |
-| kind | string |  |  |
-| namespace | string |  |  |
-| [resource_list_options](#resource_list_options) | object |  |  |
-
-*****
-
-## resource_list_options
-
-#### Type: object
-
-__add description to json file__
-
-| Name    | Type    | Description | Example |
-| ------- | ------- | ----------- | ------- |
-| apiVersion | string |  |  |
-| continue | string |  |  |
-| fieldSelector | string |  |  |
-| includeUninitialized | boolean |  |  |
-| kind | string |  |  |
-| labelSelector | string |  |  |
-| limit | integer |  |  |
-| resourceVersion | string |  |  |
-| timeoutSeconds | integer |  |  |
-| watch | boolean |  |  |
-
-*****
-
-## kubernetes.version
-
-#### Type: object
-
-__add description to json file__
-
-
-*****
-
-## meta
-
-#### Type: object
-
-__add description to json file__
-
-| Name    | Type    | Description | Example |
-| ------- | ------- | ----------- | ------- |
-| [labels](#labels) | object |  |  |
-| name | string |  |  |
-
-*****
-
-## labels
-
-#### Type: object
-
-__add description to json file__
-
-| Name    | Type    | Description | Example |
-| ------- | ------- | ----------- | ------- |
-| [.*](#.*) | string |  |  |
-
-*****
-
-## meta.customer
-
-#### Type: object
-
-__add description to json file__
-
-| Name    | Type    | Description | Example |
-| ------- | ------- | ----------- | ------- |
-| customer_id | string |  |  |
-| customer_name | string |  |  |
-| installation_id | string |  |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| reverse | boolean | Store logs in reverse chronological order |  |
+| [scrub](#scrub) | object |  |  |
+| since | string | Since date for log collection |  |
+| timeout_seconds | integer |  |  |
+| unit | string | Systemd unit from which to collect logs |  |
 
 *****
 
@@ -1311,8 +1349,17 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Get the hostname__
 
+Required: output_dir
+
+| Name    | Type    | Description | Example |
+| ------- | ------- | ----------- | ------- |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1320,17 +1367,22 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Collect information about the response from making an HTTP request__
 
-Required: url
+Required: url, method
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| body | string |  |  |
-| [header](#header) | object |  |  |
-| insecure | boolean |  |  |
-| method | string |  |  |
-| url | string |  |  |
+| body | string | The request body |  |
+| description | string |  |  |
+| [header](#header) | object | One or more headers to send |  |
+| insecure | boolean | Set to `true` to skip TLS verification |  |
+| [meta](#meta) | object |  |  |
+| method | string | HTTP request method |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
+| url | string | The HTTP request URL |  |
 
 *****
 
@@ -1338,7 +1390,7 @@ Required: url
 
 #### Type: object
 
-__add description to json file__
+__One or more headers to send__
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -1350,13 +1402,18 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Collect information about CPU load__
 
-Required: template
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| template | string |  |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| template | string | (Optional) a template for the human-readable output |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1364,13 +1421,18 @@ Required: template
 
 #### Type: object
 
-__add description to json file__
+__Read a file from the filesystem__
 
-Required: filepath
+Required: output_dir, filepath
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| filepath | string |  |  |
+| description | string |  |  |
+| filepath | string | The file path on the host. If running Support Bundle via docker, this will work, but symlinks are not supported |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1378,16 +1440,21 @@ Required: filepath
 
 #### Type: object
 
-__add description to json file__
+__Run a command. Will be run in the support bundle container if `docker run replicated/support-bundle` is used. To run in a custom container, use `docker.run` instead__
 
-Required: name
+Required: output_dir, name
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| args | array |  |  |
-| dir | string |  |  |
-| env | array |  |  |
-| name | string |  |  |
+| args | array | The command arguments |  |
+| description | string |  |  |
+| dir | string | The working directory of the command |  |
+| env | array | Specifies additional environment variables |  |
+| [meta](#meta) | object |  |  |
+| name | string | The command to run |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1413,13 +1480,18 @@ __add description to json file__
 
 #### Type: object
 
-__add description to json file__
+__Collect information about the system's uptime__
 
-Required: template
+Required: output_dir
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| template | string |  |  |
+| description | string |  |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| [scrub](#scrub) | object |  |  |
+| template | string | Template for the human-readable output |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1427,18 +1499,23 @@ Required: template
 
 #### Type: object
 
-__add description to json file__
+__Collect Audit Log events from a running Retraced instance__
 
-Required: api_endpoint
+Required: output_dir, api_token, api_endpoint, project_id
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
-| api_endpoint | string |  |  |
-| api_token | string |  |  |
-| insecure | boolean |  |  |
-| [mask](#mask) | object |  |  |
-| project_id | string |  |  |
-| [query](#query) | object |  |  |
+| api_endpoint | string | The location of the Audit Logs API endpoint in the form `http(s)://<host>:<port>` |  |
+| api_token | string | An API token for communicating with the audit log instance |  |
+| description | string |  |  |
+| insecure | boolean | Set to `true` to skip SSL verification on the endpoint |  |
+| [mask](#mask) | object | A mask to determine what fields to include in the output file, as in https://github.com/retracedhq/retraced-go/blob/master/graphql.go#L160 |  |
+| [meta](#meta) | object |  |  |
+| output_dir | string |  |  |
+| project_id | string | The Audit Log Project ID |  |
+| [query](#query) | object | A structured query for filtering events, as in https://github.com/retracedhq/retraced-go/blob/master/graphql.go#L16 |  |
+| [scrub](#scrub) | object |  |  |
+| timeout_seconds | integer |  |  |
 
 *****
 
@@ -1446,9 +1523,9 @@ Required: api_endpoint
 
 #### Type: object
 
-__add description to json file__
+__A mask to determine what fields to include in the output file, as in https://github.com/retracedhq/retraced-go/blob/master/graphql.go#L160__
 
-Required: ID, Action, CRUD, Description, IsFailure, IsAnonymous, SourceIP, Country, LocSubdiv1, LocSubdiv2, Received, Created, CanonicalTime, Component, Version, Fields, Raw, GroupID, GroupName, ActorID, ActorName, ActorHref, ActorFields, TargetID, TargetName, TargetHref, TargetType, TargetFields, DisplayMarkdown
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -1488,9 +1565,9 @@ Required: ID, Action, CRUD, Description, IsFailure, IsAnonymous, SourceIP, Count
 
 #### Type: object
 
-__add description to json file__
+__A structured query for filtering events, as in https://github.com/retracedhq/retraced-go/blob/master/graphql.go#L16__
 
-Required: Action, CRUD, ReceivedStart, ReceivedEnd, CreatedStart, CreatedEnd, ActorName, ActorID, Description, Location
+Required: 
 
 | Name    | Type    | Description | Example |
 | ------- | ------- | ----------- | ------- |
@@ -1504,29 +1581,5 @@ Required: Action, CRUD, ReceivedStart, ReceivedEnd, CreatedStart, CreatedEnd, Ac
 | Location | string |  |  |
 | ReceivedEnd | string |  |  |
 | ReceivedStart | string |  |  |
-
-*****
-
-## scrub
-
-#### Type: object
-
-__add description to json file__
-
-Required: regex, replace
-
-| Name    | Type    | Description | Example |
-| ------- | ------- | ----------- | ------- |
-| regex | string |  |  |
-| replace | string |  |  |
-
-*****
-
-## version
-
-#### Type: object
-
-__add description to json file__
-
 
 *****

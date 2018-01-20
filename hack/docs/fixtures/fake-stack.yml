@@ -1,0 +1,16 @@
+version: '3.2'
+
+services:
+  cooltool-www:
+    image: nginx:latest
+    deploy:
+      labels:
+        com.cooltool.tier: "www"
+        com.supercooltool.onprem: "true"
+  cooltool-api:
+    image: nginx:latest
+    deploy:
+      replicas: 2
+      labels:
+        com.cooltool.tier: "api"
+        com.supercooltool.onprem: "true"
