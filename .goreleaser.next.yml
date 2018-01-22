@@ -32,6 +32,6 @@ dockers:
   - image: registry.replicated.com/library/support-bundle
     dockerfile: build/Dockerfile-release
     latest: true
-    tag_template: "next"
+    tag_template: "unstable"
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
