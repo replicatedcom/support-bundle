@@ -1,0 +1,12 @@
+FROM debian:stretch-slim
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y \
+    sensible-utils \
+    ca-certificates \
+    procps \
+    systemd \
+  && rm -rf /var/lib/apt/lists/*
+COPY support-bundle /usr/local/bin/support-bundle
+ENV IN_CONTAINER 1
+LABEL "com.replicated.support-bundle"="true"
+ENTRYPOINT [ "support-bundle" ]
+CMD [ "generate" ]

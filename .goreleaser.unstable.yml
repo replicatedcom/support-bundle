@@ -18,7 +18,7 @@ builds:
   hooks: {}
 archive:
   format: tar.gz
-  name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{.Arm }}{{ end }}-next'
+  name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{.Arm }}{{ end }}-unstable'
   files:
   - licence*
   - LICENCE*
@@ -30,8 +30,9 @@ archive:
   - CHANGELOG*
 dockers:
   - image: replicated/support-bundle
-    dockerfile: build/Dockerfile-release
+    dockerfile: build/Dockerfile-snapshot
     latest: false
-    tag_template: "unstable"
+    tag_templates:
+      - "unstable"
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
