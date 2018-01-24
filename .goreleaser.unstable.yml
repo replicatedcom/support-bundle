@@ -1,4 +1,4 @@
-go get github.com/goreleaser/goreleaserproject_name: support-bundle
+project_name: support-bundle
 release:
   github:
     owner: replicatedcom
@@ -29,9 +29,9 @@ archive:
   - changelog*
   - CHANGELOG*
 dockers:
-  - image: registry.replicated.com/library/support-bundle
+  - image: replicated/support-bundle
     dockerfile: build/Dockerfile-release
-    latest: true
+    latest: false
     tag_template: "unstable"
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
