@@ -22,7 +22,7 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 
 	task := plans.StreamSource{
 		Producer: k.producers.Logs(*spec.KubernetesLogs),
-		RawPath:  filepath.Join(spec.OutputDir, "logs.raw"),
+		RawPath:  filepath.Join(spec.Shared().OutputDir, "logs.raw"),
 	}
 	task, err = plans.SetCommonFieldsStreamSource(task, spec)
 	if err != nil {

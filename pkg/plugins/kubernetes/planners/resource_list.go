@@ -22,9 +22,9 @@ func (k *Kubernetes) ResourceList(spec types.Spec) []types.Task {
 
 	task := plans.StructuredSource{
 		Producer:  k.producers.ResourceList(*spec.KubernetesResourceList),
-		RawPath:   filepath.Join(spec.OutputDir, "resource.raw"),
-		JSONPath:  filepath.Join(spec.OutputDir, "resource.json"),
-		HumanPath: filepath.Join(spec.OutputDir, "resource.human"),
+		RawPath:   filepath.Join(spec.Shared().OutputDir, "resource.raw"),
+		JSONPath:  filepath.Join(spec.Shared().OutputDir, "resource.json"),
+		HumanPath: filepath.Join(spec.Shared().OutputDir, "resource.human"),
 	}
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)
 	if err != nil {

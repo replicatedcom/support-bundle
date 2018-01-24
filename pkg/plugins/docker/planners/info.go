@@ -10,9 +10,9 @@ import (
 func (d *Docker) Info(spec types.Spec) []types.Task {
 	task := plans.StructuredSource{
 		Producer:  d.producers.Info,
-		RawPath:   filepath.Join(spec.OutputDir, "docker_info.raw"),
-		JSONPath:  filepath.Join(spec.OutputDir, "docker_info.json"),
-		HumanPath: filepath.Join(spec.OutputDir, "docker_info.human"),
+		RawPath:   filepath.Join(spec.Shared().OutputDir, "docker_info.raw"),
+		JSONPath:  filepath.Join(spec.Shared().OutputDir, "docker_info.json"),
+		HumanPath: filepath.Join(spec.Shared().OutputDir, "docker_info.human"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

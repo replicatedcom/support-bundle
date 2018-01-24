@@ -23,9 +23,9 @@ func (d *Docker) ContainerLs(spec types.Spec) []types.Task {
 
 	task := plans.StructuredSource{
 		Producer:  d.producers.ContainerLs(*spec.DockerContainerLs),
-		RawPath:   filepath.Join(spec.OutputDir, "container_ls.raw"),
-		JSONPath:  filepath.Join(spec.OutputDir, "container_ls.json"),
-		HumanPath: filepath.Join(spec.OutputDir, "container_ls.human"),
+		RawPath:   filepath.Join(spec.Shared().OutputDir, "container_ls.raw"),
+		JSONPath:  filepath.Join(spec.Shared().OutputDir, "container_ls.json"),
+		HumanPath: filepath.Join(spec.Shared().OutputDir, "container_ls.human"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

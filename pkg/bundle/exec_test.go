@@ -33,7 +33,7 @@ func TestExec(t *testing.T) {
 		elapse: time.Nanosecond,
 		results: []*types.Result{
 			{
-				Spec: types.Spec{Description: "Logs from db container"},
+				Spec: types.Spec{SpecShared: types.SpecShared{Description: "Logs from db container"}},
 				Path: "/docker/db.logs",
 			},
 		},
@@ -42,15 +42,15 @@ func TestExec(t *testing.T) {
 		elapse: time.Nanosecond,
 		results: []*types.Result{
 			{
-				Spec: types.Spec{Description: "Stderr from app container"},
+				Spec: types.Spec{SpecShared: types.SpecShared{Description: "Stderr from app container"}},
 				Path: "/docker/app/stderr.txt",
 			},
 			{
-				Spec:  types.Spec{Description: "Stdout from app container"},
+				Spec:  types.Spec{SpecShared: types.SpecShared{Description: "Stdout from app container"}},
 				Error: errors.New("Docker API 500"),
 			},
 			{
-				Spec:  types.Spec{Description: "Logs from app container"},
+				Spec:  types.Spec{SpecShared: types.SpecShared{Description: "Logs from app container"}},
 				Path:  "/docker/app.logs",
 				Error: errors.New("Timedout"),
 			},
@@ -60,7 +60,7 @@ func TestExec(t *testing.T) {
 		elapse: time.Second,
 		results: []*types.Result{
 			{
-				Spec: types.Spec{Description: "/usr/bin/free"},
+				Spec: types.Spec{SpecShared: types.SpecShared{Description: "/usr/bin/free"}},
 				Path: "/host/commands/free",
 			},
 		},

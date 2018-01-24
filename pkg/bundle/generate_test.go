@@ -22,7 +22,7 @@ func TestGenerate(t *testing.T) {
 		elapse: time.Nanosecond,
 		results: []*types.Result{
 			{
-				Spec: types.Spec{Description: "Testing single"},
+				Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing single"}},
 				Path: "/testSingle.txt",
 			},
 		},
@@ -31,15 +31,15 @@ func TestGenerate(t *testing.T) {
 		elapse: time.Nanosecond,
 		results: []*types.Result{
 			{
-				Spec: types.Spec{Description: "Testing mixed results pass result"},
+				Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results pass result"}},
 				Path: "/testPass.txt",
 			},
 			{
-				Spec:  types.Spec{Description: "Testing mixed results fail result"},
+				Spec:  types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results fail result"}},
 				Error: errors.New("This was destined to fail"),
 			},
 			{
-				Spec:  types.Spec{Description: "Testing mixed results other fail result"},
+				Spec:  types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results other fail result"}},
 				Path:  "/testFail.txt",
 				Error: errors.New("This was also meant to fail"),
 			},
@@ -97,14 +97,14 @@ func TestGenerate(t *testing.T) {
 	require.NoError(t, err)
 
 	// everything that includes a path
-	assert.Contains(t, indexAll, testResult{Spec: types.Spec{Description: "Testing single"}, Path: "/testSingle.txt"})
-	assert.Contains(t, indexAll, testResult{Spec: types.Spec{Description: "Testing mixed results pass result"}, Path: "/testPass.txt"})
-	assert.NotContains(t, indexAll, testResult{Spec: types.Spec{Description: "Testing mixed results fail result"}, Error: "This was destined to fail"})
-	assert.NotContains(t, indexAll, testResult{Spec: types.Spec{Description: "Testing mixed results other fail result"}, Path: "/testFail.txt", Error: "This was also meant to fail"})
+	assert.Contains(t, indexAll, testResult{Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing single"}}, Path: "/testSingle.txt"})
+	assert.Contains(t, indexAll, testResult{Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results pass result"}}, Path: "/testPass.txt"})
+	assert.NotContains(t, indexAll, testResult{Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results fail result"}}, Error: "This was destined to fail"})
+	assert.NotContains(t, indexAll, testResult{Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results other fail result"}}, Path: "/testFail.txt", Error: "This was also meant to fail"})
 
 	// everything that includes an error
-	assert.NotContains(t, errorAll, testResult{Spec: types.Spec{Description: "Testing single"}, Path: "/testSingle.txt"})
-	assert.NotContains(t, errorAll, testResult{Spec: types.Spec{Description: "Testing mixed results pass result"}, Path: "/testPass.txt"})
-	assert.Contains(t, errorAll, testResult{Spec: types.Spec{Description: "Testing mixed results fail result"}, Error: "This was destined to fail"})
-	assert.Contains(t, errorAll, testResult{Spec: types.Spec{Description: "Testing mixed results other fail result"}, Path: "/testFail.txt", Error: "This was also meant to fail"})
+	assert.NotContains(t, errorAll, testResult{Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing single"}}, Path: "/testSingle.txt"})
+	assert.NotContains(t, errorAll, testResult{Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results pass result"}}, Path: "/testPass.txt"})
+	assert.Contains(t, errorAll, testResult{Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results fail result"}}, Error: "This was destined to fail"})
+	assert.Contains(t, errorAll, testResult{Spec: types.Spec{SpecShared: types.SpecShared{Description: "Testing mixed results other fail result"}}, Path: "/testFail.txt", Error: "This was also meant to fail"})
 }

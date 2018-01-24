@@ -43,9 +43,9 @@ func (d *Docker) containerInspectTask(id string, names []string, spec types.Spec
 	}
 	task := plans.StructuredSource{
 		Producer:  d.producers.ContainerInspect(id),
-		RawPath:   filepath.Join(spec.OutputDir, basename+".raw"),
-		JSONPath:  filepath.Join(spec.OutputDir, basename+".json"),
-		HumanPath: filepath.Join(spec.OutputDir, basename+".human"),
+		RawPath:   filepath.Join(spec.Shared().OutputDir, basename+".raw"),
+		JSONPath:  filepath.Join(spec.Shared().OutputDir, basename+".json"),
+		HumanPath: filepath.Join(spec.Shared().OutputDir, basename+".human"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

@@ -24,7 +24,9 @@ Loop:
 				continue Loop
 			}
 		}
-		jww.ERROR.Printf("Producer not defined for spec %+v", spec)
+		// dont show these to the customer, they're weird and scary
+		//jww.ERROR.Printf("Producer not defined for spec %+v", spec)
+		jww.INFO.Printf("Producer not defined for spec %+v", spec)
 	}
 
 	return tasks
