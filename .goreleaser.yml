@@ -35,6 +35,10 @@ dockers:
   - image: replicated/support-bundle
     dockerfile: build/Dockerfile-release
     latest: false
+    tag_template: "alpha"
+  - image: replicated/support-bundle
+    dockerfile: build/Dockerfile-release
+    latest: false
     tag_template: "beta"
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
