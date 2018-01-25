@@ -36,7 +36,6 @@ dockers:
     dockerfile: build/Dockerfile-release
     latest: false
     tag_templates:
-      - "alpha"
       - "beta"
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}

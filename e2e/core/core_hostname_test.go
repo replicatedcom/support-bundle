@@ -18,8 +18,8 @@ var _ = Describe("os.hostname", func() {
 
 			WriteBundleConfig(`
 specs:
-  - os.hostname: {}
-    output_dir: /os/hostname/`)
+  - os.hostname: 
+      output_dir: /os/hostname/`)
 
 			GenerateBundle()
 

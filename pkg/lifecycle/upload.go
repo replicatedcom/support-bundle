@@ -38,11 +38,12 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		}
 		return false, nil
 
-		if task.Options.Prompt.AcceptMessage != "" {
-			err = runTemplate(os.Stdout, "accept", task.Options.Prompt.AcceptMessage+"\n", tplOpts)
-			if err != nil {
-				return false, errors.Wrap(err, "run accept template")
-			}
+	}
+
+	if task.Options.Prompt.AcceptMessage != "" {
+		err = runTemplate(os.Stdout, "accept", task.Options.Prompt.AcceptMessage+"\n", tplOpts)
+		if err != nil {
+			return false, errors.Wrap(err, "run accept template")
 		}
 	}
 

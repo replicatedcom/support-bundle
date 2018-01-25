@@ -46,7 +46,7 @@ type SpecShared struct {
 }
 
 type Spec struct {
-	SpecShared `json:"inline"`
+	SpecShared `json:",inline"`
 
 	// plan-specific config
 

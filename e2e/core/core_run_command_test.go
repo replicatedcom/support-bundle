@@ -22,11 +22,11 @@ specs:
       name: sh
       args: [-c, echo $HI]
       env: [HI=hello!]
-    output_dir: /os/run-command/echo/
+      output_dir: /os/run-command/echo/
   - os.run-command:
       name: blah
       args: [blah, blah]
-    output_dir: /os/run-command/notfound/`)
+      output_dir: /os/run-command/notfound/`)
 
 			GenerateBundle()
 
