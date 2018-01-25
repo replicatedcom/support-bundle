@@ -3,6 +3,8 @@ package producers
 import (
 	"context"
 	"errors"
+	"log"
+	"regexp"
 
 	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
@@ -14,6 +16,32 @@ type Docker struct {
 
 func New(client *docker.Client) *Docker {
 	client.NegotiateAPIVersion(context.Background())
+
+	if client.ClientVersion() == "1.24" {
+		// there is a possibility that negotiation failed as this is the default value for that case
+		// so we send a ping and check ourselves
+		ping, _ := client.Ping(context.Background())
+		if ping.APIVersion == "" {
+			// negotiation failed, so we get to fake it
+			log.Printf("Docker API version negotiation failed. Attempting fallback...")
+			_, err := client.ServerVersion(context.Background())
+
+			if err != nil {
+				r, _ := regexp.Compile(`server API version:\s*(\d\.\d+)\s*\)`)
+				matches := r.FindStringSubmatch(err.Error())
+
+				if len(matches) < 2 {
+					log.Printf("Docker API version negotiation fallback failed")
+				} else {
+					log.Printf("Fallback API version detection: %+v", matches[1])
+					var fakePing types.Ping
+					fakePing.APIVersion = matches[1]
+					client.NegotiateAPIVersionPing(fakePing)
+				}
+			}
+		}
+	}
+
 	return &Docker{client}
 }
 
