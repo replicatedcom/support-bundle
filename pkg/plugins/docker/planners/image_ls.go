@@ -23,9 +23,9 @@ func (d *Docker) ImageLs(spec types.Spec) []types.Task {
 
 	task := plans.StructuredSource{
 		Producer:  d.producers.ImageLs(*spec.DockerImageLs),
-		RawPath:   filepath.Join(spec.OutputDir, "image_ls.raw"),
-		JSONPath:  filepath.Join(spec.OutputDir, "image_ls.json"),
-		HumanPath: filepath.Join(spec.OutputDir, "image_ls.human"),
+		RawPath:   filepath.Join(spec.Shared().OutputDir, "image_ls.raw"),
+		JSONPath:  filepath.Join(spec.Shared().OutputDir, "image_ls.json"),
+		HumanPath: filepath.Join(spec.Shared().OutputDir, "image_ls.human"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

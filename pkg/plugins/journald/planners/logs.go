@@ -20,7 +20,7 @@ func (j *Journald) Logs(spec types.Spec) []types.Task {
 	}
 
 	task := plans.StreamSource{
-		RawPath: filepath.Join(spec.OutputDir, "logs.raw"),
+		RawPath: filepath.Join(spec.Shared().OutputDir, "logs.raw"),
 	}
 	if j.inContainer {
 		jww.DEBUG.Println("journald.logs in container")

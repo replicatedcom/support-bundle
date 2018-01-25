@@ -8,14 +8,16 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func GenerateTask(task *types.LifecycleTask) Task {
-	return func(l *Lifecycle) (bool, error) {
+type GenerateTask struct {
+	Options types.GenerateOptions
+}
 
-		fileInfo, err := bundle.Generate(l.BundleTasks, time.Duration(time.Second*time.Duration(l.GenerateTimeout)), l.GenerateBundlePath)
-		if err != nil {
-			return false, errors.Wrap(err, "generating bundle")
-		}
-		l.FileInfo = fileInfo
-		return true, nil
+func (t *GenerateTask) Execute(l *Lifecycle) (bool, error) {
+
+	fileInfo, err := bundle.Generate(l.BundleTasks, time.Duration(time.Second*time.Duration(l.GenerateTimeout)), l.GenerateBundlePath)
+	if err != nil {
+		return false, errors.Wrap(err, "generating bundle")
 	}
+	l.FileInfo = fileInfo
+	return true, nil
 }

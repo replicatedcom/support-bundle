@@ -33,7 +33,7 @@ func (r *Retraced) Events(spec types.Spec) []types.Task {
 
 	task := plans.StreamSource{
 		Producer: r.producers.Events(client, *spec.RetracedEvents),
-		RawPath:  filepath.Join(spec.OutputDir, "audit_events.csv"),
+		RawPath:  filepath.Join(spec.Shared().OutputDir, "audit_events.csv"),
 	}
 	task, err = plans.SetCommonFieldsStreamSource(task, spec)
 	if err != nil {

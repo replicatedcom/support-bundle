@@ -17,9 +17,9 @@ func (d *Docker) TaskLs(spec types.Spec) []types.Task {
 
 	task := plans.StructuredSource{
 		Producer:  d.producers.TaskLs(*spec.DockerTaskLs),
-		RawPath:   filepath.Join(spec.OutputDir, "task_ls.raw"),
-		JSONPath:  filepath.Join(spec.OutputDir, "task_ls.json"),
-		HumanPath: filepath.Join(spec.OutputDir, "task_ls.human"),
+		RawPath:   filepath.Join(spec.Shared().OutputDir, "task_ls.raw"),
+		JSONPath:  filepath.Join(spec.Shared().OutputDir, "task_ls.json"),
+		HumanPath: filepath.Join(spec.Shared().OutputDir, "task_ls.human"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

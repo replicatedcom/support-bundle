@@ -6,9 +6,11 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func MessageTask(task *types.LifecycleTask) Task {
-	return func(l *Lifecycle) (bool, error) {
-		fmt.Println(task.Message.Contents)
-		return true, nil
-	}
+type MessageTask struct {
+	Options types.MessageOptions
+}
+
+func (t *MessageTask) Execute(l *Lifecycle) (bool, error) {
+	fmt.Println(t.Options.Contents)
+	return true, nil
 }

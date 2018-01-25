@@ -49,7 +49,7 @@ func (d *Docker) containerLogsTask(id string, names []string, spec types.Spec) t
 	}
 	task := plans.StreamSource{
 		Producer: d.producers.ContainerLogs(id, spec.DockerContainerLogs.ContainerLogsOptions),
-		RawPath:  filepath.Join(spec.OutputDir, basename+".raw"),
+		RawPath:  filepath.Join(spec.Shared().OutputDir, basename+".raw"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStreamSource(task, spec)

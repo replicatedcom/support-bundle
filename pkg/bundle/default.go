@@ -143,16 +143,20 @@ specs:
 
 func SupportBundleVersionSpec() types.Spec {
 	return types.Spec{
-		Description:          "Support bundle version information",
-		OutputDir:            "/",
+		SpecShared: types.SpecShared{
+			Description: "Support bundle version information",
+			OutputDir:   "/",
+		},
 		SupportBundleVersion: &types.SupportBundleVersionOptions{},
 	}
 }
 
 func CustomerJsonSpec(customerID string) types.Spec {
 	return types.Spec{
-		Description: "Support Bundle Customer Metadata",
-		OutputDir:   "/",
+		SpecShared: types.SpecShared{
+			Description: "Support Bundle Customer Metadata",
+			OutputDir:   "/",
+		},
 		CustomerMeta: &types.CustomerMetaOptions{
 			CustomerID: customerID,
 		},

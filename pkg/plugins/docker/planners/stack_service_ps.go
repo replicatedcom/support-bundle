@@ -27,9 +27,9 @@ func (d *Docker) StackServicePs(spec types.Spec) []types.Task {
 	opts.Filters = dockerStackNamespaceFilter(opts.Filters, spec.DockerStackServicePs.Namespace)
 	task := plans.StructuredSource{
 		Producer:  d.producers.TaskLs(opts.DockerTaskLsOptions),
-		RawPath:   filepath.Join(spec.OutputDir, "service_ps.raw"),
-		JSONPath:  filepath.Join(spec.OutputDir, "service_ps.json"),
-		HumanPath: filepath.Join(spec.OutputDir, "service_ps.human"),
+		RawPath:   filepath.Join(spec.Shared().OutputDir, "service_ps.raw"),
+		JSONPath:  filepath.Join(spec.Shared().OutputDir, "service_ps.json"),
+		HumanPath: filepath.Join(spec.Shared().OutputDir, "service_ps.human"),
 	}
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)
 	if err != nil {

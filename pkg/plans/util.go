@@ -15,15 +15,15 @@ import (
 func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsSource, error) {
 	task.Spec = spec
 	if task.RawPath == "" {
-		task.RawPath = spec.OutputDir
+		task.RawPath = spec.Shared().OutputDir
 	}
-	scrubber, err := RawScrubber(spec.Scrub)
+	scrubber, err := RawScrubber(spec.Shared().Scrub)
 	if err != nil {
 		return task, errors.Wrap(err, "create scrubber")
 	}
 	task.RawScrubber = scrubber
-	if spec.TimeoutSeconds != 0 {
-		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	if spec.Shared().TimeoutSeconds != 0 {
+		task.Timeout = time.Duration(spec.Shared().TimeoutSeconds) * time.Second
 	}
 	return task, nil
 }
@@ -31,15 +31,15 @@ func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsS
 func SetCommonFieldsStreamSource(task StreamSource, spec types.Spec) (StreamSource, error) {
 	task.Spec = spec
 	if task.RawPath == "" {
-		task.RawPath = spec.OutputDir
+		task.RawPath = spec.Shared().OutputDir
 	}
-	scrubber, err := RawScrubber(spec.Scrub)
+	scrubber, err := RawScrubber(spec.Shared().Scrub)
 	if err != nil {
 		return task, errors.Wrap(err, "create scrubber")
 	}
 	task.RawScrubber = scrubber
-	if spec.TimeoutSeconds != 0 {
-		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	if spec.Shared().TimeoutSeconds != 0 {
+		task.Timeout = time.Duration(spec.Shared().TimeoutSeconds) * time.Second
 	}
 	return task, nil
 }
@@ -47,15 +47,15 @@ func SetCommonFieldsStreamSource(task StreamSource, spec types.Spec) (StreamSour
 func SetCommonFieldsStructuredSource(task StructuredSource, spec types.Spec) (StructuredSource, error) {
 	task.Spec = spec
 	if task.RawPath == "" {
-		task.RawPath = spec.OutputDir
+		task.RawPath = spec.Shared().OutputDir
 	}
-	scrubber, err := RawScrubber(spec.Scrub)
+	scrubber, err := RawScrubber(spec.Shared().Scrub)
 	if err != nil {
 		return task, errors.Wrap(err, "create scrubber")
 	}
 	task.RawScrubber = scrubber
-	if spec.TimeoutSeconds != 0 {
-		task.Timeout = time.Duration(spec.TimeoutSeconds) * time.Second
+	if spec.Shared().TimeoutSeconds != 0 {
+		task.Timeout = time.Duration(spec.Shared().TimeoutSeconds) * time.Second
 	}
 	return task, nil
 }

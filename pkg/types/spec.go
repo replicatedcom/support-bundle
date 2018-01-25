@@ -36,13 +36,17 @@ type UploadOptions struct {
 	Prompt *PromptOptions `json:"prompt,omitempty"`
 }
 
-type Spec struct {
+type SpecShared struct {
 	// Description describes this spec field
 	Description    string `json:"description,omitempty"`
-	Meta           Meta   `json:"meta,omitempty"`
 	OutputDir      string `json:"output_dir"`
 	TimeoutSeconds int    `json:"timeout_seconds,omitempty"`
 	Scrub          *Scrub `json:"scrub,omitempty"`
+	Meta           *Meta  `json:"meta,omitempty"`
+}
+
+type Spec struct {
+	SpecShared `json:",inline"`
 
 	// plan-specific config
 
@@ -103,11 +107,13 @@ type Meta struct {
 // plugin.supportbundle options
 
 type SupportBundleVersionOptions struct {
+	SpecShared `json:",inline,omitempty"`
 }
 
 // meta.customer
 
 type CustomerMetaOptions struct {
+	SpecShared     `json:",inline,omitempty"`
 	CustomerID     string `json:"customer_id,omitempty"`
 	InstallationID string `json:"installation_id,omitempty"`
 	CustomerName   string `json:"customer_name,omitempty"`
@@ -116,165 +122,198 @@ type CustomerMetaOptions struct {
 // plugin.core options
 
 type CoreHostnameOptions struct {
+	SpecShared `json:",inline,omitempty"`
 }
 
 type CoreHTTPRequestOptions struct {
-	URL      string              `json:"url"`
-	Method   string              `json:"method,omitempty"` // default "get"
-	Body     string              `json:"body,omitempty"`
-	Header   map[string][]string `json:"header,omitempty"`
-	Insecure bool                `json:"insecure,omitempty"`
+	SpecShared `json:",inline,omitempty"`
+	URL        string              `json:"url"`
+	Method     string              `json:"method,omitempty"` // default "get"
+	Body       string              `json:"body,omitempty"`
+	Header     map[string][]string `json:"header,omitempty"`
+	Insecure   bool                `json:"insecure,omitempty"`
 }
 
 type CoreLoadavgOptions struct {
-	Template string `json:"template"`
+	SpecShared `json:",inline,omitempty"`
+	Template   string `json:"template"`
 }
 
 type CoreReadFileOptions struct {
-	Filepath string `json:"filepath"`
+	SpecShared `json:",inline,omitempty"`
+	Filepath   string `json:"filepath"`
 }
 
 type CoreRunCommandOptions struct {
-	Name string   `json:"name"`
-	Args []string `json:"args,omitempty"`
-	Env  []string `json:"env,omitempty"`
-	Dir  string   `json:"dir,omitempty"`
+	SpecShared `json:",inline,omitempty"`
+	Name       string   `json:"name"`
+	Args       []string `json:"args,omitempty"`
+	Env        []string `json:"env,omitempty"`
+	Dir        string   `json:"dir,omitempty"`
 }
 
 type CoreUptimeOptions struct {
-	Template string `json:"template"`
+	SpecShared `json:",inline,omitempty"`
+	Template   string `json:"template"`
 }
 
 // plugin.journald options
 
 type JournaldLogsOptions struct {
-	Unit    string `json:"unit,omitempty"`
-	Since   string `json:"since,omitempty"`
-	Reverse bool   `json:"reverse,omitempty"`
+	SpecShared `json:",inline,omitempty"`
+	Unit       string `json:"unit,omitempty"`
+	Since      string `json:"since,omitempty"`
+	Reverse    bool   `json:"reverse,omitempty"`
 }
 
 // plugin.docker options
 
 type DockerContainerCpOptions struct {
-	Container string `json:"container,omitempty"`
-	SrcPath   string `json:"src_path,omitempty"`
+	SpecShared `json:",inline,omitempty"`
+	Container  string `json:"container,omitempty"`
+	SrcPath    string `json:"src_path,omitempty"`
 }
 
 type DockerContainerExecOptions struct {
+	SpecShared `json:",inline,omitempty"`
 	Container  string                 `json:"container"`
 	ExecConfig dockertypes.ExecConfig `json:"exec_config"`
 }
 
 type DockerContainerInspectOptions struct {
+	SpecShared           `json:",inline,omitempty"`
 	Container            string                `json:"container,omitempty"`
 	ContainerListOptions *ContainerListOptions `json:"container_list_options,omitempty"`
 }
 
 type DockerContainerLogsOptions struct {
+	SpecShared           `json:",inline,omitempty"`
 	Container            string                            `json:"container,omitempty"`
 	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	ContainerListOptions *ContainerListOptions             `json:"container_list_options,omitempty"`
 }
 
 type DockerContainerLsOptions struct {
+	SpecShared           `json:",inline,omitempty"`
 	ContainerListOptions `json:",inline,omitempty"`
 }
 
 type DockerContainerRunOptions struct {
+	SpecShared            `json:",inline,omitempty"`
 	ContainerCreateConfig dockertypes.ContainerCreateConfig `json:"container_create_config"`
 	EnablePull            bool                              `json:"enable_pull,omitempty"`
 }
 
 type DockerImageLsOptions struct {
+	SpecShared       `json:",inline,omitempty"`
 	ImageListOptions `json:",inline,omitempty"`
 }
 
 type DockerInfoOptions struct {
+	SpecShared `json:",inline,omitempty"`
 }
 
 type DockerNodeLsOptions struct {
+	SpecShared      `json:",inline,omitempty"`
 	NodeListOptions `json:",inline,omitempty"`
 }
 
 type DockerServiceLogsOptions struct {
+	SpecShared           `json:",inline,omitempty"`
 	Service              string                            `json:"service,omitempty"`
 	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	ServiceListOptions   *ServiceListOptions               `json:"service_list_options,omitempty"`
 }
 
 type DockerServiceLsOptions struct {
+	SpecShared         `json:",inline,omitempty"`
 	ServiceListOptions `json:",inline,omitempty"`
 }
 
 type DockerServicePsOptions struct {
+	SpecShared          `json:",inline,omitempty"`
 	DockerTaskLsOptions `json:",inline,omitempty"`
 }
 
 type DockerStackServiceLogsOptions struct {
+	SpecShared             `json:",inline,omitempty"`
 	Namespace              string                            `json:"namespace"`
 	ContainerLogsOptions   *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	DockerServiceLsOptions *DockerServiceLsOptions           `json:"service_list_options,omitempty"`
 }
 
 type DockerStackServiceLsOptions struct {
+	SpecShared             `json:",inline,omitempty"`
 	Namespace              string                  `json:"namespace"`
 	DockerServiceLsOptions *DockerServiceLsOptions `json:"service_list_options,omitempty"`
 }
 
 type DockerStackServicePsOptions struct {
+	SpecShared             `json:",inline,omitempty"`
 	Namespace              string                  `json:"namespace"`
 	DockerServicePsOptions *DockerServicePsOptions `json:"task_list_options,omitempty"`
 }
 
 type DockerStackTaskLogsOptions struct {
+	SpecShared             `json:",inline,omitempty"`
 	Namespace              string                            `json:"namespace"`
 	ContainerLogsOptions   *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	DockerServicePsOptions *DockerServicePsOptions           `json:"task_list_options,omitempty"`
 }
 
 type DockerTaskLogsOptions struct {
+	SpecShared           `json:",inline,omitempty"`
 	ID                   string                            `json:"id,omitempty"`
 	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	TaskListOptions      *TaskListOptions                  `json:"task_list_options,omitempty"`
 }
 
 type DockerTaskLsOptions struct {
+	SpecShared      `json:",inline,omitempty"`
 	TaskListOptions `json:",inline,omitempty"`
 }
 
 type DockerVersionOptions struct {
+	SpecShared `json:",inline,omitempty"`
 }
 
 // plugin.kubernetes options
 
 type KubernetesAPIVersionsOptions struct {
+	SpecShared `json:",inline,omitempty"`
 }
 
 type KubernetesClusterInfoOptions struct {
+	SpecShared `json:",inline,omitempty"`
 }
 
 type KubernetesVersionOptions struct {
+	SpecShared `json:",inline,omitempty"`
 }
 
 type KubernetesLogsOptions struct {
+	SpecShared    `json:",inline,omitempty"`
 	Pod           string            `json:"pod"`
 	Namespace     string            `json:"namespace,omitempty"`
 	PodLogOptions *v1.PodLogOptions `json:"pod_log_options,omitempty"`
 }
 
 type KubernetesResourceListOptions struct {
+	SpecShared  `json:",inline,omitempty"`
 	Kind        string              `json:"kind"`
 	Namespace   string              `json:"namespace,omitempty"`
 	ListOptions *metav1.ListOptions `json:"resource_list_options,omitempty"`
 }
 
 type RetracedEventsOptions struct {
+	SpecShared               `json:",inline,omitempty"`
 	RetracedAPIClientOptions `json:",inline"`
 	Mask                     *retraced.EventNodeMask   `json:"mask,omitempty"`
 	Query                    *retraced.StructuredQuery `json:"query,omitempty"`
 }
 
 type RetracedAPIClientOptions struct {
+	SpecShared  `json:",inline,omitempty"`
 	APIEndpoint string `json:"api_endpoint"`
 	ProjectID   string `json:"project_id,omitempty"`
 	APIToken    string `json:"api_token,omitempty"`
@@ -284,4 +323,150 @@ type RetracedAPIClientOptions struct {
 type Scrub struct {
 	Regex   string `json:"regex"`
 	Replace string `json:"replace"`
+}
+
+// Todo maybe cache this or something
+// this gets the shared stuff for a spec
+//
+//  ideally we want to move to
+//
+//  - docker.container-inspect:
+//      container_name: ...
+//      output_dir: ...
+//      description: ...
+//
+//  but for now its more like
+//
+//  - docker.container-inspect:
+//      container_name: ...
+//    output_dir: ...
+//    description: ...
+//
+//  This method allows you to use either or both,
+//  giving priority to the first, nested version
+//
+//  i.e. if you have
+//
+//  - docker.container-inspect:
+//      output_dir: /foo
+//    output_dir: /bar
+//
+//  then /foo will be used
+func (s *Spec) Shared() SpecShared {
+	shared := func() SpecShared {
+		switch {
+		case s.KubernetesClusterInfo != nil:
+			return s.KubernetesClusterInfo.SpecShared
+		case s.SupportBundleVersion != nil:
+			return s.SupportBundleVersion.SpecShared
+		case s.CustomerMeta != nil:
+			return s.CustomerMeta.SpecShared
+
+			// CoreHostname gets the hostname of the machine on which we're running
+		case s.CoreHostname != nil:
+			return s.CoreHostname.SpecShared
+		case s.CoreHTTPRequest != nil:
+			return s.CoreHTTPRequest.SpecShared
+		case s.CoreLoadavg != nil:
+			return s.CoreLoadavg.SpecShared
+		case s.CoreReadFile != nil:
+			return s.CoreReadFile.SpecShared
+		case s.CoreRunCommand != nil:
+			return s.CoreRunCommand.SpecShared
+		case s.CoreUptime != nil:
+			return s.CoreUptime.SpecShared
+
+		case s.JournaldLogs != nil:
+			return s.JournaldLogs.SpecShared
+
+			// DockerContainerCp copies a file from a running docker container
+		case s.DockerContainerCp != nil:
+			return s.DockerContainerCp.SpecShared
+		case s.DockerContainerExec != nil:
+			return s.DockerContainerExec.SpecShared
+		case s.DockerContainerInspect != nil:
+			return s.DockerContainerInspect.SpecShared
+		case s.DockerContainerLogs != nil:
+			return s.DockerContainerLogs.SpecShared
+		case s.DockerContainerLs != nil:
+			return s.DockerContainerLs.SpecShared
+		case s.DockerContainerRun != nil:
+			return s.DockerContainerRun.SpecShared
+		case s.DockerExec != nil:
+			return s.DockerExec.SpecShared
+		case s.DockerImageLs != nil:
+			return s.DockerImageLs.SpecShared
+		case s.DockerImages != nil:
+			return s.DockerImages.SpecShared
+		case s.DockerInfo != nil:
+			return s.DockerInfo.SpecShared
+			// TODO: docker.inspect
+		case s.DockerLogs != nil:
+			return s.DockerLogs.SpecShared
+		case s.DockerNodeLs != nil:
+			return s.DockerNodeLs.SpecShared
+		case s.DockerPs != nil:
+			return s.DockerPs.SpecShared
+		case s.DockerRun != nil:
+			return s.DockerRun.SpecShared
+		case s.DockerServiceLogs != nil:
+			return s.DockerServiceLogs.SpecShared
+		case s.DockerServiceLs != nil:
+			return s.DockerServiceLs.SpecShared
+		case s.DockerServicePs != nil:
+			return s.DockerServicePs.SpecShared
+		case s.DockerStackServiceLogs != nil:
+			return s.DockerStackServiceLogs.SpecShared
+		case s.DockerStackServiceLs != nil:
+			return s.DockerStackServiceLs.SpecShared
+		case s.DockerStackServicePs != nil:
+			return s.DockerStackServicePs.SpecShared
+		case s.DockerStackTaskLogs != nil:
+			return s.DockerStackTaskLogs.SpecShared
+		case s.DockerTaskLogs != nil:
+			return s.DockerTaskLogs.SpecShared
+		case s.DockerTaskLs != nil:
+			return s.DockerTaskLs.SpecShared
+		case s.DockerVersion != nil:
+			return s.DockerVersion.SpecShared
+
+		case s.KubernetesAPIVersions != nil:
+			return s.KubernetesAPIVersions.SpecShared
+		case s.KubernetesClusterInfo != nil:
+			return s.KubernetesClusterInfo.SpecShared
+		case s.KubernetesLogs != nil:
+			return s.KubernetesLogs.SpecShared
+		case s.KubernetesResourceList != nil:
+			return s.KubernetesResourceList.SpecShared
+		case s.KubernetesVersion != nil:
+			return s.KubernetesVersion.SpecShared
+
+		case s.RetracedEvents != nil:
+			return s.RetracedEvents.SpecShared
+		default:
+			return s.SpecShared
+		}
+	}()
+
+	if shared.OutputDir == "" {
+		shared.OutputDir = s.OutputDir
+	}
+
+	if shared.Meta == nil {
+		shared.Meta = s.Meta
+	}
+
+	if shared.Description == "" {
+		shared.Description = s.Description
+	}
+
+	if shared.Scrub == nil {
+		shared.Scrub = s.Scrub
+	}
+
+	if shared.TimeoutSeconds == 0 {
+		shared.TimeoutSeconds = s.TimeoutSeconds
+	}
+
+	return shared
 }
