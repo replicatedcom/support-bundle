@@ -29,7 +29,7 @@ func New(client *docker.Client) *Docker {
 			if err != nil {
 				// this matches server version within error strings like this:
 				// `Error response from daemon: client is newer than server (client API version: 1.24, server API version: 1.19)`
-				r, _ := regexp.Compile(`server API version:\s*(\d\.\d+)\s*\)`)
+				r := regexp.MustCompile(`server API version:\s*(\d\.\d+)\s*\)`)
 				matches := r.FindStringSubmatch(err.Error())
 
 				if len(matches) < 2 {
