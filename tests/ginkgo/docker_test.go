@@ -77,9 +77,9 @@ specs:
           - foo=bar`)
 				GenerateBundle()
 
-				path := fmt.Sprintf("containers/foo/%s.log", name)
+				path := fmt.Sprintf("containers/foo/%s.log.stdout", name)
 				_ = GetFileFromBundle(path)
-				path2 := fmt.Sprintf("containers/foo/%s.log", name2)
+				path2 := fmt.Sprintf("containers/foo/%s.log.stdout", name2)
 				ExpectFileNotInBundle(path2)
 			})
 		})

@@ -31,7 +31,7 @@ func (d *Docker) Logs(spec types.Spec) []types.Task {
 		producer = d.producers.LogsName(spec.Config.ContainerName)
 	}
 
-	task := &plans.StreamSource{
+	task := &plans.StreamsSource{
 		Producer:    producer,
 		RawScrubber: scrubber,
 		RawPath:     spec.Raw,

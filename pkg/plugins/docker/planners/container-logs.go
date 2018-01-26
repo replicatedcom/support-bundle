@@ -38,7 +38,7 @@ func (d *Docker) ContainerLogs(spec types.Spec) []types.Task {
 	var tasks []types.Task
 
 	for _, container := range containers {
-		task := &plans.StreamSource{
+		task := &plans.StreamsSource{
 			Producer:    d.producers.Logs(container.ID),
 			RawScrubber: scrubber,
 		}

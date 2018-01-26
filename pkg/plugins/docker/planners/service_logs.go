@@ -25,7 +25,7 @@ func (d *Docker) ServiceLogs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	logs := &plans.StreamSource{
+	logs := &plans.StreamsSource{
 		Producer:    d.producers.ServiceLogs(spec.DockerSwarmOptions.ServiceName),
 		RawScrubber: scrubber,
 		RawPath:     spec.Raw,

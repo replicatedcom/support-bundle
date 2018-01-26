@@ -8,6 +8,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 
 	dockertypes "github.com/docker/docker/api/types"
+	"github.com/replicatedcom/support-bundle/pkg/plugins/docker/util"
 )
 
 func (d *Docker) StackServiceLogs(namespace string) types.StreamsProducer {
@@ -27,7 +28,10 @@ func (d *Docker) StackServiceLogs(namespace string) types.StreamsProducer {
 				continue
 			}
 
-			serviceLogs[service.Spec.Name+".log"] = reader
+			demuxed, _ := util.DemuxLogs(ctx, reader, service.Spec.Name+".log")
+			for k, v := range demuxed {
+				serviceLogs[k] = v
+			}
 		}
 		return serviceLogs, nil
 	}
