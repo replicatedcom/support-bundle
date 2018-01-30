@@ -1,0 +1,13 @@
+[Unit]
+Description=Setup cooltool-api
+#After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/tmp/foo/fake-setup-foo.sh
+RemainAfterExit=true
+ExecStop=/tmp/foo/fake-teardown-foo.sh
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

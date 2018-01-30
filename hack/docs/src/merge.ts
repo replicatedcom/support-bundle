@@ -22,13 +22,13 @@ export interface Mutation {
   path: string;
   merge?: any;
   replace?: any;
+  delete?: any;
 }
 
 export const handler = (argv) => {
   process.stderr.write("merge-mutations called\n");
   const schema = JSON.parse(fs.readFileSync(argv.infile).toString());
   const mutations: Mutation[] = JSON.parse(fs.readFileSync(argv.mutations).toString());
-
 
   for (const mutation of mutations) {
     process.stderr.write(`mutation for path ${mutation.path}\n`);
@@ -44,8 +44,15 @@ export const handler = (argv) => {
     }
 
     if (mutation.replace) {
-      for (const key of Object.keys(mutation.replace)) {
-        target[key] = mutation.replace[key];
+      for (const replacePath of Object.keys(mutation.replace)) {
+        _.set(target, replacePath, mutation.replace[replacePath])
+      }
+      _.set(schema, mutation.path, target);
+    }
+
+    if (mutation.delete) {
+      for (const toDelete of mutation.delete) {
+        _.unset(target, toDelete);
       }
       _.set(schema, mutation.path, target);
     }

@@ -1,7 +1,12 @@
 hack/docs
 ========
 
-Hack to generate support bundle docs from the golang types.
+This is a pretty big pile of tech debt at the moment. Its janky, untested,
+undocumented. It generates json from golang types, modifies it, validates the final product,
+and then generates markdown for help center.
+
+This is less of an experiment now than it was when we started, so it should
+probably get cleaned up somehow, maybe npm-module'd or something. 
 
 Currently has several steps:
 
@@ -10,7 +15,7 @@ Currently has several steps:
 - (optional) validate the modified jsonschema to ensure all spec keys have examples and descriptions
 - Turn the modified jsoncschema into schema.md, uses jsonschema-md to generate reference docs
 - clean up the schema.md file with sed (because `jsonschema-md` is a crappy library and I might say we should get rid of it someday)
-- generate schema2.md with a janky `src/markdown.ts`, this will probably become the real docs
+- generate build/... a bunch of markdown files to be copied into help-center
 
 The contents of schema.md and schema2.md can then be pasted into the help-center hugo site or wherever.
 
