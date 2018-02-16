@@ -43,12 +43,12 @@ func (d *Docker) serviceLogsTask(id string, name string, spec types.Spec, opts *
 	if name != "" {
 		basename = name
 	}
-	task := plans.StreamSource{
+	task := plans.StreamsSource{
 		Producer: d.producers.ServiceLogs(id, opts),
-		RawPath:  filepath.Join(spec.Shared().OutputDir, basename+".raw"),
+		RawPath:  filepath.Join(spec.Shared().OutputDir, basename),
 	}
 	var err error
-	task, err = plans.SetCommonFieldsStreamSource(task, spec)
+	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {
 		return plans.PreparedError(err, spec)
 	}

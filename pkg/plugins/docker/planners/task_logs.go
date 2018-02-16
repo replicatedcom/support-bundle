@@ -40,12 +40,12 @@ func (d *Docker) TaskLogs(spec types.Spec) []types.Task {
 
 func (d *Docker) taskLogsTask(id string, spec types.Spec, opts *dockertypes.ContainerLogsOptions) types.Task {
 	basename := id
-	task := plans.StreamSource{
+	task := plans.StreamsSource{
 		Producer: d.producers.TaskLogs(basename, opts),
-		RawPath:  filepath.Join(spec.Shared().OutputDir, basename+".raw"),
+		RawPath:  filepath.Join(spec.Shared().OutputDir, basename),
 	}
 	var err error
-	task, err = plans.SetCommonFieldsStreamSource(task, spec)
+	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {
 		return plans.PreparedError(err, spec)
 	}
