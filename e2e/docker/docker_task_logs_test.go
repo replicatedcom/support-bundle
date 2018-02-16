@@ -36,16 +36,16 @@ specs:
 
 			var contents string
 
-			_ = GetResultFromBundle("docker/task-logs-by-id/x1xzye79vohgp2a9dly0iigqc.raw")
-			contents = GetFileFromBundle("docker/task-logs-by-id/x1xzye79vohgp2a9dly0iigqc.raw")
+			_ = GetResultFromBundle("docker/task-logs-by-id/x1xzye79vohgp2a9dly0iigqc")
+			contents = GetFileFromBundle("docker/task-logs-by-id/x1xzye79vohgp2a9dly0iigqc.stdout")
 			Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 
-			_ = GetResultFromBundle("docker/task-logs-by-labels/x1xzye79vohgp2a9dly0iigqc.raw")
-			contents = GetFileFromBundle("docker/task-logs-by-labels/x1xzye79vohgp2a9dly0iigqc.raw")
+			_ = GetResultFromBundle("docker/task-logs-by-labels/x1xzye79vohgp2a9dly0iigqc")
+			contents = GetFileFromBundle("docker/task-logs-by-labels/x1xzye79vohgp2a9dly0iigqc.stdout")
 			Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 
-			_ = GetResultFromBundle("docker/stack-task-logs/x1xzye79vohgp2a9dly0iigqc.raw")
-			contents = GetFileFromBundle("docker/stack-task-logs/x1xzye79vohgp2a9dly0iigqc.raw")
+			_ = GetResultFromBundle("docker/stack-task-logs/x1xzye79vohgp2a9dly0iigqc")
+			contents = GetFileFromBundle("docker/stack-task-logs/x1xzye79vohgp2a9dly0iigqc.stdout")
 			Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 		})
 	})
