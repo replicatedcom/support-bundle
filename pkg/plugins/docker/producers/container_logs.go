@@ -9,7 +9,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-func (d *Docker) ContainerLogs(container string, opts *dockertypes.ContainerLogsOptions) types.StreamsProducer {
+func (d *Docker) ContainerLogs(container string, basename string, opts *dockertypes.ContainerLogsOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
 		if opts == nil {
 			opts = &dockertypes.ContainerLogsOptions{}
@@ -23,6 +23,6 @@ func (d *Docker) ContainerLogs(container string, opts *dockertypes.ContainerLogs
 		if err != nil {
 			return nil, err
 		}
-		return util.DemuxLogs(ctx, reader, "")
+		return util.DemuxLogs(ctx, reader, basename)
 	}
 }

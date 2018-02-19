@@ -40,19 +40,19 @@ specs:
 
 			var contents string
 
-			_ = GetResultFromBundle("docker/service-logs-by-id/uxa1uzb3wd6khtu3qv4nbqpbe")
+			_ = GetResultFromBundle("docker/service-logs-by-id/uxa1uzb3wd6khtu3qv4nbqpbe.stdout")
 			contents = GetFileFromBundle("docker/service-logs-by-id/uxa1uzb3wd6khtu3qv4nbqpbe.stdout")
 			Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 
-			_ = GetResultFromBundle("docker/service-logs-by-name/test-stack_visualizer")
+			_ = GetResultFromBundle("docker/service-logs-by-name/test-stack_visualizer.stdout")
 			contents = GetFileFromBundle("docker/service-logs-by-name/test-stack_visualizer.stdout")
 			Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 
-			_ = GetResultFromBundle("docker/service-logs-by-labels/test-stack_visualizer")
+			_ = GetResultFromBundle("docker/service-logs-by-labels/test-stack_visualizer.stdout")
 			contents = GetFileFromBundle("docker/service-logs-by-labels/test-stack_visualizer.stdout")
 			Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 
-			_ = GetResultFromBundle("docker/stack-service-logs/test-stack_visualizer")
+			_ = GetResultFromBundle("docker/stack-service-logs/test-stack_visualizer.stdout")
 			contents = GetFileFromBundle("docker/stack-service-logs/test-stack_visualizer.stdout")
 			Expect(contents).To(ContainSubstring("npm info it worked if it ends with ok"))
 		})

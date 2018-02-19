@@ -24,6 +24,6 @@ func (d *Docker) TaskLogs(taskID string, opts *dockertypes.ContainerLogsOptions)
 		if err != nil {
 			return nil, err
 		}
-		return util.DemuxLogs(ctx, reader, "")
+		return util.DemuxLogs(ctx, reader, taskID)
 	}
 }

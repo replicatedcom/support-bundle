@@ -70,22 +70,22 @@ specs:
 
 			var contents string
 
-			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-id/%s", container1ID))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-id/%s.stdout", container1ID))
 			contents = GetFileFromBundle(fmt.Sprintf("docker/container-logs-by-id/%s.stdout", container1ID))
 			Expect(contents).To(ContainSubstring("Hello World!"))
 
-			_ = GetResultFromBundle(fmt.Sprintf("docker/logs-by-id/%s", container1ID))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/logs-by-id/%s.stdout", container1ID))
 			contents = GetFileFromBundle(fmt.Sprintf("docker/logs-by-id/%s.stdout", container1ID))
 			Expect(contents).To(ContainSubstring("Hello World!"))
 
-			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-name/%s", container2Name))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-name/%s.stdout", container2Name))
 			contents = GetFileFromBundle(fmt.Sprintf("docker/container-logs-by-name/%s.stdout", container2Name))
 			Expect(contents).To(ContainSubstring("Hello World!"))
 
-			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-labels/%s", container1Name))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-labels/%s.stdout", container1Name))
 			contents = GetFileFromBundle(fmt.Sprintf("docker/container-logs-by-labels/%s.stdout", container1Name))
 			Expect(contents).To(ContainSubstring("Hello World!"))
-			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-labels/%s", container2Name))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-logs-by-labels/%s.stdout", container2Name))
 			contents = GetFileFromBundle(fmt.Sprintf("docker/container-logs-by-labels/%s.stdout", container2Name))
 			Expect(contents).To(ContainSubstring("Hello World!"))
 		})
