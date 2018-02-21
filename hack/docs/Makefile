@@ -88,7 +88,7 @@ copy-to-help-center:
 	: To Copy to Help center, run the following command:
 	:
 	:    make pipeline
-	:    cp build/* [path/to/help/center]/api/support-bundle-yaml-specs/
+	:    cp build/* [path/to/help/center]/content/api/support-bundle-yaml-specs/
 
 copy-replicated-lint:
 	: To Copy to replicated lint, run the following command:

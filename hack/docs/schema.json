@@ -1883,8 +1883,12 @@
             ],
             "_ext_outputs": [
               {
-                "path": "{{.Name}}.raw",
-                "description": "The stdout/stderr multiplexed logs. Will generate this file for each matched container"
+                "path": "{{.Name}}.stdout",
+                "description": "The stdout logs. Will generate this file for each matched container"
+              },
+              {
+                "path": "{{.Name}}.stderr",
+                "description": "The stderr logs. Will generate this file for each matched container"
               }
             ],
             "type": "object",
