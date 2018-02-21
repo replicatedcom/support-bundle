@@ -25,8 +25,6 @@ The contents of schema.md and schema2.md can then be pasted into the help-center
 
 ```
 schema.json
-schema.md
-schema2.md
 ```
 
 

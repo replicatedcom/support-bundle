@@ -1,7 +1,6 @@
 .PHONY: build
 
 SCHEMA_JSON := ./schema.json
-SCHEMA_MD := ./schema.md
 MUTATIONS := ./mutations.json
 HACK_DOCS := ./bin/hack-docs
 
@@ -67,22 +66,13 @@ integration-down:
 	sudo rm -f /etc/systemd/system/cooltool-api.service || :
 	sudo systemctl daemon-reload || :
 
-gen-markdown:
-	`yarn bin`/jsonschema-md $(SCHEMA_JSON) > $(SCHEMA_MD)
-
-clean-markdown:
-	sed -i.bak 's/:undefined//g' $(SCHEMA_MD)
-	sed -i.bak 's/undefined//g' $(SCHEMA_MD)
-	rm schema.md.bak
-
 gen-markdown-2:
 	mkdir -p build
 	`yarn bin`/ts-node src/index.ts markdown -f $(SCHEMA_JSON) -o ./build
 
 
-pipeline-strict: prebuild gen-schema merge-mutations validate integration gen-markdown clean-markdown gen-markdown-2
-pipeline: prebuild gen-schema merge-mutations gen-markdown clean-markdown gen-markdown-2
-
+pipeline-strict: prebuild gen-schema merge-mutations validate integration gen-markdown-2
+pipeline: prebuild gen-schema merge-mutations gen-markdown-2
 
 copy-to-help-center:
 	: To Copy to Help center, run the following command:
