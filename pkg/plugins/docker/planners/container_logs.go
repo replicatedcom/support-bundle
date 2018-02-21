@@ -3,7 +3,6 @@ package planners
 import (
 	"context"
 	"fmt"
-	"path/filepath"
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
@@ -47,12 +46,12 @@ func (d *Docker) containerLogsTask(id string, names []string, spec types.Spec) t
 	if len(names) > 0 {
 		basename = names[0]
 	}
-	task := plans.StreamSource{
-		Producer: d.producers.ContainerLogs(id, spec.DockerContainerLogs.ContainerLogsOptions),
-		RawPath:  filepath.Join(spec.Shared().OutputDir, basename+".raw"),
+	task := plans.StreamsSource{
+		Producer: d.producers.ContainerLogs(id, basename, spec.DockerContainerLogs.ContainerLogsOptions),
+		RawPath:  spec.Shared().OutputDir,
 	}
 	var err error
-	task, err = plans.SetCommonFieldsStreamSource(task, spec)
+	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {
 		return plans.PreparedError(err, spec)
 	}

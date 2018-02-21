@@ -44,5 +44,9 @@
     * Updated docker client library to latest
     * Docker client now negotiates a version
 
-0.10.1 /2018-01-08
+0.10.1 /2018-01-24
     * Patch CVE-2017-17512 sensible-utils-0.0.9
+    * Added fallback logic for Docker client version negotiation with Docker server API versions < 1.24
+
+0.10.2 /2018-01-26
+    * Properly demux docker logs streams

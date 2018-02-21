@@ -3,7 +3,6 @@ package planners
 import (
 	"context"
 	"fmt"
-	"path/filepath"
 
 	dockertypes "github.com/docker/docker/api/types"
 	"github.com/pkg/errors"
@@ -43,12 +42,12 @@ func (d *Docker) serviceLogsTask(id string, name string, spec types.Spec, opts *
 	if name != "" {
 		basename = name
 	}
-	task := plans.StreamSource{
-		Producer: d.producers.ServiceLogs(id, opts),
-		RawPath:  filepath.Join(spec.Shared().OutputDir, basename+".raw"),
+	task := plans.StreamsSource{
+		Producer: d.producers.ServiceLogs(id, basename, opts),
+		RawPath:  spec.Shared().OutputDir,
 	}
 	var err error
-	task, err = plans.SetCommonFieldsStreamSource(task, spec)
+	task, err = plans.SetCommonFieldsStreamsSource(task, spec)
 	if err != nil {
 		return plans.PreparedError(err, spec)
 	}
