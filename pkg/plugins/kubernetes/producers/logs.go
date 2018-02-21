@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -13,10 +14,11 @@ func (k *Kubernetes) Logs(opts types.KubernetesLogsOptions) types.StreamProducer
 	if ns == "" {
 		ns = metav1.NamespaceDefault
 	}
+	podLogOpts := v1.PodLogOptions(*opts.PodLogOptions)
 	return func(ctx context.Context) (io.Reader, error) {
 		req := k.client.CoreV1().
 			Pods(ns).
-			GetLogs(opts.Pod, opts.PodLogOptions)
+			GetLogs(opts.Pod, &podLogOpts)
 		return req.Stream()
 	}
 }
