@@ -3,7 +3,6 @@ package types
 import (
 	dockertypes "github.com/docker/docker/api/types"
 	"github.com/retracedhq/retraced-go"
-	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -293,9 +292,9 @@ type KubernetesVersionOptions struct {
 
 type KubernetesLogsOptions struct {
 	SpecShared    `json:",inline,omitempty"`
-	Pod           string            `json:"pod"`
-	Namespace     string            `json:"namespace,omitempty"`
-	PodLogOptions *v1.PodLogOptions `json:"pod_log_options,omitempty"`
+	Pod           string         `json:"pod"`
+	Namespace     string         `json:"namespace,omitempty"`
+	PodLogOptions *PodLogOptions `json:"pod_log_options,omitempty"`
 }
 
 type KubernetesResourceListOptions struct {
