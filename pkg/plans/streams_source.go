@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"sync"
 	"time"
@@ -121,7 +122,7 @@ func (task *StreamsSource) execTarStream(ctx context.Context, rootDir string, fi
 
 		var fp string
 		if filePath != "" {
-			fp = filePath
+			fp = path.Join(filePath, hdr.Name)
 		} else {
 			fp = hdr.Name
 		}
