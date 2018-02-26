@@ -3982,7 +3982,7 @@
       ],
       "_ext_outputs": [
         {
-          "path": "contents",
+          "path": "bigtool.conf",
           "description": "The file contents",
           "examples": [
             "{\"setting1\": true, \"setting2\": false}"
