@@ -165,10 +165,7 @@ func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
 	}
 
 	if opts.CustomerID == "" && !opts.SkipDefault {
-		defaultSpecs, err := bundle.DefaultSpecs()
-		if err != nil {
-			return nil, errors.Wrap(err, "get default specs")
-		}
+		defaultSpecs := bundle.DefaultSpecs()
 
 		specs = append(defaultSpecs, specs...)
 	}
