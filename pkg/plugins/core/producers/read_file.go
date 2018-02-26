@@ -10,6 +10,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
+// TODO: fix to handle directories
 func (c *Core) ReadFile(opts types.CoreReadFileOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
 		r, err := os.Open(opts.Filepath)
@@ -31,6 +32,6 @@ func (c *Core) DockerReadFile(opts types.CoreReadFileOptions) types.StreamsProdu
 		if err != nil {
 			return nil, errors.Wrap(err, "docker read file")
 		}
-		return map[string]io.Reader{"contents": r}, nil
+		return map[string]io.Reader{"": r}, nil
 	}
 }
