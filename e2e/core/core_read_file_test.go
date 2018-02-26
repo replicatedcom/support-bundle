@@ -68,15 +68,15 @@ var _ = Describe("os.read-file docker", func() {
 specs:
   - os.read-file:
       filepath: /etc/profile
-    output_dir: /os/read-file/etc/profile/
+    output_dir: /os/read-file/etc/
   - os.read-file:
       filepath: /tmp/notfound.txt
     output_dir: /os/read-file/notfound/`)
 
 			GenerateBundle()
 
-			_ = GetResultFromBundle("os/read-file/etc/profile/contents")
-			contents := GetFileFromBundle("os/read-file/etc/profile/contents")
+			_ = GetResultFromBundle("os/read-file/etc/profile")
+			contents := GetFileFromBundle("os/read-file/etc/profile")
 			Expect(contents).To(ContainSubstring("profile.d"))
 
 			ExpectBundleErrorToHaveOccured("os/read-file/notfound", "docker read file: file not found")
