@@ -9,10 +9,8 @@ import (
 
 func (s *SupportBundle) CustomerMeta(spec types.Spec) []types.Task {
 	task := plans.StructuredSource{
-		Producer:  s.producers.CustomerMeta(spec.CustomerMeta),
-		RawPath:   filepath.Join(spec.Shared().OutputDir, "meta.raw"),
-		JSONPath:  filepath.Join(spec.Shared().OutputDir, "meta.json"),
-		HumanPath: filepath.Join(spec.Shared().OutputDir, "meta.human"),
+		Producer: s.producers.CustomerMeta(spec.CustomerMeta),
+		JSONPath: filepath.Join(spec.Shared().OutputDir, "meta.json"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

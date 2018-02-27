@@ -24,7 +24,7 @@ func (c *Core) ReadFile(spec types.Spec) []types.Task {
 	var task plans.StreamsSource
 	if c.inContainer {
 		if strings.HasPrefix(spec.CoreReadFile.Filepath, "/proc") {
-			jww.DEBUG.Println("os.read-file reading %s in container", spec.CoreReadFile.Filepath)
+			jww.DEBUG.Printf("os.read-file reading %s in container\n", spec.CoreReadFile.Filepath)
 			// in this situation we read from the proc folder within the support-bundle container
 			// docker doesn't copy things properly from these files
 			task.Producer = c.producers.ReadFile(*spec.CoreReadFile)
