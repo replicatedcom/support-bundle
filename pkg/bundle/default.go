@@ -241,6 +241,14 @@ func DefaultSpecs() []types.Spec {
 				Filepath: "/var/log/upstart/docker.log",
 			},
 		},
+		{
+			CoreReadFile: &types.CoreReadFileOptions{
+				SpecShared: types.SpecShared{
+					OutputDir: "default/etc",
+				},
+				Filepath: "/etc/centos-release",
+			},
+		},
 	}
 }
 

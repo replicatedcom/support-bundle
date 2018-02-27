@@ -50,3 +50,9 @@
 
 0.10.2 /2018-01-26
     * Properly demux docker logs streams
+
+0.11.0 /2018-02-27
+    * Support bundle yaml specs now follow a new format
+    * Commands now produce output within a specified folder, filenames are selected by the command
+    * Results within index.json include the spec that generated them and the output size
+    * Empty files are now pruned from the bundle, but are still listed within index.json
