@@ -278,7 +278,7 @@ func (task *StreamsSource) cleanupResults(ctx context.Context, rootDir string, r
 		if result.Size == 0 {
 			err := os.Remove(path.Join(rootDir, result.Path))
 			if err != nil {
-				jww.WARN.Printf("Unable to remove empty file %s within %s because of %s", result.Path, rootDir, err.Error())
+				jww.DEBUG.Printf("Unable to remove empty file %s within %s because of %s", result.Path, rootDir, err.Error())
 			}
 		}
 	}
