@@ -22,23 +22,13 @@ specs:
     output_dir: /`)
 
 			GenerateBundle()
-
-			_ = GetResultFromBundle("VERSION.raw")
-			contents := GetFileFromBundle("VERSION.raw")
-			Expect(contents).To(Equal(`{"Version":"","GitSHA":"","BuildTime":"0001-01-01T00:00:00Z"}`))
 			_ = GetResultFromBundle("VERSION.json")
-			contents = GetFileFromBundle("VERSION.json")
+			contents := GetFileFromBundle("VERSION.json")
 			Expect(contents).To(Equal(`{
   "Version": "",
   "GitSHA": "",
   "BuildTime": "0001-01-01T00:00:00Z"
 }
-`))
-			_ = GetResultFromBundle("VERSION.human")
-			contents = GetFileFromBundle("VERSION.human")
-			Expect(contents).To(Equal(`BuildTime: 0001-01-01T00:00:00Z
-GitSHA: ""
-Version: ""
 `))
 		})
 	})

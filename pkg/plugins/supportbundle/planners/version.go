@@ -9,10 +9,8 @@ import (
 
 func (s *SupportBundle) Version(spec types.Spec) []types.Task {
 	task := plans.StructuredSource{
-		Producer:  s.producers.Version,
-		RawPath:   filepath.Join(spec.Shared().OutputDir, "VERSION.raw"),
-		JSONPath:  filepath.Join(spec.Shared().OutputDir, "VERSION.json"),
-		HumanPath: filepath.Join(spec.Shared().OutputDir, "VERSION.human"),
+		Producer: s.producers.Version,
+		JSONPath: filepath.Join(spec.Shared().OutputDir, "VERSION.json"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)
