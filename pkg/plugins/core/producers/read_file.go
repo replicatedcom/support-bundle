@@ -10,33 +10,46 @@ import (
 	"github.com/pkg/errors"
 	dockerutil "github.com/replicatedcom/support-bundle/pkg/plugins/docker/util"
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func recursiveReadFile(ctx context.Context, filepath string, prefix string) (map[string]io.Reader, error) {
-	files, err := ioutil.ReadDir(filepath)
+	info, err := os.Stat(filepath)
 	if err != nil {
 		return nil, err
 	}
 
 	readers := make(map[string]io.Reader)
+	if !info.IsDir() {
+		//get a reader for the file & add it to the map
+		r, err := os.Open(filepath)
+		if err != nil {
+			return nil, err
+		}
+		readers[path.Join(prefix, info.Name())] = r
+		return readers, nil
+	}
+
+	files, err := ioutil.ReadDir(filepath)
+	if err != nil {
+		return nil, err
+	}
+
 	for _, file := range files {
-		if file.IsDir() {
-			childReaders, err := recursiveReadFile(ctx, path.Join(filepath, file.Name()), path.Join(prefix, file.Name()))
-			if err != nil {
-				return readers, err
-			}
-			if childReaders != nil {
-				for k, v := range childReaders {
+		childReaders, err := recursiveReadFile(ctx, path.Join(filepath, file.Name()), path.Join(prefix, file.Name()))
+		if err != nil {
+			return readers, errors.Wrapf(err, "Reading directory %s: ", filepath)
+		}
+		if childReaders != nil {
+			for k, v := range childReaders {
+				if _, ok := readers[k]; ok {
+					//name collisions like this shouldn't happen
+					jww.DEBUG.Printf("Filename collision at %s when reading directory %s", k, filepath)
+				} else {
 					readers[k] = v
 				}
+
 			}
-		} else {
-			//get a reader for the file & add it to the map
-			r, err := os.Open(path.Join(filepath, file.Name()))
-			if err != nil {
-				return nil, err
-			}
-			readers[path.Join(prefix, file.Name())] = r
 		}
 	}
 	return readers, nil
@@ -48,17 +61,7 @@ func (c *Core) ReadFile(opts types.CoreReadFileOptions) types.StreamsProducer {
 		if err != nil {
 			return nil, err
 		}
-		if !info.IsDir() {
-			//this is a single file. We don't have to do anything special to handle it properly.
-			r, err := os.Open(opts.Filepath)
-			if err != nil {
-				return nil, err
-			}
-			return map[string]io.Reader{info.Name(): r}, nil
-		} else {
-			//this is a directory. We need to loop through all files in the directory recursively and create io.Readers for each of them.
-			return recursiveReadFile(ctx, opts.Filepath, info.Name())
-		}
+		return recursiveReadFile(ctx, opts.Filepath, info.Name())
 	}
 }
 
