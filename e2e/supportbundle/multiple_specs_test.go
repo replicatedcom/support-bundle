@@ -41,25 +41,25 @@ var _ = Describe("supportbundle.multiple-specs", func() {
 specs:
   - os.read-file:
       filepath: file1.txt
-    output_dir: /os/read-file/1/`)
+    output_dir: /os/read-file/`)
 
 			WriteFile("config2.yml", `
 specs:
   - os.read-file:
       filepath: file2.txt
-    output_dir: /os/read-file/2/`)
+    output_dir: /os/read-file/`)
 
 			spec1 := `
 specs:
   - os.read-file:
       filepath: file3.txt
-    output_dir: /os/read-file/3/`
+    output_dir: /os/read-file/`
 
 			spec2 := `
 specs:
   - os.read-file:
       filepath: file4.txt
-    output_dir: /os/read-file/4/`
+    output_dir: /os/read-file/`
 
 			cmd := commands.NewSupportBundleCommand(cli.NewCli())
 			buf := new(bytes.Buffer)
@@ -78,16 +78,16 @@ specs:
 			err := cmd.Execute()
 			Expect(err).NotTo(HaveOccurred())
 
-			contents := GetFileFromBundle("os/read-file/1/contents")
+			contents := GetFileFromBundle("os/read-file/file1.txt")
 			Expect(strings.TrimSpace(contents)).To(Equal("File 1"))
 
-			contents = GetFileFromBundle("os/read-file/2/contents")
+			contents = GetFileFromBundle("os/read-file/file2.txt")
 			Expect(strings.TrimSpace(contents)).To(Equal("File 2"))
 
-			contents = GetFileFromBundle("os/read-file/3/contents")
+			contents = GetFileFromBundle("os/read-file/file3.txt")
 			Expect(strings.TrimSpace(contents)).To(Equal("File 3"))
 
-			contents = GetFileFromBundle("os/read-file/4/contents")
+			contents = GetFileFromBundle("os/read-file/file4.txt")
 			Expect(strings.TrimSpace(contents)).To(Equal("File 4"))
 		})
 	})

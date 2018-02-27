@@ -30,18 +30,18 @@ var _ = Describe("os.read-file", func() {
 specs:
   - os.read-file:
       filepath: /etc/os-release
-    output_dir: /os/read-file/etc/os-release/
+    output_dir: /os/read-file/etc/
   - os.read-file:
       filepath: /tmp/notfound.txt
     output_dir: /os/read-file/notfound/`)
 
 			GenerateBundle()
 
-			_ = GetResultFromBundle("os/read-file/etc/os-release/contents")
-			contents := GetFileFromBundle("os/read-file/etc/os-release/contents")
+			_ = GetResultFromBundle("os/read-file/etc/os-release")
+			contents := GetFileFromBundle("os/read-file/etc/os-release")
 			Expect(contents).To(ContainSubstring("VERSION="))
 
-			ExpectBundleErrorToHaveOccured("os/read-file/notfound", "open /tmp/notfound.txt: no such file or directory")
+			ExpectBundleErrorToHaveOccured("os/read-file/notfound", "stat /tmp/notfound.txt: no such file or directory")
 		})
 	})
 })

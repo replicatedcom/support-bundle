@@ -34,7 +34,7 @@ PGPASSWORD=mypass`)
 specs:
   - os.read-file:
       filepath: pg.env
-    output_dir: /os/read-file/pg.env/
+    output_dir: /os/read-file/
     scrub:
       regex: (PGPASSWORD)=(.*)
       replace: $1=REDACTED
@@ -42,8 +42,8 @@ specs:
 
 			GenerateBundle()
 
-			_ = GetResultFromBundle("os/read-file/pg.env/contents")
-			contents := GetFileFromBundle("os/read-file/pg.env/contents")
+			_ = GetResultFromBundle("os/read-file/pg.env")
+			contents := GetFileFromBundle("os/read-file/pg.env")
 
 			Expect(contents).To(ContainSubstring("PGDATABASE=mydata"))
 			Expect(contents).NotTo(ContainSubstring("PGPASSWORD=mypass"))
