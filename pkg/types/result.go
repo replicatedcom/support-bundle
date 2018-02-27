@@ -12,6 +12,7 @@ type Result struct {
 	// The subpath within the bundle
 	Path   string `json:"path"`
 	Format string `json:"format"`
+	Size   int64  `json:"size"`
 	Spec   Spec   `json:"spec"`
 	Error  error  `json:"error,omitempty"`
 }
@@ -19,6 +20,7 @@ type Result struct {
 type resultIntermediate struct {
 	Path   string `json:"path"`
 	Format string `json:"format"`
+	Size   int64  `json:"size"`
 	Spec   Spec   `json:"spec"`
 	Error  string `json:"error,omitempty"`
 }
@@ -29,6 +31,7 @@ func (r *Result) MarshalJSON() ([]byte, error) {
 		Path:   r.Path,
 		Format: r.Format,
 		Spec:   r.Spec,
+		Size:   r.Size,
 	}
 	if r.Error != nil {
 		intermediate.Error = r.Error.Error()
@@ -46,6 +49,7 @@ func (r *Result) UnmarshalJSON(raw []byte) error {
 	r.Path = intermediate.Path
 	r.Format = intermediate.Format
 	r.Spec = intermediate.Spec
+	r.Size = intermediate.Size
 	if intermediate.Error != "" {
 		r.Error = errors.New(intermediate.Error)
 	}

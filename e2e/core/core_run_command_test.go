@@ -33,9 +33,7 @@ specs:
 			_ = GetResultFromBundle("os/run-command/echo/stdout")
 			contents := GetFileFromBundle("os/run-command/echo/stdout")
 			Expect(contents).To(Equal("hello!\n"))
-			_ = GetResultFromBundle("os/run-command/echo/stderr")
-			contents = GetFileFromBundle("os/run-command/echo/stderr")
-			Expect(contents).To(BeEmpty())
+			ExpectFileNotInBundle("os/run-command/echo/stderr")
 
 			ExpectBundleErrorToHaveOccured("os/run-command/notfound/stdout", `exec: "blah": executable file not found in \$PATH`)
 			ExpectBundleErrorToHaveOccured("os/run-command/notfound/stderr", `exec: "blah": executable file not found in \$PATH`)

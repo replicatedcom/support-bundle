@@ -26,9 +26,8 @@ specs:
 			_ = GetResultFromBundle("os/hostname/stdout")
 			contents := GetFileFromBundle("os/hostname/stdout")
 			Expect(contents).NotTo(BeEmpty())
-			_ = GetResultFromBundle("os/hostname/stderr")
-			contents = GetFileFromBundle("os/hostname/stderr")
-			Expect(contents).To(BeEmpty())
+
+			ExpectFileNotInBundle("os/hostname/stderr")
 		})
 	})
 })

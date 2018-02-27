@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 // StreamsSource is a Task that gets its data as an io.Reader
@@ -100,6 +101,7 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 	}
 
 	readerGroup.Wait()
+	task.cleanupResults(ctx, rootDir, results)
 	return results
 }
 
@@ -269,4 +271,15 @@ func (task *StreamsSource) resultsWithErr(err error, filePath string) []*types.R
 	}
 
 	return resultsWithErr(err, results)
+}
+
+func (task *StreamsSource) cleanupResults(ctx context.Context, rootDir string, results []*types.Result) {
+	for _, result := range results {
+		if result.Size == 0 {
+			err := os.Remove(path.Join(rootDir, result.Path))
+			if err != nil {
+				jww.DEBUG.Printf("Unable to remove empty file %s within %s because of %s", result.Path, rootDir, err.Error())
+			}
+		}
+	}
 }
