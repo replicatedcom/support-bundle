@@ -57,11 +57,7 @@ func recursiveReadFile(ctx context.Context, filepath string, prefix string) (map
 
 func (c *Core) ReadFile(opts types.CoreReadFileOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
-		info, err := os.Stat(opts.Filepath)
-		if err != nil {
-			return nil, err
-		}
-		return recursiveReadFile(ctx, opts.Filepath, info.Name())
+		return recursiveReadFile(ctx, opts.Filepath, "")
 	}
 }
 
