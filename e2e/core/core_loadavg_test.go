@@ -29,12 +29,12 @@ var _ = Describe("os.loadavg", func() {
 			WriteBundleConfig(`
 specs:
   - os.loadavg: {}
-    output_dir: /os/loadavg/`)
+    output_dir: /os/`)
 
 			GenerateBundle()
 
-			_ = GetResultFromBundle("os/loadavg/contents")
-			contents := GetFileFromBundle("os/loadavg/contents")
+			_ = GetResultFromBundle("os/loadavg")
+			contents := GetFileFromBundle("os/loadavg")
 			Expect(contents).NotTo(BeEmpty())
 		})
 	})

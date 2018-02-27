@@ -29,12 +29,12 @@ var _ = Describe("os.uptime", func() {
 			WriteBundleConfig(`
 specs:
   - os.uptime: {}
-    output_dir: /os/uptime/`)
+    output_dir: /os/`)
 
 			GenerateBundle()
 
-			_ = GetResultFromBundle("os/uptime/contents")
-			contents := GetFileFromBundle("os/uptime/contents")
+			_ = GetResultFromBundle("os/uptime")
+			contents := GetFileFromBundle("os/uptime")
 			Expect(contents).NotTo(BeEmpty())
 		})
 	})
