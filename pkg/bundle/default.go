@@ -188,7 +188,7 @@ func DefaultSpecs() []types.Spec {
 		{
 			CoreReadFile: &types.CoreReadFileOptions{
 				SpecShared: types.SpecShared{
-					OutputDir: "default/proc/cpuinfo",
+					OutputDir: "default/proc",
 				},
 				Filepath: "/proc/cpuinfo",
 			},
@@ -196,7 +196,7 @@ func DefaultSpecs() []types.Spec {
 		{
 			CoreReadFile: &types.CoreReadFileOptions{
 				SpecShared: types.SpecShared{
-					OutputDir: "default/proc/meminfo",
+					OutputDir: "default/proc",
 				},
 				Filepath: "/proc/meminfo",
 			},
@@ -204,7 +204,7 @@ func DefaultSpecs() []types.Spec {
 		{
 			CoreReadFile: &types.CoreReadFileOptions{
 				SpecShared: types.SpecShared{
-					OutputDir: "default/proc/mounts",
+					OutputDir: "default/proc",
 				},
 				Filepath: "/proc/mounts",
 			},
@@ -212,7 +212,7 @@ func DefaultSpecs() []types.Spec {
 		{
 			CoreReadFile: &types.CoreReadFileOptions{
 				SpecShared: types.SpecShared{
-					OutputDir: "default/proc/uptime",
+					OutputDir: "default/proc",
 				},
 				Filepath: "/proc/uptime",
 			},
@@ -220,7 +220,7 @@ func DefaultSpecs() []types.Spec {
 		{
 			CoreReadFile: &types.CoreReadFileOptions{
 				SpecShared: types.SpecShared{
-					OutputDir: "default/proc/version",
+					OutputDir: "default/proc",
 				},
 				Filepath: "/proc/version",
 			},
@@ -228,7 +228,7 @@ func DefaultSpecs() []types.Spec {
 		{
 			CoreReadFile: &types.CoreReadFileOptions{
 				SpecShared: types.SpecShared{
-					OutputDir: "default/proc/vmstat",
+					OutputDir: "default/proc",
 				},
 				Filepath: "/proc/vmstat",
 			},
