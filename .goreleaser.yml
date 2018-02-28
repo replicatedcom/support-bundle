@@ -32,10 +32,5 @@ dockers:
   - image: registry.replicated.com/library/support-bundle
     dockerfile: build/Dockerfile-release
     latest: true
-  - image: replicated/support-bundle
-    dockerfile: build/Dockerfile-release
-    latest: false
-    tag_templates:
-      - "beta"
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
