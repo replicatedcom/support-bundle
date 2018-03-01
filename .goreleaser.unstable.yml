@@ -30,7 +30,7 @@ archive:
   - CHANGELOG*
 dockers:
   - image: replicated/support-bundle
-    dockerfile: build/Dockerfile-snapshot
+    dockerfile: build/Dockerfile-release
     latest: false
     tag_templates:
       - "unstable"
