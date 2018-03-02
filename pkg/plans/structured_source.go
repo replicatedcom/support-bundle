@@ -41,6 +41,7 @@ type StructuredSource struct {
 
 func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types.Result {
 	s := StreamsSource{
+		Spec:        task.Spec,
 		RawScrubber: task.RawScrubber,
 		Template:    task.Template,
 		RawPath:     task.RawPath,
