@@ -38,7 +38,7 @@ type UploadOptions struct {
 type SpecShared struct {
 	// Description describes this spec field
 	Description    string `json:"description,omitempty"`
-	OutputDir      string `json:"output_dir"`
+	OutputDir      string `json:"output_dir,omitempty"`
 	TimeoutSeconds int    `json:"timeout_seconds,omitempty"`
 	Scrub          *Scrub `json:"scrub,omitempty"`
 	Meta           *Meta  `json:"meta,omitempty"`
