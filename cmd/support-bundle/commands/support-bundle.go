@@ -2,6 +2,7 @@ package commands
 
 import (
 	"os"
+	"strings"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/replicatedcom/support-bundle/pkg/cli"
@@ -24,7 +25,25 @@ func NewSupportBundleCommand(cli *cli.Cli) *cobra.Command {
 		if opts.verbose {
 			jww.SetStdoutThreshold(jww.LevelTrace)
 		} else {
-			jww.SetStdoutThreshold(jww.LevelError)
+			//get log level from env var
+			logLevel := os.Getenv("LOG_LEVEL")
+			logLevel = strings.ToLower(logLevel)
+			switch logLevel {
+			case "error":
+				jww.SetStdoutThreshold(jww.LevelError)
+			case "warn":
+				jww.SetStdoutThreshold(jww.LevelWarn)
+			case "warning":
+				jww.SetStdoutThreshold(jww.LevelWarn)
+			case "info":
+				jww.SetStdoutThreshold(jww.LevelInfo)
+			case "debug":
+				jww.SetStdoutThreshold(jww.LevelDebug)
+			case "trace":
+				jww.SetStdoutThreshold(jww.LevelTrace)
+			default:
+				jww.SetStdoutThreshold(jww.LevelError)
+			}
 		}
 	}
 
