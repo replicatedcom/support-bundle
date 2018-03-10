@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -57,6 +58,16 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 
 	if !(raw || jsonify || human) {
 		return results
+	}
+
+	startTime := time.Now()
+	specBytes, err := json.Marshal(task.Spec)
+	if err != nil {
+		jww.ERROR.Printf("Unable to parse spec due to %s", err.Error())
+	} else {
+		defer func() {
+			jww.DEBUG.Printf("Task with spec %s completed in %s", string(specBytes), time.Since(startTime).String())
+		}()
 	}
 
 	if task.Timeout != 0 {
