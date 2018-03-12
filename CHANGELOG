@@ -56,3 +56,13 @@
     * Commands now produce output within a specified folder, filenames are selected by the command
     * Results within index.json include the spec that generated them and the output size
     * Empty files are now pruned from the bundle, but are still listed within index.json
+
+0.12.0 /2018-03-12
+    * `iproute2` package included in dockerfile; `ip` commands should now work
+    * Structured source tasks will now include their specs in index.json and error.json, matching stream source and
+        streams source tasks
+    * `output_dir` will not be included in spec within index.json and error.json if it is empty
+    * Log level can be set with the LOG_LEVEL environment variable
+    * Log task spec and run duration upon completion at debug level
+    * The retraced producer is now enabled by default
+    * Redundant `.human` and `.raw` files have been removed
