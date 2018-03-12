@@ -9,10 +9,8 @@ import (
 
 func (k *Kubernetes) ClusterInfo(spec types.Spec) []types.Task {
 	task := plans.StructuredSource{
-		Producer:  k.producers.ClusterInfo,
-		RawPath:   filepath.Join(spec.KubernetesClusterInfo.OutputDir, "cluster_info.raw"),
-		JSONPath:  filepath.Join(spec.KubernetesClusterInfo.OutputDir, "cluster_info.json"),
-		HumanPath: filepath.Join(spec.KubernetesClusterInfo.OutputDir, "cluster_info.human"),
+		Producer: k.producers.ClusterInfo,
+		JSONPath: filepath.Join(spec.KubernetesClusterInfo.OutputDir, "cluster_info.json"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

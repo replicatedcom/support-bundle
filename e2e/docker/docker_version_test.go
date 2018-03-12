@@ -26,18 +26,12 @@ specs:
 			GenerateBundle()
 
 			var contents string
-			_ = GetResultFromBundle("docker/version/docker_version.raw")
-			contents = GetFileFromBundle("docker/version/docker_version.raw")
-			Expect(contents).To(ContainSubstring("ApiVersion"))
 			_ = GetResultFromBundle("docker/version/docker_version.json")
 			contents = GetFileFromBundle("docker/version/docker_version.json")
 			Expect(contents).To(ContainSubstring("ApiVersion"))
 			var m interface{}
 			err := json.Unmarshal([]byte(contents), &m)
 			Expect(err).NotTo(HaveOccurred())
-			_ = GetResultFromBundle("docker/version/docker_version.human")
-			contents = GetFileFromBundle("docker/version/docker_version.human")
-			Expect(contents).To(ContainSubstring("ApiVersion"))
 		})
 	})
 })

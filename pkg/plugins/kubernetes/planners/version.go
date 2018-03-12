@@ -9,10 +9,8 @@ import (
 
 func (k *Kubernetes) Version(spec types.Spec) []types.Task {
 	task := plans.StructuredSource{
-		Producer:  k.producers.Version,
-		RawPath:   filepath.Join(spec.Shared().OutputDir, "server_version.raw"),
-		JSONPath:  filepath.Join(spec.Shared().OutputDir, "server_version.json"),
-		HumanPath: filepath.Join(spec.Shared().OutputDir, "server_version.human"),
+		Producer: k.producers.Version,
+		JSONPath: filepath.Join(spec.Shared().OutputDir, "server_version.json"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

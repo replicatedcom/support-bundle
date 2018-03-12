@@ -67,19 +67,19 @@ specs:
 
 			var contents string
 
-			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-id/%s.raw", container1ID))
-			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-id/%s.raw", container1ID))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-id/%s.json", container1ID))
+			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-id/%s.json", container1ID))
 			Expect(contents).To(ContainSubstring("Hello World!"))
 
-			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-name/%s.raw", container2Name))
-			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-name/%s.raw", container2Name))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-name/%s.json", container2Name))
+			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-name/%s.json", container2Name))
 			Expect(contents).To(ContainSubstring("Hello World!"))
 
-			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.raw", container1Name))
-			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.raw", container1Name))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.json", container1Name))
+			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.json", container1Name))
 			Expect(contents).To(ContainSubstring("Hello World!"))
-			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.raw", container2Name))
-			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.raw", container2Name))
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.json", container2Name))
+			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.json", container2Name))
 			Expect(contents).To(ContainSubstring("Hello World!"))
 		})
 	})
