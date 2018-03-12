@@ -2,6 +2,8 @@ package bundle
 
 import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
+
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 type Planner struct {
@@ -23,8 +25,8 @@ Loop:
 				continue Loop
 			}
 		}
-		// dont show these to the customer, they're weird and scary
-		//jww.ERROR.Printf("Producer not defined for spec %+v", spec)
+		// don't show these to the customer, they're weird and scary
+		jww.DEBUG.Printf("Producer not defined for spec %+v", spec)
 	}
 
 	return tasks
