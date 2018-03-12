@@ -4450,14 +4450,14 @@
             "_ext_outputs": [
               {
                 "path": "stderr",
-                "description": "The standard error of the comand",
+                "description": "The standard error of the command",
                 "examples": [
                   "Usage: ping [-aAbBdDfhLnOqrRUvV] [-c count] [-i interval] [-I interface]\n [-m mark] [-M pmtudisc_option] [-l preload] [-p pattern] [-Q tos]\n [-s packetsize] [-S sndbuf] [-t ttl] [-T timestamp_option]\n [-w deadline] [-W timeout] [hop1 ...] destination"
                 ]
               },
               {
                 "path": "stdout",
-                "description": "The standard output of the comand",
+                "description": "The standard output of the command",
                 "examples": [
                   "PING google.com (172.217.11.78) 56(84) bytes of data.\n 64 bytes from lax17s34-in-f14.1e100.net (172.217.11.78): icmp_seq=1 ttl=54 time=203 ms\n 64 bytes from lax17s34-in-f14.1e100.net (172.217.11.78): icmp_seq=2 ttl=54 time=28.0 ms\n 64 bytes from lax17s34-in-f14.1e100.net (172.217.11.78): icmp_seq=3 ttl=54 time=130 ms\n"
                 ]

@@ -9,6 +9,7 @@ description: Reference Documentation for defining your Support Bundle collection
 index: docs
 title: Support Bundle YAML Specs
 weight: "1"
+gradient: "purpleToPink"
 ---
 
 ## Support Bundle Collection Specs
@@ -155,6 +156,7 @@ description: ${specTypes[specType].description || ""}
 index: docs
 title: ${specType}
 weight: "100"
+gradient: "purpleToPink"
 ---
 
 ## ${specType}
