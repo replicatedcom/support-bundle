@@ -16,6 +16,8 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/spec"
 	"github.com/replicatedcom/support-bundle/pkg/types"
+
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 type GenerateOptions struct {
@@ -31,6 +33,7 @@ type GenerateOptions struct {
 	EnableKubernetes  bool
 	RequireKubernetes bool
 	EnableRetraced    bool
+	RequireRetraced   bool
 	CustomerID        string
 	CustomerEndpoint  string
 	SkipPrompts       bool
@@ -65,7 +68,10 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		pluginJournald, err := journald.New()
 		if err != nil && opts.RequireJournald {
 			return errors.Wrap(err, "initialize journald plugin")
+		} else if err != nil {
+			jww.DEBUG.Printf("initialize journald plugin: %s", err.Error())
 		}
+
 		planner.AddPlugin(pluginJournald)
 	}
 
@@ -74,6 +80,8 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 		if err != nil && opts.RequireKubernetes {
 			return errors.Wrap(err, "initialize kubernetes plugin")
+		} else if err != nil {
+			jww.DEBUG.Printf("initialize kubernetes plugin: %s", err.Error())
 		}
 
 		planner.AddPlugin(pluginKubernetes)
@@ -81,8 +89,10 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	if opts.EnableRetraced {
 		pluginRetraced, err := retraced.New()
-		if err != nil {
+		if err != nil && opts.RequireRetraced {
 			return errors.Wrap(err, "initialize retraced plugin")
+		} else if err != nil {
+			jww.DEBUG.Printf("initialize retraced plugin: %s", err.Error())
 		}
 		planner.AddPlugin(pluginRetraced)
 	}
