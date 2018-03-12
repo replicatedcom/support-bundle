@@ -284,9 +284,7 @@
         }
       ],
       "_ext_outputs": [
-        {"path": "{{.Name}}.raw", "description": "The raw output of the inspect call. Will generate this file for each matched container"},
-        {"path": "{{.Name}}.json", "description": "The json output of the inspect call. Will generate this file for each matched container"},
-        {"path": "{{.Name}}.human", "description": "The human-readable output of the inspect call. Will generate this file for each matched container"}
+        {"path": "{{.Name}}.json", "description": "The json output of the inspect call. Will generate this file for each matched container"}
       ]
     }
   },
@@ -532,16 +530,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "container_ls.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "container_ls.json",
           "description": "JSON output"
-        },
-        {
-          "path": "container_ls.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -1724,16 +1714,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "image_ls.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "image_ls.json",
           "description": "JSON output"
-        },
-        {
-          "path": "image_ls.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -1777,16 +1759,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "image_ls.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "image_ls.json",
           "description": "JSON output"
-        },
-        {
-          "path": "image_ls.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -1823,16 +1797,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "docker_info.raw",
-          "description": "The raw JSON from the docker daemon"
-        },
-        {
           "path": "docker_info.json",
           "description": "A pretty-printed JSON representation"
-        },
-        {
-          "path": "docker_info.human",
-          "description": "A human-readable representation"
         }
       ]
     }
@@ -2012,16 +1978,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "node_ls.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "node_ls.json",
           "description": "JSON output"
-        },
-        {
-          "path": "node_ls.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -2051,16 +2009,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "container_ls.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "container_ls.json",
           "description": "JSON output"
-        },
-        {
-          "path": "container_ls.human",
-          "description": "Human-readable output"
         }
       ]
     },
@@ -3258,16 +3208,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "service_ls.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "service_ls.json",
           "description": "JSON output"
-        },
-        {
-          "path": "service_ls.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -3302,16 +3244,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "service_ps.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "service_ps.json",
           "description": "JSON output"
-        },
-        {
-          "path": "service_ps.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -3425,16 +3359,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "service_ls.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "service_ls.json",
           "description": "JSON output"
-        },
-        {
-          "path": "service_ls.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -3475,16 +3401,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "service_ps.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "service_ps.json",
           "description": "JSON output"
-        },
-        {
-          "path": "service_ps.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -3652,16 +3570,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "task_ls.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "task_ls.json",
           "description": "JSON output"
-        },
-        {
-          "path": "task_ls.human",
-          "description": "Human-readable output"
         }
       ]
     }
@@ -3689,16 +3599,8 @@
       ],
       "_ext_outputs": [
         {
-          "path": "docker_version.raw",
-          "description": "Raw output"
-        },
-        {
           "path": "docker_version.json",
           "description": "JSON output"
-        },
-        {
-          "path": "docker_version.human",
-          "description": "Human-readable output"
         }
       ]
     }

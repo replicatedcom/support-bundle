@@ -29,17 +29,11 @@ specs:
 			var m interface{}
 			var err error
 
-			_ = GetResultFromBundle("docker/node-ls/node_ls.raw")
-			contents = GetFileFromBundle("docker/node-ls/node_ls.raw")
-			Expect(contents).To(ContainSubstring("Availability"))
 			_ = GetResultFromBundle("docker/node-ls/node_ls.json")
 			contents = GetFileFromBundle("docker/node-ls/node_ls.json")
 			Expect(contents).To(ContainSubstring("Availability"))
 			err = json.Unmarshal([]byte(contents), &m)
 			Expect(err).NotTo(HaveOccurred())
-			_ = GetResultFromBundle("docker/node-ls/node_ls.human")
-			contents = GetFileFromBundle("docker/node-ls/node_ls.human")
-			Expect(contents).To(ContainSubstring("Availability"))
 		})
 	})
 })

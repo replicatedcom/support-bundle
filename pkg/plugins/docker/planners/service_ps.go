@@ -16,10 +16,8 @@ func (d *Docker) ServicePs(spec types.Spec) []types.Task {
 	}
 
 	task := plans.StructuredSource{
-		Producer:  d.producers.TaskLs(spec.DockerServicePs.DockerTaskLsOptions),
-		RawPath:   filepath.Join(spec.Shared().OutputDir, "service_ps.raw"),
-		JSONPath:  filepath.Join(spec.Shared().OutputDir, "service_ps.json"),
-		HumanPath: filepath.Join(spec.Shared().OutputDir, "service_ps.human"),
+		Producer: d.producers.TaskLs(spec.DockerServicePs.DockerTaskLsOptions),
+		JSONPath: filepath.Join(spec.Shared().OutputDir, "service_ps.json"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)

@@ -16,10 +16,8 @@ func (d *Docker) NodeLs(spec types.Spec) []types.Task {
 	}
 
 	task := plans.StructuredSource{
-		Producer:  d.producers.NodeLs(*spec.DockerNodeLs),
-		RawPath:   filepath.Join(spec.Shared().OutputDir, "node_ls.raw"),
-		JSONPath:  filepath.Join(spec.Shared().OutputDir, "node_ls.json"),
-		HumanPath: filepath.Join(spec.Shared().OutputDir, "node_ls.human"),
+		Producer: d.producers.NodeLs(*spec.DockerNodeLs),
+		JSONPath: filepath.Join(spec.Shared().OutputDir, "node_ls.json"),
 	}
 	var err error
 	task, err = plans.SetCommonFieldsStructuredSource(task, spec)
