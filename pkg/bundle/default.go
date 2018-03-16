@@ -122,6 +122,13 @@ func DefaultSpecs() []types.Spec {
 			},
 		},
 		{
+			DockerImageLs: &types.DockerImageLsOptions{
+				SpecShared: types.SpecShared{
+					OutputDir: "default/docker",
+				},
+			},
+		},
+		{
 			CoreReadFile: &types.CoreReadFileOptions{
 				SpecShared: types.SpecShared{
 					OutputDir: "default/etc/default",
