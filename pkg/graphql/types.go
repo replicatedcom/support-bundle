@@ -1,5 +1,7 @@
 package graphql
 
+import "fmt"
+
 type Request struct {
 	Query         string                 `json:"query"`
 	Variables     map[string]interface{} `json:"variables"`
@@ -41,4 +43,12 @@ type UploadSupportBundle struct {
 
 type UploadedSupportBundle struct {
 	ID string `json:"id,omitempty"`
+}
+
+type GraphQLErrors struct {
+	Errors []Error
+}
+
+func (e GraphQLErrors) Error() string {
+	return fmt.Sprintf("%v", e.Errors)
 }
