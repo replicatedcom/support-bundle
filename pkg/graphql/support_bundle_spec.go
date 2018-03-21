@@ -75,7 +75,7 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 	}
 
 	if specBody.Errors != nil && len(specBody.Errors) > 0 {
-		return nil, fmt.Errorf("%v", specBody.Errors)
+		return nil, GraphQLErrors{Errors: specBody.Errors}
 	}
 
 	return []byte(specBody.Data.Hydrated), nil
