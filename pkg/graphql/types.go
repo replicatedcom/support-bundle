@@ -11,6 +11,7 @@ type Request struct {
 type Error struct {
 	Locations []map[string]interface{} `json:"locations"`
 	Message   string                   `json:"message"`
+	Code      string                   `json:"code"`
 }
 
 type SupportBundleResponse struct {
