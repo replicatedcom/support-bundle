@@ -1,6 +1,11 @@
 FROM debian:stretch-slim
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y \
     ca-certificates \
+    iproute2 \
+    procps \
+    systemd \
+    \
+    \
     libicu57 \
     libssl1.1 \
     openssl \
