@@ -66,3 +66,6 @@
     * Log task spec and run duration upon completion at debug level
     * The retraced producer is now enabled by default
     * Redundant `.human` and `.raw` files have been removed
+
+0.12.1 /2018-03-29
+    * Fix CVEs in libssl1.1 and openssl packages
