@@ -1,3 +1,5 @@
+.PHONY: clean deps install run test build shell all goreleaser
+
 # Structure adapted from https://github.com/thockin/go-build-template
 
 SHELL := /bin/bash
@@ -24,7 +26,6 @@ endif
 
 SRC_DIRS := cmd pkg
 BUILD_IMAGE ?= golang:1.9-alpine
-.PHONY: clean deps install run test build shell all
 
 deps:
 	go install
