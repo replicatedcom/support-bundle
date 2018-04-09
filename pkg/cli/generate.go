@@ -113,6 +113,11 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		}
 		specs = append(specs, customerDoc.Specs...)
 		specs = append(specs, bundle.CustomerJsonSpec(opts.CustomerID))
+
+		if types.GetUseDefaults(customerDoc.Lifecycle) {
+			specs = append(specs, bundle.DefaultSpecs()...)
+		}
+
 		expectedDefaultTasks += 1
 	}
 

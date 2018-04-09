@@ -18,6 +18,7 @@ type LifecycleTask struct {
 }
 
 type GenerateOptions struct {
+	UseDefaults bool `json:"use_defaults,omitempty"`
 }
 
 type MessageOptions struct {

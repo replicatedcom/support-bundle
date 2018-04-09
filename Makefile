@@ -1,3 +1,5 @@
+.PHONY: clean deps install run test build shell all goreleaser
+
 # Structure adapted from https://github.com/thockin/go-build-template
 
 SHELL := /bin/bash
@@ -13,9 +15,17 @@ else
 	BUILD_TIME := $(shell date --rfc-3339=seconds | sed 's/ /T/')
 endif
 
+#paths within WSL start with /mnt/c/...
+#docker does not recognize this fact
+#this strips the first 5 characters (leaving /c/...) if the kernel releaser is Microsoft
+ifeq ($(shell uname -r | tail -c 10), Microsoft)
+	BUILD_DIR := $(shell pwd | cut -c 5-)
+else
+	BUILD_DIR := $(shell pwd)
+endif
+
 SRC_DIRS := cmd pkg
 BUILD_IMAGE ?= golang:1.9-alpine
-.PHONY: clean deps install run test build shell all
 
 deps:
 	go install
@@ -53,11 +63,11 @@ bin/$(ARCH)/$(BIN): build-dirs
 	    -ti                                                                 \
 	    --rm                                                                \
 	    -u $$(id -u):$$(id -g)                                              \
-	    -v "$$(pwd)/.go:/go"                                                \
-	    -v "$$(pwd):/go/src/$(PKG)"                                         \
-	    -v "$$(pwd)/bin/$(ARCH):/go/bin"                                    \
-	    -v "$$(pwd)/bin/$(ARCH):/go/bin/$$(go env GOOS)_$(ARCH)"            \
-	    -v "$$(pwd)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
+	    -v "$(BUILD_DIR)/.go:/go"                                                \
+	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                         \
+	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin"                                    \
+	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin/$$(go env GOOS)_$(ARCH)"            \
+	    -v "$(BUILD_DIR)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
 	    -w /go/src/$(PKG)                                                   \
 	    $(BUILD_IMAGE)                                                      \
 	    /bin/sh -c "                                                        \
@@ -76,11 +86,11 @@ shell: build-dirs
 	    -ti                                                                 \
 	    --rm                                                                \
 	    -u $$(id -u):$$(id -g)                                              \
-	    -v "$$(pwd)/.go:/go"                                                \
-	    -v "$$(pwd):/go/src/$(PKG)"                                         \
-	    -v "$$(pwd)/bin/$(ARCH):/go/bin"                                    \
-	    -v "$$(pwd)/bin/$(ARCH):/go/bin/$$(go env GOOS)_$(ARCH)"            \
-	    -v "$$(pwd)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
+	    -v "$(BUILD_DIR)/.go:/go"                                                \
+	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                         \
+	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin"                                    \
+	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin/$$(go env GOOS)_$(ARCH)"            \
+	    -v "$(BUILD_DIR)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
 	    -w /go/src/$(PKG)                                                   \
 	    $(BUILD_IMAGE)                                                      \
 	    /bin/sh $(CMD)
@@ -89,11 +99,11 @@ test: build-dirs
 	@docker run                                                             \
 	    -ti                                                                 \
 	    --rm                                                                \
-	    -v "$$(pwd)/.go:/go"                                                \
-	    -v "$$(pwd):/go/src/$(PKG)"                                         \
-	    -v "$$(pwd)/bin/$(ARCH):/go/bin"                                    \
+	    -v "$(BUILD_DIR)/.go:/go"                                                \
+	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                         \
+	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin"                                    \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
-	    -v "$$(pwd)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
+	    -v "$(BUILD_DIR)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
 	    -w /go/src/$(PKG)                                                   \
 	    $(BUILD_IMAGE)                                                      \
 	    /bin/sh -c "                                                        \
@@ -104,8 +114,8 @@ e2e: build-dirs
 	@docker run                                                             \
 	    -ti                                                                 \
 	    --rm                                                                \
-	    -v "$$(pwd)/.go:/go"                                                \
-	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+	    -v "$(BUILD_DIR)/.go:/go"                                                \
+	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                         \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 	    -w /go/src/$(PKG)                                                   \
 	    golang:1.9                                                          \
@@ -118,8 +128,8 @@ e2e-docker: build-dirs
 	    -ti                                                                 \
 	    --rm                                                                \
 		--label com.replicated.support-bundle=true                          \
-	    -v "$$(pwd)/.go:/go"                                                \
-	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+	    -v "$(BUILD_DIR)/.go:/go"                                                \
+	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                         \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 	    -w /go/src/$(PKG)                                                   \
 		golang:1.9                                                          \
@@ -132,8 +142,8 @@ e2e-swarm: build-dirs
 	@docker run                                                             \
 	    -ti                                                                 \
 	    --rm                                                                \
-	    -v "$$(pwd)/.go:/go"                                                \
-	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+	    -v "$(BUILD_DIR)/.go:/go"                                                \
+	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                         \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 	    -w /go/src/$(PKG)                                                   \
 		golang:1.9                                                          \
@@ -146,8 +156,8 @@ e2e-retraced: build-dirs
 	@docker run                                                             \
 	    -ti                                                                 \
 	    --rm                                                                \
-	    -v "$$(pwd)/.go:/go"                                                \
-	    -v "$$(pwd):/go/src/$(PKG)"                                         \
+	    -v "$(BUILD_DIR)/.go:/go"                                                \
+	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                         \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 	    -w /go/src/$(PKG)                                                   \
 		golang:1.9                                                          \
@@ -175,3 +185,6 @@ bin-clean:
 	rm -rf .go bin
 
 all: build test e2e e2e-docker
+
+goreleaser:
+	curl -sL https://git.io/goreleaser | bash -s -- --snapshot --rm-dist --config .goreleaser.unstable.yml
