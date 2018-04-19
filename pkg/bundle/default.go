@@ -92,11 +92,17 @@ func DefaultSpecs() []types.Spec {
 				Args: []string{"fauxwww"},
 			},
 		},
-
 		{
 			CoreUptime: &types.CoreUptimeOptions{
 				SpecShared: types.SpecShared{
 					OutputDir: "default/commands/uptime",
+				},
+			},
+		},
+		{
+			CoreLoadavg: &types.CoreLoadavgOptions{
+				SpecShared: types.SpecShared{
+					OutputDir: "default/commands/loadavg",
 				},
 			},
 		},
