@@ -73,3 +73,6 @@
 
 0.13.0 /2018-04-09
     * If a support lifecycle has generate.use_defaults = true, also include the default specs
+
+0.13.1 /2018-04-19
+    * Include loadavg by default
