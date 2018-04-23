@@ -100,13 +100,6 @@ func DefaultSpecs() []types.Spec {
 			},
 		},
 		{
-			CoreLoadavg: &types.CoreLoadavgOptions{
-				SpecShared: types.SpecShared{
-					OutputDir: "default/commands/loadavg",
-				},
-			},
-		},
-		{
 			DockerContainerLs: &types.DockerContainerLsOptions{
 				SpecShared: types.SpecShared{
 					OutputDir: "default/docker",
@@ -199,6 +192,13 @@ func DefaultSpecs() []types.Spec {
 			},
 		},
 		{
+			CoreLoadavg: &types.CoreLoadavgOptions{
+				SpecShared: types.SpecShared{
+					OutputDir: "default/proc",
+				},
+			},
+		},
+		{
 			CoreReadFile: &types.CoreReadFileOptions{
 				SpecShared: types.SpecShared{
 					OutputDir: "default/proc",
@@ -228,14 +228,6 @@ func DefaultSpecs() []types.Spec {
 					OutputDir: "default/proc",
 				},
 				Filepath: "/proc/uptime",
-			},
-		},
-		{
-			CoreReadFile: &types.CoreReadFileOptions{
-				SpecShared: types.SpecShared{
-					OutputDir: "default/proc",
-				},
-				Filepath: "/proc/loadavg",
 			},
 		},
 		{
