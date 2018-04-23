@@ -270,6 +270,15 @@ func DefaultSpecs() []types.Spec {
 				Filepath: "/etc/centos-release",
 			},
 		},
+		{
+			JournaldLogs: &types.JournaldLogsOptions{
+				SpecShared: types.SpecShared{
+					OutputDir: "default/journald/docker",
+				},
+				Unit:  "docker",
+				Since: "-14 days",
+			},
+		},
 	}
 }
 
