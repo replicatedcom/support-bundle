@@ -76,6 +76,7 @@
 
 0.13.1 /2018-04-19
     * Include loadavg by default
+    * Include docker journald logs by default
 
 0.13.2 /2018-04-23
-    * Include loadavg in the /proc/loadavg filepath
+    * Include loadavg in /proc/loadavg filepath
