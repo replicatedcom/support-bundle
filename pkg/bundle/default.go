@@ -100,13 +100,6 @@ func DefaultSpecs() []types.Spec {
 			},
 		},
 		{
-			CoreLoadavg: &types.CoreLoadavgOptions{
-				SpecShared: types.SpecShared{
-					OutputDir: "default/commands/loadavg",
-				},
-			},
-		},
-		{
 			DockerContainerLs: &types.DockerContainerLsOptions{
 				SpecShared: types.SpecShared{
 					OutputDir: "default/docker",
@@ -196,6 +189,13 @@ func DefaultSpecs() []types.Spec {
 					OutputDir: "default/etc",
 				},
 				Filepath: "/etc/timezone",
+			},
+		},
+		{
+			CoreLoadavg: &types.CoreLoadavgOptions{
+				SpecShared: types.SpecShared{
+					OutputDir: "default/proc",
+				},
 			},
 		},
 		{
