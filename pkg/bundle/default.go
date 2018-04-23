@@ -235,6 +235,14 @@ func DefaultSpecs() []types.Spec {
 				SpecShared: types.SpecShared{
 					OutputDir: "default/proc",
 				},
+				Filepath: "/proc/loadavg",
+			},
+		},
+		{
+			CoreReadFile: &types.CoreReadFileOptions{
+				SpecShared: types.SpecShared{
+					OutputDir: "default/proc",
+				},
 				Filepath: "/proc/version",
 			},
 		},
