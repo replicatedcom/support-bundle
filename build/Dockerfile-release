@@ -6,9 +6,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-instal
     systemd \
     \
     \
-    libicu57 \
-    libssl1.1 \
-    openssl \
+    perl \
   && rm -rf /var/lib/apt/lists/*
 COPY support-bundle /usr/local/bin/support-bundle
 ENV IN_CONTAINER 1
