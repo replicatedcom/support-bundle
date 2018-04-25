@@ -80,3 +80,6 @@
 
 0.13.2 /2018-04-23
     * Include loadavg in /proc/loadavg filepath
+
+0.13.3 /2018-04-25
+    * Patch CVEs in perl packages
