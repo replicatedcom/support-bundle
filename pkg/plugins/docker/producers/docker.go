@@ -2,7 +2,6 @@ package producers
 
 import (
 	"context"
-	"log"
 	"regexp"
 
 	"github.com/docker/docker/api/types"
@@ -46,7 +45,7 @@ func New(client *docker.Client) *Docker {
 	if len(matches) < 2 {
 		jww.INFO.Printf("Docker API version negotiation fallback failed")
 	} else {
-		log.Printf("Fallback API version detection: %+v", matches[1])
+		jww.INFO.Printf("Fallback API version detection: %+v", matches[1])
 		var fakePing types.Ping
 		fakePing.APIVersion = matches[1]
 		client.NegotiateAPIVersionPing(fakePing)

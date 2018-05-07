@@ -3,9 +3,9 @@ package util
 import (
 	"context"
 	"io"
-	"log"
 
 	"github.com/docker/docker/pkg/stdcopy"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 // Given a docker logs stream, return a map of the stdout and stderr components
@@ -22,10 +22,10 @@ func DemuxLogs(ctx context.Context, source io.Reader, prefix string) (map[string
 			return
 		}
 		if err := stdoutW.Close(); err != nil {
-			log.Print(err)
+			jww.ERROR.Print(err)
 		}
 		if err := stderrW.Close(); err != nil {
-			log.Print(err)
+			jww.ERROR.Print(err)
 		}
 	}()
 
