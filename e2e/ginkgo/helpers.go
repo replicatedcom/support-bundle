@@ -212,7 +212,7 @@ func MakeDockerContainer(client docker.CommonAPIClient, name string, labels map[
 	Expect(err).NotTo(HaveOccurred())
 
 	config := dockercontainertypes.Config{
-		Image:  "ubuntu:latest",
+		Image:  "ubuntu:16.04",
 		Cmd:    cmd,
 		Labels: labels,
 	}
