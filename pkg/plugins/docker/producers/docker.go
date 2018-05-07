@@ -2,11 +2,11 @@ package producers
 
 import (
 	"context"
-	"log"
 	"regexp"
 
 	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 type Docker struct {
@@ -32,7 +32,7 @@ func New(client *docker.Client) *Docker {
 	}
 
 	// negotiation failed, so we get to fake it
-	log.Printf("Docker API version negotiation failed. Attempting fallback...")
+	jww.INFO.Printf("Docker API version negotiation failed. Attempting fallback...")
 	_, err := client.ServerVersion(context.Background())
 
 	if err == nil {
@@ -43,9 +43,9 @@ func New(client *docker.Client) *Docker {
 	matches := dockerErrorVersionRegexp.FindStringSubmatch(err.Error())
 
 	if len(matches) < 2 {
-		log.Printf("Docker API version negotiation fallback failed")
+		jww.INFO.Printf("Docker API version negotiation fallback failed")
 	} else {
-		log.Printf("Fallback API version detection: %+v", matches[1])
+		jww.INFO.Printf("Fallback API version detection: %+v", matches[1])
 		var fakePing types.Ping
 		fakePing.APIVersion = matches[1]
 		client.NegotiateAPIVersionPing(fakePing)

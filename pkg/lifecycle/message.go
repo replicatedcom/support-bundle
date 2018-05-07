@@ -2,6 +2,7 @@ package lifecycle
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
@@ -11,6 +12,6 @@ type MessageTask struct {
 }
 
 func (t *MessageTask) Execute(l *Lifecycle) (bool, error) {
-	fmt.Println(t.Options.Contents)
+	fmt.Fprintln(os.Stderr, t.Options.Contents)
 	return true, nil
 }

@@ -1,0 +1,16 @@
+{
+  "pointer": "replicatedcom__support-bundle",
+  "ignorePatterns": [
+    ".git/**",
+    ".go/**",
+    "bin/**",
+    "hack/docs/**",
+    ".idea/**",
+    "**/*jb_tmp*",
+    "e2e-retraced/**",
+    "e2e/**",
+    "dist/**",
+    "deploy/**",
+    ".circleci/**",
+  ]
+}

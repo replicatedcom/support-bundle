@@ -14,8 +14,8 @@ func Exec(ctx context.Context, rootDir string, tasks []types.Task) []*types.Resu
 			results <- task.Exec(ctx, rootDir)
 		}(task)
 	}
-
 	pending := len(tasks)
+
 	var accm []*types.Result
 
 	for {

@@ -57,7 +57,7 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		return false, errors.Wrap(err, "get presigned URL")
 	}
 
-	err = putObject(l.FileInfo, url)
+	err = putObject(l.FileInfo, l.RealGeneratedBundlePath, url)
 	if err != nil {
 		return false, errors.Wrap(err, "uploading to presigned URL")
 	}
@@ -97,7 +97,7 @@ func (task *UploadTask) askForConfirmation(skip bool, opts *templateOpts) (bool,
 		if err := runTemplate(&b, "message", task.Options.Prompt.Message, opts); err != nil {
 			return false, errors.Wrap(err, "template message")
 		}
-		fmt.Printf("%s %s: ", b.String(), def)
+		fmt.Fprintf(os.Stderr, "%s %s: ", b.String(), def)
 
 		response, err := reader.ReadString('\n')
 		if err != nil {
@@ -121,8 +121,8 @@ func (task *UploadTask) askForConfirmation(skip bool, opts *templateOpts) (bool,
 
 }
 
-func putObject(fi os.FileInfo, url *url.URL) error {
-	file, err := os.Open(fi.Name())
+func putObject(fi os.FileInfo, fullpath string, url *url.URL) error {
+	file, err := os.Open(fullpath)
 	if err != nil {
 		return errors.Wrap(err, "opening file for upload")
 	}
