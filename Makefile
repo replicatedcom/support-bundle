@@ -35,16 +35,6 @@ install:
 
 generate:
 	./bin/support-bundle generate
-# this task assumes a working retraced installation, and requires the following params to be set:
-#
-#  RETRACED_API_ENDPOINT
-#  RETRACED_PROJECT_ID
-#  RETRACED_API_KEY
-#
-# Can also optionally set
-#
-#  RETRACED_INSECURE_SKIP_VERIFY=1
-#
 
 build-%:
 	@$(MAKE) --no-print-directory ARCH=$* build
@@ -152,6 +142,16 @@ e2e-swarm: build-dirs
 	        ./build/e2e.sh $(SRC_DIRS)                                      \
 	    "
 
+# this task assumes a working retraced installation, and requires the following params to be set:
+#
+#  RETRACED_API_ENDPOINT
+#  RETRACED_PROJECT_ID
+#  RETRACED_API_KEY
+#
+# Can also optionally set
+#
+#  RETRACED_INSECURE_SKIP_VERIFY=1
+#
 e2e-retraced: build-dirs
 	@docker run                                                             \
 	    -ti                                                                 \

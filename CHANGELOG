@@ -83,3 +83,7 @@
 
 0.13.3 /2018-04-25
     * Patch CVEs in perl packages
+
+0.14.0 /2018-05-07
+    * Moved all prompts and output to write to standard error
+    * Added option for dumping a bundle tarball to stdout via `--output -`

@@ -14,10 +14,12 @@ type GenerateTask struct {
 
 func (t *GenerateTask) Execute(l *Lifecycle) (bool, error) {
 
-	fileInfo, err := bundle.Generate(l.BundleTasks, time.Duration(time.Second*time.Duration(l.GenerateTimeout)), l.GenerateBundlePath)
+	fileInfo, finalPathname, err := bundle.Generate(l.BundleTasks, time.Duration(time.Second*time.Duration(l.GenerateTimeout)), l.GenerateBundlePath)
 	if err != nil {
 		return false, errors.Wrap(err, "generating bundle")
 	}
 	l.FileInfo = fileInfo
+	l.RealGeneratedBundlePath = finalPathname
+
 	return true, nil
 }

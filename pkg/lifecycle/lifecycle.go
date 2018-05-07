@@ -15,8 +15,12 @@ type Lifecycle struct {
 	UploadCustomerID   string
 	GraphQLClient      *graphql.Client
 	FileInfo           os.FileInfo
-	BundleTasks        []types.Task
-	executors          []Executor
+	// RealGeneratedBundlePath is the actual path the bundle was written to.
+	// it will be different from GenerateBundlePath if a URL or `-` (stdout)
+	// was passed in.
+	RealGeneratedBundlePath string
+	BundleTasks             []types.Task
+	executors               []Executor
 }
 
 // Executor is a thing that can be executed.
