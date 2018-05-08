@@ -21,22 +21,24 @@ import (
 )
 
 type GenerateOptions struct {
-	CfgFiles          []string
-	CfgDocs           []string
-	BundlePath        string
-	SkipDefault       bool
-	TimeoutSeconds    int
-	EnableCore        bool
-	EnableDocker      bool
-	EnableJournald    bool
-	RequireJournald   bool
-	EnableKubernetes  bool
-	RequireKubernetes bool
-	EnableRetraced    bool
-	RequireRetraced   bool
-	CustomerID        string
-	CustomerEndpoint  string
-	SkipPrompts       bool
+	CfgFiles            []string
+	CfgDocs             []string
+	BundlePath          string
+	SkipDefault         bool
+	TimeoutSeconds      int
+	EnableCore          bool
+	EnableDocker        bool
+	EnableJournald      bool
+	RequireJournald     bool
+	EnableKubernetes    bool
+	RequireKubernetes   bool
+	EnableRetraced      bool
+	RequireRetraced     bool
+	CustomerID          string
+	CustomerEndpoint    string
+	ConfirmUploadPrompt bool
+	DenyUploadPrompt    bool
+	Quiet               bool
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
@@ -127,12 +129,14 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	}
 
 	lf := lifecycle.Lifecycle{
-		BundleTasks:        tasks,
-		GenerateTimeout:    opts.TimeoutSeconds,
-		GenerateBundlePath: opts.BundlePath,
-		GraphQLClient:      graphQLClient,
-		UploadCustomerID:   opts.CustomerID,
-		SkipPrompts:        opts.SkipPrompts,
+		BundleTasks:         tasks,
+		GenerateTimeout:     opts.TimeoutSeconds,
+		GenerateBundlePath:  opts.BundlePath,
+		GraphQLClient:       graphQLClient,
+		UploadCustomerID:    opts.CustomerID,
+		ConfirmUploadPrompt: opts.ConfirmUploadPrompt,
+		DenyUploadPrompt:    opts.DenyUploadPrompt,
+		Quiet:               opts.Quiet,
 	}
 
 	lt := types.DefaultLifecycleTasks

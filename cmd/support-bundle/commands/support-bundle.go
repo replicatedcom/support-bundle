@@ -14,6 +14,7 @@ import (
 type supportBundleOptions struct {
 	cfgFile string
 	verbose bool
+	quiet   bool
 }
 
 func NewSupportBundleCommand(cli *cli.Cli) *cobra.Command {
@@ -24,6 +25,8 @@ func NewSupportBundleCommand(cli *cli.Cli) *cobra.Command {
 		jww.SetLogOutput(os.Stderr)
 		if opts.verbose {
 			jww.SetStdoutThreshold(jww.LevelTrace)
+		} else if opts.quiet {
+			jww.SetStdoutThreshold(jww.LevelError)
 		} else {
 			//get log level from env var
 			logLevel := os.Getenv("LOG_LEVEL")
@@ -50,8 +53,9 @@ func NewSupportBundleCommand(cli *cli.Cli) *cobra.Command {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	cmd.PersistentFlags().StringVarP(&opts.cfgFile, "config-file", "c", "", "config file")
-	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "verbose logging")
+	cmd.PersistentFlags().StringVarP(&opts.cfgFile, "config-file", "c", "", "Config file to use")
+	cmd.PersistentFlags().BoolVarP(&opts.verbose, "verbose", "v", false, "Enable verbose logging. Overrides any LOG_LEVEL from the environment.")
+	cmd.PersistentFlags().BoolVarP(&opts.quiet, "quiet", "q", false, "If set, supress all non-error output and messages. Overrides any LOG_LEVEL from the environment.")
 
 	cobra.OnInitialize(func() {
 		initConfig(opts)

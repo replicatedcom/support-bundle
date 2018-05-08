@@ -9,12 +9,14 @@ import (
 )
 
 type Lifecycle struct {
-	GenerateTimeout    int
-	SkipPrompts        bool
-	GenerateBundlePath string
-	UploadCustomerID   string
-	GraphQLClient      *graphql.Client
-	FileInfo           os.FileInfo
+	GenerateTimeout     int
+	ConfirmUploadPrompt bool
+	DenyUploadPrompt    bool
+	Quiet               bool
+	GenerateBundlePath  string
+	UploadCustomerID    string
+	GraphQLClient       *graphql.Client
+	FileInfo            os.FileInfo
 	// RealGeneratedBundlePath is the actual path the bundle was written to.
 	// it will be different from GenerateBundlePath if a URL or `-` (stdout)
 	// was passed in.

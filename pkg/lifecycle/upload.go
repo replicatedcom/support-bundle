@@ -27,7 +27,15 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 	tplOpts := &templateOpts{
 		BundlePath: l.GenerateBundlePath,
 	}
-	proceed, err := task.askForConfirmation(l.SkipPrompts, tplOpts)
+
+	if l.DenyUploadPrompt {
+		if task.Options.Prompt.DeclineMessage != "" {
+			return false, runTemplate(os.Stdout, "decline", task.Options.Prompt.DeclineMessage+"\n", tplOpts)
+		}
+		return false, nil
+	}
+
+	proceed, err := task.askForConfirmation(l.ConfirmUploadPrompt, tplOpts)
 	if err != nil {
 		return false, errors.New("confirm upload")
 	}
