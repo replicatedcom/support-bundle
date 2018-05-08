@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -28,9 +29,14 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		BundlePath: l.GenerateBundlePath,
 	}
 
+	var outputWriter io.Writer = os.Stderr
+	if l.Quiet {
+		outputWriter = ioutil.Discard
+	}
+
 	if l.DenyUploadPrompt {
 		if task.Options.Prompt.DeclineMessage != "" {
-			return false, runTemplate(os.Stdout, "decline", task.Options.Prompt.DeclineMessage+"\n", tplOpts)
+			return false, runTemplate(outputWriter, "decline", task.Options.Prompt.DeclineMessage+"\n", tplOpts)
 		}
 		return false, nil
 	}
@@ -42,14 +48,14 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 
 	if !proceed {
 		if task.Options.Prompt.DeclineMessage != "" {
-			return false, runTemplate(os.Stdout, "decline", task.Options.Prompt.DeclineMessage+"\n", tplOpts)
+			return false, runTemplate(outputWriter, "decline", task.Options.Prompt.DeclineMessage+"\n", tplOpts)
 		}
 		return false, nil
 
 	}
 
 	if task.Options.Prompt.AcceptMessage != "" {
-		err = runTemplate(os.Stdout, "accept", task.Options.Prompt.AcceptMessage+"\n", tplOpts)
+		err = runTemplate(outputWriter, "accept", task.Options.Prompt.AcceptMessage+"\n", tplOpts)
 		if err != nil {
 			return false, errors.Wrap(err, "run accept template")
 		}
@@ -90,8 +96,8 @@ func runTemplate(w io.Writer, name string, tpl string, opts *templateOpts) error
 	return nil
 }
 
-func (task *UploadTask) askForConfirmation(skip bool, opts *templateOpts) (bool, error) {
-	if skip || task.Options.Prompt == nil {
+func (task *UploadTask) askForConfirmation(autoconfirmed bool, opts *templateOpts) (bool, error) {
+	if autoconfirmed || task.Options.Prompt == nil {
 		return true, nil
 	}
 	reader := bufio.NewReader(os.Stdin)
