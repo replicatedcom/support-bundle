@@ -87,3 +87,8 @@
 0.14.0 /2018-05-07
     * Moved all prompts and output to write to standard error
     * Added option for dumping a bundle tarball to stdout via `--output -`
+
+0.14.1 /2018-05-07
+    * Added option for supressing all output and messaging via `--quiet`
+    * Renamed parameter `--yes` to `--yes-upload` for auto-confirming the upload prompt
+    * Added `--no-upload` for auto-denying the upload prompt

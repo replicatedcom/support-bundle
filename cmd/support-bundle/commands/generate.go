@@ -30,9 +30,20 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().BoolVar(&opts.EnableRetraced, "retraced", true, "Enable Retraced plugin")
 	cmd.Flags().BoolVar(&opts.RequireRetraced, "require-retraced", false, "Require Retraced plugin")
 	cmd.Flags().BoolVar(&opts.SkipDefault, "skip-default", false, "If present, skip the default support bundle files")
-	cmd.Flags().BoolVar(&opts.SkipPrompts, "yes", false, "If present, auto-confirm any prompts")
+	cmd.Flags().BoolVarP(&opts.ConfirmUploadPrompt, "yes-upload", "u", false, "If present, auto-confirm any upload prompts")
+	cmd.Flags().BoolVar(&opts.DenyUploadPrompt, "no-upload", false, "If present, auto-deny any upload prompts")
+
 	cmd.Flags().StringVar(&opts.CustomerID, "customer-id", "", "Replicated Customer ID")
 	cmd.Flags().StringVar(&opts.CustomerEndpoint, "customer-endpoint", "https://pg.replicated.com/graphql", "Customer API Endpoint")
+
+	//--out - works, and its totally interactive and everything,
+	// and the bundle just gets dumped to stdout.
+	// so if you pipe it to a file, you can still read the messages and answer the prompts.
+	//
+	// This --quiet is to get around a kubectl thing where it combines stderr and stdout,
+	// I've tried all kinds of /bin/sh -c wrapping but its a pain and gets really ugly.
+	// --quiet is really just a convenience thing for those cases.
+	cmd.Flags().BoolVar(&opts.Quiet, "quiet", false, "If set, supress all non-error output and messages. Useful when combined with '--out -' to dump a tarball to stdout.")
 
 	return cmd
 }

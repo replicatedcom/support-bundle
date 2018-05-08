@@ -12,6 +12,8 @@ type MessageTask struct {
 }
 
 func (t *MessageTask) Execute(l *Lifecycle) (bool, error) {
-	fmt.Fprintln(os.Stderr, t.Options.Contents)
+	if !l.Quiet {
+		fmt.Fprintln(os.Stderr, t.Options.Contents)
+	}
 	return true, nil
 }
