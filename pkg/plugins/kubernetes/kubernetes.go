@@ -41,6 +41,8 @@ func (p *Kubernetes) Plan(spec types.Spec) types.Planner {
 		return p.planner.Logs
 	case spec.KubernetesVersion != nil:
 		return p.planner.Version
+	case spec.KubernetesResourceList != nil:
+		return p.planner.ResourceList
 	default:
 		return nil
 	}
