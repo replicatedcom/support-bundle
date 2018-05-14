@@ -31,13 +31,11 @@ archive:
 dockers:
   - image: registry.replicated.com/library/support-bundle
     dockerfile: build/Dockerfile-release
-    latest: true
-  - image: replicated/support-bundle
-    dockerfile: build/Dockerfile-release
-    latest: true
+    goos: linux
+    goarch: amd64
+    binary: support-bundle
     tag_templates:
-      - "alpha"
-      - "stable"
-      - "{{ .Tag }}"
+    - "{{ .Tag }}"
+    - latest
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}

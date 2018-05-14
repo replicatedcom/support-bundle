@@ -92,3 +92,9 @@
     * Added option for supressing all output and messaging via `--quiet`
     * Renamed parameter `--yes` to `--yes-upload` for auto-confirming the upload prompt
     * Added `--no-upload` for auto-denying the upload prompt
+
+0.14.2 /2018-05-11
+    * kubernetes.ResourceList planner
+
+0.14.3 /2018-05-14
+    * Cancel releases to replicated/support-bundle
