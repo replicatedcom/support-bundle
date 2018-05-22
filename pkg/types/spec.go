@@ -42,6 +42,7 @@ type SpecShared struct {
 	OutputDir      string `json:"output_dir,omitempty"`
 	TimeoutSeconds int    `json:"timeout_seconds,omitempty"`
 	Scrub          *Scrub `json:"scrub,omitempty"`
+	IncludeEmpty   bool   `json:"include_empty,omitempty"`
 	Meta           *Meta  `json:"meta,omitempty"`
 }
 
