@@ -98,3 +98,6 @@
 
 0.14.3 /2018-05-14
     * Cancel releases to replicated/support-bundle
+
+0.15.0 /2018-05-21
+    * Add IncludeEmpty option to shared spec

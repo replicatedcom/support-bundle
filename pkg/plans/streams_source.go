@@ -112,7 +112,9 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 	}
 
 	readerGroup.Wait()
-	task.cleanupResults(ctx, rootDir, results)
+	if !task.Spec.Shared().IncludeEmpty {
+		task.cleanupResults(ctx, rootDir, results)
+	}
 	return results
 }
 
