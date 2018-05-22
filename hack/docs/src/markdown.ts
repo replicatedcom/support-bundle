@@ -19,23 +19,25 @@ information you want to collect to debug your application. All Support Bundle sp
 
 ### Required Parameters
 
-- ${"`"}output_dir${"`"} - The directory in the bundle to store the collection results
+- \`output_dir\` - The directory in the bundle to store the collection results
 
 ### Optional Parameters
 
-- ${"`"}timeout_seconds${"`"} - An amount of time to allow a collection to run before abandoning it
+- \`timeout_seconds\` - An amount of time to allow a collection to run before abandoning it
 
-- ${"`"}description${"`"} - A description of the file(s) being collected
+- \`description\` - A description of the file(s) being collected
 
-- ${"`"}scrub${"`"} - A ${"`"}regex${"`"} and ${"`"}replace${"`"} specification for removing sensitive data from files in the bundle
+- \`scrub\` - A \`regex\` and \`replace\` specification for removing sensitive data from files in the bundle
 
-- ${"`"}meta${"`"} - A ${"`"}name${"`"} and ${"`"}labels${"`"} that can be used to organize and identify support bundle elements in generated bundles
+- \`meta\` - A \`name\` and \`labels\` that can be used to organize and identify support bundle elements in generated bundles
+
+- \`include_empty\` - Allows empty files to be included in output
 
 ### Usage
 
-An example is shown below for the ${"`"}os.read-file${"`"} collector.
+An example is shown below for the \`os.read-file\` collector.
 
-${"```"}yaml
+\`\`\`yaml
 specs:
   - os.read-file:
       # path on the host
@@ -56,10 +58,10 @@ specs:
         labels:
           area: "configuration"
           type: "readfile"
-${"```"}
-
+      # Includes file in output even if empty
+      include_empty: true
+\`\`\`
 `;
-
 
 export const name = "markdown";
 export const describe = "Build markdown for examples in top-level elements";
@@ -76,14 +78,15 @@ export const builder = {
   },
 };
 
-function maybeRenderOutputs(specTypes: any, specType) { let doc = "";
+function maybeRenderOutputs(specTypes: any, specType) {
+  let doc = "";
   const outputs = specTypes[specType]._ext_outputs;
   if (outputs) {
     doc += `
-    
-### Outputs
 
-`;
+    ### Outputs
+
+    `;
     for (const output of outputs) {
       doc += `
 - ${"`" + output.path + "`"} - ${output.description}
@@ -98,7 +101,7 @@ function maybeRenderParameters(required: any[], typeOf) {
   let doc = "";
   if (required.length !== 0) {
     doc += `
-    
+
 ### ${typeOf} Parameters
 
 `;
@@ -118,16 +121,17 @@ function parseParameters(specTypes: any, specType) {
   const required = [] as any[];
   const optional = [] as any[];
   for (const field of Object.keys(specTypes[specType].properties)) {
-    let description = specTypes[specType].properties[field].description;
+    const description = specTypes[specType].properties[field].description;
     if (description) {
       console.log(`${field}: ${specType}.required: ${specTypes[specType].required}`);
-      let isRequired = specTypes[specType].required.indexOf(field) !== -1;
+      const { required: requiredArray = [] } = specTypes[specType];
+      const isRequired = requiredArray.indexOf(field) !== -1;
       if (isRequired) {
         console.log(`\tREQUIRED ${field}`);
         required.push({field, description});
       } else {
         console.log(`\tOPTIONAL ${field}`);
-        optional.push({field, description})
+        optional.push({field, description});
       }
     }
   }
@@ -169,7 +173,6 @@ ${specTypes[specType].description || ""}
 export const handler = (argv) => {
   const schema = JSON.parse(fs.readFileSync(argv.infile).toString());
 
-
   fs.writeFileSync(`${argv.output}/shared.md`, SHARED_DOC);
 
   const specTypes = schema.properties.specs.items.properties;
@@ -177,7 +180,7 @@ export const handler = (argv) => {
     console.log(`PROPERTY ${specType}`);
     if (specType.indexOf(".") === -1) {
       console.log(`SKIPPING ${specType}`);
-      continue
+      continue;
     }
     const cleanProperty = specType.replace(/\./g, "-");
 
@@ -191,17 +194,14 @@ export const handler = (argv) => {
     doc += maybeRenderOutputs(specTypes, specType);
 
     doc += `
-    
+
 <br>
 {{< note title="Shared Parameters" >}}
 This spec also inherits all of the required and optional [Shared Parameters](/api/support-bundle-yaml-specs/shared/)
 {{< /note >}}
-    
+
     `;
-
-
 
     fs.writeFileSync(`${argv.output}/${cleanProperty}.md`, doc);
   }
 };
-
