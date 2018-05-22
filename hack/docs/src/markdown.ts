@@ -84,7 +84,7 @@ function maybeRenderOutputs(specTypes: any, specType) {
   if (outputs) {
     doc += `
 
-    ### Outputs
+### Outputs
 
     `;
     for (const output of outputs) {
