@@ -14,7 +14,7 @@ import (
 
 func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsSource, error) {
 	task.Spec = spec
-	if task.RawPath == "" {
+	if task.JSONPath == "" && task.HumanPath == "" && task.RawPath == "" {
 		task.RawPath = spec.Shared().OutputDir
 	}
 	scrubber, err := RawScrubber(spec.Shared().Scrub)
@@ -30,7 +30,7 @@ func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsS
 
 func SetCommonFieldsStreamSource(task StreamSource, spec types.Spec) (StreamSource, error) {
 	task.Spec = spec
-	if task.RawPath == "" {
+	if task.JSONPath == "" && task.HumanPath == "" && task.RawPath == "" {
 		task.RawPath = spec.Shared().OutputDir
 	}
 	scrubber, err := RawScrubber(spec.Shared().Scrub)
@@ -46,7 +46,7 @@ func SetCommonFieldsStreamSource(task StreamSource, spec types.Spec) (StreamSour
 
 func SetCommonFieldsStructuredSource(task StructuredSource, spec types.Spec) (StructuredSource, error) {
 	task.Spec = spec
-	if task.RawPath == "" {
+	if task.JSONPath == "" && task.HumanPath == "" && task.RawPath == "" {
 		task.RawPath = spec.Shared().OutputDir
 	}
 	scrubber, err := RawScrubber(spec.Shared().Scrub)
