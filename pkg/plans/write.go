@@ -47,7 +47,7 @@ func writeResultTemplate(ctx context.Context, rootDir, path string, result *type
 
 func writeResultFile(ctx context.Context, rootDir, path string, result *types.Result, fn writerFn) {
 	filename := filepath.Join(rootDir, path)
-	dst, err := openFile(filename)
+	dst, err := openFileWronly(filename)
 	if err != nil {
 		result.Error = err
 		return
@@ -99,7 +99,7 @@ func writeTemplate(ctx context.Context, dst io.Writer, tmpl string, src interfac
 	return write(ctx, dst, pr)
 }
 
-func openFile(filename string) (*os.File, error) {
+func openFileWronly(filename string) (*os.File, error) {
 	if err := os.MkdirAll(filepath.Dir(filename), 0744); err != nil {
 		return nil, err
 	}
