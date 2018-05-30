@@ -54,6 +54,8 @@ func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config doc
 		return nil, nil, nil, errors.Wrap(err, "container attach")
 	}
 
+	okCh, errCh := client.ContainerWait(ctx, containerInstance.ID, dockercontainertypes.WaitConditionNextExit)
+
 	if err := client.ContainerStart(ctx, containerInstance.ID, dockertypes.ContainerStartOptions{}); err != nil {
 		resp.Close()
 		return nil, nil, nil, errors.Wrap(err, "container start")
@@ -61,7 +63,6 @@ func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config doc
 
 	errorCh := make(chan ContainerCmdError, 1)
 	go func() {
-		okCh, errCh := client.ContainerWait(ctx, containerInstance.ID, dockercontainertypes.WaitConditionNextExit)
 		select {
 		case body := <-okCh:
 			var err error
