@@ -71,8 +71,9 @@ gen-markdown-2:
 	`yarn bin`/ts-node src/index.ts markdown -f $(SCHEMA_JSON) -o ./build
 
 
-pipeline-strict: prebuild gen-schema merge-mutations validate integration gen-markdown-2
-pipeline: prebuild gen-schema merge-mutations gen-markdown-2
+pipeline-strict: prebuild build gen-schema merge-mutations validate integration gen-markdown-2
+pipeline-nointegration: prebuild build gen-schema merge-mutations validate gen-markdown-2
+pipeline: prebuild build gen-schema merge-mutations gen-markdown-2
 
 copy-to-help-center:
 	: To Copy to Help center, run the following command:
