@@ -6,4 +6,5 @@ import (
 
 type Task interface {
 	Exec(ctx context.Context, rootDir string) []*Result
+	GetSpec() Spec
 }

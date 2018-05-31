@@ -10,6 +10,7 @@ import (
 // Prepared is a Task that returns preconfigured Results.
 type Prepared struct {
 	results []*types.Result
+	spec    types.Spec
 }
 
 func (p Prepared) Exec(ctx context.Context, rootDir string) []*types.Result {
@@ -22,6 +23,10 @@ func (p Prepared) Exec(ctx context.Context, rootDir string) []*types.Result {
 	return p.results
 }
 
+func (p Prepared) GetSpec() types.Spec {
+	return p.spec
+}
+
 // Prepare results for an incomplete spec
 func PreparedError(err error, spec types.Spec) Prepared {
 	results := []*types.Result{
@@ -32,5 +37,6 @@ func PreparedError(err error, spec types.Spec) Prepared {
 	}
 	return Prepared{
 		results: results,
+		spec:    spec,
 	}
 }

@@ -10,13 +10,14 @@ import (
 
 func (d *Docker) ContainerExec(opts types.DockerContainerExecOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
-		stdout, stderr, _, err := util.ContainerExec(ctx, d.client, opts.Container, opts.ExecConfig)
+		stdoutR, stderrR, _, err := util.ContainerExec(ctx, d.client, opts.Container, opts.ExecConfig)
+		// FIXME: stdoutR, stderrR never closed
 		if err != nil {
 			return nil, err
 		}
 		return map[string]io.Reader{
-			"stdout.raw": stdout,
-			"stderr.raw": stderr,
+			"stdout.raw": stdoutR,
+			"stderr.raw": stderrR,
 		}, nil
 	}
 }

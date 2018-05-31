@@ -39,6 +39,10 @@ type StructuredSource struct {
 	Timeout time.Duration
 }
 
+func (task *StructuredSource) GetSpec() types.Spec {
+	return task.Spec
+}
+
 func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types.Result {
 	s := StreamsSource{
 		Spec:        task.Spec,

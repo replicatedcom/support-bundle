@@ -2,6 +2,7 @@ package producers
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	dockertypes "github.com/docker/docker/api/types"
@@ -10,6 +11,7 @@ import (
 	coreutil "github.com/replicatedcom/support-bundle/pkg/plugins/core/util"
 	dockerutil "github.com/replicatedcom/support-bundle/pkg/plugins/docker/util"
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func (j *Journald) Logs(opts types.JournaldLogsOptions) types.StreamProducer {
@@ -38,25 +40,38 @@ func (j *Journald) DockerLogs(opts types.JournaldLogsOptions) types.StreamProduc
 			return nil, errors.Wrap(err, "this container")
 		}
 
+		dir := "/var/log/journal"
+		count, err := dockerutil.FileCount(ctx, j.dockerClient, container.Image, dir, container.HostConfig.SecurityOpt)
+		if err != nil {
+			jww.DEBUG.Printf("Failed to get file count for directory %s: %v", dir, err)
+		} else if count == 0 {
+			jww.DEBUG.Printf("No files in directory %s, deferring to /run/log/journal for journald logs", dir)
+		}
+		if count == 0 {
+			dir = "/run/log/journal"
+		}
+
 		config := dockertypes.ContainerCreateConfig{
 			Config: &dockercontainertypes.Config{
 				Image:      container.Image,
 				Entrypoint: []string{"journalctl"},
-				Cmd:        buildLogsCmdArgs(opts),
+				Cmd:        append(buildLogsCmdArgs(opts), "-D", "/run/log/journal"),
 			},
 			HostConfig: &dockercontainertypes.HostConfig{
 				Binds: []string{
-					"/var/log/journal:/var/log/journal",
-					"/run/log/journal:/run/log/journal",
+					fmt.Sprintf("%s:/run/log/journal", dir),
 				},
 				SecurityOpt: container.HostConfig.SecurityOpt,
 			},
 		}
 
-		stdoutR, _, _, err := dockerutil.ContainerRun(ctx, j.dockerClient, config, false)
+		stdoutR, stderrR, cmdErrCh, err := dockerutil.ContainerRun(ctx, j.dockerClient, config, false)
 		if err != nil {
 			return nil, errors.Wrap(err, "container run")
 		}
+		<-cmdErrCh
+		stderrR.Close()
+		// FIXME: stdoutR never closed
 		return stdoutR, nil
 	}
 }

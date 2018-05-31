@@ -10,13 +10,14 @@ import (
 
 func (d *Docker) ContainerRun(opts types.DockerContainerRunOptions) types.StreamsProducer {
 	return func(ctx context.Context) (map[string]io.Reader, error) {
-		stdout, stderr, _, err := util.ContainerRun(ctx, d.client, opts.ContainerCreateConfig, opts.EnablePull)
+		stdoutR, stderrR, _, err := util.ContainerRun(ctx, d.client, opts.ContainerCreateConfig, opts.EnablePull)
+		// FIXME: stdoutR, stderrR never closed
 		if err != nil {
 			return nil, err
 		}
 		return map[string]io.Reader{
-			"stdout.raw": stdout,
-			"stderr.raw": stderr,
+			"stdout.raw": stdoutR,
+			"stderr.raw": stderrR,
 		}, nil
 	}
 }

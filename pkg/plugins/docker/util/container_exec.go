@@ -11,7 +11,7 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container string, config dockertypes.ExecConfig) (io.Reader, io.Reader, <-chan ContainerCmdError, error) {
+func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container string, config dockertypes.ExecConfig) (io.ReadCloser, io.ReadCloser, <-chan ContainerCmdError, error) {
 	config.AttachStdout = true
 	config.AttachStderr = true
 	exec, err := client.ContainerExecCreate(ctx, container, config)

@@ -44,7 +44,21 @@ type StreamsSource struct {
 	Timeout time.Duration
 }
 
+func (task *StreamsSource) GetSpec() types.Spec {
+	return task.Spec
+}
+
 func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Result {
+	cancel := make(chan struct{})
+	defer close(cancel)
+	go func() {
+		select {
+		case _, _ = <-cancel:
+		case <-ctx.Done():
+			b, _ := json.Marshal(task.Spec)
+			jww.WARN.Println("Task failed to complete before context was canceled:", string(b))
+		}
+	}()
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")
 		return task.resultsWithErr(err, "")

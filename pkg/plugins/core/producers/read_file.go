@@ -68,7 +68,8 @@ func (c *Core) DockerReadFile(opts types.CoreReadFileOptions) types.StreamsProdu
 			return nil, errors.Wrap(err, "this container")
 		}
 
-		r, err := dockerutil.ReadFile(ctx, c.dockerClient, container.Image, opts.Filepath)
+		r, err := dockerutil.ReadFile(ctx, c.dockerClient, container.Image, opts.Filepath, container.HostConfig.SecurityOpt)
+		// FIXME: r is never closed
 		if err != nil {
 			return nil, errors.Wrap(err, "docker read file")
 		}

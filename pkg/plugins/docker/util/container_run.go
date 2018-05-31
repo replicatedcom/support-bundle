@@ -13,7 +13,7 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config dockertypes.ContainerCreateConfig, enablePull bool) (io.Reader, io.Reader, <-chan ContainerCmdError, error) {
+func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config dockertypes.ContainerCreateConfig, enablePull bool) (io.ReadCloser, io.ReadCloser, <-chan ContainerCmdError, error) {
 	image := config.Config.Image
 	if _, _, err := client.ImageInspectWithRaw(ctx, image); err != nil {
 		if !enablePull || !docker.IsErrNotFound(err) {
