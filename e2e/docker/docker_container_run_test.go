@@ -9,7 +9,7 @@ import (
 var _ = Describe("docker.container-run", func() {
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	Context("When the spec is run", func() {
@@ -54,7 +54,7 @@ specs:
 			contents = GetFileFromBundle("docker/run/stdout.raw")
 			Expect(contents).To(Equal("foo bar\n"))
 
-			ExpectBundleErrorToHaveOccured("docker/container-run-notexist", "executable file not found in")
+			ExpectBundleErrorToHaveOccurred("docker/container-run-notexist", "executable file not found in")
 		})
 	})
 })
