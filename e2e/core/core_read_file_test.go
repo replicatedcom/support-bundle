@@ -19,7 +19,7 @@ var _ = Describe("os.read-file", func() {
 	})
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	Context("When the spec is run", func() {
@@ -41,7 +41,7 @@ specs:
 			contents := GetFileFromBundle("os/read-file/etc/os-release")
 			Expect(contents).To(ContainSubstring("VERSION="))
 
-			ExpectBundleErrorToHaveOccured("os/read-file/notfound", "stat /tmp/notfound.txt: no such file or directory")
+			ExpectBundleErrorToHaveOccurred("os/read-file/notfound", "stat /tmp/notfound.txt: no such file or directory")
 		})
 
 		Context("IncludeEmpty is set", func() {
@@ -84,7 +84,7 @@ var _ = Describe("os.read-file docker", func() {
 	})
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	Context("When the spec is run", func() {
@@ -107,7 +107,7 @@ specs:
 			contents := GetFileFromBundle("os/read-file/etc/profile")
 			Expect(contents).To(ContainSubstring("profile.d"))
 
-			ExpectBundleErrorToHaveOccured("os/read-file/notfound", "docker read file: file not found")
+			ExpectBundleErrorToHaveOccurred("os/read-file/notfound", "docker read file: file not found")
 		})
 	})
 })

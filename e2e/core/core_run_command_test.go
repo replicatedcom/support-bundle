@@ -9,7 +9,7 @@ import (
 var _ = Describe("os.run-command", func() {
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	Context("When the spec is run", func() {
@@ -35,8 +35,8 @@ specs:
 			Expect(contents).To(Equal("hello!\n"))
 			ExpectFileNotInBundle("os/run-command/echo/stderr")
 
-			ExpectBundleErrorToHaveOccured("os/run-command/notfound/stdout", `exec: "blah": executable file not found in \$PATH`)
-			ExpectBundleErrorToHaveOccured("os/run-command/notfound/stderr", `exec: "blah": executable file not found in \$PATH`)
+			ExpectBundleErrorToHaveOccurred("os/run-command/notfound/stdout", `exec: "blah": executable file not found in \$PATH`)
+			ExpectBundleErrorToHaveOccurred("os/run-command/notfound/stderr", `exec: "blah": executable file not found in \$PATH`)
 		})
 	})
 })

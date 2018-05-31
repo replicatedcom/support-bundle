@@ -19,7 +19,7 @@ var _ = Describe("docker.container-cp", func() {
 	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	var containerID, containerName string
@@ -73,7 +73,7 @@ var _ = Describe("docker.container-cp-by-label", func() {
 	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	var containerID1, containerID2, containerName string

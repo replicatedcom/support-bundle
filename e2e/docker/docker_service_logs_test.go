@@ -11,7 +11,7 @@ var _ = Describe("docker.service-logs swarm", func() {
 	// FIXME: deploy test-stack
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	Context("When the spec is run", func() {

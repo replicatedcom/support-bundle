@@ -21,7 +21,7 @@ var _ = Describe("docker.container-inspect", func() {
 	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	now := strconv.FormatInt(time.Now().UnixNano(), 20)

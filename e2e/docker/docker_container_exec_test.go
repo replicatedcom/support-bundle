@@ -19,7 +19,7 @@ var _ = Describe("docker.container-exec", func() {
 	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	var containerID, containerName string

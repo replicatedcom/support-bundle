@@ -13,7 +13,7 @@ import (
 var _ = Describe("os.http-request", func() {
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFomBundle)
+	AfterEach(LogResultsFromBundle)
 	AfterEach(CleanupDir)
 
 	Context("When the spec is run", func() {
@@ -76,7 +76,7 @@ specs:
 			contents = GetFileFromBundle("os/http-request/post/body")
 			Expect(contents).To(Equal(`aok!`))
 
-			ExpectBundleErrorToHaveOccured("os/http-request/err", "unexpected status 405 Method Not Allowed")
+			ExpectBundleErrorToHaveOccurred("os/http-request/err", "unexpected status 405 Method Not Allowed")
 		})
 	})
 
@@ -115,7 +115,7 @@ specs:
 				contents := GetFileFromBundle("core/http-request/insecure")
 				Expect(strings.TrimSpace(contents)).To(Equal("Hello World!"))
 
-				ExpectBundleErrorToHaveOccured(
+				ExpectBundleErrorToHaveOccurred(
 					"core/http-request/secure",
 					`make request: Get https:\/\/.+\/raw: x509: cannot validate certificate .+`)
 			})

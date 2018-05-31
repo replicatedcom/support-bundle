@@ -56,7 +56,7 @@ func CleanupDir() {
 	Expect(err).NotTo(HaveOccurred())
 }
 
-func LogResultsFomBundle() {
+func LogResultsFromBundle() {
 	contents := GetFileFromBundle("index.json")
 	jww.DEBUG.Printf("Index: %s", contents)
 	contents = GetFileFromBundle("error.json")
@@ -129,7 +129,7 @@ func getResultsFromBundleIndex(index string) (results []*types.Result) {
 	return
 }
 
-func ExpectBundleErrorToHaveOccured(path, reStr string) {
+func ExpectBundleErrorToHaveOccurred(path, reStr string) {
 	result := GetResultFromBundleErrors(path)
 	if reStr == "" {
 		return
