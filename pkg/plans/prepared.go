@@ -26,6 +26,7 @@ func (p Prepared) Exec(ctx context.Context, rootDir string) []*types.Result {
 func PreparedError(err error, spec types.Spec) Prepared {
 	results := []*types.Result{
 		&types.Result{
+			Spec:  spec,
 			Error: err,
 		},
 	}

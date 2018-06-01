@@ -171,8 +171,9 @@ type JournaldLogsOptions struct {
 
 type DockerContainerCpOptions struct {
 	SpecShared `json:",inline,omitempty"`
-	Container  string `json:"container,omitempty"`
-	SrcPath    string `json:"src_path,omitempty"`
+	Container  string   `json:"container,omitempty"`
+	SrcPath    string   `json:"src_path,omitempty"`
+	Labels     []string `json:"labels,omitempty"`
 }
 
 type DockerContainerExecOptions struct {

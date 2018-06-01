@@ -37,5 +37,14 @@ dockers:
     tag_templates:
     - "{{ .Tag }}"
     - latest
+  - image: replicated/support-bundle
+    dockerfile: build/Dockerfile-release
+    goos: linux
+    goarch: amd64
+    binary: support-bundle
+    tag_templates:
+      - "alpha"
+      - "stable"
+      - "{{ .Tag }}"
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
