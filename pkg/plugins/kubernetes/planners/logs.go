@@ -1,33 +1,83 @@
 package planners
 
 import (
+	"context"
 	"path/filepath"
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	"k8s.io/api/core/v1"
 )
 
 func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	var err error
+	podNameProvided := spec.KubernetesLogs.Pod == ""
+	labelSelectorProvided := spec.KubernetesLogs.ListOptions.LabelSelector == ""
+
 	if spec.KubernetesLogs == nil {
 		err = errors.New("spec for kubernetes.logs required")
-	} else if spec.KubernetesLogs.Pod == "" {
-		err = errors.New("spec for kubernetes.logs pod required")
 	}
+
+	if !podNameProvided && !labelSelectorProvided {
+		err = errors.New("spec for kubernetes.logs pod or list_options required")
+	}
+
 	if err != nil {
 		task := plans.PreparedError(err, spec)
 		return []types.Task{task}
 	}
 
-	task := plans.StreamSource{
-		Producer: k.producers.Logs(*spec.KubernetesLogs),
-		RawPath:  filepath.Join(spec.Shared().OutputDir, "logs.raw"),
+	var podNames []string
+	if labelSelectorProvided {
+		resourceListOpts := types.KubernetesResourceListOptions{
+			Kind:        "pods",
+			ListOptions: spec.KubernetesLogs.ListOptions,
+		}
+
+		resources, err := k.producers.ResourceList(resourceListOpts)(context.Background())
+		if err != nil {
+			err := errors.Wrap(err, "Failed to list pods")
+			task := plans.PreparedError(err, spec)
+			return []types.Task{task}
+		}
+
+		podList := resources.(*v1.PodList)
+		pods := podList.Items
+		providedPodNotFoundInLabelSelector := true
+		for _, pod := range pods {
+			if podNameProvided && providedPodNotFoundInLabelSelector {
+				providedPodNotFoundInLabelSelector = spec.KubernetesLogs.Pod != pod.Name
+			}
+			podNames = append(podNames, pod.Name)
+		}
+
+		if len(podNames) == 0 || providedPodNotFoundInLabelSelector {
+			err := errors.New("Unable to find any pods matching the provided pod/selector")
+			task := plans.PreparedError(err, spec)
+			return []types.Task{task}
+		}
+	} else {
+		podNames = []string{spec.KubernetesLogs.Pod}
 	}
-	task, err = plans.SetCommonFieldsStreamSource(task, spec)
-	if err != nil {
-		task := plans.PreparedError(err, spec)
-		return []types.Task{task}
+
+	var tasks []types.Task
+	for _, podName := range podNames {
+		currentLogOptions := spec.KubernetesLogs
+		currentLogOptions.Pod = podName
+
+		task := plans.StreamSource{
+			Producer: k.producers.Logs(*currentLogOptions),
+			RawPath:  filepath.Join(spec.Shared().OutputDir, "logs.raw"),
+		}
+
+		task, err = plans.SetCommonFieldsStreamSource(task, spec)
+		if err != nil {
+			tasks = append(tasks, plans.PreparedError(err, spec))
+		} else {
+			tasks = append(tasks, &task)
+		}
 	}
-	return []types.Task{&task}
+
+	return tasks
 }
