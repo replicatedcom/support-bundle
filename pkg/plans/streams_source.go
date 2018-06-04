@@ -53,7 +53,7 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 	defer close(cancel)
 	go func() {
 		select {
-		case _, _ = <-cancel:
+		case <-cancel:
 		case <-ctx.Done():
 			b, _ := json.Marshal(task.Spec)
 			jww.WARN.Println("Task failed to complete before context was canceled:", string(b))

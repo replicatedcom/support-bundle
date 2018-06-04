@@ -20,6 +20,10 @@ func (t taskStub) Exec(ctx context.Context, rootDir string) []*types.Result {
 	return t.results
 }
 
+func (t taskStub) GetSpec() types.Spec {
+	return types.Spec{}
+}
+
 func TestExec(t *testing.T) {
 	nilResults := taskStub{
 		elapse:  time.Nanosecond,
