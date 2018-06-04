@@ -17,8 +17,8 @@ func FileCount(ctx context.Context, client docker.CommonAPIClient, image string,
 	config := dockertypes.ContainerCreateConfig{
 		Config: &dockercontainertypes.Config{
 			Image:      image,
-			Entrypoint: []string{"sh"},
-			Cmd:        []string{"-c", "ls /host/ws 2>/dev/null | wc -l"},
+			Entrypoint: []string{},
+			Cmd:        []string{"sh", "-c", "ls /host/ws 2>/dev/null | wc -l"},
 		},
 		HostConfig: &dockercontainertypes.HostConfig{
 			Binds: []string{
