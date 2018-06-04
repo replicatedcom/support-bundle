@@ -44,10 +44,9 @@ func (j *Journald) DockerLogs(opts types.JournaldLogsOptions) types.StreamProduc
 		count, err := dockerutil.FileCount(ctx, j.dockerClient, container.Image, dir, container.HostConfig.SecurityOpt)
 		if err != nil {
 			jww.DEBUG.Printf("Failed to get file count for directory %s: %v", dir, err)
+			dir = "/run/log/journal"
 		} else if count == 0 {
 			jww.DEBUG.Printf("No files in directory %s, deferring to /run/log/journal for journald logs", dir)
-		}
-		if count == 0 {
 			dir = "/run/log/journal"
 		}
 
