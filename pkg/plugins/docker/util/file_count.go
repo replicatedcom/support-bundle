@@ -3,8 +3,9 @@ package util
 import (
 	"context"
 	"fmt"
-	"io"
-	"path/filepath"
+	"io/ioutil"
+	"strconv"
+	"strings"
 
 	dockertypes "github.com/docker/docker/api/types"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
@@ -12,34 +13,38 @@ import (
 	"github.com/pkg/errors"
 )
 
-func ReadFile(ctx context.Context, client docker.CommonAPIClient, image, filename string, securityOpt []string) (io.ReadCloser, error) {
-	dir := filepath.Dir(filename)
-	base := filepath.Base(filename)
+func FileCount(ctx context.Context, client docker.CommonAPIClient, image string, dirname string, securityOpt []string) (int, error) {
 	config := dockertypes.ContainerCreateConfig{
 		Config: &dockercontainertypes.Config{
 			Image:      image,
-			Entrypoint: []string{"tar"},
-			Cmd:        []string{"-O", "-c", "-C", filepath.Join("/host", dir), base},
+			Entrypoint: []string{},
+			Cmd:        []string{"sh", "-c", "ls /host/ws 2>/dev/null | wc -l"},
 		},
 		HostConfig: &dockercontainertypes.HostConfig{
 			Binds: []string{
-				fmt.Sprintf("%s:%s", dir, filepath.Join("/host", dir)),
+				fmt.Sprintf("%s:/host/ws", dirname),
 			},
 			SecurityOpt: securityOpt,
 		},
 	}
+
 	stdoutR, stderrR, cmdErrCh, err := ContainerRun(ctx, client, config, false)
 	if err != nil {
-		return nil, errors.Wrap(err, "container run")
+		return 0, errors.Wrap(err, "container run")
 	}
 	cmdErr := <-cmdErrCh
+	b, err := ioutil.ReadAll(stdoutR)
+	stdoutR.Close()
 	stderrR.Close()
-	if cmdErr.Error != nil {
-		return stdoutR, cmdErr.Error
-	} else if cmdErr.StatusCode == 2 {
-		return stdoutR, errors.New("file not found")
-	} else if cmdErr.StatusCode != 0 {
-		return stdoutR, fmt.Errorf("error status code %d", cmdErr.StatusCode)
+	if err != nil {
+		return 0, errors.Wrap(err, "read stdout")
 	}
-	return stdoutR, nil
+	if cmdErr.Error != nil {
+		return 0, cmdErr.Error
+	} else if cmdErr.StatusCode == 2 {
+		return 0, errors.New("file not found")
+	} else if cmdErr.StatusCode != 0 {
+		return 0, fmt.Errorf("error status code %d", cmdErr.StatusCode)
+	}
+	return strconv.Atoi(strings.TrimSpace(string(b)))
 }

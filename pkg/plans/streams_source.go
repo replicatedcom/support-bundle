@@ -44,6 +44,10 @@ type StreamsSource struct {
 	Timeout time.Duration
 }
 
+func (task *StreamsSource) GetSpec() types.Spec {
+	return task.Spec
+}
+
 func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Result {
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")

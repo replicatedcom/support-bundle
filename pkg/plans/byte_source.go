@@ -11,6 +11,8 @@ import (
 
 // ByteSource is a Task that gets its data source as a []byte.
 type ByteSource struct {
+	Spec types.Spec
+
 	// Producer provides the seed data for this task
 	Producer func(context.Context) ([]byte, error)
 	// RawScrubber, if defined, rewrites the raw data to to remove sensitive data
@@ -38,8 +40,13 @@ type ByteSource struct {
 	Timeout time.Duration
 }
 
+func (task *ByteSource) GetSpec() types.Spec {
+	return task.Spec
+}
+
 func (task *ByteSource) Exec(ctx context.Context, rootDir string) []*types.Result {
 	s := StreamsSource{
+		Spec:        task.Spec,
 		RawScrubber: task.RawScrubber,
 		Parser:      task.Parser,
 		Template:    task.Template,

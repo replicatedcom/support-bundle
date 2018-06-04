@@ -2,8 +2,10 @@ package bundle
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/replicatedcom/support-bundle/pkg/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func Exec(ctx context.Context, rootDir string, tasks []types.Task) []*types.Result {
@@ -11,7 +13,12 @@ func Exec(ctx context.Context, rootDir string, tasks []types.Task) []*types.Resu
 
 	for _, task := range tasks {
 		go func(task types.Task) {
-			results <- task.Exec(ctx, rootDir)
+			select {
+			case results <- task.Exec(ctx, rootDir):
+			case <-ctx.Done():
+				b, _ := json.Marshal(task.GetSpec())
+				jww.WARN.Println("Task failed to complete before context was canceled:", string(b))
+			}
 		}(task)
 	}
 	pending := len(tasks)
