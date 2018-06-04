@@ -49,16 +49,6 @@ func (task *StreamsSource) GetSpec() types.Spec {
 }
 
 func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Result {
-	cancel := make(chan struct{})
-	defer close(cancel)
-	go func() {
-		select {
-		case <-cancel:
-		case <-ctx.Done():
-			b, _ := json.Marshal(task.Spec)
-			jww.WARN.Println("Task failed to complete before context was canceled:", string(b))
-		}
-	}()
 	if task.Producer == nil {
 		err := errors.New("no data source defined for task")
 		return task.resultsWithErr(err, "")
