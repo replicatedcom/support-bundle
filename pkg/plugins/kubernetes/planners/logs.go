@@ -32,6 +32,7 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	if labelSelectorProvided {
 		resourceListOpts := types.KubernetesResourceListOptions{
 			Kind:        "pods",
+			Namespace:   spec.KubernetesLogs.Namespace,
 			ListOptions: spec.KubernetesLogs.ListOptions,
 		}
 
