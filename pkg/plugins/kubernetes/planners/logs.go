@@ -2,6 +2,7 @@ package planners
 
 import (
 	"context"
+	"fmt"
 	"path/filepath"
 
 	"github.com/pkg/errors"
@@ -67,9 +68,16 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 		currentLogOptions := spec.KubernetesLogs
 		currentLogOptions.Pod = podName
 
+		// To support backwards compatibility
+		// for non-label selectored log queries
+		logFileName := fmt.Sprintf("logs-%s.raw", podName)
+		if podNameProvided {
+			logFileName = "logs.raw"
+		}
+
 		task := plans.StreamSource{
 			Producer: k.producers.Logs(*currentLogOptions),
-			RawPath:  filepath.Join(spec.Shared().OutputDir, "logs.raw"),
+			RawPath:  filepath.Join(spec.Shared().OutputDir, logFileName),
 		}
 
 		task, err = plans.SetCommonFieldsStreamSource(task, spec)
