@@ -47,15 +47,13 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 
 		podList := resources.(*v1.PodList)
 		pods := podList.Items
-		providedPodNotFoundInLabelSelector := true
 		for _, pod := range pods {
-			if podNameProvided && providedPodNotFoundInLabelSelector {
-				providedPodNotFoundInLabelSelector = spec.KubernetesLogs.Pod != pod.Name
+			if !podNameProvided || spec.KubernetesLogs.Pod == pod.Name {
+				podNames = append(podNames, pod.Name)
 			}
-			podNames = append(podNames, pod.Name)
 		}
 
-		if len(podNames) == 0 || providedPodNotFoundInLabelSelector {
+		if len(podNames) == 0 {
 			err := errors.New("Unable to find any pods matching the provided pod/selector")
 			task := plans.PreparedError(err, spec)
 			return []types.Task{task}
