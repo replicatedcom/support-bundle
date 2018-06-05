@@ -12,8 +12,10 @@ import (
 
 func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	var err error
-	podNameProvided := spec.KubernetesLogs.Pod == ""
-	labelSelectorProvided := spec.KubernetesLogs.ListOptions.LabelSelector == ""
+	podNameProvided := spec.KubernetesLogs.Pod != ""
+	labelSelectorProvided :=
+		spec.KubernetesLogs.ListOptions != nil &&
+			spec.KubernetesLogs.ListOptions.LabelSelector != ""
 
 	if spec.KubernetesLogs == nil {
 		err = errors.New("spec for kubernetes.logs required")
