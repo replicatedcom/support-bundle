@@ -14,7 +14,12 @@ func (k *Kubernetes) Logs(opts types.KubernetesLogsOptions) types.StreamProducer
 	if ns == "" {
 		ns = metav1.NamespaceDefault
 	}
-	podLogOpts := v1.PodLogOptions(*opts.PodLogOptions)
+
+	var podLogOpts v1.PodLogOptions
+	if opts.PodLogOptions != nil {
+		podLogOpts = v1.PodLogOptions(*opts.PodLogOptions)
+	}
+
 	return func(ctx context.Context) (io.Reader, error) {
 		req := k.client.CoreV1().
 			Pods(ns).
