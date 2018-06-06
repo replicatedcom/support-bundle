@@ -295,9 +295,10 @@ type KubernetesVersionOptions struct {
 
 type KubernetesLogsOptions struct {
 	SpecShared    `json:",inline,omitempty"`
-	Pod           string         `json:"pod"`
-	Namespace     string         `json:"namespace,omitempty"`
-	PodLogOptions *PodLogOptions `json:"pod_log_options,omitempty"`
+	Pod           string              `json:"pod,omitempty"`
+	Namespace     string              `json:"namespace,omitempty"`
+	PodLogOptions *PodLogOptions      `json:"pod_log_options,omitempty"`
+	ListOptions   *metav1.ListOptions `json:"list_options,omitempty"`
 }
 
 type KubernetesResourceListOptions struct {
