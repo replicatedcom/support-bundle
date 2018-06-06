@@ -68,16 +68,9 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 		currentLogOptions := spec.KubernetesLogs
 		currentLogOptions.Pod = podName
 
-		// To support backwards compatibility
-		// for non-label selectored log queries
-		logFileName := fmt.Sprintf("logs-%s.raw", podName)
-		if podNameProvided {
-			logFileName = "logs.raw"
-		}
-
 		task := plans.StreamSource{
 			Producer: k.producers.Logs(*currentLogOptions),
-			RawPath:  filepath.Join(spec.Shared().OutputDir, logFileName),
+			RawPath:  filepath.Join(spec.Shared().OutputDir, fmt.Sprintf("%s.log", podName)),
 		}
 
 		task, err = plans.SetCommonFieldsStreamSource(task, spec)
