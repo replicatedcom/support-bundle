@@ -65,11 +65,11 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 
 	var tasks []types.Task
 	for _, podName := range podNames {
-		currentLogOptions := spec.KubernetesLogs
+		currentLogOptions := *spec.KubernetesLogs
 		currentLogOptions.Pod = podName
 
 		task := plans.StreamSource{
-			Producer: k.producers.Logs(*currentLogOptions),
+			Producer: k.producers.Logs(currentLogOptions),
 			RawPath:  filepath.Join(spec.Shared().OutputDir, fmt.Sprintf("%s.log", podName)),
 		}
 
