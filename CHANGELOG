@@ -104,5 +104,6 @@
 
 0.16.0 /2018-06-08
     * No longer report false error `open ***: is a directory` errors in the error.json file
-    * Journald logs were missing on some linux distributions when the log data directory defaults to /run/log/journaln application updates.
-    * Resolved a race condition that could cause timeouts when attaching to container run output.
+    * Journald logs were missing on some linux distributions when the log data directory defaults to /run/log/journaln application updates
+    * Resolved a race condition that could cause timeouts when attaching to container run output
+    * docker.container-cp can select containers by name or label
