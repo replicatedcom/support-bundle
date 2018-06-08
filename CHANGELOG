@@ -107,3 +107,4 @@
     * Journald logs were missing on some linux distributions when the log data directory defaults to /run/log/journaln application updates
     * Resolved a race condition that could cause timeouts when attaching to container run output
     * docker.container-cp can select containers by name or label
+    * kubernetes.logs can select pod logs by label selector
