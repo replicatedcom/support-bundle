@@ -48,6 +48,12 @@ jobs:
       - run: docker login -u="$DOCKERHUB_DOCKER_USER" -p="$DOCKERHUB_DOCKER_PASS"
       - deploy:
           command: curl -sL https://git.io/goreleaser | bash
+      - deploy:
+          command: |
+              docker tag registry.replicated.com/library/support-bundle:latest replicated/support-bundle:latest
+              docker push replicated/support-bundle:latest
+              docker tag registry.replicated.com/library/support-bundle:latest replicated/support-bundle:alpha
+              docker push replicated/support-bundle:alpha
 
   deploy_unstable:
     docker:
