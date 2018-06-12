@@ -108,3 +108,6 @@
     * Resolved a race condition that could cause timeouts when attaching to container run output
     * docker.container-cp can select containers by name or label
     * kubernetes.logs can select pod logs by label selector
+
+0.16.1 /2018-06-12
+    * Rebuild image to get upgraded perl-base package without vulnerability
