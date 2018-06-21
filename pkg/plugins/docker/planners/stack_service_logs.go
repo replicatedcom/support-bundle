@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/docker/docker/api/types/swarm"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/plans"
 	"github.com/replicatedcom/support-bundle/pkg/types"
@@ -35,8 +36,20 @@ func (d *Docker) StackServiceLogs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	var ts []types.Task
+	filteredServices := []swarm.Service{}
 	for _, service := range services {
+		matched := true
+		for labelKey, labelVal := range spec.DockerStackServiceLogs.Labels {
+			svcLabelVal, ok := service.Spec.Labels[labelKey]
+			matched = matched && ok && svcLabelVal == labelVal
+		}
+		if matched {
+			filteredServices = append(filteredServices, service)
+		}
+	}
+
+	var ts []types.Task
+	for _, service := range filteredServices {
 		ts = append(ts, d.serviceLogsTask(service.ID, service.Spec.Name, spec, spec.DockerStackServiceLogs.ContainerLogsOptions))
 	}
 	return ts

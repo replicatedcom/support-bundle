@@ -3506,6 +3506,22 @@
           "output_dir": "/swarm/stacks/cooltool/service-logs",
           "description": "Logs from services in the cooltool stack",
           "namespace": "cooltool-core"
+        },
+        {
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "labels": {}
+        },
+        {
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "labels": {
+            "com.replicated.excludelogs":"false",
+            "abc":"xyz",
+            "abc2":""
+          }
         }
       ],
       "_ext_outputs": [
@@ -3579,6 +3595,32 @@
     "merge": {
       "description": "Options as would be passed to `docker stack services"
     }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.labels",
+    "merge": {
+      "description": "A set of labels that must be present for the logs to be included",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "string"
+        }
+      }
+    },
+    "example": {
+      "key": "value"
+    },
+    "examples": [
+      {},
+      {
+        "key": "value"
+      },
+      {
+        "key": "value",
+        "key2": "",
+        "key3": "value3"
+      }
+    ]
   },
   {
     "path": "properties.specs.items.properties[\"docker.stack-service-logs\"].properties.include_empty",
@@ -3711,11 +3753,26 @@
           "namespace": "cooltool-core",
           "task_list_options": {
             "Filters": {
-              "label": [
-                "com.cooltool.tier=www",
-                "com.cooltool.tier=api"
+              "name": [
+                "redis.1"
               ]
             }
+          }
+        },
+        {
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "labels": {}
+        },
+        {
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "labels": {
+            "com.replicated.excludelogs":"false",
+            "abc":"xyz",
+            "abc2":""
           }
         }
       ],
@@ -3755,6 +3812,32 @@
     "merge": {
       "description": "Options for filtering stack tasks"
     }
+  },
+  {
+    "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.labels",
+    "merge": {
+      "description": "A set of labels that must be present for the logs to be included",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "string"
+        }
+      }
+    },
+    "example": {
+      "key": "value"
+    },
+    "examples": [
+      {},
+      {
+        "key": "value"
+      },
+      {
+        "key": "value",
+        "key2": "",
+        "key3": "value3"
+      }
+    ]
   },
   {
     "path": "properties.specs.items.properties[\"docker.stack-task-logs\"].properties.include_empty",

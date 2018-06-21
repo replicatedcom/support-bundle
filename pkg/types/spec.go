@@ -239,6 +239,7 @@ type DockerServicePsOptions struct {
 
 type DockerStackServiceLogsOptions struct {
 	SpecShared             `json:",inline,omitempty"`
+	LabelsFilter           `json:",inline,omitempty"`
 	Namespace              string                            `json:"namespace"`
 	ContainerLogsOptions   *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	DockerServiceLsOptions *DockerServiceLsOptions           `json:"service_list_options,omitempty"`
@@ -258,6 +259,7 @@ type DockerStackServicePsOptions struct {
 
 type DockerStackTaskLogsOptions struct {
 	SpecShared             `json:",inline,omitempty"`
+	LabelsFilter           `json:",inline,omitempty"`
 	Namespace              string                            `json:"namespace"`
 	ContainerLogsOptions   *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
 	DockerServicePsOptions *DockerServicePsOptions           `json:"task_list_options,omitempty"`
@@ -321,6 +323,10 @@ type RetracedAPIClientOptions struct {
 	ProjectID   string `json:"project_id,omitempty"`
 	APIToken    string `json:"api_token,omitempty"`
 	Insecure    bool   `json:"insecure,omitempty"`
+}
+
+type LabelsFilter struct {
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 type Scrub struct {
