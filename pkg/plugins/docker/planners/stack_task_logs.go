@@ -40,12 +40,20 @@ func (d *Docker) StackTaskLogs(spec types.Spec) []types.Task {
 	for _, task := range tasks {
 		matched := true
 		for labelKey, labelVal := range spec.DockerStackTaskLogs.Labels {
-			svcLabelVal, ok := task.Labels[labelKey]
+			svcLabelVal, ok := task.Spec.ContainerSpec.Labels[labelKey]
 			matched = matched && ok && svcLabelVal == labelVal
 		}
 		if matched {
 			filteredTasks = append(filteredTasks, task)
 		}
+	}
+
+	if len(filteredTasks) == 0 {
+		err := fmt.Errorf("no tasks found in namespace %s with labels %+v",
+			spec.DockerStackTaskLogs.Namespace,
+			spec.DockerStackTaskLogs.Labels)
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
 	}
 
 	var ts []types.Task
