@@ -40,12 +40,20 @@ func (d *Docker) StackServiceLogs(spec types.Spec) []types.Task {
 	for _, service := range services {
 		matched := true
 		for labelKey, labelVal := range spec.DockerStackServiceLogs.Labels {
-			svcLabelVal, ok := service.Spec.Labels[labelKey]
+			svcLabelVal, ok := service.Spec.TaskTemplate.ContainerSpec.Labels[labelKey]
 			matched = matched && ok && svcLabelVal == labelVal
 		}
 		if matched {
 			filteredServices = append(filteredServices, service)
 		}
+	}
+
+	if len(filteredServices) == 0 {
+		err := fmt.Errorf("no services found in namespace %s with labels %+v",
+			spec.DockerStackServiceLogs.Namespace,
+			spec.DockerStackServiceLogs.Labels)
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
 	}
 
 	var ts []types.Task
