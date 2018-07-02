@@ -140,6 +140,14 @@ func DefaultSpecs() []types.Spec {
 				SpecShared: types.SpecShared{
 					OutputDir: "default/etc",
 				},
+				Filepath: "/etc/fstab",
+			},
+		},
+		{
+			CoreReadFile: &types.CoreReadFileOptions{
+				SpecShared: types.SpecShared{
+					OutputDir: "default/etc",
+				},
 				Filepath: "/etc/hostname",
 			},
 		},
