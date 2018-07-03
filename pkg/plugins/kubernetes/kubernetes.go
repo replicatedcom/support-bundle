@@ -6,7 +6,8 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/plugins/kubernetes/producers"
 	"github.com/replicatedcom/support-bundle/pkg/types"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
+	_ "k8s.io/client-go/plugin/pkg/client/auth"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 type Kubernetes struct {
@@ -14,8 +15,10 @@ type Kubernetes struct {
 }
 
 func New() (*Kubernetes, error) {
-	// TODO: should be able to run outside of cluster as well
-	config, err := rest.InClusterConfig()
+	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
+	configOverrides := &clientcmd.ConfigOverrides{}
+	kubeConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
+	config, err := kubeConfig.ClientConfig()
 	if err != nil {
 		return nil, errors.Wrap(err, "get kubernetes config")
 	}
