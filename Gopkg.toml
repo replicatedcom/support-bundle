@@ -52,13 +52,17 @@
   name = "k8s.io/client-go"
   version = "5.0.1"
 
-[[constraint]]
+[[override]]
   name = "github.com/emicklei/go-restful-swagger12"
   version = "1.0.1"
 
-[[constraint]]
+[[override]]
   name = "github.com/googleapis/gnostic"
   version = "0.1.0"
+
+[[override]]
+  name = "github.com/Azure/go-autorest"
+  revision = "58f6f26e200fa5dfb40c9cd1c83f3e2c860d779d"
 
 # Godep-related pain, waiting on upstream fix in dep
 [[override]]
