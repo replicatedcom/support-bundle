@@ -23,3 +23,6 @@ bin/
 .idea/
 
 dist/
+
+#development files
+spec.yml
