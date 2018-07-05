@@ -117,3 +117,6 @@
 
 0.17.0 /2018-06-21
     * Allow docker.stack-service-logs and docker.stack-task-logs to filter containers based on labels
+
+0.17.0 /2018-07-05
+    * Add kubernetes.container-cp allowing copying files from Kubernetes containers

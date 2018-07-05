@@ -93,6 +93,7 @@ type Spec struct {
 
 	KubernetesAPIVersions  *KubernetesAPIVersionsOptions  `json:"kubernetes.api-versions,omitempty"`
 	KubernetesClusterInfo  *KubernetesClusterInfoOptions  `json:"kubernetes.cluster-info,omitempty"`
+	KubernetesContainerCp  *KubernetesContainerCpOptions  `json:"kubernetes.container-cp,omitempty"`
 	KubernetesLogs         *KubernetesLogsOptions         `json:"kubernetes.logs,omitempty"`
 	KubernetesResourceList *KubernetesResourceListOptions `json:"kubernetes.resource-list,omitempty"`
 	KubernetesVersion      *KubernetesVersionOptions      `json:"kubernetes.version,omitempty"`
@@ -303,6 +304,15 @@ type KubernetesLogsOptions struct {
 	ListOptions   *metav1.ListOptions `json:"list_options,omitempty"`
 }
 
+type KubernetesContainerCpOptions struct {
+	SpecShared     `json:",inline,omitempty"`
+	Pod            string              `json:"pod,omitempty"`
+	PodListOptions *metav1.ListOptions `json:"pod_list_options,omitempty"`
+	Container      string              `json:"container,omitempty"`
+	Namespace      string              `json:"namespace,omitempty"`
+	SrcPath        string              `json:"src_path,omitempty"`
+}
+
 type KubernetesResourceListOptions struct {
 	SpecShared  `json:",inline,omitempty"`
 	Kind        string              `json:"kind"`
@@ -364,8 +374,6 @@ type Scrub struct {
 func (s *Spec) Shared() SpecShared {
 	shared := func() SpecShared {
 		switch {
-		case s.KubernetesClusterInfo != nil:
-			return s.KubernetesClusterInfo.SpecShared
 		case s.SupportBundleVersion != nil:
 			return s.SupportBundleVersion.SpecShared
 		case s.CustomerMeta != nil:
@@ -443,6 +451,8 @@ func (s *Spec) Shared() SpecShared {
 			return s.KubernetesAPIVersions.SpecShared
 		case s.KubernetesClusterInfo != nil:
 			return s.KubernetesClusterInfo.SpecShared
+		case s.KubernetesContainerCp != nil:
+			return s.KubernetesContainerCp.SpecShared
 		case s.KubernetesLogs != nil:
 			return s.KubernetesLogs.SpecShared
 		case s.KubernetesResourceList != nil:

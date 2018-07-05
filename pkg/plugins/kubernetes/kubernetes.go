@@ -28,7 +28,7 @@ func New() (*Kubernetes, error) {
 		return nil, errors.Wrap(err, "get kubernetes client")
 	}
 
-	producers := producers.New(clientset)
+	producers := producers.New(clientset, config)
 	return &Kubernetes{
 		planner: planners.New(producers),
 	}, nil
@@ -40,6 +40,8 @@ func (p *Kubernetes) Plan(spec types.Spec) types.Planner {
 		return p.planner.APIVersions
 	case spec.KubernetesClusterInfo != nil:
 		return p.planner.ClusterInfo
+	case spec.KubernetesContainerCp != nil:
+		return p.planner.ContainerCp
 	case spec.KubernetesLogs != nil:
 		return p.planner.Logs
 	case spec.KubernetesVersion != nil:
