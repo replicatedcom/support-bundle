@@ -33,6 +33,7 @@ export function shouldSkipKey(schemaKey: string) {
     schemaKey === "meta" ||
     schemaKey === "scrub" ||
     schemaKey === "timeout_seconds" ||
+    schemaKey === "include_empty" ||
     schemaKey === "meta.customer";
 }
 
