@@ -42,9 +42,7 @@ var resourceListFns = map[string]resourceListFn{
 
 func (k *Kubernetes) ResourceList(opts types.KubernetesResourceListOptions) types.StructuredProducer {
 	ns := opts.Namespace
-	if ns == "" {
-		ns = metav1.NamespaceDefault
-	}
+
 	var listOpts metav1.ListOptions
 	if opts.ListOptions != nil {
 		listOpts = *opts.ListOptions
