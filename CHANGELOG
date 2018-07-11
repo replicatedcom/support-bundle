@@ -120,3 +120,6 @@
 
 0.18.0 /2018-07-05
     * Add kubernetes.container-cp allowing copying files from Kubernetes containers
+
+0.18.1 /2018-07-11
+    * Change kubernetes.container-cp and kubernetes.logs so that not providing a namespace yields results from all namespaces, not the default one

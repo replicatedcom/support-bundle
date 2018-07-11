@@ -3,7 +3,6 @@ package producers
 import (
 	"context"
 	"io"
-
 	"path/filepath"
 
 	"github.com/pkg/errors"
@@ -29,7 +28,6 @@ func (k *Kubernetes) ContainerCp(pod, container, namespace, path string) types.S
 
 	return func(ctx context.Context) (map[string]io.Reader, error) {
 		//if container == "", get all containers in pod & loop over them
-
 		var containers []string
 
 		if containerNameProvided {
