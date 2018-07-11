@@ -16,6 +16,7 @@ func (k *Kubernetes) ContainerCp(spec types.Spec) []types.Task {
 	labelSelectorProvided :=
 		spec.KubernetesContainerCp.PodListOptions != nil &&
 			spec.KubernetesContainerCp.PodListOptions.LabelSelector != ""
+	namespaceProvided := spec.KubernetesContainerCp.Namespace != ""
 
 	if spec.KubernetesContainerCp == nil {
 		err = errors.New("spec for kubernetes.ContainerCp required")
@@ -30,53 +31,57 @@ func (k *Kubernetes) ContainerCp(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	var podNames []string
+	type podLocation struct {
+		PodName   string
+		Namespace string
+	}
 
-	if labelSelectorProvided {
-		resourceListOpts := types.KubernetesResourceListOptions{
-			Kind:        "pods",
-			Namespace:   spec.KubernetesContainerCp.Namespace,
-			ListOptions: spec.KubernetesContainerCp.PodListOptions,
-		}
+	var podLocations []podLocation
 
-		resources, err := k.producers.ResourceList(resourceListOpts)(context.Background())
-		if err != nil {
-			err := errors.Wrap(err, "Failed to list pods")
-			task := plans.PreparedError(err, spec)
-			return []types.Task{task}
-		}
+	resourceListOpts := types.KubernetesResourceListOptions{
+		Kind:        "pods",
+		Namespace:   spec.KubernetesContainerCp.Namespace,
+		ListOptions: spec.KubernetesContainerCp.PodListOptions,
+	}
 
-		podList := resources.(*v1.PodList)
-		pods := podList.Items
-		for _, pod := range pods {
-			if !podNameProvided || spec.KubernetesContainerCp.Pod == pod.Name {
-				podNames = append(podNames, pod.Name)
-			}
-		}
+	resources, err := k.producers.ResourceList(resourceListOpts)(context.Background())
+	if err != nil {
+		err := errors.Wrap(err, "Failed to list pods")
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
+	}
 
-		if len(pods) == 0 {
-			err := errors.New("unable to find any pods matching the provided pod/selector")
-			task := plans.PreparedError(err, spec)
-			return []types.Task{task}
+	podList := resources.(*v1.PodList)
+	pods := podList.Items
+	for _, pod := range pods {
+		if !podNameProvided || spec.KubernetesContainerCp.Pod == pod.Name {
+			podLocations = append(podLocations, podLocation{PodName: pod.Name, Namespace: pod.Namespace})
 		}
-	} else {
-		podNames = []string{spec.KubernetesContainerCp.Pod}
+	}
+
+	if len(podLocations) == 0 {
+		err := errors.New("unable to find any pods matching the provided pod/selector")
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
 	}
 
 	var tasks []types.Task
-	for _, podName := range podNames {
+	for _, podLocation := range podLocations {
 		rawPath := spec.Shared().OutputDir
+		if !namespaceProvided {
+			rawPath = filepath.Join(rawPath, podLocation.Namespace)
+		}
 		if !podNameProvided {
-			rawPath = filepath.Join(rawPath, podName)
+			rawPath = filepath.Join(rawPath, podLocation.PodName)
 		}
 
 		task := plans.StreamsSource{
 			RawPath:      rawPath,
 			StreamFormat: plans.StreamFormatTar,
 			Producer: k.producers.ContainerCp(
-				podName,
+				podLocation.PodName,
 				spec.KubernetesContainerCp.Container,
-				spec.KubernetesContainerCp.Namespace,
+				podLocation.Namespace,
 				filepath.Clean(spec.KubernetesContainerCp.SrcPath)),
 		}
 

@@ -17,6 +17,7 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	labelSelectorProvided :=
 		spec.KubernetesLogs.ListOptions != nil &&
 			spec.KubernetesLogs.ListOptions.LabelSelector != ""
+	namespaceProvided := spec.KubernetesLogs.Namespace != ""
 
 	if spec.KubernetesLogs == nil {
 		err = errors.New("spec for kubernetes.logs required")
@@ -31,46 +32,54 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 		return []types.Task{task}
 	}
 
-	var podNames []string
-	if labelSelectorProvided {
-		resourceListOpts := types.KubernetesResourceListOptions{
-			Kind:        "pods",
-			Namespace:   spec.KubernetesLogs.Namespace,
-			ListOptions: spec.KubernetesLogs.ListOptions,
-		}
+	type podLocation struct {
+		PodName   string
+		Namespace string
+	}
 
-		resources, err := k.producers.ResourceList(resourceListOpts)(context.Background())
-		if err != nil {
-			err := errors.Wrap(err, "Failed to list pods")
-			task := plans.PreparedError(err, spec)
-			return []types.Task{task}
-		}
+	var podLocations []podLocation
 
-		podList := resources.(*v1.PodList)
-		pods := podList.Items
-		for _, pod := range pods {
-			if !podNameProvided || spec.KubernetesLogs.Pod == pod.Name {
-				podNames = append(podNames, pod.Name)
-			}
-		}
+	resourceListOpts := types.KubernetesResourceListOptions{
+		Kind:        "pods",
+		Namespace:   spec.KubernetesLogs.Namespace,
+		ListOptions: spec.KubernetesLogs.ListOptions,
+	}
 
-		if len(podNames) == 0 {
-			err := errors.New("Unable to find any pods matching the provided pod/selector")
-			task := plans.PreparedError(err, spec)
-			return []types.Task{task}
+	resources, err := k.producers.ResourceList(resourceListOpts)(context.Background())
+	if err != nil {
+		err := errors.Wrap(err, "Failed to list pods")
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
+	}
+
+	podList := resources.(*v1.PodList)
+	pods := podList.Items
+	for _, pod := range pods {
+		if !podNameProvided || spec.KubernetesLogs.Pod == pod.Name {
+			podLocations = append(podLocations, podLocation{PodName: pod.Name, Namespace: pod.Namespace})
 		}
-	} else {
-		podNames = []string{spec.KubernetesLogs.Pod}
+	}
+
+	if len(podLocations) == 0 {
+		err := errors.New("Unable to find any pods matching the provided pod/selector")
+		task := plans.PreparedError(err, spec)
+		return []types.Task{task}
 	}
 
 	var tasks []types.Task
-	for _, podName := range podNames {
+	for _, podLocation := range podLocations {
 		currentLogOptions := *spec.KubernetesLogs
-		currentLogOptions.Pod = podName
+		currentLogOptions.Pod = podLocation.PodName
+		currentLogOptions.Namespace = podLocation.Namespace
+
+		rawPath := spec.Shared().OutputDir
+		if !namespaceProvided {
+			rawPath = filepath.Join(rawPath, podLocation.Namespace)
+		}
 
 		task := plans.StreamSource{
 			Producer: k.producers.Logs(currentLogOptions),
-			RawPath:  filepath.Join(spec.Shared().OutputDir, fmt.Sprintf("%s.log", podName)),
+			RawPath:  filepath.Join(rawPath, fmt.Sprintf("%s.log", podLocation.PodName)),
 		}
 
 		task, err = plans.SetCommonFieldsStreamSource(task, spec)
