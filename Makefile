@@ -1,20 +1,6 @@
-.PHONY: clean deps install run test build shell all build-dirs goreleaser bundle
-
-# Structure adapted from https://github.com/thockin/go-build-template
-
 SHELL := /bin/bash
-BIN := support-bundle
-PKG := github.com/replicatedcom/support-bundle
-VERSION := $(shell git describe --tags --always --dirty)
-SHA := $(shell git log --pretty=format:'%H' -n 1)
-ARCH ?= amd64
-
-ifeq ($(shell uname), Darwin)
-	BUILD_TIME := $(shell date -u +%FT%T)
-else
-	BUILD_TIME := $(shell date --rfc-3339=seconds | sed 's/ /T/')
-endif
-
+SRC = $(shell find . -name "*.go")
+PKG := github.com/replicatedhq/support-bundle
 #paths within WSL start with /mnt/c/...
 #docker does not recognize this fact
 #this strips the first 5 characters (leaving /c/...) if the kernel releaser is Microsoft
@@ -24,181 +10,130 @@ else
 	BUILD_DIR := $(shell pwd)
 endif
 
-SRC_DIRS := cmd pkg
-BUILD_IMAGE ?= golang:1.10-alpine
-DOCKER_REPO ?= replicated
+docker:
+	docker build -t support-bundle .
 
 deps:
-	go install
+	dep ensure -v; dep prune -v
 
-install:
-	go install
+fmt:
+	goimports -w pkg
+	goimports -w cmd
 
-generate:
-	./bin/support-bundle generate
+vet: fmt _vet
 
-build-%:
-	@$(MAKE) --no-print-directory ARCH=$* build
+_vet:
+	go vet ./pkg/...
+	go vet ./cmd/...
 
-container-%:
-	@$(MAKE) --no-print-directory ARCH=$* container
+lint: vet _lint
 
-push-%:
-	@$(MAKE) --no-print-directory ARCH=$* push
+_lint:
+	golint ./pkg/... | grep -v "should have comment" | grep -v "comment on exported" || :
+	golint ./cmd/... | grep -v "should have comment" | grep -v "comment on exported" || :
 
-build: bin/$(ARCH)/$(BIN)
+test: lint _test
 
-bin/$(ARCH)/$(BIN): build-dirs
-	@echo "building: $@"
-	@time docker run                                                        \
-	    -ti                                                                 \
-	    --rm                                                                \
-	    -u $$(id -u):$$(id -g)                                              \
-	    -v "$(BUILD_DIR)/.go:/go"                                           \
-	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
-	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin"                               \
-	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin/$$(go env GOOS)_$(ARCH)"       \
-	    -v "$(BUILD_DIR)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
-	    -w /go/src/$(PKG)                                                   \
-	    $(BUILD_IMAGE)                                                      \
-	    /bin/sh -c "                                                        \
-	        ARCH=$(ARCH)                                                    \
-	        VERSION=$(VERSION)                                              \
-	        PKG=$(PKG)                                                      \
-	        SHA=$(SHA)                                                      \
-	        BUILD_TIME=$(BUILD_TIME)                                        \
-	        ./build/build.sh                                                \
-	    "
+_test:
+	go test ./pkg/...
 
-# Example: make shell CMD="-c 'date > datefile'"
-shell: build-dirs
-	@echo "launching a shell in the containerized build environment"
+build: test _build
+
+_build: bin/support-bundle
+
+bin/support-bundle: $(SRC)
+	go build \
+		-i \
+		-o bin/support-bundle \
+		./cmd/support-bundle
+	@echo built bin/support-bundle
+
+build-deps:
+	go get github.com/golang/lint/golint
+	go get golang.org/x/tools/cmd/goimports
+	go get github.com/jteeuwen/go-bindata/go-bindata
+
+dep-deps:
+	go get github.com/golang/dep/cmd/dep
+
+.state/coverage.out: $(SRC)
+	@mkdir -p .state/
+	go test -coverprofile=.state/coverage.out -v ./pkg/...
+
+citest: lint .state/coverage.out
+
+.state/cc-test-reporter:
+	@mkdir -p .state/
+	wget -O .state/cc-test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+	chmod +x .state/cc-test-reporter
+
+ci-upload-coverage: .state/coverage.out .state/cc-test-reporter
+	./.state/cc-test-reporter format-coverage -o .state/codeclimate/codeclimate.json -t gocov .state/coverage.out
+	./.state/cc-test-reporter upload-coverage -i .state/codeclimate/codeclimate.json
+
+e2e: e2e/support-bundle
+
+e2e/support-bundle: e2e/support-bundle/core e2e/support-bundle/docker
+
+e2e/support-bundle/core:
 	@docker run                                                             \
-	    -ti                                                                 \
-	    --rm                                                                \
-	    -u $$(id -u):$$(id -g)                                              \
-	    -v "$(BUILD_DIR)/.go:/go"                                           \
-	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
-	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin"                               \
-	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin/$$(go env GOOS)_$(ARCH)"       \
-	    -v "$(BUILD_DIR)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
-	    -w /go/src/$(PKG)                                                   \
-	    $(BUILD_IMAGE)                                                      \
-	    /bin/sh $(CMD)
+		-ti                                                                 \
+		--rm                                                                \
+		-v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
+		-v /var/run/docker.sock:/var/run/docker.sock                        \
+		-w /go/src/$(PKG)                                                   \
+		-l com.replicated.support-bundle=true                               \
+		golang:1.10                                                         \
+		/bin/sh -c "                                                        \
+			./e2e/collect/e2e.sh                                            \
+		"
 
-test: build-dirs
+e2e/support-bundle/docker:
+	docker pull ubuntu:16.04
 	@docker run                                                             \
-	    -ti                                                                 \
-	    --rm                                                                \
-	    -v "$(BUILD_DIR)/.go:/go"                                           \
-	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
-	    -v "$(BUILD_DIR)/bin/$(ARCH):/go/bin"                               \
-	    -v /var/run/docker.sock:/var/run/docker.sock                        \
-	    -v "$(BUILD_DIR)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static" \
-	    -w /go/src/$(PKG)                                                   \
-	    $(BUILD_IMAGE)                                                      \
-	    /bin/sh -c "                                                        \
-	        ./build/test.sh $(SRC_DIRS)                                     \
-	    "
+		-ti                                                                 \
+		--rm                                                                \
+		-v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
+		-v /var/run/docker.sock:/var/run/docker.sock                        \
+		-w /go/src/$(PKG)                                                   \
+		-l com.replicated.support-bundle=true                               \
+		-e DOCKER=1                                                         \
+		golang:1.10                                                         \
+		/bin/sh -c "                                                        \
+			./e2e/collect/e2e.sh                                            \
+		"
 
-e2e: build-dirs
+e2e/support-bundle/swarm:
 	@docker run                                                             \
-	    -ti                                                                 \
-	    --rm                                                                \
-	    -v "$(BUILD_DIR)/.go:/go"                                           \
-	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
-	    -v /var/run/docker.sock:/var/run/docker.sock                        \
-	    -w /go/src/$(PKG)                                                   \
-	    golang:1.10                                                         \
-	    /bin/sh -c "                                                        \
-	        ./build/e2e.sh $(SRC_DIRS)                                      \
-	    "
+		-ti                                                                 \
+		--rm                                                                \
+		-v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
+		-v /var/run/docker.sock:/var/run/docker.sock                        \
+		-w /go/src/$(PKG)                                                   \
+		-l com.replicated.support-bundle=true                               \
+		-e SWARM=1                                                          \
+		golang:1.10                                                         \
+		/bin/sh -c "                                                        \
+			./e2e/collect/e2e.sh                                            \
+		"
 
-e2e-docker: build-dirs
-	@docker run                                                             \
-	    -ti                                                                 \
-	    --rm                                                                \
-	    --label com.replicated.support-bundle=true                          \
-	    -v "$(BUILD_DIR)/.go:/go"                                           \
-	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
-	    -v /var/run/docker.sock:/var/run/docker.sock                        \
-	    -w /go/src/$(PKG)                                                   \
-	    golang:1.10                                                         \
-	    /bin/sh -c "                                                        \
-	        DOCKER=1                                                        \
-	        ./build/e2e.sh $(SRC_DIRS)                                      \
-	    "
+ci-e2e: ci-e2e/support-bundle
 
-e2e-swarm: build-dirs
-	@docker run                                                             \
-	    -ti                                                                 \
-	    --rm                                                                \
-	    -v "$(BUILD_DIR)/.go:/go"                                           \
-	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
-	    -v /var/run/docker.sock:/var/run/docker.sock                        \
-	    -w /go/src/$(PKG)                                                   \
-	    golang:1.10                                                         \
-	    /bin/sh -c "                                                        \
-	        SWARM=1                                                         \
-	        ./build/e2e.sh $(SRC_DIRS)                                      \
-	    "
+ci-e2e/support-bundle: ci-e2e/support-bundle/core ci-e2e/support-bundle/docker
 
-# this task assumes a working retraced installation, and requires the following params to be set:
-#
-#  RETRACED_API_ENDPOINT
-#  RETRACED_PROJECT_ID
-#  RETRACED_API_KEY
-#
-# Can also optionally set
-#
-#  RETRACED_INSECURE_SKIP_VERIFY=1
-#
-e2e-retraced: build-dirs
-	@docker run                                                             \
-	    -ti                                                                 \
-	    --rm                                                                \
-	    -v "$(BUILD_DIR)/.go:/go"                                           \
-	    -v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
-	    -v /var/run/docker.sock:/var/run/docker.sock                        \
-	    -w /go/src/$(PKG)                                                   \
-	    golang:1.9                                                          \
-	    /bin/sh -c "                                                        \
-	        RETRACED=1                                                      \
-	        ./build/e2e.sh $(SRC_DIRS)                                      \
-	    "
+ci-e2e/support-bundle/core:
+	./e2e/collect/e2e.sh
 
-build-dirs:
-	@mkdir -p bin/$(ARCH)
-	@mkdir -p .go/src/$(PKG) .go/pkg .go/bin .go/std/$(ARCH)
+ci-e2e/support-bundle/docker:
+	docker pull ubuntu:16.04
+	DOCKER=true ./e2e/collect/e2e.sh
 
-githooks:
-	echo 'make integration-test' > .git/hooks/pre-push
-	chmod +x .git/hooks/pre-push
-	echo 'go fmt ./...' > .git/hooks/pre-commit
-	chmod +x .git/hooks/pre-commit
+ci-e2e/support-bundle/swarm:
+	SWARM=true ./e2e/collect/e2e.sh
 
-clean: container-clean bin-clean
+goreleaser: .state/goreleaser
 
-container-clean:
-	rm -rf .container-* .dockerfile-* .push-*
-
-bin-clean:
-	rm -rf .go bin
-
-all: build test e2e e2e-docker
-
-goreleaser:
+.state/goreleaser: .goreleaser.unstable.yml deploy/Dockerfile-collect $(SRC)
+	@mkdir -p .state
+	@touch .state/goreleaser
 	curl -sL https://git.io/goreleaser | bash -s -- --snapshot --rm-dist --config .goreleaser.unstable.yml
-
-bundle: goreleaser
-	@docker run \
-		-it \
-		--rm \
-		--name support-bundle \
-		--volume $(BUILD_DIR):/out \
-		--volume /var/run/docker.sock:/var/run/docker.sock \
-		--env LOG_LEVEL=DEBUG \
-		--pid host \
-		--workdir /out  \
-		$(DOCKER_REPO)/support-bundle:unstable \
-		generate

@@ -4,34 +4,37 @@ release:
     owner: replicatedcom
     name: support-bundle
 builds:
-- goos:
-  - linux
-  goarch:
-  - amd64
-  - "386"
-  main: cmd/support-bundle/main.go
-  ldflags: -s -w 
-    -X github.com/replicatedcom/support-bundle/pkg/version.version={{.Version}} 
-    -X github.com/replicatedcom/support-bundle/pkg/version.gitSHA={{.Commit}} 
-    -X github.com/replicatedcom/support-bundle/pkg/version.buildTime={{.Date}}
-  binary: support-bundle
-  hooks: {}
+  - goos:
+      - linux
+    goarch:
+      - amd64
+      - "386"
+    main: cmd/support-bundle/main.go
+    ldflags: -s -w
+      -X github.com/replicatedcom/support-bundle/pkg/version.version={{.Version}}
+      -X github.com/replicatedcom/support-bundle/pkg/version.gitSHA={{.Commit}}
+      -X github.com/replicatedcom/support-bundle/pkg/version.buildTime={{.Date}}
+    binary: support-bundle
+    hooks: {}
 archive:
   format: tar.gz
   name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{.Arm }}{{ end }}-unstable'
   files:
-  - licence*
-  - LICENCE*
-  - license*
-  - LICENSE*
-  - readme*
-  - README*
-  - changelog*
-  - CHANGELOG*
+    - licence*
+    - LICENCE*
+    - license*
+    - LICENSE*
+    - readme*
+    - README*
+    - changelog*
+    - CHANGELOG*
 dockers:
   - image: replicated/support-bundle
-    dockerfile: build/Dockerfile-release
+    dockerfile: deploy/Dockerfile-collect
     latest: false
+    goos: linux
+    goarch: amd64
+    binary: support-bundle
     tag_templates:
       - "unstable"
 snapshot:
