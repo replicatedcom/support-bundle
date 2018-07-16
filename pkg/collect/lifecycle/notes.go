@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"github.com/replicatedcom/support-bundle/pkg/types"
+	"github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
 type NotesTask struct {
