@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/replicatedcom/support-bundle/cmd/support-bundle/commands"
-	"github.com/replicatedcom/support-bundle/pkg/cli"
+	"github.com/replicatedcom/support-bundle/pkg/collect/cli"
 )
 
 func main() {

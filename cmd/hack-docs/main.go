@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mcuadros/go-jsonschema-generator"
-	"github.com/replicatedcom/support-bundle/pkg/types"
+	"github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
 func main() {

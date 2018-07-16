@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mitchellh/go-homedir"
-	"github.com/replicatedcom/support-bundle/pkg/cli"
+	homedir "github.com/mitchellh/go-homedir"
+	"github.com/replicatedcom/support-bundle/pkg/collect/cli"
 	"github.com/spf13/cobra"
 	jww "github.com/spf13/jwalterweatherman"
 	"github.com/spf13/viper"
