@@ -1,6 +1,16 @@
+.PHONY: docker deps fmt vet _vet lint _lint test _test build _build build-deps dep-deps citest ci-upload-coverage e2e e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
+
 SHELL := /bin/bash
 SRC = $(shell find . -name "*.go")
 PKG := github.com/replicatedhq/support-bundle
+VERSION := $(shell git describe --tags --always --dirty)
+SHA := $(shell git log --pretty=format:'%H' -n 1)
+ARCH ?= amd64
+ifeq ($(shell uname), Darwin)
+	BUILD_TIME := $(shell date -u +%FT%T)
+else
+	BUILD_TIME := $(shell date --rfc-3339=seconds | sed 's/ /T/')
+endif
 #paths within WSL start with /mnt/c/...
 #docker does not recognize this fact
 #this strips the first 5 characters (leaving /c/...) if the kernel releaser is Microsoft
@@ -45,6 +55,11 @@ bin/support-bundle: $(SRC)
 	go build \
 		-i \
 		-o bin/support-bundle \
+		-ldflags " \
+		-X $(PKG)/pkg/version.version=$(VERSION) \
+		-X $(PKG)/pkg/version.gitSHA=$(SHA) \
+		-X $(PKG)/pkg/version.buildTime=$(BUILD_TIME) \
+		" \
 		./cmd/support-bundle
 	@echo built bin/support-bundle
 
@@ -71,11 +86,11 @@ ci-upload-coverage: .state/coverage.out .state/cc-test-reporter
 	./.state/cc-test-reporter format-coverage -o .state/codeclimate/codeclimate.json -t gocov .state/coverage.out
 	./.state/cc-test-reporter upload-coverage -i .state/codeclimate/codeclimate.json
 
-e2e: e2e/support-bundle
+e2e: e2e-supportbundle
 
-e2e/support-bundle: e2e/support-bundle/core e2e/support-bundle/docker
+e2e-supportbundle: e2e-supportbundle-core e2e-supportbundle-docker
 
-e2e/support-bundle/core:
+e2e-supportbundle-core:
 	@docker run                                                             \
 		-ti                                                                 \
 		--rm                                                                \
@@ -88,7 +103,7 @@ e2e/support-bundle/core:
 			./e2e/collect/e2e.sh                                            \
 		"
 
-e2e/support-bundle/docker:
+e2e-supportbundle-docker:
 	docker pull ubuntu:16.04
 	@docker run                                                             \
 		-ti                                                                 \
@@ -103,7 +118,7 @@ e2e/support-bundle/docker:
 			./e2e/collect/e2e.sh                                            \
 		"
 
-e2e/support-bundle/swarm:
+e2e-supportbundle-swarm:
 	@docker run                                                             \
 		-ti                                                                 \
 		--rm                                                                \
@@ -117,18 +132,18 @@ e2e/support-bundle/swarm:
 			./e2e/collect/e2e.sh                                            \
 		"
 
-ci-e2e: ci-e2e/support-bundle
+ci-e2e: ci-e2e-supportbundle
 
-ci-e2e/support-bundle: ci-e2e/support-bundle/core ci-e2e/support-bundle/docker
+ci-e2e-supportbundle: ci-e2e-supportbundle-core ci-e2e-supportbundle-docker
 
-ci-e2e/support-bundle/core:
+ci-e2e-supportbundle-core:
 	./e2e/collect/e2e.sh
 
-ci-e2e/support-bundle/docker:
+ci-e2e-supportbundle-docker:
 	docker pull ubuntu:16.04
 	DOCKER=true ./e2e/collect/e2e.sh
 
-ci-e2e/support-bundle/swarm:
+ci-e2e-supportbundle-swarm:
 	SWARM=true ./e2e/collect/e2e.sh
 
 goreleaser: .state/goreleaser

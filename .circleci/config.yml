@@ -21,7 +21,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true circleci/golang:1.10 -c "sleep infinity"
-      - run: make ci-e2e/support-bundle/core
+      - run: make ci-e2e-supportbundle-core
 
   e2e_docker:
     docker:
@@ -31,7 +31,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true circleci/golang:1.10 -c "sleep infinity"
-      - run: make ci-e2e/support-bundle/docker
+      - run: make ci-e2e-supportbundle-docker
 
   deploy:
     docker:
