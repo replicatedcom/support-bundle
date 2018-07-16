@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"github.com/replicatedcom/support-bundle/pkg/cli"
+	"github.com/replicatedcom/support-bundle/pkg/collect/cli"
 	"github.com/spf13/cobra"
 )
 
