@@ -17,6 +17,11 @@ var DefaultLifecycleTasks = []LifecycleTask{
 		Message: &MessageOptions{"Starting support bundle collection..."},
 	},
 	{
+		Input: &InputOptions{
+			Prompt: "Enter a note: ",
+		},
+	},
+	{
 		Generate: &GenerateOptions{UseDefaults: true},
 	},
 	{

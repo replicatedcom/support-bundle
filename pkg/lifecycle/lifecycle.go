@@ -23,6 +23,7 @@ type Lifecycle struct {
 	RealGeneratedBundlePath string
 	BundleTasks             []types.Task
 	executors               []Executor
+	Notes                   string
 }
 
 // Executor is a thing that can be executed.
@@ -53,9 +54,11 @@ func resolveTask(t *types.LifecycleTask) (Executor, error) {
 		return &GenerateTask{*t.Generate}, nil
 	case t.Upload != nil:
 		return &UploadTask{*t.Upload}, nil
+	case t.Input != nil:
+		return &InputTask{*t.Input}, nil
 	}
 
-	return nil, errors.New("no valid event found, requires one of: generate, message, boolean, upload")
+	return nil, errors.New("no valid event found, requires one of: generate, message, boolean, upload, input")
 }
 
 func (l *Lifecycle) Run() error {

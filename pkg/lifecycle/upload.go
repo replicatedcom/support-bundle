@@ -65,7 +65,7 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		return false, errors.New("upload with no customer id")
 	}
 
-	bundleID, url, err := l.GraphQLClient.GetSupportBundleUploadURI(l.UploadCustomerID, l.FileInfo.Size())
+	bundleID, url, err := l.GraphQLClient.GetSupportBundleUploadURI(l.UploadCustomerID, l.FileInfo.Size(), l.Notes)
 
 	if err != nil {
 		return false, errors.Wrap(err, "get presigned URL")

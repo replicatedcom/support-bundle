@@ -21,8 +21,8 @@ query {
 `
 
 const startUploadMutation = `
-mutation GetPresignedURI($size: Int) {
-  uploadSupportBundle(size: $size) {
+mutation GetPresignedURI($size: Int, $notes: String) {
+  uploadSupportBundle(size: $size, notes: $notes) {
     uploadUri,
     supportBundle {
       id
@@ -81,11 +81,12 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 	return []byte(specBody.Data.Hydrated), nil
 }
 
-func (c *Client) GetSupportBundleUploadURI(id string, size int64) (string, *url.URL, error) {
+func (c *Client) GetSupportBundleUploadURI(id string, size int64, notes string) (string, *url.URL, error) {
 	resp, err := c.executeGraphQLQuery(id, Request{
 		Query: startUploadMutation,
 		Variables: map[string]interface{}{
-			"size": size,
+			"size":  size,
+			"notes": notes,
 		},
 	})
 
