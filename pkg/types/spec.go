@@ -14,7 +14,7 @@ type Doc struct {
 type LifecycleTask struct {
 	Generate *GenerateOptions `json:"generate,omitempty"`
 	Message  *MessageOptions  `json:"message,omitempty"`
-	Input    *InputOptions    `json:"input,omitempty"`
+	Notes    *NotesOptions    `json:"notes,omitempty"`
 	Upload   *UploadOptions   `json:"upload,omitempty"`
 }
 
@@ -37,7 +37,7 @@ type UploadOptions struct {
 	Prompt *PromptOptions `json:"prompt,omitempty"`
 }
 
-type InputOptions struct {
+type NotesOptions struct {
 	Prompt string `json:"prompt,omitempty"`
 }
 

@@ -9,11 +9,11 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/types"
 )
 
-type InputTask struct {
-	Options types.InputOptions
+type NotesTask struct {
+	Options types.NotesOptions
 }
 
-func (task *InputTask) Execute(l *Lifecycle) (bool, error) {
+func (task *NotesTask) Execute(l *Lifecycle) (bool, error) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print(task.Options.Prompt)
 	text, err := reader.ReadString('\n')
