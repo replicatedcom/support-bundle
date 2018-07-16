@@ -19,6 +19,7 @@ ifeq ($(shell uname -r | tail -c 10), Microsoft)
 else
 	BUILD_DIR := $(shell pwd)
 endif
+DOCKER_REPO ?= replicated
 
 docker:
 	docker build -t support-bundle .
@@ -152,3 +153,16 @@ goreleaser: .state/goreleaser
 	@mkdir -p .state
 	@touch .state/goreleaser
 	curl -sL https://git.io/goreleaser | bash -s -- --snapshot --rm-dist --config .goreleaser.unstable.yml
+
+support-bundle-generate: goreleaser
+	@docker run \
+		-it \
+		--rm \
+		--name support-bundle \
+		--volume $(BUILD_DIR):/out \
+		--volume /var/run/docker.sock:/var/run/docker.sock \
+		--env LOG_LEVEL=DEBUG \
+		--pid host \
+		--workdir /out  \
+		$(DOCKER_REPO)/support-bundle:unstable \
+		generate

@@ -5,6 +5,8 @@
 /bin/
 /dist/
 /.state/
+.vscode/
+.idea/
 
 # Binaries for programs and plugins
 *.exe
