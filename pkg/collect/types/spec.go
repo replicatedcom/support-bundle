@@ -15,6 +15,7 @@ type Doc struct {
 type LifecycleTask struct {
 	Generate *GenerateOptions `json:"generate,omitempty"`
 	Message  *MessageOptions  `json:"message,omitempty"`
+	Notes    *NotesOptions    `json:"notes,omitempty"`
 	Upload   *UploadOptions   `json:"upload,omitempty"`
 }
 
@@ -35,6 +36,10 @@ type PromptOptions struct {
 
 type UploadOptions struct {
 	Prompt *PromptOptions `json:"prompt,omitempty"`
+}
+
+type NotesOptions struct {
+	Prompt string `json:"prompt,omitempty"`
 }
 
 type SpecShared struct {
