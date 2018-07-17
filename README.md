@@ -3,17 +3,7 @@
 This can be run in a Docker container or as a stand alone binary:
 
 ```bash
-docker run --rm \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    -v /dev:/host/dev \
-    -v /proc:/host/proc:ro \
-    -v /boot:/host/boot:ro \
-    -v /lib/modules:/host/lib/modules:ro \
-    -v /usr:/host/usr:ro \
-    -v `pwd`:/out \
-    -e IN_CONTAINER=true \
-    registry.replicated.com/library/support-bundle \
-    generate --out /out/supportbundle.tar.gz
+make support-bundle-generate
 ```
 
 ## Unit tests
@@ -25,7 +15,7 @@ make test
 ## Integration tests
 
 ```bash
-make integration-test integration-test-docker
+make e2e-supportbundle-core e2e-supportbundle-docker
 ```
 
 ## Releases
