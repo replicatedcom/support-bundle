@@ -58,7 +58,7 @@ func resolveTask(t *types.LifecycleTask) (Executor, error) {
 		return &NotesTask{*t.Notes}, nil
 	}
 
-	return nil, errors.New("no valid event found, requires one of: generate, message, boolean, upload, input")
+	return nil, errors.New("no valid event found, requires one of: generate, message, boolean, upload, notes")
 }
 
 func (l *Lifecycle) Run() error {
