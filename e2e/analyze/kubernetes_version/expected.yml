@@ -1,0 +1,14 @@
+- message: Your Kubernetes version 1.8.10-gke.0 is less than the minimum required version of 1.10.0
+  requirement: Kubernetes version must be at least 1.10.0
+  severity: error
+  analyzer_spec:
+    v1alpha1:
+    - collect_refs:
+      - ref: Ref
+        selector:
+          analyze: kubernetes-version
+      kubernetes.version:
+        semver_minimum: 1.10.0
+  variables:
+  - Empty: "false"
+  - Semver: 1.8.10-gke.0

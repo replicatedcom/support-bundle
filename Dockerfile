@@ -1,6 +1,6 @@
 FROM golang:1.10
 
-ENV PROJECTPATH=/go/src/github.com/replicatedhq/troubleshoot
+ENV PROJECTPATH=/go/src/github.com/replicatedcom/support-bundle
 
 WORKDIR $PROJECTPATH
 

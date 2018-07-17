@@ -11,7 +11,7 @@ jobs:
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
-      - run: make build-deps citest
+      - run: make build-deps ci-test # ci-upload-coverage
 
   e2e:
     docker:
@@ -21,17 +21,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true circleci/golang:1.10 -c "sleep infinity"
-      - run: make ci-e2e-supportbundle-core
-
-  e2e_docker:
-    docker:
-      - image: circleci/golang:1.10
-    working_directory: /go/src/github.com/replicatedcom/support-bundle
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true circleci/golang:1.10 -c "sleep infinity"
-      - run: make ci-e2e-supportbundle-docker
+      - run: make build-deps ci-e2e
 
   deploy:
     docker:
@@ -40,6 +30,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: docker pull alpine:latest # make sure it's fresh
       - run: docker pull debian:stretch-slim # make sure it's fresh
       - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" registry.replicated.com
       - run: docker login -u="$DOCKERHUB_DOCKER_USER" -p="$DOCKERHUB_DOCKER_PASS"
@@ -53,6 +44,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: docker pull alpine:latest # make sure it's fresh
       - run: docker pull debian:stretch-slim # make sure it's fresh
       - deploy:
           command: curl -sL https://git.io/goreleaser | bash -s -- --snapshot --config .goreleaser.unstable.yml
@@ -72,15 +64,10 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - e2e_docker:
-          filters:
-            tags:
-              only: /.*/
       - deploy:
           requires:
             - test
             - e2e
-            - e2e_docker
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*(-.*)*/
@@ -90,7 +77,6 @@ workflows:
           requires:
             - test
             - e2e
-            - e2e_docker
           filters:
             branches:
               only: /master/

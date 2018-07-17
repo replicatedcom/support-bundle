@@ -1,0 +1,21 @@
+collect:
+  v1:
+    - kubernetes.resource-list:
+        kind: nodes
+      output_dir: /kubernetes/resource-list/nodes
+      meta:
+        labels:
+          analyze: kubernetes-resource-list-nodes
+
+analyze:
+  v1alpha1:
+    - kubernetes.total-memory:
+        minimum: 1Gi
+      collect_refs:
+        - selector:
+            analyze: kubernetes-resource-list-nodes
+    - kubernetes.total-memory:
+        minimum: 20Gi
+      collect_refs:
+        - selector:
+            analyze: kubernetes-resource-list-nodes

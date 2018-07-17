@@ -1,0 +1,22 @@
+raw:
+  conditions:
+    - eval:
+        operator: and
+        statements:
+          - '{{repl .Empty}}'
+        variables:
+          - Empty: '{{repl not .Ref}}'
+      severity: error
+      message: >-
+        Failed to detect Kubernetes version
+    - eval:
+        operator: and
+        statements:
+          - '{{repl SemverCompare .Semver "{{{.SemverMin}}}" | ge 0}}'
+        variables:
+          - Semver: '{{repl Trim (Jq .Ref ".gitVersion" | JqMessagesToString) "v"}}'
+      severity: error
+      message: >-
+        Your Kubernetes version {{repl .Semver}} is less than the minimum
+        required version of {{{.SemverMin}}}
+message: Kubernetes version must be at least {{{.SemverMin}}}

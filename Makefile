@@ -1,8 +1,8 @@
-.PHONY: docker deps fmt vet _vet lint _lint test _test build _build build-deps dep-deps citest ci-upload-coverage e2e e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
+.PHONY: docker deps fmt vet _vet lint _lint test _test build _build build-deps dep-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
 
 SHELL := /bin/bash
 SRC = $(shell find . -name "*.go")
-PKG := github.com/replicatedhq/support-bundle
+PKG := github.com/replicatedcom/support-bundle
 VERSION := $(shell git describe --tags --always --dirty)
 SHA := $(shell git log --pretty=format:'%H' -n 1)
 ARCH ?= amd64
@@ -40,8 +40,15 @@ _vet:
 lint: vet _lint
 
 _lint:
-	golint ./pkg/... | grep -v "should have comment" | grep -v "comment on exported" || :
-	golint ./cmd/... | grep -v "should have comment" | grep -v "comment on exported" || :
+	golint ./pkg/... \
+		| grep -v "should have comment" \
+		| grep -v "comment on exported" \
+		| grep -v "pkg/analyze/api/v1alpha1/specs.go" \
+		|| :
+	golint ./cmd/... \
+		| grep -v "should have comment" \
+		| grep -v "comment on exported" \
+		|| :
 
 test: lint _test
 
@@ -50,17 +57,36 @@ _test:
 
 build: test _build
 
-_build: bin/support-bundle
+_build: bin/analyze bin/support-bundle
 
-bin/support-bundle: $(SRC)
+pkg/analyze/api/v1alpha1/specs.go: pkg/analyze/api/v1alpha1/specs/*
+	go-bindata \
+		-pkg v1alpha1 \
+		-prefix pkg/analyze/api/v1alpha1/ \
+		-o pkg/analyze/api/v1alpha1/specs.go \
+		pkg/analyze/api/v1alpha1/specs/
+
+bin/analyze: $(SRC) pkg/analyze/api/v1alpha1/specs.go
 	go build \
-		-i \
-		-o bin/support-bundle \
 		-ldflags " \
 		-X $(PKG)/pkg/version.version=$(VERSION) \
 		-X $(PKG)/pkg/version.gitSHA=$(SHA) \
 		-X $(PKG)/pkg/version.buildTime=$(BUILD_TIME) \
 		" \
+		-i \
+		-o bin/analyze \
+		./cmd/analyze
+	@echo built bin/analyze
+
+bin/support-bundle: $(SRC)
+	go build \
+		-ldflags " \
+		-X $(PKG)/pkg/version.version=$(VERSION) \
+		-X $(PKG)/pkg/version.gitSHA=$(SHA) \
+		-X $(PKG)/pkg/version.buildTime=$(BUILD_TIME) \
+		" \
+		-i \
+		-o bin/support-bundle \
 		./cmd/support-bundle
 	@echo built bin/support-bundle
 
@@ -68,6 +94,7 @@ build-deps:
 	go get github.com/golang/lint/golint
 	go get golang.org/x/tools/cmd/goimports
 	go get github.com/jteeuwen/go-bindata/go-bindata
+	go get github.com/onsi/ginkgo/ginkgo
 
 dep-deps:
 	go get github.com/golang/dep/cmd/dep
@@ -76,7 +103,7 @@ dep-deps:
 	@mkdir -p .state/
 	go test -coverprofile=.state/coverage.out -v ./pkg/...
 
-citest: lint .state/coverage.out
+ci-test: lint .state/coverage.out
 
 .state/cc-test-reporter:
 	@mkdir -p .state/
@@ -87,7 +114,10 @@ ci-upload-coverage: .state/coverage.out .state/cc-test-reporter
 	./.state/cc-test-reporter format-coverage -o .state/codeclimate/codeclimate.json -t gocov .state/coverage.out
 	./.state/cc-test-reporter upload-coverage -i .state/codeclimate/codeclimate.json
 
-e2e: e2e-supportbundle
+e2e: e2e-analyze e2e-supportbundle
+
+e2e-analyze: pkg/analyze/api/v1alpha1/specs.go
+	ginkgo -v -r -p e2e/analyze
 
 e2e-supportbundle: e2e-supportbundle-core e2e-supportbundle-docker
 
@@ -133,7 +163,7 @@ e2e-supportbundle-swarm:
 			./e2e/collect/e2e.sh                                            \
 		"
 
-ci-e2e: ci-e2e-supportbundle
+ci-e2e: e2e-analyze ci-e2e-supportbundle
 
 ci-e2e-supportbundle: ci-e2e-supportbundle-core ci-e2e-supportbundle-docker
 
@@ -149,7 +179,7 @@ ci-e2e-supportbundle-swarm:
 
 goreleaser: .state/goreleaser
 
-.state/goreleaser: .goreleaser.unstable.yml deploy/Dockerfile-collect $(SRC)
+.state/goreleaser: .goreleaser.unstable.yml deploy/Dockerfile-analyze deploy/Dockerfile-collect $(SRC)
 	@mkdir -p .state
 	@touch .state/goreleaser
 	curl -sL https://git.io/goreleaser | bash -s -- --snapshot --rm-dist --config .goreleaser.unstable.yml

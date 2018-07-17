@@ -1,0 +1,8 @@
+FROM alpine:latest
+RUN apk add --no-cache ca-certificates curl && update-ca-certificates
+COPY analyze /analyze
+
+ENV IN_CONTAINER 1
+LABEL "com.replicated.analyze"="true"
+WORKDIR /out
+ENTRYPOINT [ "/analyze" ]
