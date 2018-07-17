@@ -13,7 +13,7 @@ prebuild:
 
 build:
 	mkdir -p bin
-	go build  -o $(HACK_DOCS) ../../cmd/hack-docs
+	go build  -o $(HACK_DOCS) .
 
 gen-schema:
 	$(HACK_DOCS) > $(SCHEMA_JSON)
