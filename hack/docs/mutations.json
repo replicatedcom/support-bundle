@@ -88,6 +88,23 @@
     }
   },
   {
+    "path": "properties.lifecycle.items.properties[\"notes\"]",
+    "merge": {
+      "description": "`notes` can be used to prompt the end customer to enter a note to be uploaded with the support bundle",
+      "examples": [
+        {
+          "prompt": "Please enter a note for the support bundle: "
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.lifecycle.items.properties[\"notes\"].properties.prompt",
+    "merge": {
+      "description": "`prompt` is the message prompt to display to the end customer for entering a note"
+    }
+  },
+  {
     "path": "properties.specs",
     "merge": {
       "description": "A list of items to include in the support bundle"
