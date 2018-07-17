@@ -1,0 +1,15 @@
+- message: Total memory for your Kubernetes cluster 7588608KiB is less than the minimum required memory of 10GiB
+  requirement: Kubernetes total memory must be at least 10GiB
+  severity: error
+  analyzer_spec:
+    v1alpha1:
+    - collect_refs:
+      - ref: Ref
+        selector:
+          analyze: kubernetes-resource-list-nodes
+      kubernetes.total-memory:
+        minimum: 10Gi
+  variables:
+  - Empty: "false"
+  - Memory: "7770734592" # 3794304KiB + 3794304KiB = 7588608KiB = 7770734592B
+    Min: "10737418240"

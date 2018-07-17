@@ -3,8 +3,6 @@
 set -o errexit
 set -o nounset
 
-go get github.com/onsi/ginkgo/ginkgo
-
 if [ -n "${DOCKER+x}" ]; then
     echo "Running e2e tests (docker enabled):"
     ginkgo -v -r -p --focus="docker" e2e/collect/core

@@ -9,6 +9,22 @@ builds:
     goarch:
       - amd64
       - "386"
+    env:
+      - CGO_ENABLED=0
+    main: cmd/analyze/main.go
+    ldflags: -s -w
+      -X github.com/replicatedcom/support-bundle/pkg/version.version={{.Version}}
+      -X github.com/replicatedcom/support-bundle/pkg/version.gitSHA={{.Commit}}
+      -X github.com/replicatedcom/support-bundle/pkg/version.buildTime={{.Date}}
+      -extldflags "-static"
+    flags: -tags netgo -installsuffix netgo
+    binary: analyze
+    hooks: {}
+  - goos:
+      - linux
+    goarch:
+      - amd64
+      - "386"
     main: cmd/support-bundle/main.go
     ldflags: -s -w
       -X github.com/replicatedcom/support-bundle/pkg/version.version={{.Version}}
@@ -29,6 +45,13 @@ archive:
     - changelog*
     - CHANGELOG*
 dockers:
+  - image: replicated/analyze
+    dockerfile: deploy/Dockerfile-analyze
+    goos: linux
+    goarch: amd64
+    binary: analyze
+    tag_templates:
+      - "unstable"
   - image: replicated/support-bundle
     dockerfile: deploy/Dockerfile-collect
     latest: false

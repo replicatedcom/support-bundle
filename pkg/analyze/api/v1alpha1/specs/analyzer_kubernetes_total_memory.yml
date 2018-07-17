@@ -1,0 +1,24 @@
+raw:
+  conditions:
+    - eval:
+        operator: and
+        statements:
+          - '{{repl .Empty}}'
+        variables:
+          - Empty: '{{repl not .Ref}}'
+      severity: error
+      message: >-
+        Failed to detect Kubernetes total memory
+    - eval:
+        operator: and
+        statements:
+          - '{{repl lt (ParseInt .Memory) (ParseInt .Min)}}'
+        variables:
+          - Memory: '{{repl Jq .Ref ".items[].status.capacity.memory" | JqMessagesToStringSlice | SumQuantities}}'
+          - Min: '{{repl ParseQuantity "{{{.Min}}}"}}'
+      severity: error
+      message: >-
+        Total memory for your Kubernetes cluster {{repl (ParseInt .Memory) | FormatQuantity}}B is less than the minimum
+        required memory of {{{.Min}}}B
+message: Kubernetes total memory must be at least {{{.Min}}}B
+ 

@@ -20,7 +20,7 @@ func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config doc
 			return nil, nil, nil, errors.Wrapf(err, "image inspect %s", image)
 		}
 		resp, err := client.ImagePull(ctx, image, dockertypes.ImagePullOptions{
-			// TODO: registry auth
+		// TODO: registry auth
 		})
 		if err != nil {
 			return nil, nil, nil, errors.Wrapf(err, "image pull %s", image)

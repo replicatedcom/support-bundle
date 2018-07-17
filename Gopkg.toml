@@ -1,7 +1,6 @@
-
 # Gopkg.toml example
 #
-# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
 # for detailed Gopkg.toml documentation.
 #
 # required = ["github.com/user/thing/cmd/thing"]
@@ -17,54 +16,30 @@
 #   source = "github.com/myfork/project2"
 #
 # [[override]]
-#  name = "github.com/x/y"
-#  version = "2.4.0"
+#   name = "github.com/x/y"
+#   version = "2.4.0"
+#
 
 [prune]
   go-tests = true
   unused-packages = true
 
-[[constraint]]
-  branch = "master"
-  name = "github.com/mitchellh/go-homedir"
+[[override]]
+  name = "k8s.io/client-go"
+  branch = "release-8.0"
 
-[[constraint]]
-  branch = "master"
-  name = "github.com/spf13/cobra"
-
-[[constraint]]
-  name = "github.com/spf13/viper"
-  version = "1.0.0"
-
-[[constraint]]
-  name = "github.com/docker/docker"
-  revision = "4047cede65862aa0ea5616297d7c0f3b12526ad4"
+[[override]]
+  name = "k8s.io/apimachinery"
+  revision = "103fd098999dc9c0c88536f5c9ad2e5da39373ae"
 
 [[override]]
   name = "github.com/docker/distribution"
   revision = "edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c"
 
-[[constraint]]
-  name = "k8s.io/apimachinery"
-  revision = "019ae5ada31de202164b118aee88ee2d14075c31"
-
-[[constraint]]
-  name = "k8s.io/client-go"
-  version = "5.0.1"
+[[override]]
+  name = "github.com/mholt/archiver"
+  revision = "e4ef56d48eb029648b0e895bb0b6a393ef0829c3"
 
 [[override]]
   name = "github.com/emicklei/go-restful-swagger12"
   version = "1.0.1"
-
-[[override]]
-  name = "github.com/googleapis/gnostic"
-  version = "0.1.0"
-
-[[override]]
-  name = "github.com/Azure/go-autorest"
-  revision = "58f6f26e200fa5dfb40c9cd1c83f3e2c860d779d"
-
-# Godep-related pain, waiting on upstream fix in dep
-[[override]]
-  name = "github.com/ugorji/go"
-  revision = "8c0409fcbb70099c748d71f714529204975f6c3f"
