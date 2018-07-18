@@ -181,8 +181,8 @@ goreleaser: .state/goreleaser
 
 .state/goreleaser: .goreleaser.unstable.yml deploy/Dockerfile-analyze deploy/Dockerfile-collect $(SRC)
 	@mkdir -p .state
-	@touch .state/goreleaser
 	curl -sL https://git.io/goreleaser | bash -s -- --snapshot --rm-dist --config .goreleaser.unstable.yml
+	@touch .state/goreleaser
 
 support-bundle-generate: goreleaser
 	@docker run \
