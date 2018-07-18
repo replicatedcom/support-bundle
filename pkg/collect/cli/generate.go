@@ -74,9 +74,9 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 			return errors.Wrap(err, "initialize journald plugin")
 		} else if err != nil {
 			jww.DEBUG.Printf("initialize journald plugin: %s", err.Error())
+		} else {
+			planner.AddPlugin(pluginJournald)
 		}
-
-		planner.AddPlugin(pluginJournald)
 	}
 
 	if opts.EnableKubernetes {
@@ -100,8 +100,9 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 			return errors.Wrap(err, "initialize kubernetes plugin")
 		} else if err != nil {
 			jww.DEBUG.Printf("initialize kubernetes plugin: %s", err.Error())
+		} else {
+			planner.AddPlugin(pluginKubernetes)
 		}
-		planner.AddPlugin(pluginKubernetes)
 	}
 
 	if opts.EnableRetraced {
@@ -110,8 +111,9 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 			return errors.Wrap(err, "initialize retraced plugin")
 		} else if err != nil {
 			jww.DEBUG.Printf("initialize retraced plugin: %s", err.Error())
+		} else {
+			planner.AddPlugin(pluginRetraced)
 		}
-		planner.AddPlugin(pluginRetraced)
 	}
 
 	graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
