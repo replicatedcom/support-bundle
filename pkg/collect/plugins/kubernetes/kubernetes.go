@@ -1,6 +1,8 @@
 package kubernetes
 
 import (
+	"errors"
+
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/kubernetes/planners"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/kubernetes/producers"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
@@ -13,6 +15,10 @@ type Kubernetes struct {
 }
 
 func New(client kubernetes.Interface, config *restclient.Config) (*Kubernetes, error) {
+	if client == nil {
+		return nil, errors.New("kubernetes client cannot be nil")
+	}
+
 	producers := producers.New(client, config)
 	return &Kubernetes{
 		planner: planners.New(producers),
