@@ -92,16 +92,16 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 				return errors.Wrap(err, "initialize kubernetes client")
 			} else if err != nil {
 				jww.DEBUG.Printf("initialize kubernetes client: %s", err.Error())
+			} else {
+				pluginKubernetes, err := pluginskubernetes.New(client, clientConfig)
+				if err != nil && opts.RequireKubernetes {
+					return errors.Wrap(err, "initialize kubernetes plugin")
+				} else if err != nil {
+					jww.DEBUG.Printf("initialize kubernetes plugin: %s", err.Error())
+				} else {
+					planner.AddPlugin(pluginKubernetes)
+				}
 			}
-		}
-
-		pluginKubernetes, err := pluginskubernetes.New(client, clientConfig)
-		if err != nil && opts.RequireKubernetes {
-			return errors.Wrap(err, "initialize kubernetes plugin")
-		} else if err != nil {
-			jww.DEBUG.Printf("initialize kubernetes plugin: %s", err.Error())
-		} else {
-			planner.AddPlugin(pluginKubernetes)
 		}
 	}
 
