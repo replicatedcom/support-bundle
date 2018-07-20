@@ -115,7 +115,7 @@
   {
     "path": "properties.lifecycle.items.properties[\"notes\"].properties.prompt",
     "merge": {
-      "description": "is the message prompt to display to the end customer for entering a note"
+      "description": "the message prompt to display to the end customer for entering a note"
     }
   },
   {

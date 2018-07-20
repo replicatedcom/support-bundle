@@ -52,7 +52,7 @@
             "type": "object",
             "properties": {
               "prompt": {
-                "description": "is the message prompt to display to the end customer for entering a note",
+                "description": "the message prompt to display to the end customer for entering a note",
                 "type": "string"
               }
             }
