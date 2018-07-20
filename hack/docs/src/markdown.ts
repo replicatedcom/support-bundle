@@ -79,13 +79,19 @@ function parseParameters(specTypes: any, specType) {
   return {required, optional};
 }
 
-function maybeRenderExamples(specTypes: any, specType: string) {
+function maybeRenderExamples(specTypes: any, specType: string, schemaType: SCHEMA_TYPE) {
+  const schemaTypeMap: { [K in SCHEMA_TYPE]: string} = {
+    "support-bundle-yaml-lifecycle": "lifecycle",
+    "support-bundle-yaml-specs": "specs",
+  };
+
   let doc = "";
   if (specTypes[specType].examples) {
     for (const example of specTypes[specType].examples) {
+      const translatedSchemaType = schemaTypeMap[schemaType];
       doc += `
 ${"```yaml"}
-${yaml.safeDump({specs: [{[specType]: example}]})}${"```"}
+${yaml.safeDump({[translatedSchemaType]: [{[specType]: example}]})}${"```"}
 `;
     }
   }
@@ -128,7 +134,7 @@ const generateDoc: (outputLocation: string, specTypes: any, schemaType: SCHEMA_T
 
   let doc = "";
   doc += writeHeader(specTypes, specType, schemaType);
-  doc += maybeRenderExamples(specTypes, specType);
+  doc += maybeRenderExamples(specTypes, specType, schemaType);
 
   const {required, optional} = parseParameters(specTypes, specType);
   doc += maybeRenderParameters(required, `Required`);

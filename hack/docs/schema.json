@@ -20,7 +20,7 @@
             }
           },
           "message": {
-            "description": "message can be used to print a message to the end customer",
+            "description": "Adds a step to print a message to the end customer",
             "examples": [
               {
                 "contents": "This process will collect a number of files from the host system to help you debug your problem"
@@ -32,7 +32,7 @@
             "type": "object",
             "properties": {
               "contents": {
-                "description": "`contents` is the message",
+                "description": "is the message",
                 "type": "string"
               }
             },
@@ -41,7 +41,7 @@
             ]
           },
           "notes": {
-            "description": "notes can be used to prompt the end customer to enter a note to be uploaded with the support bundle",
+            "description": "Adds a step to prompt the end customer to enter a note to be uploaded with the support bundle",
             "examples": [
               {
                 "prompt": "Please enter a note for the support bundle: "
@@ -50,7 +50,7 @@
             "type": "object",
             "properties": {
               "prompt": {
-                "description": "prompt is the message prompt to display to the end customer for entering a note",
+                "description": "is the message prompt to display to the end customer for entering a note",
                 "type": "string"
               }
             }
