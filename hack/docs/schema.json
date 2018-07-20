@@ -11,6 +11,11 @@
         "properties": {
           "generate": {
             "description": "Adds a step that will generate a support bundle. It has one argument, use_defaults",
+            "examples": [
+              {
+                "use_defaults": true
+              }
+            ],
             "type": "object",
             "properties": {
               "use_defaults": {
@@ -24,9 +29,6 @@
             "examples": [
               {
                 "contents": "This process will collect a number of files from the host system to help you debug your problem"
-              },
-              {
-                "contents": "Thanks for uploading your bundle! SuperGoodTools will get back to you in 24 hours"
               }
             ],
             "type": "object",
@@ -57,6 +59,16 @@
           },
           "upload": {
             "description": "Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor",
+            "examples": [
+              {
+                "prompt": {
+                  "message": "Would you like to upload your generated support bundle for review? - ",
+                  "accept": "Bundle uploaded! SuperGoodTool support will get back to you within 24 hours",
+                  "decline": "Bundle was not uploaded, please send your bundle to SuperGoodTool support",
+                  "default": true
+                }
+              }
+            ],
             "type": "object",
             "properties": {
               "prompt": {
@@ -65,30 +77,18 @@
                 "properties": {
                   "accept": {
                     "description": "A message to display if the user accepts the upload prompt",
-                    "examples": [
-                      "Bundle uploaded! SuperGoodTool support will get back to you within 24 hours"
-                    ],
                     "type": "string"
                   },
                   "decline": {
                     "description": "A message to display if the user declines the upload prompt",
-                    "examples": [
-                      "Bundle was not uploaded, please send your bundle to SuperGoodTool support"
-                    ],
                     "type": "string"
                   },
                   "default": {
                     "description": "The default answer to the prompt",
-                    "examples": [
-                      true
-                    ],
                     "type": "boolean"
                   },
                   "message": {
                     "description": "Message to display before prompting",
-                    "examples": [
-                      true
-                    ],
                     "type": "string"
                   }
                 }
