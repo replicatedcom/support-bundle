@@ -9,10 +9,12 @@ deps:
 
 prebuild:
 	rm -rf build
-	mkdir -p build
+	mkdir -p build/specs
+	mkdir -p build/lifecycle
 
 build:
-	mkdir -p bin
+	mkdir -p build/specs
+	mkdir -p build/lifecycle
 	go build  -o $(HACK_DOCS) .
 
 gen-schema:
@@ -40,7 +42,7 @@ integration-bootstrap: integration-down
 	:
 	:     docker swarm init --advertise-addr=172.17.0.1 --listen-addr=0.0.0.0
 	:
-	docker service create --detach=true --name cooltool-www nginx 
+	docker service create --detach=true --name cooltool-www nginx
 	sleep 5
 	docker stack deploy cooltool-core -c fixtures/fake-stack.yml
 	:
@@ -79,7 +81,8 @@ copy-to-help-center:
 	: To Copy to Help center, run the following command:
 	:
 	:    make pipeline
-	:    cp build/* [path/to/help/center]/content/api/support-bundle-yaml-specs/
+	:    cp build/specs/* [path/to/help/center]/content/api/support-bundle-yaml-specs/
+	:    cp build/lifecyle/* [path/to/help/center]/content/api/support-bundle-yaml-lifecycle/
 
 copy-replicated-lint:
 	: To Copy to replicated lint, run the following command:
