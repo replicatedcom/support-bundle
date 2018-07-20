@@ -128,7 +128,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		if err != nil {
 			return errors.Wrap(err, "get customer specs")
 		}
-		specs = append(specs, customerDoc.Specs...)
+		specs = append(specs, customerDoc.Collect.V1...)
 		specs = append(specs, bundle.CustomerJSONSpec(opts.CustomerID))
 
 		if types.GetUseDefaults(customerDoc.Lifecycle) {

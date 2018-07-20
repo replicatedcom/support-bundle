@@ -9,7 +9,6 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1alpha1"
 	. "github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
-	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/require"
@@ -20,21 +19,12 @@ func TestResolverResolveSpec(t *testing.T) {
 		name   string
 		files  map[string]string
 		inline []string
-		expect api.Spec
+		expect api.Doc
 	}{
 		{
 			name: "resolve",
 			files: map[string]string{
 				"/spec/1.yml": `
-collect:
-  v1:
-    - kubernetes.resource-list:
-        kind: nodes
-      output_dir: /kubernetes/resource-list/nodes
-      meta:
-        labels:
-          analyze: resource-list-nodes
-
 analyze:
   v1alpha1:
     - kubernetes.total-memory:
@@ -43,13 +33,6 @@ analyze:
         - selector:
             analyze: resource-list-nodes`},
 			inline: []string{`
-collect:
-  v1:
-    - kubernetes.version: {}
-      output_dir: /kubernetes/version
-      meta:
-        labels:
-          analyze: kubernetes-version
 analyze:
   v1alpha1:
     - kubernetes.version:
@@ -58,35 +41,7 @@ analyze:
         - selector:
             analyze: kubernetes-version`},
 
-			expect: api.Spec{
-				Collect: api.Collect{
-					V1: []collecttypes.Spec{
-						{
-							KubernetesResourceList: &collecttypes.KubernetesResourceListOptions{
-								Kind: "nodes",
-							},
-							SpecShared: collecttypes.SpecShared{
-								OutputDir: "/kubernetes/resource-list/nodes",
-								Meta: &meta.Meta{
-									Labels: map[string]string{
-										"analyze": "resource-list-nodes",
-									},
-								},
-							},
-						},
-						{
-							KubernetesVersion: &collecttypes.KubernetesVersionOptions{},
-							SpecShared: collecttypes.SpecShared{
-								OutputDir: "/kubernetes/version",
-								Meta: &meta.Meta{
-									Labels: map[string]string{
-										"analyze": "kubernetes-version",
-									},
-								},
-							},
-						},
-					},
-				},
+			expect: api.Doc{
 				Analyze: api.Analyze{
 					V1Alpha1: []v1alpha1.AnalyzerSpec{
 						{

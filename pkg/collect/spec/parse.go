@@ -14,7 +14,7 @@ func Parse(doc []byte) ([]types.Spec, error) {
 	if err != nil {
 		return nil, err
 	}
-	return d.Specs, nil
+	return d.Collect.V1, nil
 }
 
 func Marshal(doc *types.Doc) ([]byte, error) {

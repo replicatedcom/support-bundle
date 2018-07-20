@@ -4,9 +4,9 @@ import (
 	"github.com/ghodss/yaml"
 )
 
-// DeserializeSpec will deserialize a analyze spec.
+// DeserializeDoc will deserialize a analyze spec.
 // Possibly support more formats?
-func DeserializeSpec(b []byte) (spec Spec, err error) {
-	err = yaml.Unmarshal(b, &spec)
+func DeserializeDoc(b []byte) (doc Doc, err error) {
+	err = yaml.Unmarshal(b, &doc)
 	return
 }

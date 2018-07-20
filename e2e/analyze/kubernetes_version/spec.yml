@@ -1,11 +1,3 @@
-collect:
-  v1:
-    - kubernetes.version: {}
-      output_dir: /kubernetes/version
-      meta:
-        labels:
-          analyze: kubernetes-version
-
 analyze:
   v1alpha1:
     - kubernetes.version:

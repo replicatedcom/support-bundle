@@ -24,52 +24,51 @@ func New(logger log.Logger, fs afero.Fs) *Resolver {
 	}
 }
 
-func (r *Resolver) ResolveSpec(ctx context.Context, files, inline []string) (resolved api.Spec, err error) {
+func (r *Resolver) ResolveSpec(ctx context.Context, files, inline []string) (resolved api.Doc, err error) {
 	debug := level.Debug(log.With(r.Logger, "method", "Resolver.ResolveSpec"))
 
 	cwd, _ := os.Getwd()
 	for _, filename := range files {
-		spec, errI := deserializeSpecFile(r.Fs, filename)
+		doc, errI := deserializeDocFile(r.Fs, filename)
 		debug.Log(
-			"phase", "spec.file.deserialize",
+			"phase", "doc.file.deserialize",
 			"cwd", cwd,
-			"spec", filename,
+			"doc", filename,
 			"error", errI)
 		if errI != nil {
-			err = multierror.Append(err, errors.Wrapf(errI, "deserialize spec file %s", filename))
+			err = multierror.Append(err, errors.Wrapf(errI, "deserialize doc file %s", filename))
 		} else {
-			resolved = mergeSpecs(resolved, spec)
+			resolved = mergeDocs(resolved, doc)
 		}
 	}
 
 	for i, inline := range inline {
-		spec, errI := api.DeserializeSpec([]byte(inline))
+		doc, errI := api.DeserializeDoc([]byte(inline))
 		debug.Log(
-			"phase", "spec.inline.deserialize",
-			"spec", i,
+			"phase", "doc.inline.deserialize",
+			"doc", i,
 			"error", errI)
 		if errI != nil {
-			err = multierror.Append(err, errors.Wrapf(errI, "deserialize inline spec %d", i))
+			err = multierror.Append(err, errors.Wrapf(errI, "deserialize inline doc %d", i))
 		} else {
-			resolved = mergeSpecs(resolved, spec)
+			resolved = mergeDocs(resolved, doc)
 		}
 	}
 
 	return
 }
 
-func deserializeSpecFile(fs afero.Fs, filename string) (api.Spec, error) {
+func deserializeDocFile(fs afero.Fs, filename string) (api.Doc, error) {
 	b, err := afero.ReadFile(fs, filename)
 	if err != nil {
-		return api.Spec{}, err
+		return api.Doc{}, err
 	}
-	return api.DeserializeSpec(b)
+	return api.DeserializeDoc(b)
 }
 
-func mergeSpecs(specs ...api.Spec) (merged api.Spec) {
-	for _, spec := range specs {
-		merged.Analyze.V1Alpha1 = append(merged.Analyze.V1Alpha1, spec.Analyze.V1Alpha1...)
-		merged.Collect.V1 = append(merged.Collect.V1, spec.Collect.V1...)
+func mergeDocs(docs ...api.Doc) (merged api.Doc) {
+	for _, doc := range docs {
+		merged.Analyze.V1Alpha1 = append(merged.Analyze.V1Alpha1, doc.Analyze.V1Alpha1...)
 	}
 	return
 }

@@ -46,12 +46,12 @@ analyze:
 		t.Run(test.name, func(t *testing.T) {
 			req := require.New(t)
 
-			var spec api.Spec
+			var doc api.Doc
 
-			err := yaml.Unmarshal([]byte(test.yaml), &spec)
+			err := yaml.Unmarshal([]byte(test.yaml), &doc)
 			req.NoError(err)
-			req.Len(spec.Analyze.V1Alpha1, 1)
-			req.Equal(test.expect, spec.Analyze.V1Alpha1[0])
+			req.Len(doc.Analyze.V1Alpha1, 1)
+			req.Equal(test.expect, doc.Analyze.V1Alpha1[0])
 		})
 	}
 }
