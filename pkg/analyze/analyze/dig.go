@@ -8,7 +8,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyzer"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	"github.com/replicatedcom/support-bundle/pkg/fs"
 	kubernetesclient "github.com/replicatedcom/support-bundle/pkg/kubernetes"
@@ -19,12 +18,12 @@ import (
 	restclient "k8s.io/client-go/rest"
 )
 
-func RunE(ctx context.Context) ([]api.Result, error) {
+func RunE(ctx context.Context, bundle string) ([]api.Result, error) {
 	a, err := Get()
 	if err != nil {
 		return nil, err
 	}
-	return a.Execute(ctx)
+	return a.Execute(ctx, bundle)
 }
 
 func Get() (*Analyze, error) {
@@ -65,7 +64,6 @@ func buildInjector() (*dig.Container, error) {
 		KubernetesNewClientOptional,
 
 		resolver.New,
-		collector.New,
 		analyzer.New,
 
 		New,

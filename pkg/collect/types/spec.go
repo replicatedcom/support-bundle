@@ -8,8 +8,13 @@ import (
 )
 
 type Doc struct {
-	Specs     []Spec          `json:"specs,omitempty"`
+	Collect   Collect         `json:"collect,omitempty"`
 	Lifecycle []LifecycleTask `json:"lifecycle,omitempty"`
+}
+
+// Collect is the top level collect object
+type Collect struct {
+	V1 []Spec `json:"v1,omitempty"`
 }
 
 type LifecycleTask struct {

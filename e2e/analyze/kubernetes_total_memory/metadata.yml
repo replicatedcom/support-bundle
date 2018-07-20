@@ -1,1 +1,1 @@
-expect_err_analysis_failed: true
+expect_err: true

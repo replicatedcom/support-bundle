@@ -1,23 +1,20 @@
 package ui
 
 import (
+	"io"
 	"os"
 
 	"github.com/mitchellh/cli"
-	"github.com/spf13/viper"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
-func FromViper(v *viper.Viper) cli.Ui {
-	return New(
-		v.GetBool("force-color"),
-		v.GetBool("no-color"))
-}
-
-func New(forceColor, noColor bool) cli.Ui {
+func New(
+	outW io.Writer, errW io.Writer,
+	forceColor, noColor bool,
+) cli.Ui {
 	base := &cli.BasicUi{
-		Reader:      os.Stdin,
-		Writer:      os.Stdout,
-		ErrorWriter: os.Stderr,
+		Writer:      outW,
+		ErrorWriter: errW,
 	}
 
 	if !isInteractive() && !forceColor {
@@ -37,7 +34,6 @@ func New(forceColor, noColor bool) cli.Ui {
 	}
 }
 
-// todo detect if this is an interactive session and/or if we have a tty
 func isInteractive() bool {
-	return true
+	return terminal.IsTerminal(int(os.Stdin.Fd()))
 }

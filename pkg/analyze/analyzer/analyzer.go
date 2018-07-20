@@ -29,7 +29,7 @@ func New(logger log.Logger, fs afero.Fs) *Analyzer {
 	}
 }
 
-func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, collectSpec api.Collect, collectBundle string) ([]api.Result, error) {
+func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, collectBundle string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.AnalyzeBundle"))
 
 	debug.Log(
@@ -135,7 +135,7 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1alpha1.AnalyzerSp
 			if err != nil {
 				return result, errors.Wrap(err, "execute message template")
 			}
-			result.Message = message // TODO: build
+			result.Message = message
 			break
 		}
 	}
@@ -144,7 +144,6 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1alpha1.AnalyzerSp
 		"phase", "analyzer.analyze",
 		"status", "complete")
 
-	// TODO: severity?
 	return result, nil
 }
 

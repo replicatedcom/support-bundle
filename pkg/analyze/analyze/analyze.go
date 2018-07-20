@@ -2,10 +2,7 @@ package analyze
 
 import (
 	"context"
-	"os"
-	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -13,8 +10,8 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyzer"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
+	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
 	"github.com/replicatedcom/support-bundle/pkg/version"
 	"github.com/spf13/cast"
@@ -22,19 +19,19 @@ import (
 )
 
 var (
-	ErrAnalysisFailed = errors.New("analysis failed")
+	ErrSeverityThreshold = pkgerrors.CmdError{
+		ExitCode: 2,
+		Err:      errors.New("results did not meet severity threshold"),
+	}
 )
 
 type Analyze struct {
 	Logger log.Logger
 
-	Resolver  *resolver.Resolver
-	Collector collector.Interface
-	Analyzer  *analyzer.Analyzer
+	Resolver *resolver.Resolver
+	Analyzer *analyzer.Analyzer
 
 	// required
-	CollectTmpDir     string
-	CollectTimeout    time.Duration
 	SeverityThreshold string
 	SpecFiles         []string
 	Specs             []string
@@ -48,18 +45,14 @@ func New(
 	v *viper.Viper,
 	logger log.Logger,
 	resolver *resolver.Resolver,
-	collector collector.Interface,
 	analyzer *analyzer.Analyzer,
 ) *Analyze {
 	return &Analyze{
 		Logger: logger,
 
-		Resolver:  resolver,
-		Collector: collector,
-		Analyzer:  analyzer,
+		Resolver: resolver,
+		Analyzer: analyzer,
 
-		CollectTmpDir:     v.GetString("collect-tmp-dir"),
-		CollectTimeout:    v.GetDuration("collect-timeout"),
 		SeverityThreshold: v.GetString("severity-threshold"),
 		SpecFiles:         cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
 		Specs:             cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
@@ -67,7 +60,7 @@ func New(
 	}
 }
 
-func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
+func (a *Analyze) Execute(ctx context.Context, bundle string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Execute"))
 
 	debug.Log("method", "configure", "phase", "initialize",
@@ -96,38 +89,13 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 		"status", "complete")
 
 	debug.Log(
-		"phase", "collect",
-		"spec", spew.Sdump(spec.Collect))
-
-	bundlePath := filepath.Join(a.CollectTmpDir, "bundle.tgz")
-	defer os.RemoveAll(bundlePath)
-
-	fi, err := a.Collector.CollectBundle(
-		ctx,
-		spec.Collect,
-		a.CollectTimeout,
-		bundlePath)
-	if err != nil {
-		debug.Log(
-			"phase", "collect",
-			"error", err)
-		return nil, errors.Wrap(err, "collect")
-	}
-
-	debug.Log(
-		"phase", "collect",
-		"status", "complete",
-		"file_info", spew.Sdump(fi))
-
-	debug.Log(
 		"phase", "analyze",
 		"spec", spew.Sdump(spec.Analyze))
 
 	results, err := a.Analyzer.AnalyzeBundle(
 		ctx,
 		spec.Analyze,
-		spec.Collect,
-		bundlePath)
+		bundle)
 	if err != nil {
 		debug.Log(
 			"phase", "analyze",
@@ -140,7 +108,7 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 		"status", "complete")
 
 	if didResultsFailSeverityThreshold(results, common.Severity(a.SeverityThreshold)) {
-		return results, ErrAnalysisFailed
+		return results, ErrSeverityThreshold
 	}
 	return results, nil
 }
