@@ -14,17 +14,26 @@
   {
     "path": "properties.lifecycle.items.properties.message",
     "merge": {
-      "description": "`message` can be used to print a message to the end customer"
+      "description": "message can be used to print a message to the end customer",
+      "examples": [
+        {
+          "contents": "This process will collect a number of files from the host system to help you debug your problem"
+        },
+        {
+          "contents": "Thanks for uploading your bundle! SuperGoodTools will get back to you in 24 hours"
+        }
+      ]
+    },
+    "replace": {
+      "required": [
+        "contents"
+      ]
     }
   },
   {
     "path": "properties.lifecycle.items.properties.message.properties.contents",
     "merge": {
-      "description": "`contents` is the message",
-      "examples": [
-        "This process will collect a number of files from the host system to help you debug your problem",
-        "Thanks for uploading your bundle! SuperGoodTools will get back to you in 24 hours"
-      ]
+      "description": "`contents` is the message"
     }
   },
   {
@@ -43,6 +52,11 @@
     "path": "properties.lifecycle.items.properties[\"upload\"]",
     "merge": {
       "description": "Adds a step in which the end customer can upload a bundle to https://console.replicated.com for review by the vendor"
+    },
+    "replace": {
+      "required": [
+        "prompt"
+      ]
     }
   },
   {
@@ -90,7 +104,7 @@
   {
     "path": "properties.lifecycle.items.properties[\"notes\"]",
     "merge": {
-      "description": "`notes` can be used to prompt the end customer to enter a note to be uploaded with the support bundle",
+      "description": "notes can be used to prompt the end customer to enter a note to be uploaded with the support bundle",
       "examples": [
         {
           "prompt": "Please enter a note for the support bundle: "
@@ -101,7 +115,7 @@
   {
     "path": "properties.lifecycle.items.properties[\"notes\"].properties.prompt",
     "merge": {
-      "description": "`prompt` is the message prompt to display to the end customer for entering a note"
+      "description": "prompt is the message prompt to display to the end customer for entering a note"
     }
   },
   {
