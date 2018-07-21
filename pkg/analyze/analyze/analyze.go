@@ -2,7 +2,10 @@ package analyze
 
 import (
 	"context"
+	"os"
+	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -10,6 +13,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyzer"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
@@ -28,16 +32,27 @@ var (
 type Analyze struct {
 	Logger log.Logger
 
-	Resolver *resolver.Resolver
-	Analyzer *analyzer.Analyzer
+	Resolver  *resolver.Resolver
+	Collector collector.Interface
+	Analyzer  *analyzer.Analyzer
 
-	// required
+	SpecFiles        []string
+	Specs            []string
+	CustomerID       string
+	CustomerEndpoint string
+
+	// analyze
 	SeverityThreshold string
-	SpecFiles         []string
-	Specs             []string
+	CollectBundlePath string
 
-	// optional
-	CustomerID string
+	// collect
+	CollectEnableCore       bool
+	CollectEnableDocker     bool
+	CollectEnableJournald   bool
+	CollectEnableKubernetes bool
+	CollectEnableRetraced   bool
+	CollectTimeout          time.Duration
+	CollectTmpDir           string
 }
 
 // New gets an instance using viper to pull config
@@ -45,22 +60,37 @@ func New(
 	v *viper.Viper,
 	logger log.Logger,
 	resolver *resolver.Resolver,
+	collector collector.Interface,
 	analyzer *analyzer.Analyzer,
 ) *Analyze {
 	return &Analyze{
 		Logger: logger,
 
-		Resolver: resolver,
-		Analyzer: analyzer,
+		Resolver:  resolver,
+		Collector: collector,
+		Analyzer:  analyzer,
 
+		SpecFiles:        cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
+		Specs:            cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
+		CustomerID:       v.GetString("customer-id"),
+		CustomerEndpoint: v.GetString("customer-endpoint"),
+
+		// analyze
 		SeverityThreshold: v.GetString("severity-threshold"),
-		SpecFiles:         cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
-		Specs:             cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
-		CustomerID:        v.GetString("customer-id"),
+		CollectBundlePath: v.GetString("collect-bundle-path"),
+
+		// collect
+		CollectEnableCore:       v.GetBool("collect-core"),
+		CollectEnableDocker:     v.GetBool("collect-docker"),
+		CollectEnableJournald:   v.GetBool("collect-journald"),
+		CollectEnableKubernetes: v.GetBool("collect-kubernetes"),
+		CollectEnableRetraced:   v.GetBool("collect-retraced"),
+		CollectTimeout:          v.GetDuration("collect-timeout"),
+		CollectTmpDir:           v.GetString("collect-temporary-directory"),
 	}
 }
 
-func (a *Analyze) Execute(ctx context.Context, bundle string) ([]api.Result, error) {
+func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Execute"))
 
 	debug.Log("method", "configure", "phase", "initialize",
@@ -84,9 +114,60 @@ func (a *Analyze) Execute(ctx context.Context, bundle string) ([]api.Result, err
 		return nil, errors.Wrap(err, "resolve specs")
 	}
 
+	if len(spec.Analyze.V1Alpha1) == 0 {
+		err := errors.New("analyze spec empty") // TODO: typed error
+		debug.Log(
+			"phase", "resolve",
+			"error", err)
+		return nil, err
+	}
+
 	debug.Log(
 		"phase", "resolve",
 		"status", "complete")
+
+	bundlePath := a.CollectBundlePath
+	if bundlePath == "" {
+		debug.Log(
+			"phase", "collect",
+			"spec", spew.Sdump(spec.Collect))
+
+		if len(spec.Collect.V1) == 0 {
+			err := errors.New("collect spec empty") // TODO: typed error
+			debug.Log(
+				"phase", "collect",
+				"error", err)
+			return nil, err
+		}
+
+		bundlePath = filepath.Join(a.CollectTmpDir, "bundle.tgz")
+		defer os.RemoveAll(bundlePath)
+
+		fi, err := a.Collector.CollectBundle(
+			ctx,
+			spec.Collect,
+			a.CollectTimeout,
+			bundlePath,
+			collector.Options{
+				EnableCore:       a.CollectEnableCore,
+				EnableDocker:     a.CollectEnableDocker,
+				EnableJournald:   a.CollectEnableJournald,
+				EnableKubernetes: a.CollectEnableKubernetes,
+				EnableRetraced:   a.CollectEnableRetraced,
+			},
+		)
+		if err != nil {
+			debug.Log(
+				"phase", "collect",
+				"error", err)
+			return nil, errors.Wrap(err, "collect")
+		}
+
+		debug.Log(
+			"phase", "collect",
+			"status", "complete",
+			"file_info", spew.Sdump(fi))
+	}
 
 	debug.Log(
 		"phase", "analyze",
@@ -95,7 +176,7 @@ func (a *Analyze) Execute(ctx context.Context, bundle string) ([]api.Result, err
 	results, err := a.Analyzer.AnalyzeBundle(
 		ctx,
 		spec.Analyze,
-		bundle)
+		bundlePath)
 	if err != nil {
 		debug.Log(
 			"phase", "analyze",

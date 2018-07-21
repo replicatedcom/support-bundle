@@ -1,25 +1,22 @@
 package cli
 
 import (
+	"context"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/collect/bundle"
 	"github.com/replicatedcom/support-bundle/pkg/collect/graphql"
 	"github.com/replicatedcom/support-bundle/pkg/collect/lifecycle"
-	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/core"
-	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/docker"
-	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/journald"
-	pluginskubernetes "github.com/replicatedcom/support-bundle/pkg/collect/plugins/kubernetes"
-	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/retraced"
-	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/collect/spec"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
+	"github.com/replicatedcom/support-bundle/pkg/docker"
 	kubernetesclient "github.com/replicatedcom/support-bundle/pkg/kubernetes"
-	"k8s.io/client-go/kubernetes"
-
+	"github.com/replicatedcom/support-bundle/pkg/logger"
 	jww "github.com/spf13/jwalterweatherman"
+	"k8s.io/client-go/kubernetes"
 )
 
 type GenerateOptions struct {
@@ -28,98 +25,28 @@ type GenerateOptions struct {
 	BundlePath          string
 	SkipDefault         bool
 	TimeoutSeconds      int
-	EnableCore          bool
-	EnableDocker        bool
-	EnableJournald      bool
-	RequireJournald     bool
-	EnableKubernetes    bool
-	RequireKubernetes   bool
-	EnableRetraced      bool
-	RequireRetraced     bool
 	CustomerID          string
 	CustomerEndpoint    string
 	ConfirmUploadPrompt bool
 	DenyUploadPrompt    bool
 	Quiet               bool
+
+	bundle.PlannerOptions
+	RequireJournald   bool
+	RequireKubernetes bool
+	RequireRetraced   bool
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
-	var planner bundle.Planner
-
-	pluginSupportBundle, err := supportbundle.New()
+	planner, err := cli.newPlanner(opts)
 	if err != nil {
-		return errors.Wrap(err, "initialize supportbundle plugin")
-	}
-	planner.AddPlugin(pluginSupportBundle)
-
-	if opts.EnableCore {
-		pluginCore, err := core.New()
-		if err != nil {
-			return errors.Wrap(err, "initialize core plugin")
-		}
-		planner.AddPlugin(pluginCore)
-	}
-
-	if opts.EnableDocker {
-		pluginDocker, err := docker.New()
-		if err != nil {
-			return errors.Wrap(err, "initialize docker plugin")
-		}
-		planner.AddPlugin(pluginDocker)
-	}
-
-	if opts.EnableJournald {
-		pluginJournald, err := journald.New()
-		if err != nil && opts.RequireJournald {
-			return errors.Wrap(err, "initialize journald plugin")
-		} else if err != nil {
-			jww.DEBUG.Printf("initialize journald plugin: %s", err.Error())
-		} else {
-			planner.AddPlugin(pluginJournald)
-		}
-	}
-
-	if opts.EnableKubernetes {
-		var client kubernetes.Interface
-		clientConfig, err := kubernetesclient.ClientConfig()
-		if err != nil && opts.RequireKubernetes {
-			return errors.Wrap(err, "get kubernetes client config")
-		} else if err != nil {
-			jww.DEBUG.Printf("get kubernetes client config: %s", err.Error())
-		} else {
-			client, err = kubernetesclient.NewClient(clientConfig)
-			if err != nil && opts.RequireKubernetes {
-				return errors.Wrap(err, "initialize kubernetes client")
-			} else if err != nil {
-				jww.DEBUG.Printf("initialize kubernetes client: %s", err.Error())
-			} else {
-				pluginKubernetes, err := pluginskubernetes.New(client, clientConfig)
-				if err != nil && opts.RequireKubernetes {
-					return errors.Wrap(err, "initialize kubernetes plugin")
-				} else if err != nil {
-					jww.DEBUG.Printf("initialize kubernetes plugin: %s", err.Error())
-				} else {
-					planner.AddPlugin(pluginKubernetes)
-				}
-			}
-		}
-	}
-
-	if opts.EnableRetraced {
-		pluginRetraced, err := retraced.New()
-		if err != nil && opts.RequireRetraced {
-			return errors.Wrap(err, "initialize retraced plugin")
-		} else if err != nil {
-			jww.DEBUG.Printf("initialize retraced plugin: %s", err.Error())
-		} else {
-			planner.AddPlugin(pluginRetraced)
-		}
+		return errors.Wrap(err, "initialize planner")
 	}
 
 	graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
 	specs, err := resolveLocalSpecs(opts)
 	if err != nil {
-		return errors.Wrap(err, "failed to resolve specs")
+		return errors.Wrap(err, "resolve specs")
 	}
 
 	var customerDoc *types.Doc
@@ -174,6 +101,46 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	}
 
 	return nil
+}
+
+func (cli *Cli) newPlanner(opts GenerateOptions) (*bundle.Planner, error) {
+	plannerOpts := opts.PlannerOptions
+	plannerOpts.InContainer = os.Getenv("IN_CONTAINER") != ""
+	if opts.EnableDocker || (plannerOpts.InContainer && (opts.EnableCore || opts.EnableJournald)) {
+		kitLog := logger.New(
+			logger.LevelFromJWWThreshold(jww.GetLogThreshold()),
+		)
+		dockerClient, err := docker.NewEnvClient(context.Background(), kitLog)
+		if err != nil {
+			return nil, errors.Wrap(err, "get docker client from environment")
+		}
+		plannerOpts.DockerClient = dockerClient
+	}
+	if opts.EnableKubernetes {
+		var client kubernetes.Interface
+		clientConfig, err := kubernetesclient.ClientConfig()
+		if err != nil {
+			if opts.RequireKubernetes {
+				return nil, errors.Wrap(err, "get kubernetes client config")
+			}
+			jww.DEBUG.Printf("get kubernetes client config: %s", err.Error())
+		} else {
+			client, err = kubernetesclient.NewClient(clientConfig)
+			if err != nil {
+				if opts.RequireKubernetes {
+					return nil, errors.Wrap(err, "get kubernetes client")
+				}
+				jww.DEBUG.Printf("get kubernetes client: %s", err.Error())
+			}
+		}
+		if client != nil {
+			plannerOpts.KubernetesClientConfig = clientConfig
+			plannerOpts.KubernetesClient = client
+		}
+	}
+
+	planner := bundle.NewPlanner(plannerOpts)
+	return &planner, nil
 }
 
 func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {

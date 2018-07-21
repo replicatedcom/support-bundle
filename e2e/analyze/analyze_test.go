@@ -13,6 +13,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pkg/errors"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/analyze"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/cli"
 	"github.com/spf13/afero"
 	yaml "gopkg.in/yaml.v2"
@@ -65,7 +66,7 @@ var _ = Describe("integration", func() {
 
 		Context(fmt.Sprintf("When the spec in %q is run", file.Name()), func() {
 
-			It("Should output files matching those expected", func() {
+			It("Should output the expected results", func() {
 
 				expected, err := ioutil.ReadFile(testExpectedPath)
 				Expect(err).NotTo(HaveOccurred())
@@ -81,7 +82,7 @@ var _ = Describe("integration", func() {
 				cmd.SetOutput(buf)
 				cmd.SetArgs([]string{
 					"run",
-					testBundleDestPath,
+					fmt.Sprintf("--collect-bundle-path=%s", testBundleDestPath),
 					fmt.Sprintf("--spec-file=%s", testSpecPath),
 					"--output=yaml",
 					"--log-level=off",
@@ -89,7 +90,7 @@ var _ = Describe("integration", func() {
 
 				err = cmd.Execute()
 				if testMetadata.ExpectErr {
-					Expect(err).To(HaveOccurred())
+					Expect(err).To(Equal(analyze.ErrSeverityThreshold))
 				} else {
 					Expect(err).NotTo(HaveOccurred())
 				}

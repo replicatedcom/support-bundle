@@ -1,8 +1,6 @@
 package docker
 
 import (
-	"context"
-
 	docker "github.com/docker/docker/client"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/docker/planners"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/docker/producers"
@@ -13,16 +11,13 @@ type Docker struct {
 	planner *planners.Docker
 }
 
-func New() (*Docker, error) {
-	c, err := docker.NewEnvClient()
-	if err != nil {
-		return nil, err
-	}
-	c.NegotiateAPIVersion(context.Background())
-	producers := producers.New(c)
+func New(client docker.CommonAPIClient) *Docker {
 	return &Docker{
-		planner: planners.New(producers, c),
-	}, nil
+		planner: planners.New(
+			producers.New(client),
+			client,
+		),
+	}
 }
 
 func (p *Docker) Plan(spec types.Spec) types.Planner {

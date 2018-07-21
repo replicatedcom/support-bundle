@@ -68,6 +68,7 @@ func deserializeDocFile(fs afero.Fs, filename string) (api.Doc, error) {
 
 func mergeDocs(docs ...api.Doc) (merged api.Doc) {
 	for _, doc := range docs {
+		merged.Collect.V1 = append(merged.Collect.V1, doc.Collect.V1...)
 		merged.Analyze.V1Alpha1 = append(merged.Analyze.V1Alpha1, doc.Analyze.V1Alpha1...)
 	}
 	return
