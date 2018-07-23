@@ -91,7 +91,7 @@ func New(
 }
 
 func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
-	debug := level.Debug(log.With(a.Logger, "method", "Execute"))
+	debug := level.Debug(log.With(a.Logger, "method", "Analyze.Execute"))
 
 	debug.Log("method", "configure", "phase", "initialize",
 		"version", version.Version(),
@@ -128,45 +128,13 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 
 	bundlePath := a.CollectBundlePath
 	if bundlePath == "" {
-		debug.Log(
-			"phase", "collect",
-			"spec", spew.Sdump(spec.Collect))
-
-		if len(spec.Collect.V1) == 0 {
-			err := errors.New("collect spec empty") // TODO: typed error
-			debug.Log(
-				"phase", "collect",
-				"error", err)
-			return nil, err
-		}
-
 		bundlePath = filepath.Join(a.CollectTmpDir, "bundle.tgz")
 		defer os.RemoveAll(bundlePath)
 
-		fi, err := a.Collector.CollectBundle(
-			ctx,
-			spec.Collect,
-			a.CollectTimeout,
-			bundlePath,
-			collector.Options{
-				EnableCore:       a.CollectEnableCore,
-				EnableDocker:     a.CollectEnableDocker,
-				EnableJournald:   a.CollectEnableJournald,
-				EnableKubernetes: a.CollectEnableKubernetes,
-				EnableRetraced:   a.CollectEnableRetraced,
-			},
-		)
+		err := a.collectBundle(ctx, bundlePath)
 		if err != nil {
-			debug.Log(
-				"phase", "collect",
-				"error", err)
-			return nil, errors.Wrap(err, "collect")
+			return nil, err
 		}
-
-		debug.Log(
-			"phase", "collect",
-			"status", "complete",
-			"file_info", spew.Sdump(fi))
 	}
 
 	debug.Log(
@@ -192,6 +160,43 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 		return results, ErrSeverityThreshold
 	}
 	return results, nil
+}
+
+func (a *Analyze) collectBundle(ctx context.Context, dest string) error {
+	debug := level.Debug(log.With(a.Logger, "method", "Analyze.collect"))
+
+	debug.Log(
+		"phase", "bundle.generate",
+		"timeout", a.CollectTimeout,
+		"dest", dest)
+
+	err := a.Collector.CollectBundle(
+		ctx,
+		a.CustomerID,
+		a.Specs,
+		a.SpecFiles,
+		dest,
+		collector.Options{
+			EnableCore:       a.CollectEnableCore,
+			EnableDocker:     a.CollectEnableDocker,
+			EnableJournald:   a.CollectEnableJournald,
+			EnableKubernetes: a.CollectEnableKubernetes,
+			EnableRetraced:   a.CollectEnableRetraced,
+			Timeout:          a.CollectTimeout,
+			CustomerEndpoint: a.CustomerEndpoint,
+		},
+	)
+	if err != nil {
+		debug.Log(
+			"phase", "bundle.generate",
+			"error", err)
+	}
+
+	debug.Log(
+		"phase", "bundle.generate",
+		"status", "complete")
+
+	return errors.Wrap(err, "generate bundle")
 }
 
 func didResultsFailSeverityThreshold(results []api.Result, threshold common.Severity) bool {

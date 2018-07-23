@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -12,11 +11,11 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/collect/lifecycle"
 	"github.com/replicatedcom/support-bundle/pkg/collect/spec"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
-	"github.com/replicatedcom/support-bundle/pkg/docker"
-	kubernetesclient "github.com/replicatedcom/support-bundle/pkg/kubernetes"
-	"github.com/replicatedcom/support-bundle/pkg/logger"
-	jww "github.com/spf13/jwalterweatherman"
-	"k8s.io/client-go/kubernetes"
+)
+
+const (
+	DefaultCustomerEndpoint       = "https://pg.replicated.com/graphql"
+	DefaultGenerateTimeoutSeconds = 60
 )
 
 type GenerateOptions struct {
@@ -32,18 +31,20 @@ type GenerateOptions struct {
 	Quiet               bool
 
 	bundle.PlannerOptions
-	RequireJournald   bool
-	RequireKubernetes bool
-	RequireRetraced   bool
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
-	planner, err := cli.newPlanner(opts)
+	planner, err := bundle.NewPlanner(opts.PlannerOptions, os.Getenv("IN_CONTAINER") != "")
 	if err != nil {
 		return errors.Wrap(err, "initialize planner")
 	}
 
-	graphQLClient := graphql.NewClient(opts.CustomerEndpoint, http.DefaultClient)
+	customerEndpoint := opts.CustomerEndpoint
+	if customerEndpoint == "" {
+		customerEndpoint = DefaultCustomerEndpoint
+	}
+
+	graphQLClient := graphql.NewClient(customerEndpoint, http.DefaultClient)
 	specs, err := resolveLocalSpecs(opts)
 	if err != nil {
 		return errors.Wrap(err, "resolve specs")
@@ -72,9 +73,14 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.New("No tasks defined")
 	}
 
+	timeoutSeconds := opts.TimeoutSeconds
+	if timeoutSeconds == 0 {
+		timeoutSeconds = DefaultGenerateTimeoutSeconds
+	}
+
 	lf := lifecycle.Lifecycle{
 		BundleTasks:         tasks,
-		GenerateTimeout:     opts.TimeoutSeconds,
+		GenerateTimeout:     timeoutSeconds,
 		GenerateBundlePath:  opts.BundlePath,
 		GraphQLClient:       graphQLClient,
 		UploadCustomerID:    opts.CustomerID,
@@ -101,46 +107,6 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	}
 
 	return nil
-}
-
-func (cli *Cli) newPlanner(opts GenerateOptions) (*bundle.Planner, error) {
-	plannerOpts := opts.PlannerOptions
-	plannerOpts.InContainer = os.Getenv("IN_CONTAINER") != ""
-	if opts.EnableDocker || (plannerOpts.InContainer && (opts.EnableCore || opts.EnableJournald)) {
-		kitLog := logger.New(
-			logger.LevelFromJWWThreshold(jww.GetLogThreshold()),
-		)
-		dockerClient, err := docker.NewEnvClient(context.Background(), kitLog)
-		if err != nil {
-			return nil, errors.Wrap(err, "get docker client from environment")
-		}
-		plannerOpts.DockerClient = dockerClient
-	}
-	if opts.EnableKubernetes {
-		var client kubernetes.Interface
-		clientConfig, err := kubernetesclient.ClientConfig()
-		if err != nil {
-			if opts.RequireKubernetes {
-				return nil, errors.Wrap(err, "get kubernetes client config")
-			}
-			jww.DEBUG.Printf("get kubernetes client config: %s", err.Error())
-		} else {
-			client, err = kubernetesclient.NewClient(clientConfig)
-			if err != nil {
-				if opts.RequireKubernetes {
-					return nil, errors.Wrap(err, "get kubernetes client")
-				}
-				jww.DEBUG.Printf("get kubernetes client: %s", err.Error())
-			}
-		}
-		if client != nil {
-			plannerOpts.KubernetesClientConfig = clientConfig
-			plannerOpts.KubernetesClient = client
-		}
-	}
-
-	planner := bundle.NewPlanner(plannerOpts)
-	return &planner, nil
 }
 
 func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {

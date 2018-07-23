@@ -9,6 +9,7 @@ import (
 	"github.com/mitchellh/cli"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyze"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/render"
+	collectcli "github.com/replicatedcom/support-bundle/pkg/collect/cli"
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/ui"
 	"github.com/replicatedcom/support-bundle/pkg/version"
@@ -39,7 +40,7 @@ func RunCmd() *cobra.Command {
 	cmd.Flags().StringArrayP("spec-file", "f", nil, "spec file")
 	cmd.Flags().StringArrayP("spec", "s", nil, "spec doc")
 	cmd.Flags().String("customer-id", "", "Replicated Customer ID")
-	cmd.Flags().String("customer-endpoint", "https://pg.replicated.com/graphql", "Replicated customer API endpoint")
+	cmd.Flags().String("customer-endpoint", collectcli.DefaultCustomerEndpoint, "Replicated customer API endpoint")
 
 	// analyze flags
 	cmd.Flags().StringP("output", "o", "human", "output format, one of: human|json|yaml")
@@ -53,7 +54,7 @@ func RunCmd() *cobra.Command {
 	cmd.Flags().Bool("collect-journald", false, "enable Journald plugin")
 	cmd.Flags().Bool("collect-kubernetes", false, "enable Kubernetes plugin")
 	cmd.Flags().Bool("collect-retraced", false, "enable Retraced plugin")
-	cmd.Flags().Duration("collect-timeout", 120*time.Second, "collect step timeout")
+	cmd.Flags().Duration("collect-timeout", collectcli.DefaultGenerateTimeoutSeconds*time.Second, "collect step timeout")
 	cmd.Flags().String("collect-temporary-directory", os.TempDir(), "collect step temporary directory")
 
 	viper.BindPFlags(cmd.Flags())

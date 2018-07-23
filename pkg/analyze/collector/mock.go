@@ -4,11 +4,9 @@ import (
 	"context"
 	"io/ioutil"
 	"os"
-	"time"
 
 	"github.com/mholt/archiver"
 	"github.com/pkg/errors"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/mock"
 )
@@ -27,12 +25,19 @@ func NewMock(fs afero.Fs, bundlePath string) *MockCollector {
 	}
 }
 
-func (c *MockCollector) CollectBundle(ctx context.Context, collect api.Collect, timeout time.Duration, dest string, opts Options) (os.FileInfo, error) {
-	c.Called(collect)
+func (c *MockCollector) CollectBundle(
+	ctx context.Context,
+	customerID string,
+	specs []string,
+	specFiles []string,
+	dest string,
+	opts Options,
+) error {
+	c.Called(specs, specFiles)
 
 	f, err := c.Fs.Create(dest)
 	if err != nil {
-		return nil, errors.Wrapf(err, "create file %s", dest)
+		return errors.Wrapf(err, "create file %s", dest)
 	}
 	err = func() error {
 		defer f.Close()
@@ -57,8 +62,5 @@ func (c *MockCollector) CollectBundle(ctx context.Context, collect api.Collect, 
 
 		return archiver.TarGz.Write(f, filePaths)
 	}()
-	if err != nil {
-		return nil, errors.Wrapf(err, "create archive from %s", c.BundlePath)
-	}
-	return c.Fs.Stat(dest)
+	return errors.Wrapf(err, "create archive from %s", c.BundlePath)
 }

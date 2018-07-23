@@ -20,7 +20,7 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().StringArrayVarP(&opts.CfgFiles, "spec-file", "f", nil, "spec file (default is to run core tasks only)")
 	cmd.Flags().StringArrayVarP(&opts.CfgDocs, "spec", "s", nil, "spec doc (default is to run core tasks only)")
 	cmd.Flags().StringVarP(&opts.BundlePath, "out", "o", "supportbundle.tar.gz", "Path where the generated bundle should be stored")
-	cmd.Flags().IntVar(&opts.TimeoutSeconds, "timeout", 60, "The overall support bundle generation timeout")
+	cmd.Flags().IntVar(&opts.TimeoutSeconds, "timeout", cli.DefaultGenerateTimeoutSeconds, "The overall support bundle generation timeout")
 	cmd.Flags().BoolVar(&opts.EnableCore, "core", true, "Enable Core plugin")
 	cmd.Flags().BoolVar(&opts.EnableDocker, "docker", true, "Enable Docker plugin")
 	cmd.Flags().BoolVar(&opts.EnableJournald, "journald", true, "Enable Journald plugin")
@@ -34,7 +34,7 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().BoolVar(&opts.DenyUploadPrompt, "no-upload", false, "If present, auto-deny any upload prompts")
 
 	cmd.Flags().StringVar(&opts.CustomerID, "customer-id", "", "Replicated Customer ID")
-	cmd.Flags().StringVar(&opts.CustomerEndpoint, "customer-endpoint", "https://pg.replicated.com/graphql", "Customer API Endpoint")
+	cmd.Flags().StringVar(&opts.CustomerEndpoint, "customer-endpoint", cli.DefaultCustomerEndpoint, "Customer API Endpoint")
 
 	//--out - works, and its totally interactive and everything,
 	// and the bundle just gets dumped to stdout.

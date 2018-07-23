@@ -2,9 +2,7 @@ package analyze
 
 import (
 	"context"
-	"os"
 
-	docker "github.com/docker/docker/client"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/pkg/errors"
@@ -12,14 +10,10 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
-	dockerclient "github.com/replicatedcom/support-bundle/pkg/docker"
 	"github.com/replicatedcom/support-bundle/pkg/fs"
-	kubernetesclient "github.com/replicatedcom/support-bundle/pkg/kubernetes"
 	"github.com/replicatedcom/support-bundle/pkg/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/dig"
-	"k8s.io/client-go/kubernetes"
-	restclient "k8s.io/client-go/rest"
 )
 
 func RunE(ctx context.Context) ([]api.Result, error) {
@@ -64,10 +58,6 @@ func buildInjector() (*dig.Container, error) {
 		logger.FromViper,
 		fs.FromViper,
 
-		MaybeDockerClient,
-		MaybeKubernetesClientConfig,
-		MaybeKubernetesNewClient,
-
 		resolver.New,
 		collector.New,
 		analyzer.New,
@@ -85,30 +75,4 @@ func buildInjector() (*dig.Container, error) {
 	}
 
 	return container, nil
-}
-
-func MaybeDockerClient(v *viper.Viper, logger log.Logger) (docker.CommonAPIClient, error) {
-	inContainer := os.Getenv("IN_CONTAINER") != ""
-	if !v.GetBool("collect-docker") &&
-		!(inContainer && (v.GetBool("collect-core") || v.GetBool("collect-journald"))) {
-		return nil, nil
-	}
-	client, err := dockerclient.NewEnvClient(context.Background(), logger)
-	return client, errors.Wrap(err, "get docker client from environment")
-}
-
-func MaybeKubernetesClientConfig(v *viper.Viper) (*restclient.Config, error) {
-	if !v.GetBool("collect-kubernetes") {
-		return nil, nil
-	}
-	config, err := kubernetesclient.ClientConfig()
-	return config, errors.Wrap(err, "get kubernetes client config")
-}
-
-func MaybeKubernetesNewClient(v *viper.Viper, config *restclient.Config) (kubernetes.Interface, error) {
-	if !v.GetBool("collect-kubernetes") {
-		return nil, nil
-	}
-	client, err := kubernetesclient.NewClient(config)
-	return client, errors.Wrap(err, "get kubernetes client")
 }

@@ -24,6 +24,12 @@ DOCKER_REPO ?= replicated
 docker:
 	docker build -t support-bundle .
 
+shell:
+	docker run --rm -it --name support-bundle \
+		-v `pwd`:/go/src/github.com/replicatedcom/support-bundle \
+		support-bundle \
+		bash
+
 deps:
 	dep ensure -v; dep prune -v
 

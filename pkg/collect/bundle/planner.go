@@ -1,6 +1,10 @@
 package bundle
 
 import (
+	"context"
+
+	docker "github.com/docker/docker/client"
+	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/core"
 	dockerplugin "github.com/replicatedcom/support-bundle/pkg/collect/plugins/docker"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/journald"
@@ -8,8 +12,9 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/retraced"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/supportbundle"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
-
-	docker "github.com/docker/docker/client"
+	dockerclient "github.com/replicatedcom/support-bundle/pkg/docker"
+	kubernetesclient "github.com/replicatedcom/support-bundle/pkg/kubernetes"
+	"github.com/replicatedcom/support-bundle/pkg/logger"
 	jww "github.com/spf13/jwalterweatherman"
 	"k8s.io/client-go/kubernetes"
 	restclient "k8s.io/client-go/rest"
@@ -20,45 +25,64 @@ type Planner struct {
 }
 
 type PlannerOptions struct {
-	DockerClient           docker.CommonAPIClient
-	KubernetesClient       kubernetes.Interface
-	KubernetesClientConfig *restclient.Config
-
-	InContainer bool
-
 	EnableCore       bool
 	EnableDocker     bool
 	EnableJournald   bool
 	EnableKubernetes bool
 	EnableRetraced   bool
+
+	RequireCore       bool
+	RequireDocker     bool
+	RequireJournald   bool
+	RequireKubernetes bool
+	RequireRetraced   bool
 }
 
-func NewPlanner(opts PlannerOptions) Planner {
+func NewPlanner(opts PlannerOptions, inContainer bool) (*Planner, error) {
+	dockerClient, dockerErr := newDockerClient(opts, inContainer)
+	kubernetesClient, kubernetesClientConfig, kubernetesErr := newKubernetesClientAndConfig(opts)
+
 	var p Planner
 
 	p.AddPlugin(supportbundle.New())
 
 	if opts.EnableCore {
-		p.AddPlugin(core.New(opts.InContainer, opts.DockerClient))
+		if !inContainer || dockerClient != nil {
+			p.AddPlugin(core.New(inContainer, dockerClient))
+		} else if opts.RequireCore {
+			return nil, errors.Wrap(dockerErr, "require core")
+		}
 	}
 
 	if opts.EnableDocker {
-		p.AddPlugin(dockerplugin.New(opts.DockerClient))
+		if dockerClient != nil {
+			p.AddPlugin(dockerplugin.New(dockerClient))
+		} else if opts.RequireDocker {
+			return nil, errors.Wrap(dockerErr, "require docker")
+		}
 	}
 
 	if opts.EnableJournald {
-		p.AddPlugin(journald.New(opts.InContainer, opts.DockerClient))
+		if !inContainer || dockerClient != nil {
+			p.AddPlugin(journald.New(inContainer, dockerClient))
+		} else if opts.RequireJournald {
+			return nil, errors.Wrap(dockerErr, "require journald")
+		}
 	}
 
 	if opts.EnableKubernetes {
-		p.AddPlugin(kubernetesplugin.New(opts.KubernetesClient, opts.KubernetesClientConfig))
+		if kubernetesClient != nil && kubernetesClientConfig != nil {
+			p.AddPlugin(kubernetesplugin.New(kubernetesClient, kubernetesClientConfig))
+		} else if opts.RequireKubernetes {
+			return nil, errors.Wrap(kubernetesErr, "require kubernetes")
+		}
 	}
 
 	if opts.EnableRetraced {
 		p.AddPlugin(retraced.New())
 	}
 
-	return p
+	return &p, nil
 }
 
 func (p *Planner) AddPlugin(plugin types.Plugin) {
@@ -81,4 +105,28 @@ Loop:
 	}
 
 	return tasks
+}
+
+func newDockerClient(opts PlannerOptions, inContainer bool) (docker.CommonAPIClient, error) {
+	if !opts.EnableDocker &&
+		!(inContainer && (opts.EnableCore || opts.EnableJournald)) {
+		return nil, nil
+	}
+	kitLog := logger.New(
+		logger.LevelFromJWWThreshold(jww.GetLogThreshold()),
+	)
+	client, err := dockerclient.NewEnvClient(context.Background(), kitLog)
+	return client, errors.Wrap(err, "get docker client from environment")
+}
+
+func newKubernetesClientAndConfig(opts PlannerOptions) (kubernetes.Interface, *restclient.Config, error) {
+	if !opts.EnableKubernetes {
+		return nil, nil, nil
+	}
+	config, err := kubernetesclient.ClientConfig()
+	if err != nil {
+		return nil, config, errors.Wrap(err, "get kubernetes client config")
+	}
+	client, err := kubernetesclient.NewClient(config)
+	return client, config, errors.Wrap(err, "get kubernetes client")
 }
