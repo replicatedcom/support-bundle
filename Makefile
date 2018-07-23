@@ -24,6 +24,12 @@ DOCKER_REPO ?= replicated
 docker:
 	docker build -t support-bundle .
 
+shell:
+	docker run --rm -it --name support-bundle \
+		-v `pwd`:/go/src/github.com/replicatedcom/support-bundle \
+		support-bundle \
+		bash
+
 deps:
 	dep ensure -v; dep prune -v
 
@@ -123,7 +129,7 @@ e2e-supportbundle: e2e-supportbundle-core e2e-supportbundle-docker
 
 e2e-supportbundle-core:
 	@docker run                                                             \
-		-ti                                                                 \
+		-it                                                                 \
 		--rm                                                                \
 		-v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
@@ -137,7 +143,7 @@ e2e-supportbundle-core:
 e2e-supportbundle-docker:
 	docker pull ubuntu:16.04
 	@docker run                                                             \
-		-ti                                                                 \
+		-it                                                                 \
 		--rm                                                                \
 		-v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
@@ -151,7 +157,7 @@ e2e-supportbundle-docker:
 
 e2e-supportbundle-swarm:
 	@docker run                                                             \
-		-ti                                                                 \
+		-it                                                                 \
 		--rm                                                                \
 		-v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \

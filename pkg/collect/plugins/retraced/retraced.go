@@ -10,11 +10,12 @@ type Retraced struct {
 	planner *planners.Retraced
 }
 
-func New() (*Retraced, error) {
-	producers := producers.New()
+func New() *Retraced {
 	return &Retraced{
-		planner: planners.New(producers),
-	}, nil
+		planner: planners.New(
+			producers.New(),
+		),
+	}
 }
 
 func (p *Retraced) Plan(spec types.Spec) types.Planner {

@@ -8,22 +8,20 @@ import (
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyzer"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	"github.com/replicatedcom/support-bundle/pkg/fs"
-	kubernetesclient "github.com/replicatedcom/support-bundle/pkg/kubernetes"
 	"github.com/replicatedcom/support-bundle/pkg/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/dig"
-	"k8s.io/client-go/kubernetes"
-	restclient "k8s.io/client-go/rest"
 )
 
-func RunE(ctx context.Context, bundle string) ([]api.Result, error) {
+func RunE(ctx context.Context) ([]api.Result, error) {
 	a, err := Get()
 	if err != nil {
 		return nil, err
 	}
-	return a.Execute(ctx, bundle)
+	return a.Execute(ctx)
 }
 
 func Get() (*Analyze, error) {
@@ -60,10 +58,8 @@ func buildInjector() (*dig.Container, error) {
 		logger.FromViper,
 		fs.FromViper,
 
-		KubernetesClientConfigOptional,
-		KubernetesNewClientOptional,
-
 		resolver.New,
+		collector.New,
 		analyzer.New,
 
 		New,
@@ -79,21 +75,4 @@ func buildInjector() (*dig.Container, error) {
 	}
 
 	return container, nil
-}
-
-func KubernetesClientConfigOptional(logger log.Logger) *restclient.Config {
-	config, err := kubernetesclient.ClientConfig()
-	if err != nil {
-		level.Debug(logger).Log(
-			"method", "analyze.KubernetesClientConfigOptional",
-			"err", err)
-	}
-	return config
-}
-
-func KubernetesNewClientOptional(config *restclient.Config, logger log.Logger) (kubernetes.Interface, error) {
-	if config == nil {
-		return nil, nil
-	}
-	return kubernetesclient.NewClient(config)
 }

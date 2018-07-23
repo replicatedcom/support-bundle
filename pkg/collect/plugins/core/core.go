@@ -1,9 +1,6 @@
 package core
 
 import (
-	"context"
-	"os"
-
 	docker "github.com/docker/docker/client"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/core/planners"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plugins/core/producers"
@@ -14,22 +11,14 @@ type Core struct {
 	planner *planners.Core
 }
 
-func New() (*Core, error) {
-	inContainer := os.Getenv("IN_CONTAINER") != ""
-	var dockerClient docker.CommonAPIClient
-	if inContainer {
-		c, err := docker.NewEnvClient()
-		if err != nil {
-			return nil, err
-		}
-		c.NegotiateAPIVersion(context.Background())
-		dockerClient = c
-	}
-
-	producers := producers.New(dockerClient)
+func New(inContainer bool, dockerClient docker.CommonAPIClient) *Core {
 	return &Core{
-		planner: planners.New(producers, dockerClient, inContainer),
-	}, nil
+		planner: planners.New(
+			producers.New(dockerClient),
+			dockerClient,
+			inContainer,
+		),
+	}
 }
 
 func (p *Core) Plan(spec types.Spec) types.Planner {

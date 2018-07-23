@@ -10,11 +10,12 @@ type SupportBundle struct {
 	planner *planners.SupportBundle
 }
 
-func New() (*SupportBundle, error) {
-	producers := producers.New()
+func New() *SupportBundle {
 	return &SupportBundle{
-		planner: planners.New(producers),
-	}, nil
+		planner: planners.New(
+			producers.New(),
+		),
+	}
 }
 
 func (p *SupportBundle) Plan(spec types.Spec) types.Planner {

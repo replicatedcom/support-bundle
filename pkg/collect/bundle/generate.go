@@ -56,7 +56,7 @@ func Generate(tasks []types.Task, timeout time.Duration, pathname string) (os.Fi
 		}
 	}
 
-	//write index and error json files
+	// write index and error json files
 	indexJSON, err := json.MarshalIndent(resultsWithOutput, "", "  ")
 	if err != nil {
 		return nil, pathname, errors.Wrap(err, "marshalled index.json")
