@@ -34,7 +34,8 @@ func NewEnvClient(ctx context.Context, logger log.Logger) (docker.CommonAPIClien
 	}
 
 	// negotiation failed, so we get to fake it
-	if _, err := client.ServerVersion(ctx); err == nil {
+	_, err = client.ServerVersion(ctx)
+	if err == nil {
 		// ironically, this is actually a bit of a failure
 		return client, nil
 	}
