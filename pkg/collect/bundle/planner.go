@@ -47,7 +47,7 @@ func NewPlanner(opts PlannerOptions, inContainer bool) (*Planner, error) {
 	p.AddPlugin(supportbundle.New())
 
 	if opts.EnableCore {
-		if !inContainer || dockerClient != nil {
+		if !inContainer || dockerErr == nil {
 			p.AddPlugin(core.New(inContainer, dockerClient))
 		} else if opts.RequireCore {
 			return nil, errors.Wrap(dockerErr, "require core")
@@ -55,7 +55,7 @@ func NewPlanner(opts PlannerOptions, inContainer bool) (*Planner, error) {
 	}
 
 	if opts.EnableDocker {
-		if dockerClient != nil {
+		if dockerErr == nil {
 			p.AddPlugin(dockerplugin.New(dockerClient))
 		} else if opts.RequireDocker {
 			return nil, errors.Wrap(dockerErr, "require docker")
@@ -63,7 +63,7 @@ func NewPlanner(opts PlannerOptions, inContainer bool) (*Planner, error) {
 	}
 
 	if opts.EnableJournald {
-		if !inContainer || dockerClient != nil {
+		if !inContainer || dockerErr == nil {
 			p.AddPlugin(journald.New(inContainer, dockerClient))
 		} else if opts.RequireJournald {
 			return nil, errors.Wrap(dockerErr, "require journald")
@@ -71,7 +71,7 @@ func NewPlanner(opts PlannerOptions, inContainer bool) (*Planner, error) {
 	}
 
 	if opts.EnableKubernetes {
-		if kubernetesClient != nil && kubernetesClientConfig != nil {
+		if kubernetesErr == nil {
 			p.AddPlugin(kubernetesplugin.New(kubernetesClient, kubernetesClientConfig))
 		} else if opts.RequireKubernetes {
 			return nil, errors.Wrap(kubernetesErr, "require kubernetes")
@@ -110,7 +110,7 @@ Loop:
 func newDockerClient(opts PlannerOptions, inContainer bool) (docker.CommonAPIClient, error) {
 	if !opts.EnableDocker &&
 		!(inContainer && (opts.EnableCore || opts.EnableJournald)) {
-		return nil, nil
+		return nil, errors.New("docker plugin not enabled")
 	}
 	kitLog := logger.New(
 		logger.LevelFromJWWThreshold(jww.GetLogThreshold()),
@@ -121,7 +121,7 @@ func newDockerClient(opts PlannerOptions, inContainer bool) (docker.CommonAPICli
 
 func newKubernetesClientAndConfig(opts PlannerOptions) (kubernetes.Interface, *restclient.Config, error) {
 	if !opts.EnableKubernetes {
-		return nil, nil, nil
+		return nil, nil, errors.New("kubernetes plugin not enabled")
 	}
 	config, err := kubernetesclient.ClientConfig()
 	if err != nil {
