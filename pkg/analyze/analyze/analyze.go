@@ -15,6 +15,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
+	collectcli "github.com/replicatedcom/support-bundle/pkg/collect/cli"
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
 	"github.com/replicatedcom/support-bundle/pkg/version"
@@ -103,10 +104,17 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 	debug.Log(
 		"phase", "resolve")
 
+	customerEndpoint := a.CustomerEndpoint
+	if customerEndpoint == "" {
+		customerEndpoint = collectcli.DefaultCustomerEndpoint
+	}
 	spec, err := a.Resolver.ResolveSpec(
 		ctx,
 		a.SpecFiles,
-		a.Specs)
+		a.Specs,
+		a.CustomerID,
+		customerEndpoint,
+	)
 	if err != nil {
 		debug.Log(
 			"phase", "resolve",

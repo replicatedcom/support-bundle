@@ -2,6 +2,7 @@ package resolver
 
 import (
 	"context"
+	"net/http"
 	"os"
 
 	"github.com/go-kit/kit/log"
@@ -9,6 +10,7 @@ import (
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
+	"github.com/replicatedcom/support-bundle/pkg/collect/graphql"
 	"github.com/spf13/afero"
 )
 
@@ -24,7 +26,14 @@ func New(logger log.Logger, fs afero.Fs) *Resolver {
 	}
 }
 
-func (r *Resolver) ResolveSpec(ctx context.Context, files, inline []string) (resolved api.Doc, err error) {
+func (r *Resolver) ResolveSpec(
+	ctx context.Context,
+	files []string,
+	inline []string,
+	customerID string,
+	customerEndpoint string,
+) (resolved api.Doc, err error) {
+
 	debug := level.Debug(log.With(r.Logger, "method", "Resolver.ResolveSpec"))
 
 	cwd, _ := os.Getwd()
@@ -52,6 +61,27 @@ func (r *Resolver) ResolveSpec(ctx context.Context, files, inline []string) (res
 			err = multierror.Append(err, errors.Wrapf(errI, "deserialize inline doc %d", i))
 		} else {
 			resolved = mergeDocs(resolved, doc)
+		}
+	}
+
+	if customerID != "" {
+		client := graphql.NewClient(customerEndpoint, http.DefaultClient)
+		inline, errI := client.GetCustomerSpec(customerID)
+		debug.Log(
+			"phase", "doc.customer.retrieve",
+			"error", err)
+		if errI != nil {
+			err = multierror.Append(err, errors.Wrap(errI, "retrieve customer doc"))
+		} else {
+			doc, errI := api.DeserializeDoc([]byte(inline))
+			debug.Log(
+				"phase", "doc.customer.deserialize",
+				"error", errI)
+			if errI != nil {
+				err = multierror.Append(err, errors.Wrap(errI, "deserialize customer doc"))
+			} else {
+				resolved = mergeDocs(resolved, doc)
+			}
 		}
 	}
 
