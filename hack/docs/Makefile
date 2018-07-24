@@ -4,17 +4,19 @@ SCHEMA_JSON := ./schema.json
 MUTATIONS := ./mutations.json
 HACK_DOCS := ./bin/hack-docs
 
+HELP_CENTER_PATH ?= [path/to/help/center]
+REPLICATED_LINT_PATH ?= [path/to/replicated-lint]
+
 deps:
 	yarn
 
 prebuild:
 	rm -rf build
-	mkdir -p build/specs
+	mkdir -p build/collect
+	mkdir -p build/analyze
 	mkdir -p build/lifecycle
 
-build:
-	mkdir -p build/specs
-	mkdir -p build/lifecycle
+build: prebuild
 	go build  -o $(HACK_DOCS) .
 
 gen-schema:
@@ -73,19 +75,21 @@ gen-markdown-2:
 	`yarn bin`/ts-node src/index.ts markdown -f $(SCHEMA_JSON) -o ./build
 
 
-pipeline-strict: prebuild build gen-schema merge-mutations validate integration gen-markdown-2
-pipeline-nointegration: prebuild build gen-schema merge-mutations validate gen-markdown-2
-pipeline: prebuild build gen-schema merge-mutations gen-markdown-2
+pipeline-strict: build gen-schema merge-mutations validate integration gen-markdown-2
+pipeline-nointegration: build gen-schema merge-mutations validate gen-markdown-2
+pipeline: build gen-schema merge-mutations gen-markdown-2
 
 copy-to-help-center:
-	: To Copy to Help center, run the following command:
-	:
-	:    make pipeline
-	:    cp build/specs/* [path/to/help/center]/content/api/support-bundle-yaml-specs/
-	:    cp build/lifecyle/* [path/to/help/center]/content/api/support-bundle-yaml-lifecycle/
+	: To Copy to replicated lint, run the following command
+	@echo ""
+	@echo "    make pipeline"
+	@echo "    /bin/cp build/shared.md $(HELP_CENTER_PATH)/content/api/support-bundle-yaml-specs/"
+	@echo "    /bin/cp build/collect/* $(HELP_CENTER_PATH)/content/api/support-bundle-yaml-specs/"
+	@echo "    /bin/cp build/analyze/* $(HELP_CENTER_PATH)/content/api/analyze-yaml-specs/"
+	@echo "    /bin/cp build/lifecycle/* $(HELP_CENTER_PATH)/content/api/support-bundle-yaml-lifecycle/"
 
 copy-replicated-lint:
-	: To Copy to replicated lint, run the following command:
-	:
-	:    make pipeline
-	:    cp schema.json  [path/to/replicated-lint]/projects/replicated-supportbundle/
+	: To Copy to replicated lint, run the following command
+	@echo ""
+	@echo "    make pipeline"
+	@echo "    /bin/cp schema.json  $(REPLICATED_LINT_PATH)/projects/replicated-supportbundle/"

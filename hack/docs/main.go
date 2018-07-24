@@ -4,11 +4,17 @@ import (
 	"fmt"
 
 	jsonschema "github.com/mcuadros/go-jsonschema-generator"
-	"github.com/replicatedcom/support-bundle/pkg/collect/types"
+	analyzeapi "github.com/replicatedcom/support-bundle/pkg/analyze/api"
+	collectapi "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
 func main() {
 	s := &jsonschema.Document{}
-	s.Read(&types.Doc{})
+	multiDoc := struct {
+		Collect   collectapi.Collect         `json:"collect,omitempty"`
+		Analyze   analyzeapi.Analyze         `json:"analyze,omitempty"`
+		Lifecycle []collectapi.LifecycleTask `json:"lifecycle,omitempty"`
+	}{}
+	s.Read(multiDoc)
 	fmt.Println(s)
 }

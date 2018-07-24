@@ -35,7 +35,7 @@ export const handler = (argv) => {
 
     let target = mutation.path ? _.get(schema, mutation.path) : schema;
     if (!target) {
-      throw new Error(`no target found for path ${mutation.path}`)
+      throw new Error(`no target found for path ${mutation.path}`);
     }
 
     if (mutation.merge) {
@@ -45,7 +45,7 @@ export const handler = (argv) => {
 
     if (mutation.replace) {
       for (const replacePath of Object.keys(mutation.replace)) {
-        _.set(target, replacePath, mutation.replace[replacePath])
+        _.set(target, replacePath, mutation.replace[replacePath]);
       }
       _.set(schema, mutation.path, target);
     }
@@ -61,4 +61,3 @@ export const handler = (argv) => {
 
   console.log(JSON.stringify(schema, null, 2));
 };
-

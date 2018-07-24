@@ -15,13 +15,13 @@ func mustAsset(name, path string) *template.Template {
 	return template.Must(template.New(name).Delims("{{{", "}}}").Parse(string(data)))
 }
 
-func unmarshalSpec(tmpl *template.Template, data interface{}) (AnalyzerSpec, error) {
-	var analyzerSpec AnalyzerSpec
+func unmarshalSpec(tmpl *template.Template, data interface{}) (RawSpec, error) {
+	var rawSpec RawSpec
 	var buf bytes.Buffer
 	err := tmpl.Execute(&buf, data)
 	if err != nil {
-		return analyzerSpec, err
+		return rawSpec, err
 	}
-	err = yaml.Unmarshal(buf.Bytes(), &analyzerSpec)
-	return analyzerSpec, err
+	err = yaml.Unmarshal(buf.Bytes(), &rawSpec)
+	return rawSpec, err
 }

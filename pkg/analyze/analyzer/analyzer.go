@@ -78,7 +78,9 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1alpha1.AnalyzerSp
 		return result, errors.New("analyzer empty") // TODO: typed error
 	}
 
-	rawSpec, err := analyzer.GetSpec()
+	// TODO: analyzer.Validate(analyzerSpec)
+
+	rawSpec, err := analyzer.GetRawSpec()
 	debug.Log(
 		"phase", "analyzer.analyze.get-spec",
 		"rawSpec", spew.Sdump(rawSpec),
@@ -91,6 +93,9 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1alpha1.AnalyzerSp
 	rawSpec.Meta = analyzerSpec.Meta
 	if analyzerSpec.Message != "" {
 		rawSpec.Message = analyzerSpec.Message
+	}
+	if analyzerSpec.Severity != "" {
+		rawSpec.Severity = analyzerSpec.Severity
 	}
 	result.Requirement = rawSpec.Message
 
@@ -108,8 +113,6 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1alpha1.AnalyzerSp
 	if err != nil {
 		return result, errors.Wrap(err, "collect ref data")
 	}
-
-	// TODO: validate
 
 	for _, condition := range rawSpec.Raw.Conditions {
 		vars, err := BuildConditionVariables(*condition.Eval, data) // TODO: will eval be the only condition?
@@ -129,7 +132,12 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1alpha1.AnalyzerSp
 		}
 
 		if ok {
-			result.Severity = condition.Severity
+			// severity override
+			if rawSpec.Severity != "" {
+				result.Severity = rawSpec.Severity
+			} else {
+				result.Severity = condition.Severity
+			}
 
 			message, err := templates.String(condition.Message, vars)
 			if err != nil {

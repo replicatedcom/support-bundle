@@ -34,17 +34,17 @@ export const builder = {
 export const handler = (argv) => {
   if (argv.bootstrap) {
     hackhackbootstrap();
-    return
+    return;
   }
 
   const schema = JSON.parse(fs.readFileSync(argv.infile).toString());
-  const specTypes = schema.properties.specs.items.properties;
+  const specTypes = schema.properties.collect.properties.v1.items.properties;
   const failures = [] as any[];
   const f = () => {
     for (const specType of Object.keys(specTypes)) {
       if (specType.indexOf(".") === -1) {
         console.log(`SKIPPING ${specType}`);
-        continue
+        continue;
       }
 
       console.log(chalk.blue(`TEST ${specType}`));
@@ -55,8 +55,8 @@ export const handler = (argv) => {
 
       const outputs = specTypes[specType]._ext_outputs || [];
       for (const example of specTypes[specType].examples) {
-        let expectedOutputs = outputs.map(o => path.join(example.output_dir, o.path));
-        for (const file of  ['/VERSION.json', '/VERSION.human', '/VERSION.raw']) {
+        const expectedOutputs = outputs.map((o) => path.join(example.output_dir, o.path));
+        for (const file of  ["/VERSION.json", "/VERSION.human", "/VERSION.raw"]) {
           expectedOutputs.push(file);
         }
         let tmpdir;
@@ -87,9 +87,9 @@ export const handler = (argv) => {
 };
 
 function compareExpectedOutputsAgainstIndexJSON(cwd, expectedOutputs: string[]) {
-  let indexjson = fs.readFileSync(`${cwd}/index.json`);
-  const index = JSON.parse(indexjson);
-  const indexFiles = index.map(f => f.path);
+  const indexjson = fs.readFileSync(`${cwd}/index.json`);
+  const index = JSON.parse(indexjson.toString());
+  const indexFiles = index.map((f) => f.path);
 
   // if (indexFiles.length === 3) {
   //   throw {indexFiles, "err": "only found three, expected more"}
@@ -98,15 +98,15 @@ function compareExpectedOutputsAgainstIndexJSON(cwd, expectedOutputs: string[]) 
   const diff = _.difference(indexFiles, expectedOutputs);
 
   if (!_.isEmpty(diff)) {
-    throw {indexFiles, outputs: expectedOutputs, compare: diff}
+    throw {indexFiles, outputs: expectedOutputs, compare: diff};
   }
 }
 
 function ensureNoErrorsInErrorsJSON(cwd) {
-  let errorjson = fs.readFileSync(`${cwd}/error.json`);
-  const error = JSON.parse(errorjson);
+  const errorjson = fs.readFileSync(`${cwd}/error.json`);
+  const error = JSON.parse(errorjson.toString());
   if (error) {
-    throw {error}
+    throw {error};
   }
 }
 
@@ -116,9 +116,9 @@ function untarBundleIn(cwd) {
   ], {cwd});
 
   if (tstatus !== 0) {
-    console.log(chalk.red('X tar'));
+    console.log(chalk.red("X tar"));
     throw {
-      "step": "tar",
+      step: "tar",
       tstatus,
       stdout: tstdout.toString(),
       stderr: tstderr.toString(),
@@ -133,9 +133,9 @@ function generateBundleFromBuiltGoBinary(supportbundle, exampleSpec: string, cwd
   // console.log({stdout, stderr});
 
   if (status !== 0) {
-    console.log(chalk.red('X generate'));
+    console.log(chalk.red("X generate"));
     throw {
-      "step": "generate",
+      step: "generate",
       status,
       stdout: stdout.toString(),
       stderr: stderr.toString(),
@@ -152,7 +152,7 @@ function validateExample(cwd, specType, example, supportbundleBinaryPath, expect
   untarBundleIn(cwd);
   ensureNoErrorsInErrorsJSON(cwd);
 
-  let hasExpectedOutputs = expectedOutputs &&
+  const hasExpectedOutputs = expectedOutputs &&
     expectedOutputs.length &&
     expectedOutputs[0].indexOf("*") === -1 &&
     expectedOutputs[0].indexOf("{{") === -1;

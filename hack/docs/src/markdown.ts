@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as yaml from "js-yaml";
 import { SHARED_DOC, SHARED_SPEC_TEMPLATE } from "./template";
 
-type SCHEMA_TYPE = "support-bundle-yaml-lifecycle" | "support-bundle-yaml-specs";
+type SCHEMA_TYPE = "support-bundle-yaml-lifecycle" | "support-bundle-yaml-specs" | "analyze-yaml-specs";
 
 export const name = "markdown";
 export const describe = "Build markdown for examples in top-level elements";
@@ -80,18 +80,12 @@ function parseParameters(specTypes: any, specType) {
 }
 
 function maybeRenderExamples(specTypes: any, specType: string, schemaType: SCHEMA_TYPE) {
-  const schemaTypeMap: { [K in SCHEMA_TYPE]: string} = {
-    "support-bundle-yaml-lifecycle": "lifecycle",
-    "support-bundle-yaml-specs": "specs",
-  };
-
   let doc = "";
   if (specTypes[specType].examples) {
     for (const example of specTypes[specType].examples) {
-      const translatedSchemaType = schemaTypeMap[schemaType];
       doc += `
 ${"```yaml"}
-${yaml.safeDump({[translatedSchemaType]: [{[specType]: example}]})}${"```"}
+${yaml.safeDump(example)}${"```"}
 `;
     }
   }
@@ -126,7 +120,8 @@ const renderEnd = (schemaType: SCHEMA_TYPE) => {
 
 const generateDoc: (outputLocation: string, specTypes: any, schemaType: SCHEMA_TYPE) => (specType: string) => void = (outputLocation, specTypes, schemaType) => (specType) => {
   console.log(`PROPERTY ${specType}`);
-  if (schemaType === "support-bundle-yaml-specs" && specType.indexOf(".") === -1) {
+  // all specs follow the pattern "<plugin>.<spec_name>", if it doesnt follow the pattern its probably a shared property
+  if ((schemaType === "support-bundle-yaml-specs" || schemaType === "analyze-yaml-specs") && specType.indexOf(".") === -1) {
     console.log(`SKIPPING ${specType}`);
     return;
   }
@@ -151,12 +146,15 @@ export const handler = (argv) => {
 
   fs.writeFileSync(`${output}/shared.md`, SHARED_DOC);
 
-  const specTypes = schema.properties.specs.items.properties;
+  const specTypes = schema.properties.collect.properties.v1.items.properties;
+  const analyzeTypes = schema.properties.analyze.properties.v1alpha1.items.properties;
   const lifecycleSpecTypes = schema.properties.lifecycle.items.properties;
 
-  const generateDocSpecTypes = generateDoc(`${output}/specs`, specTypes, "support-bundle-yaml-specs");
+  const generateDocSpecTypes = generateDoc(`${output}/collect`, specTypes, "support-bundle-yaml-specs");
+  const generateDocAnalyzeTypes = generateDoc(`${output}/analyze`, analyzeTypes, "analyze-yaml-specs");
   const generateDocLifecycleSpecTypes = generateDoc(`${output}/lifecycle`, lifecycleSpecTypes, "support-bundle-yaml-lifecycle");
 
   Object.keys(specTypes).forEach(generateDocSpecTypes);
+  Object.keys(analyzeTypes).forEach(generateDocAnalyzeTypes);
   Object.keys(lifecycleSpecTypes).forEach(generateDocLifecycleSpecTypes);
 };
