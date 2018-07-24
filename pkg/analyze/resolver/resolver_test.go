@@ -90,7 +90,8 @@ analyze:
 				Logger: log.NewNopLogger(),
 				Fs:     memFS,
 			}
-			spec, err := resolver.ResolveSpec(context.Background(), files, test.inline)
+			// TODO: test customer spec
+			spec, err := resolver.ResolveSpec(context.Background(), files, test.inline, "", "")
 			req.NoError(err)
 			req.Equal(test.expect, spec)
 		})

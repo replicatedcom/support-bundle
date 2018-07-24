@@ -1,11 +1,8 @@
-FROM alpine:latest
-RUN apk add --no-cache \
-    ca-certificates \
-    jq \
-  && update-ca-certificates
-COPY analyze /analyze
+FROM replicated/support-bundle:base
+
+COPY analyze /usr/local/bin/analyze
 
 ENV IN_CONTAINER 1
+LABEL "com.replicated.support-bundle"="true"
 LABEL "com.replicated.analyze"="true"
-WORKDIR /out
-ENTRYPOINT [ "/analyze" ]
+ENTRYPOINT [ "analyze" ]
