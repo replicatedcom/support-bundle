@@ -5396,17 +5396,20 @@
                 }
               },
               "meta": {
+                "description": "Can be used to organize and identify analyze elements",
                 "type": "object",
                 "properties": {
                   "labels": {
-                    "type": "object",
-                    "properties": {
+                    "description": "Key,value pairs used to organize and identify analyze elements",
+                    "patternProperties": {
                       ".*": {
                         "type": "string"
                       }
-                    }
+                    },
+                    "type": "object"
                   },
                   "name": {
+                    "description": "Name used to organize and identify analyze elements",
                     "type": "string"
                   }
                 }
