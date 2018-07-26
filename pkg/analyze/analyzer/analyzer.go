@@ -9,7 +9,7 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1alpha1"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
@@ -46,7 +46,7 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, collectB
 	}
 
 	var results []api.Result
-	for _, analyzerSpec := range spec.V1Alpha1 {
+	for _, analyzerSpec := range spec.V1 {
 		result, err := a.analyze(ctx, analyzerSpec, index, collectBundle)
 		if err != nil {
 			return results, errors.Wrapf(err, "analyze spec")
@@ -60,7 +60,7 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, collectB
 	return results, nil
 }
 
-func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1alpha1.AnalyzerSpec, index []collecttypes.Result, archivePath string) (api.Result, error) {
+func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1.AnalyzerSpec, index []collecttypes.Result, archivePath string) (api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.analyze"))
 
 	debug.Log(
@@ -68,7 +68,7 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1alpha1.AnalyzerSp
 		"spec", spew.Sdump(analyzerSpec))
 
 	var result api.Result
-	result.AnalyzerSpec = api.Analyze{V1Alpha1: []v1alpha1.AnalyzerSpec{analyzerSpec}}
+	result.AnalyzerSpec = api.Analyze{V1: []v1.AnalyzerSpec{analyzerSpec}}
 
 	analyzer := analyzerSpec.GetAnalyzer()
 	debug.Log(

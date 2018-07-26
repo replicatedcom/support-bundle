@@ -4533,13 +4533,13 @@
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1",
+    "path": "properties.analyze.properties.v1",
     "merge": {
-      "description": "The v1alpha1 analyze definition"
+      "description": "The v1 analyze definition"
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items",
+    "path": "properties.analyze.properties.v1.items",
     "merge": {
       "description": "A list of analyzers to run on the collect spec"
     },
@@ -4548,19 +4548,19 @@
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.message",
+    "path": "properties.analyze.properties.v1.items.properties.message",
     "merge": {
       "description": "Optionally override the default analyzer message"
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.severity",
+    "path": "properties.analyze.properties.v1.items.properties.severity",
     "merge": {
       "description": "Optionally override the default severity"
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.collect_refs",
+    "path": "properties.analyze.properties.v1.items.properties.collect_refs",
     "merge": {
       "description": "Reference to a collect spec"
     },
@@ -4576,19 +4576,19 @@
     ]
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.collect_refs.items.properties.ref",
+    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.ref",
     "merge": {
       "description": "Used internally"
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.collect_refs.items.properties.name",
+    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.name",
     "merge": {
       "description": "Selector to reference the meta.name of a collect spec"
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.collect_refs.items.properties.selector",
+    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.selector",
     "delete": [
       "properties"
     ],
@@ -4602,7 +4602,7 @@
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.meta",
+    "path": "properties.analyze.properties.v1.items.properties.meta",
     "merge": {
       "description": "Can be used to organize and identify analyze elements"
     },
@@ -4616,7 +4616,7 @@
     ]
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.meta.properties.labels",
+    "path": "properties.analyze.properties.v1.items.properties.meta.properties.labels",
     "delete": [
       "properties"
     ],
@@ -4630,7 +4630,7 @@
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties.meta.properties.name",
+    "path": "properties.analyze.properties.v1.items.properties.meta.properties.name",
     "delete": [
       "properties"
     ],
@@ -4639,7 +4639,7 @@
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties[\"kubernetes.total-memory\"]",
+    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.total-memory\"]",
     "replace": {
       "required": [
         "minimum"
@@ -4655,13 +4655,13 @@
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties[\"kubernetes.total-memory\"].properties.minimum",
+    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.total-memory\"].properties.minimum",
     "merge": {
       "description": "The minimum total memory requirement"
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties[\"kubernetes.version\"]",
+    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.version\"]",
     "merge": {
       "description": "Check that the total memory for a cluster meets the required minimum",
       "examples": [
@@ -4672,7 +4672,7 @@
     }
   },
   {
-    "path": "properties.analyze.properties.v1alpha1.items.properties[\"kubernetes.version\"].properties.semver_minimum",
+    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.version\"].properties.semver_minimum",
     "merge": {
       "description": "The minimum kubernetes version"
     }

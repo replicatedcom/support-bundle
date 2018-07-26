@@ -1,10 +1,10 @@
-package v1alpha1_test
+package v1_test
 
 import (
 	"testing"
 
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	. "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1alpha1"
+	. "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
@@ -21,7 +21,7 @@ func TestAnalyzeDeserialize(t *testing.T) {
 			yaml: `
 ---
 analyze:
-  v1alpha1:
+  v1:
     - kubernetes.version:
         semver_minimum: 1.10.0
       collect_refs:
@@ -50,8 +50,8 @@ analyze:
 
 			err := yaml.Unmarshal([]byte(test.yaml), &doc)
 			req.NoError(err)
-			req.Len(doc.Analyze.V1Alpha1, 1)
-			req.Equal(test.expect, doc.Analyze.V1Alpha1[0])
+			req.Len(doc.Analyze.V1, 1)
+			req.Equal(test.expect, doc.Analyze.V1[0])
 		})
 	}
 }

@@ -8,7 +8,7 @@ collect:
           analyze: kubernetes-resource-list-nodes
 
 analyze:
-  v1alpha1:
+  v1:
     - kubernetes.total-memory:
         minimum: 1Gi
       collect_refs:

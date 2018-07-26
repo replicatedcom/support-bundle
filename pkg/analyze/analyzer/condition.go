@@ -2,18 +2,18 @@ package analyzer
 
 import (
 	"github.com/pkg/errors"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1alpha1"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/templates"
 )
 
-func EvalCondition(condition v1alpha1.EvalCondition, vars map[string]interface{}) (bool, error) {
+func EvalCondition(condition v1.EvalCondition, vars map[string]interface{}) (bool, error) {
 	eval := true
 	for _, statement := range condition.Statements {
 		b, err := templates.Bool(statement, vars)
 		if err != nil {
 			return false, errors.Wrapf(err, "execute statement %q", statement)
 		}
-		if condition.Operator == v1alpha1.OrOperator {
+		if condition.Operator == v1.OrOperator {
 			if b == true {
 				// short circuit
 				return true, nil
@@ -25,7 +25,7 @@ func EvalCondition(condition v1alpha1.EvalCondition, vars map[string]interface{}
 	return eval, nil
 }
 
-func BuildConditionVariables(condition v1alpha1.EvalCondition, data map[string]interface{}) (map[string]interface{}, error) {
+func BuildConditionVariables(condition v1.EvalCondition, data map[string]interface{}) (map[string]interface{}, error) {
 	copy := map[string]interface{}{}
 	for k := range data {
 		copy[k] = data[k]

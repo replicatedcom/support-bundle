@@ -122,7 +122,7 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 		return nil, errors.Wrap(err, "resolve specs")
 	}
 
-	if len(spec.Analyze.V1Alpha1) == 0 {
+	if len(spec.Analyze.V1) == 0 {
 		err := errors.New("analyze spec empty") // TODO: typed error
 		debug.Log(
 			"phase", "resolve",

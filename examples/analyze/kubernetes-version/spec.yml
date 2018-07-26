@@ -7,7 +7,7 @@ collect:
           analyze: kubernetes-version
 
 analyze:
-  v1alpha1:
+  v1:
     - kubernetes.version:
         semver_minimum: 1.10.0
       collect_refs:

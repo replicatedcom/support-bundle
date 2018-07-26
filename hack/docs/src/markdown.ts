@@ -83,7 +83,7 @@ function parseParameters(specTypes: any, specType) {
 function maybeRenderExamples(specTypes: any, specType: string, schemaType: SCHEMA_TYPE) {
   const schemaTypeMap: { [K in SCHEMA_TYPE]: string} = {
     "support-bundle-yaml-specs": "properties.collect.properties.v1.items",
-    "analyze-yaml-specs": "properties.analyze.properties.v1alpha1.items",
+    "analyze-yaml-specs": "properties.analyze.properties.v1.items",
     "support-bundle-yaml-lifecycle": "properties.lifecycle.items",
   };
 
@@ -157,7 +157,7 @@ export const handler = (argv) => {
   fs.writeFileSync(`${output}/shared.md`, SHARED_DOC);
 
   const specTypes = schema.properties.collect.properties.v1.items.properties;
-  const analyzeTypes = schema.properties.analyze.properties.v1alpha1.items.properties;
+  const analyzeTypes = schema.properties.analyze.properties.v1.items.properties;
   const lifecycleSpecTypes = schema.properties.lifecycle.items.properties;
 
   const generateDocSpecTypes = generateDoc(`${output}/collect`, specTypes, "support-bundle-yaml-specs");
