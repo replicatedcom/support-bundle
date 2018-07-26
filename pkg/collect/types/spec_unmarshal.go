@@ -4,9 +4,9 @@ import "encoding/json"
 
 func (d *Doc) UnmarshalJSON(data []byte) error {
 	var intermediate struct {
-		Collect   Collect         `json:"collect,omitempty"`
-		Lifecycle []LifecycleTask `json:"lifecycle,omitempty"`
-		Specs     []Spec          `json:"specs,omitempty"`
+		Collect   Collect         `json:"collect"`
+		Lifecycle []LifecycleTask `json:"lifecycle"`
+		Specs     []Spec          `json:"specs"`
 	}
 	if err := json.Unmarshal(data, &intermediate); err != nil {
 		return err

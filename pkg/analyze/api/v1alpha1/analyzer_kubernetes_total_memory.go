@@ -3,8 +3,6 @@ package v1alpha1
 import (
 	"errors"
 	"text/template"
-
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 )
 
 var (
@@ -17,8 +15,7 @@ func init() {
 }
 
 type KubernetesTotalMemoryAnalyzer struct {
-	Severity common.Severity `json:"severity,omitempty" yaml:"severity,omitempty" hcl:"severity,omitempty"`
-	Min      string          `json:"minimum" yaml:"minimum" hcl:"minimum"`
+	Min string `json:"minimum" yaml:"minimum" hcl:"minimum"`
 }
 
 func (a *KubernetesTotalMemoryAnalyzer) Validate(spec AnalyzerSpec) error {
@@ -31,6 +28,6 @@ func (a *KubernetesTotalMemoryAnalyzer) Validate(spec AnalyzerSpec) error {
 	return nil
 }
 
-func (a *KubernetesTotalMemoryAnalyzer) GetSpec() (AnalyzerSpec, error) {
+func (a *KubernetesTotalMemoryAnalyzer) GetRawSpec() (RawSpec, error) {
 	return unmarshalSpec(KubernetesTotalMemoryAnalyzerSpecTemplate, a)
 }

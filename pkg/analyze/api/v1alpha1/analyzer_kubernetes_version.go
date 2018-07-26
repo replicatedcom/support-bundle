@@ -3,8 +3,6 @@ package v1alpha1
 import (
 	"errors"
 	"text/template"
-
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 )
 
 var (
@@ -17,8 +15,7 @@ func init() {
 }
 
 type KubernetesVersionAnalyzer struct {
-	Severity  common.Severity `json:"severity,omitempty" yaml:"severity,omitempty" hcl:"severity,omitempty"`
-	SemverMin string          `json:"semver_minimum" yaml:"semver_minimum" hcl:"semver_minimum"`
+	SemverMin string `json:"semver_minimum" yaml:"semver_minimum" hcl:"semver_minimum"`
 }
 
 func (a *KubernetesVersionAnalyzer) Validate(spec AnalyzerSpec) error {
@@ -31,6 +28,6 @@ func (a *KubernetesVersionAnalyzer) Validate(spec AnalyzerSpec) error {
 	return nil
 }
 
-func (a *KubernetesVersionAnalyzer) GetSpec() (AnalyzerSpec, error) {
+func (a *KubernetesVersionAnalyzer) GetRawSpec() (RawSpec, error) {
 	return unmarshalSpec(KubernetesVersionAnalyzerSpecTemplate, a)
 }

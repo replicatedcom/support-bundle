@@ -6,7 +6,7 @@ type Meta struct {
 }
 
 type Ref struct {
-	Ref      string   `json:"ref" yaml:"ref" hcl:"ref"`
+	Ref      string   `json:"ref,omitempty" yaml:"ref,omitempty" hcl:"ref,omitempty"`
 	Name     string   `json:"name,omitempty" yaml:"name,omitempty" hcl:"name,omitempty"`
 	Selector Selector `json:"selector" yaml:"selector" hcl:"selector"`
 }
