@@ -4,7 +4,7 @@
   "description": "supportbundle docs hacks",
   "main": "build/index.js",
   "scripts": {
-    "test": "nyc mocha"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -30,9 +30,14 @@
     "yargs": "^10.1.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.4",
     "@types/lodash": "^4.14.92",
+    "@types/mocha": "^5.2.5",
     "@types/node": "^10.1.2",
     "@types/tv4": "^1.2.28",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "mocha-typescript": "^1.1.17",
     "tslint": "^5.9.1",
     "typescript": "^2.6.2"
   }

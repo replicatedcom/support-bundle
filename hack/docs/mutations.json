@@ -212,29 +212,23 @@
       "description": "Collect a file by copying from a running docker container",
       "examples": [
         {
-          "collect": {"v1": [{"docker.container-cp": {
-            "description": "the supergoodtool www site access logs",
-            "container": "supergoodtool-www",
-            "src_path": "/var/log/nginx/access.log",
-            "output_dir": "/www/access/"
-          }}]}
+          "description": "the supergoodtool www site access logs",
+          "container": "supergoodtool-www",
+          "src_path": "/var/log/nginx/access.log",
+          "output_dir": "/www/access/"
         },
         {
-          "collect": {"v1": [{"docker.container-cp": {
-            "description": "the supergoodtool www site access logs",
-            "labels": ["container.name.label"],
-            "src_path": "/var/log/nginx/access.log",
-            "output_dir": "/www/access/"
-          }}]}
+          "description": "the supergoodtool www site access logs",
+          "labels": ["container.name.label"],
+          "src_path": "/var/log/nginx/access.log",
+          "output_dir": "/www/access/"
         },
         {
-          "collect": {"v1": [{"docker.container-cp": {
-            "description": "the supergoodtool www site access logs",
-            "labels": ["container.name.label"],
-            "src_path": "/var/log/nginx/access.log",
-            "output_dir": "/www/access/",
-            "include_empty": true
-          }}]}
+          "description": "the supergoodtool www site access logs",
+          "labels": ["container.name.label"],
+          "src_path": "/var/log/nginx/access.log",
+          "output_dir": "/www/access/",
+          "include_empty": true
         }
       ],
       "_ext_outputs": [
@@ -281,16 +275,14 @@
       "description": "Collect the stdout and stderr of `exec`-ing a command on a running docker container",
       "examples": [
         {
-          "collect": {"v1": [{"docker.container-exec": {
-            "container": "supergoodtool-www",
-            "output_dir": "/www/debug/",
-            "exec_config": {
-              "Cmd": [
-                "nginx",
-                "-t"
-              ]
-            }
-          }}]}
+          "container": "supergoodtool-www",
+          "output_dir": "/www/debug/",
+          "exec_config": {
+            "Cmd": [
+              "nginx",
+              "-t"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -397,19 +389,17 @@
       "description": "Collect the `docker inspect` output for one or more running or stopped containers. One of `container` or `container_list_options` is required.",
       "examples": [
         {
-          "collect": {"v1": [{"docker.container-inspect": {
-            "output_dir": "/containers/cooltool/www-stack",
-            "container_list_options": {
-              "All": true,
-              "Filters": {
-                "name": [
-                  "www",
-                  "nginx",
-                  "dnsmasq"
-                ]
-              }
+          "output_dir": "/containers/cooltool/www-stack",
+          "container_list_options": {
+            "All": true,
+            "Filters": {
+              "name": [
+                "www",
+                "nginx",
+                "dnsmasq"
+              ]
             }
-          }}]}
+          }
         }
       ],
       "_ext_outputs": [
@@ -493,18 +483,16 @@
       "description": "Collect the stdout/stderr logs from one or more docker containers. One of `container` or `container_list_options` is required.",
       "examples": [
         {
-          "collect": {"v1": [{"docker.container-logs": {
-            "output_dir": "/docker/cooltool/logs/www",
-            "container_list_options": {
-              "All": true,
-              "Filters": {
-                "name": [
-                  "www",
-                  "haproxy"
-                ]
-              }
+          "output_dir": "/docker/cooltool/logs/www",
+          "container_list_options": {
+            "All": true,
+            "Filters": {
+              "name": [
+                "www",
+                "haproxy"
+              ]
             }
-          }}]}
+          }
         }
       ],
       "_ext_outputs": [
@@ -649,16 +637,14 @@
       "description": "Collect information about one or more containers",
       "examples": [
         {
-          "collect": {"v1": [{"docker.container-ls": {
-            "output_dir": "/docker/cooltool/containers/",
-            "All": true,
-            "Filters": {
-              "name": [
-                "www",
-                "haproxy"
-              ]
-            }
-          }}]}
+          "output_dir": "/docker/cooltool/containers/",
+          "All": true,
+          "Filters": {
+            "name": [
+              "www",
+              "haproxy"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -730,24 +716,22 @@
       "description": "Collect the stderr/stdout of running a single docker container",
       "examples": [
         {
-          "collect": {"v1": [{"docker.container-run": {
-            "description": "Listing of host's network interfaces",
-            "output_dir": "/host/network",
-            "container_create_config": {
-              "Config": {
-                "Cmd": [
-                  "ip",
-                  "addr",
-                  "show"
-                ],
-                "Image": "debian:latest"
-              },
-              "HostConfig": {
-                "AutoRemove": true,
-                "NetworkMode": "host"
-              }
+          "description": "Listing of host's network interfaces",
+          "output_dir": "/host/network",
+          "container_create_config": {
+            "Config": {
+              "Cmd": [
+                "ip",
+                "addr",
+                "show"
+              ],
+              "Image": "debian:latest"
+            },
+            "HostConfig": {
+              "AutoRemove": true,
+              "NetworkMode": "host"
             }
-          }}]}
+          }
         }
       ],
       "_ext_outputs": [
@@ -1717,17 +1701,15 @@
       "description": "Collect the stdout/stderr of executing a command in an already running docker container",
       "examples": [
         {
-          "collect": {"v1": [{"docker.exec": {
-            "container": "supergoodtool-www",
-            "output_dir": "/www/debug/",
-            "exec_config": {
-              "Cmd": [
-                "toolctl",
-                "info",
-                "--verbose"
-              ]
-            }
-          }}]}
+          "container": "supergoodtool-www",
+          "output_dir": "/www/debug/",
+          "exec_config": {
+            "Cmd": [
+              "toolctl",
+              "info",
+              "--verbose"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -1840,15 +1822,13 @@
       "description": "Collect a list of docker images present on the server",
       "examples": [
         {
-          "collect": {"v1": [{"docker.image-ls": {
-            "output_dir": "/cooltool/images/",
-            "All": true,
-            "Filters": {
-              "label": [
-                "com.supercooltool.app=supercooltool-enterprise"
-              ]
-            }
-          }}]}
+          "output_dir": "/cooltool/images/",
+          "All": true,
+          "Filters": {
+            "label": [
+              "com.supercooltool.app=supercooltool-enterprise"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -1887,15 +1867,13 @@
       "description": "Collect a list of docker images present on the server",
       "examples": [
         {
-          "collect": {"v1": [{"docker.images": {
-            "output_dir": "/cooltool/images/",
-            "All": true,
-            "Filters": {
-              "label": [
-                "com.supercooltool.app=supercooltool-enterprise"
-              ]
-            }
-          }}]}
+          "output_dir": "/cooltool/images/",
+          "All": true,
+          "Filters": {
+            "label": [
+              "com.supercooltool.app=supercooltool-enterprise"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -1931,11 +1909,9 @@
       "description": "Collect info about the Docker daemon",
       "examples": [
         {
-          "collect": {"v1": [{"docker.info": {
-            "output_dir": "/docker/daemon/",
-            "timeout_seconds": 10,
-            "description": "Info about the docker daemon"
-          }}]}
+          "output_dir": "/docker/daemon/",
+          "timeout_seconds": 10,
+          "description": "Info about the docker daemon"
         }
       ],
       "_ext_outputs": [
@@ -1952,22 +1928,20 @@
       "description": "Collect the stdout/stderr logs from one or more docker containers. One of `container` or `container_list_options` is required.",
       "examples": [
         {
-          "collect": {"v1": [{"docker.logs": {
-            "description": "The docker logs for all the containers labeled with com.supercooltool.onprem",
-            "output_dir": "/docker/logs",
-            "timeout_seconds": 100,
-            "container_list_options": {
-              "All": true,
-              "Filters": {
-                "label": [
-                  "com.supercooltool.onprem=true"
-                ]
-              }
-            },
-            "container_logs_options": {
-              "Timestamps": true
+          "description": "The docker logs for all the containers labeled with com.supercooltool.onprem",
+          "output_dir": "/docker/logs",
+          "timeout_seconds": 100,
+          "container_list_options": {
+            "All": true,
+            "Filters": {
+              "label": [
+                "com.supercooltool.onprem=true"
+              ]
             }
-          }}]}
+          },
+          "container_logs_options": {
+            "Timestamps": true
+          }
         }
       ],
       "_ext_outputs": [
@@ -2112,15 +2086,13 @@
       "description": "Collect information about the nodes in a Docker Swarm installation",
       "examples": [
         {
-          "collect": {"v1": [{"docker.node-ls": {
-            "description": "List of swarm nodes",
-            "output_dir": "/swarm/nodes/",
-            "Filters": {
-              "name": [
-                "cooltool-docker-swarm-"
-              ]
-            }
-          }}]}
+          "description": "List of swarm nodes",
+          "output_dir": "/swarm/nodes/",
+          "Filters": {
+            "name": [
+              "cooltool-docker-swarm-"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -2150,10 +2122,8 @@
       "description": "Collect information about containers",
       "examples": [
         {
-          "collect": {"v1": [{"docker.ps": {
-            "output_dir": "/docker/ps/",
-            "All": true
-          }}]}
+          "output_dir": "/docker/ps/",
+          "All": true
         }
       ],
       "_ext_outputs": [
@@ -2228,24 +2198,22 @@
       "description": "Collect the stderr/stdout of running a single docker container",
       "examples": [
         {
-          "collect": {"v1": [{"docker.run": {
-            "description": "Listing of host's network interfaces",
-            "output_dir": "/host/network",
-            "container_create_config": {
-              "Config": {
-                "Cmd": [
-                  "ip",
-                  "addr",
-                  "show"
-                ],
-                "Image": "debian:latest"
-              },
-              "HostConfig": {
-                "AutoRemove": true,
-                "NetworkMode": "host"
-              }
+          "description": "Listing of host's network interfaces",
+          "output_dir": "/host/network",
+          "container_create_config": {
+            "Config": {
+              "Cmd": [
+                "ip",
+                "addr",
+                "show"
+              ],
+              "Image": "debian:latest"
+            },
+            "HostConfig": {
+              "AutoRemove": true,
+              "NetworkMode": "host"
             }
-          }}]}
+          }
         }
       ],
       "_ext_outputs": [
@@ -3218,24 +3186,20 @@
       "description": "Collect logs from a docker swarm service. One of `service` or `service_list_options` is required.",
       "examples": [
         {
-          "collect": {"v1": [{"docker.service-logs": {
-            "output_dir": "/swarm/services/www",
-            "service": "cooltool-www"
-          }}]}
+          "output_dir": "/swarm/services/www",
+          "service": "cooltool-www"
         },
         {
-          "collect": {"v1": [{"docker.service-logs": {
-            "output_dir": "/swarm/services/core-stack",
-            "service_list_options": {
-              "Filters": {
-                "name": [
-                  "cooltool-www",
-                  "cooltool-api",
-                  "cooltool-worker"
-                ]
-              }
+          "output_dir": "/swarm/services/core-stack",
+          "service_list_options": {
+            "Filters": {
+              "name": [
+                "cooltool-www",
+                "cooltool-api",
+                "cooltool-worker"
+              ]
             }
-          }}]}
+          }
         }
       ],
       "_ext_outputs": [
@@ -3352,15 +3316,13 @@
       "description": "Collect a list of docker swarm services",
       "examples": [
         {
-          "collect": {"v1": [{"docker.service-ls": {
-            "output_dir": "/swarm/services/list/",
-            "description": "List of all services starting with `cooltool-`",
-            "Filters": {
-              "name": [
-                "cooltool-"
-              ]
-            }
-          }}]}
+          "output_dir": "/swarm/services/list/",
+          "description": "List of all services starting with `cooltool-`",
+          "Filters": {
+            "name": [
+              "cooltool-"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -3390,15 +3352,13 @@
       "description": "Collect information about the tasks run by one or more services",
       "examples": [
         {
-          "collect": {"v1": [{"docker.service-ps": {
-            "output_dir": "/swarm/services/www/tasks/",
-            "description": "List of all services starting with `cooltool-`",
-            "Filters": {
-              "name": [
-                "cooltool-"
-              ]
-            }
-          }}]}
+          "output_dir": "/swarm/services/www/tasks/",
+          "description": "List of all services starting with `cooltool-`",
+          "Filters": {
+            "name": [
+              "cooltool-"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -3428,31 +3388,25 @@
       "description": "Collect logs from one or more services in a stack",
       "examples": [
         {
-          "collect": {"v1": [{"docker.stack-service-logs": {
-            "output_dir": "/swarm/stacks/cooltool/service-logs",
-            "description": "Logs from services in the cooltool stack",
-            "namespace": "cooltool-core"
-          }}]}
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core"
         },
         {
-          "collect": {"v1": [{"docker.stack-service-logs": {
-            "output_dir": "/swarm/stacks/cooltool/service-logs",
-            "description": "Logs from services in the cooltool stack",
-            "namespace": "cooltool-core",
-            "labels": {}
-          }}]}
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "labels": {}
         },
         {
-          "collect": {"v1": [{"docker.stack-service-logs": {
-            "output_dir": "/swarm/stacks/cooltool/service-logs",
-            "description": "Logs from services in the cooltool stack",
-            "namespace": "cooltool-core",
-            "labels": {
-              "com.replicated.excludelogs":"false",
-              "abc":"xyz",
-              "abc2":""
-            }
-          }}]}
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "labels": {
+            "com.replicated.excludelogs":"false",
+            "abc":"xyz",
+            "abc2":""
+          }
         }
       ],
       "_ext_outputs": [
@@ -3559,11 +3513,9 @@
       "description": "Collect information about services in a swarm stack",
       "examples": [
         {
-          "collect": {"v1": [{"docker.stack-service-ls": {
-            "output_dir": "/swarm/stacks/cooltool/services",
-            "description": "Logs from services in the cooltool stack",
-            "namespace": "cooltool-core"
-          }}]}
+          "output_dir": "/swarm/stacks/cooltool/services",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core"
         }
       ],
       "_ext_outputs": [
@@ -3595,19 +3547,17 @@
       "description": "Collect information about the tasks running in a service",
       "examples": [
         {
-          "collect": {"v1": [{"docker.stack-service-ps": {
-            "output_dir": "/swarm/stacks/cooltool/service-tasks",
-            "description": "Tasks owned by services in the cooltool stack",
-            "namespace": "cooltool-core",
-            "task_list_options": {
-              "Filters": {
-                "label": [
-                  "com.cooltool.tier=www",
-                  "com.cooltool.tier=api"
-                ]
-              }
+          "output_dir": "/swarm/stacks/cooltool/service-tasks",
+          "description": "Tasks owned by services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "task_list_options": {
+            "Filters": {
+              "label": [
+                "com.cooltool.tier=www",
+                "com.cooltool.tier=api"
+              ]
             }
-          }}]}
+          }
         }
       ],
       "_ext_outputs": [
@@ -3650,38 +3600,32 @@
       "description": "Collect logs from a docker swarm task",
       "examples": [
         {
-          "collect": {"v1": [{"docker.stack-task-logs": {
-            "output_dir": "/swarm/stacks/cooltool/service-logs",
-            "description": "Logs from services in the cooltool stack",
-            "namespace": "cooltool-core",
-            "task_list_options": {
-              "Filters": {
-                "name": [
-                  "redis.1"
-                ]
-              }
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "task_list_options": {
+            "Filters": {
+              "name": [
+                "redis.1"
+              ]
             }
-          }}]}
+          }
         },
         {
-          "collect": {"v1": [{"docker.stack-task-logs": {
-            "output_dir": "/swarm/stacks/cooltool/service-logs",
-            "description": "Logs from services in the cooltool stack",
-            "namespace": "cooltool-core",
-            "labels": {}
-            }}]}
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "labels": {}
         },
         {
-          "collect": {"v1": [{"docker.stack-task-logs": {
-            "output_dir": "/swarm/stacks/cooltool/service-logs",
-            "description": "Logs from services in the cooltool stack",
-            "namespace": "cooltool-core",
-            "labels": {
-              "com.replicated.excludelogs":"false",
-              "abc":"xyz",
-              "abc2":""
-            }
-          }}]}
+          "output_dir": "/swarm/stacks/cooltool/service-logs",
+          "description": "Logs from services in the cooltool stack",
+          "namespace": "cooltool-core",
+          "labels": {
+            "com.replicated.excludelogs":"false",
+            "abc":"xyz",
+            "abc2":""
+          }
         }
       ],
       "_ext_outputs": [
@@ -3759,18 +3703,16 @@
       "description": "Collect logs from a docker swarm task",
       "examples": [
         {
-          "collect": {"v1": [{"docker.task-logs": {
-            "output_dir": "/swarm/tasks/logs",
-            "description": "Logs from cooltool tasks in the www and api tiers",
-            "task_list_options": {
-              "Filters": {
-                "label": [
-                  "com.cooltool.tier=www",
-                  "com.cooltool.tier=api"
-                ]
-              }
+          "output_dir": "/swarm/tasks/logs",
+          "description": "Logs from cooltool tasks in the www and api tiers",
+          "task_list_options": {
+            "Filters": {
+              "label": [
+                "com.cooltool.tier=www",
+                "com.cooltool.tier=api"
+              ]
             }
-          }}]}
+          }
         }
       ],
       "_ext_outputs": [
@@ -3819,15 +3761,13 @@
       "description": "List docker swarm tasks",
       "examples": [
         {
-          "collect": {"v1": [{"docker.task-ls": {
-            "output_dir": "/swarm/tasklist",
-            "Filters": {
-              "name": [
-                "cooltool-api-",
-                "cooltool-backend-"
-              ]
-            }
-          }}]}
+          "output_dir": "/swarm/tasklist",
+          "Filters": {
+            "name": [
+              "cooltool-api-",
+              "cooltool-backend-"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -3856,9 +3796,7 @@
       "description": "Get the version of the docker server",
       "examples": [
         {
-          "collect": {"v1": [{"docker.version": {
-            "output_dir": "/docker/version"
-          }}]}
+          "output_dir": "/docker/version"
         }
       ],
       "_ext_outputs": [
@@ -3881,12 +3819,10 @@
       "description": "Collect logs from journald",
       "examples": [
         {
-          "collect": {"v1": [{"journald.logs": {
-            "output_dir": "/system/journald/cooltool-api",
-            "reverse": true,
-            "unit": "cooltool-api",
-            "since": "2018-01-01"
-          }}]}
+          "output_dir": "/system/journald/cooltool-api",
+          "reverse": true,
+          "unit": "cooltool-api",
+          "since": "2018-01-01"
         }
       ],
       "_ext_outputs": [
@@ -3923,9 +3859,7 @@
       "description": "The API versions of the Kubernetes cluster",
       "examples": [
         {
-          "collect": {"v1": [{"kubernetes.api-versions": {
-            "output_dir": "/kubernetes/"
-          }}]}
+          "output_dir": "/kubernetes/"
         }
       ],
       "_ext_outputs": [
@@ -3947,9 +3881,7 @@
       "description": "Get the Kubernetes cluster info",
       "examples": [
         {
-          "collect": {"v1": [{"kubernetes.cluster-info": {
-            "output_dir": "/kubernetes/"
-          }}]}
+          "output_dir": "/kubernetes/"
         }
       ],
       "_ext_outputs": [
@@ -3984,30 +3916,24 @@
       "description": "Collect a file or directory from one or more kubernetes pods and containers. If the container name is not specified, files will be collected from all containers within the pods.",
       "examples": [
         {
-          "collect": {"v1": [{"kubernetes.container-cp": {
-            "output_dir": "/kubernetes/all-api-pod-logs",
-            "pod": "cooltool-api-110212121-ab123ef",
-            "namespace": "default",
-            "src_path": "/logs/app.log",
-            "timeout_seconds": 30
-          }}]}
+          "output_dir": "/kubernetes/all-api-pod-logs",
+          "pod": "cooltool-api-110212121-ab123ef",
+          "namespace": "default",
+          "src_path": "/logs/app.log",
+          "timeout_seconds": 30
         },
         {
-          "collect": {"v1": [{"kubernetes.container-cp": {
-            "output_dir": "/kubernetes/api-pod-logs",
-            "pod": "cooltool-api-110212121-ab123ef",
-            "container": "api",
-            "namespace": "default",
-            "src_path": "/logs/app.log",
-            "timeout_seconds": 30
-          }}]}
+          "output_dir": "/kubernetes/api-pod-logs",
+          "pod": "cooltool-api-110212121-ab123ef",
+          "container": "api",
+          "namespace": "default",
+          "src_path": "/logs/app.log",
+          "timeout_seconds": 30
         },
         {
-          "collect": {"v1": [{"kubernetes.container-cp": {
-            "output_dir": "/kubernetes/deployment-pod-logs",
-            "pod_list_options": {"labelSelector": "run=api"},
-            "src_path": "/logs/"
-            }}]}
+          "output_dir": "/kubernetes/deployment-pod-logs",
+          "pod_list_options": {"labelSelector": "run=api"},
+          "src_path": "/logs/"
         }
       ],
       "_ext_outputs": [
@@ -4115,32 +4041,28 @@
       "description": "Collect the logs for one or more kubernetes pods",
       "examples": [
         {
-          "collect": {"v1": [{"kubernetes.logs": {
-            "output_dir": "/kubernetes/api-pod-logs",
-            "pod": "cooltool-api-110212121-ab123ef",
-            "namespace": "default",
-            "pod_log_options": {
-              "timestamps": true,
-              "sinceSeconds": 1000000,
-              "limitBytes": 1000000000
-            },
-            "timeout_seconds": 30
-          }}]}
+          "output_dir": "/kubernetes/api-pod-logs",
+          "pod": "cooltool-api-110212121-ab123ef",
+          "namespace": "default",
+          "pod_log_options": {
+            "timestamps": true,
+            "sinceSeconds": 1000000,
+            "limitBytes": 1000000000
+          },
+          "timeout_seconds": 30
         },
         {
-          "collect": {"v1": [{"kubernetes.logs": {
-            "output_dir": "/kubernetes/api-pod-logs",
-            "namespace": "default",
-            "pod_log_options": {
-              "timestamps": true,
-              "sinceSeconds": 1000000,
-              "limitBytes": 1000000000
-            },
-            "list_options": {
-              "labelSelector": "type=reporting"
-            },
-            "timeout_seconds": 30
-          }}]}
+          "output_dir": "/kubernetes/api-pod-logs",
+          "namespace": "default",
+          "pod_log_options": {
+            "timestamps": true,
+            "sinceSeconds": 1000000,
+            "limitBytes": 1000000000
+          },
+          "list_options": {
+            "labelSelector": "type=reporting"
+          },
+          "timeout_seconds": 30
         }
       ],
       "_ext_outputs": [
@@ -4216,17 +4138,13 @@
       "description": "Collect a list of resources managed by the cluster",
       "examples": [
         {
-          "collect": {"v1": [{"kubernetes.resource-list": {
-            "output_dir": "/kubernetes/resources/deployments",
-            "namespace": "default",
-            "kind": "deployments"
-          }}]}
+          "output_dir": "/kubernetes/resources/deployments",
+          "namespace": "default",
+          "kind": "deployments"
         },
         {
-          "collect": {"v1": [{"kubernetes.resource-list": {
-            "output_dir": "/kubernetes/resources/services",
-            "kind": "svc"
-          }}]}
+          "output_dir": "/kubernetes/resources/services",
+          "kind": "svc"
         }
       ],
       "_ext_outputs": [
@@ -4265,9 +4183,7 @@
       "description": "Get the kubernetes version",
       "examples": [
         {
-          "collect": {"v1": [{"kubernetes.version": {
-            "output_dir": "/kubernetes/"
-          }}]}
+          "output_dir": "/kubernetes/"
         }
       ],
       "_ext_outputs": [
@@ -4284,9 +4200,7 @@
       "description": "Get the hostname",
       "examples": [
         {
-          "collect": {"v1": [{"os.hostname": {
-            "output_dir": "/system/hostname"
-          }}]}
+          "output_dir": "/system/hostname"
         }
       ],
       "_ext_outputs": [
@@ -4310,16 +4224,14 @@
       "description": "Collect information about the response from making an HTTP request",
       "examples": [
         {
-          "collect": {"v1": [{"os.http-request": {
-            "output_dir": "/system/ping-ip",
-            "url": "https://api.replicated.com/market/v1/echo/ip",
-            "method": "get",
-            "header": {
-              "User-Agent": [
-                "cooltool/supportbundle 0.11.1"
-              ]
-            }
-          }}]}
+          "output_dir": "/system/ping-ip",
+          "url": "https://api.replicated.com/market/v1/echo/ip",
+          "method": "get",
+          "header": {
+            "User-Agent": [
+              "cooltool/supportbundle 0.11.1"
+            ]
+          }
         }
       ],
       "_ext_outputs": [
@@ -4377,9 +4289,7 @@
       "description": "Collect information about CPU load",
       "examples": [
         {
-          "collect": {"v1": [{"os.loadavg": {
-            "output_dir": "/system/load"
-          }}]}
+          "output_dir": "/system/load"
         }
       ],
       "_ext_outputs": [
@@ -4405,10 +4315,8 @@
       "description": "Read a file from the filesystem",
       "examples": [
         {
-          "collect": {"v1": [{"os.read-file": {
-            "output_dir": "/files/etc/bigtool-conf",
-            "filepath": "/etc/bigtool.conf"
-          }}]}
+          "output_dir": "/files/etc/bigtool-conf",
+          "filepath": "/etc/bigtool.conf"
         }
       ],
       "_ext_outputs": [
@@ -4434,19 +4342,15 @@
       "description": "Run a command. Will be run in the support bundle container if `docker run replicated/support-bundle` is used. To run in a custom container, use `docker.run` instead",
       "examples": [
         {
-          "collect": {"v1": [{"os.run-command": {
-            "output_dir": "/system/commands/ping-google",
-            "name": "date"
-          }}]}
+          "output_dir": "/system/commands/ping-google",
+          "name": "date"
         },
         {
-          "collect": {"v1": [{"os.run-command": {
-            "output_dir": "/system/commands/ping-google",
-            "name": "cat",
-            "args": [
-              "/etc/os-release"
-            ]
-          }}]}
+          "output_dir": "/system/commands/ping-google",
+          "name": "cat",
+          "args": [
+            "/etc/os-release"
+          ]
         }
       ],
       "_ext_outputs": [
@@ -4502,9 +4406,7 @@
       "description": "Collect information about the system's uptime",
       "examples": [
         {
-          "collect": {"v1": [{"os.uptime": {
-            "output_dir": "/system/uptime"
-          }}]}
+          "output_dir": "/system/uptime"
         }
       ],
       "_ext_outputs": [
@@ -4533,32 +4435,28 @@
       "description": "Collect Audit Log events from a running Retraced instance",
       "examples": [
         {
-          "collect": {"v1": [{"retraced.events": {
-            "output_dir": "/audit/events",
-            "api_endpoint": "https://auditlogs.mycorp.internal:8080",
-            "api_token": "aef342f32f22f3edf1f1f3f3ef",
-            "project_id": "f3edf1f1f3f3efaef342f32f22"
-          }}]}
+          "output_dir": "/audit/events",
+          "api_endpoint": "https://auditlogs.mycorp.internal:8080",
+          "api_token": "aef342f32f22f3edf1f1f3f3ef",
+          "project_id": "f3edf1f1f3f3efaef342f32f22"
         },
         {
-          "collect": {"v1": [{"retraced.events": {
-            "output_dir": "/audit/events",
-            "api_endpoint": "https://auditlogs.mycorp.internal:8080",
-            "api_token": "aef342f32f22f3edf1f1f3f3ef",
-            "project_id": "f3edf1f1f3f3efaef342f32f22",
-            "insecure": true,
-            "timeout_seconds": 10,
-            "mask": {
-              "Action": true,
-              "Description": true,
-              "ActorID": true,
-              "ActorName": true,
-              "CanonicalTime": true
-            },
-            "query": {
-              "CRUD": "c,u,d"
-            }
-          }}]}
+          "output_dir": "/audit/events",
+          "api_endpoint": "https://auditlogs.mycorp.internal:8080",
+          "api_token": "aef342f32f22f3edf1f1f3f3ef",
+          "project_id": "f3edf1f1f3f3efaef342f32f22",
+          "insecure": true,
+          "timeout_seconds": 10,
+          "mask": {
+            "Action": true,
+            "Description": true,
+            "ActorID": true,
+            "ActorName": true,
+            "CanonicalTime": true
+          },
+          "query": {
+            "CRUD": "c,u,d"
+          }
         }
       ],
       "_ext_outputs": [
@@ -4667,18 +4565,14 @@
       "description": "Reference to a collect spec"
     },
     "examples": [
-      {
-        "collect_refs": [{
-          "ref": "k8sResourceNodes",
-          "selector": {"analyze": "kubernetes-resource-list-nodes"}
-        }]
-      },
-      {
-        "collect_refs": [{
-          "ref": "k8sVersion",
-          "name": "kubernetes-version"
-        }]
-      }
+      [{
+        "ref": "k8sResourceNodes",
+        "selector": {"analyze": "kubernetes-resource-list-nodes"}
+      }],
+      [{
+        "ref": "k8sVersion",
+        "name": "kubernetes-version"
+      }]
     ]
   },
   {
@@ -4714,11 +4608,9 @@
     },
     "examples": [
       {
-        "meta": {
-          "name": "kubernetes-version",
-          "labels": {
-            "source": "kubernetes"
-          }
+        "name": "kubernetes-version",
+        "labels": {
+          "source": "kubernetes"
         }
       }
     ]
@@ -4757,14 +4649,7 @@
       "description": "Check that the total memory for a cluster meets the required minimum",
       "examples": [
         {
-          "analyze": {"v1alpha1": [{
-            "kubernetes.total-memory": {
-              "minimum": "20Gi"
-            },
-            "collect_refs": [
-              {"selector": {"analyze": "kubernetes-resource-list-nodes"}}
-            ]
-          }]}
+          "minimum": "20Gi"
         }
       ]
     }
@@ -4781,14 +4666,7 @@
       "description": "Check that the total memory for a cluster meets the required minimum",
       "examples": [
         {
-          "analyze": {"v1alpha1": [{
-            "kubernetes.version": {
-              "semver_minimum": "1.10.0"
-            },
-            "collect_refs": [
-              {"selector": {"analyze": "kubernetes-version"}}
-            ]
-          }]}
+          "semver_minimum": "1.10.0"
         }
       ]
     }

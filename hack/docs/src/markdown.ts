@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
 import { SHARED_DOC, SHARED_SPEC_TEMPLATE } from "./template";
+import { genObjectFromPathAndExample } from "./common";
 
 type SCHEMA_TYPE = "support-bundle-yaml-lifecycle" | "support-bundle-yaml-specs" | "analyze-yaml-specs";
 
@@ -80,12 +81,21 @@ function parseParameters(specTypes: any, specType) {
 }
 
 function maybeRenderExamples(specTypes: any, specType: string, schemaType: SCHEMA_TYPE) {
+  const schemaTypeMap: { [K in SCHEMA_TYPE]: string} = {
+    "support-bundle-yaml-specs": "properties.collect.properties.v1.items",
+    "analyze-yaml-specs": "properties.analyze.properties.v1alpha1.items",
+    "support-bundle-yaml-lifecycle": "properties.lifecycle.items",
+  };
+
   let doc = "";
   if (specTypes[specType].examples) {
+    console.log("specType", specType);
     for (const example of specTypes[specType].examples) {
+      const path = schemaTypeMap[schemaType] + ".properties[\"" + specType + "\"]";
+      const obj = genObjectFromPathAndExample(path, example);
       doc += `
 ${"```yaml"}
-${yaml.safeDump(example)}${"```"}
+${yaml.safeDump(obj)}${"```"}
 `;
     }
   }

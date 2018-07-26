@@ -10,6 +10,9 @@ REPLICATED_LINT_PATH ?= [path/to/replicated-lint]
 deps:
 	yarn
 
+test:
+	yarn test
+
 prebuild:
 	rm -rf build
 	mkdir -p build/collect
@@ -75,9 +78,9 @@ gen-markdown-2:
 	`yarn bin`/ts-node src/index.ts markdown -f $(SCHEMA_JSON) -o ./build
 
 
-pipeline-strict: build gen-schema merge-mutations validate integration gen-markdown-2
-pipeline-nointegration: build gen-schema merge-mutations validate gen-markdown-2
-pipeline: build gen-schema merge-mutations gen-markdown-2
+pipeline-strict: test build gen-schema merge-mutations validate integration gen-markdown-2
+pipeline-nointegration: test build gen-schema merge-mutations validate gen-markdown-2
+pipeline: test build gen-schema merge-mutations gen-markdown-2
 
 copy-to-help-center:
 	: To Copy to replicated lint, run the following command

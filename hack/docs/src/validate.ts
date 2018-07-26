@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import * as chalk from "chalk";
 import * as process from "process";
 import * as tv4 from "tv4";
+import { genObjectFromPathAndExample } from "./common";
 
 export const name = "validate";
 export const describe = "Ensure every field has a description";
@@ -68,10 +69,11 @@ export function validate(schemaType: any, path: string, maxDepth: number, schema
     let i = 0;
     for (const example of schemaType.examples) {
       i += 1;
-      console.log(chalk.blue(yaml.safeDump(example)));
-      const res = tv4.validateMultiple(example, schema, false, true);
+      const exampleToValidate = genObjectFromPathAndExample(path, example);
+      console.log(chalk.blue(yaml.safeDump(exampleToValidate)));
+      const res = tv4.validateMultiple(exampleToValidate, schema, false, true);
       if (!res.valid) {
-        console.log(util.inspect(example, false, 100, true));
+        console.log(util.inspect(exampleToValidate, false, 100, true));
         throw new Error(`invalid example ${example} at ${i} ${chalk.green(path)}; Error: at \n${chalk.red(`${res.errors.map((e) => "\t" + e.dataPath + " " + e.message).join("\n")}`)}`);
       }
     }
