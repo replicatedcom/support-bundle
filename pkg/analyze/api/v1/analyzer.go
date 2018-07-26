@@ -1,4 +1,4 @@
-package v1alpha1
+package v1
 
 type Analyzer interface {
 	Validate(spec AnalyzerSpec) error

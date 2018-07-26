@@ -49,7 +49,7 @@ _lint:
 	golint ./pkg/... \
 		| grep -v "should have comment" \
 		| grep -v "comment on exported" \
-		| grep -v "pkg/analyze/api/v1alpha1/specs.go" \
+		| grep -v "pkg/analyze/api/v1/specs.go" \
 		|| :
 	golint ./cmd/... \
 		| grep -v "should have comment" \
@@ -65,14 +65,14 @@ build: test _build
 
 _build: bin/analyze bin/support-bundle
 
-pkg/analyze/api/v1alpha1/specs.go: pkg/analyze/api/v1alpha1/specs/*
+pkg/analyze/api/v1/specs.go: pkg/analyze/api/v1/specs/*
 	go-bindata \
-		-pkg v1alpha1 \
-		-prefix pkg/analyze/api/v1alpha1/ \
-		-o pkg/analyze/api/v1alpha1/specs.go \
-		pkg/analyze/api/v1alpha1/specs/
+		-pkg v1 \
+		-prefix pkg/analyze/api/v1/ \
+		-o pkg/analyze/api/v1/specs.go \
+		pkg/analyze/api/v1/specs/
 
-bin/analyze: $(SRC) pkg/analyze/api/v1alpha1/specs.go
+bin/analyze: $(SRC) pkg/analyze/api/v1/specs.go
 	go build \
 		-ldflags " \
 		-X $(PKG)/pkg/version.version=$(VERSION) \
@@ -122,7 +122,7 @@ ci-upload-coverage: .state/coverage.out .state/cc-test-reporter
 
 e2e: e2e-analyze e2e-supportbundle
 
-e2e-analyze: pkg/analyze/api/v1alpha1/specs.go
+e2e-analyze: pkg/analyze/api/v1/specs.go
 	ginkgo -v -r -p e2e/analyze
 
 e2e-supportbundle: e2e-supportbundle-core e2e-supportbundle-docker

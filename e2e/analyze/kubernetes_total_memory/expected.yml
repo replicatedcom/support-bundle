@@ -2,7 +2,7 @@
   requirement: Kubernetes total memory must be at least 10GiB
   severity: error
   analyzer_spec:
-    v1alpha1:
+    v1:
     - collect_refs:
       - ref: Ref
         selector:

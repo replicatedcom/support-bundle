@@ -1,5 +1,5 @@
 analyze:
-  v1alpha1:
+  v1:
     - kubernetes.total-memory:
         minimum: 10Gi
       collect_refs:

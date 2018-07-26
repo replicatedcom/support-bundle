@@ -2,7 +2,7 @@
   requirement: Kubernetes version must be at least 1.10.0
   severity: error
   analyzer_spec:
-    v1alpha1:
+    v1:
     - collect_refs:
       - ref: Ref
         selector:

@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1alpha1"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	. "github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/spf13/afero"
@@ -26,7 +26,7 @@ func TestResolverResolveSpec(t *testing.T) {
 			files: map[string]string{
 				"/spec/1.yml": `
 analyze:
-  v1alpha1:
+  v1:
     - kubernetes.total-memory:
         minimum: 10Gi
       collect_refs:
@@ -34,7 +34,7 @@ analyze:
             analyze: resource-list-nodes`},
 			inline: []string{`
 analyze:
-  v1alpha1:
+  v1:
     - kubernetes.version:
         semver_minimum: 1.10.0
       collect_refs:
@@ -43,12 +43,12 @@ analyze:
 
 			expect: api.Doc{
 				Analyze: api.Analyze{
-					V1Alpha1: []v1alpha1.AnalyzerSpec{
+					V1: []v1.AnalyzerSpec{
 						{
-							KubernetesTotalMemory: &v1alpha1.KubernetesTotalMemoryAnalyzer{
+							KubernetesTotalMemory: &v1.KubernetesTotalMemoryAnalyzer{
 								Min: "10Gi",
 							},
-							AnalyzerShared: v1alpha1.AnalyzerShared{
+							AnalyzerShared: v1.AnalyzerShared{
 								CollectRefs: []meta.Ref{{
 									Selector: map[string]string{
 										"analyze": "resource-list-nodes",
@@ -57,10 +57,10 @@ analyze:
 							},
 						},
 						{
-							KubernetesVersion: &v1alpha1.KubernetesVersionAnalyzer{
+							KubernetesVersion: &v1.KubernetesVersionAnalyzer{
 								SemverMin: "1.10.0",
 							},
-							AnalyzerShared: v1alpha1.AnalyzerShared{
+							AnalyzerShared: v1.AnalyzerShared{
 								CollectRefs: []meta.Ref{{
 									Selector: map[string]string{
 										"analyze": "kubernetes-version",
