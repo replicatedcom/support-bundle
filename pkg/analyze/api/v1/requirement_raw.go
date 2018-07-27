@@ -1,5 +1,5 @@
 package v1
 
-type RawAnalyzer struct {
+type RawRequirement struct {
 	Conditions []Condition `json:"conditions" yaml:"conditions" hcl:"conditions"`
 }

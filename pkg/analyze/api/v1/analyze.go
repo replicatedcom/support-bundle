@@ -9,15 +9,15 @@ import (
 type AnalyzerSpec struct {
 	AnalyzerShared `json:",inline" yaml:",inline" hcl:",inline"`
 
-	KubernetesVersion     *KubernetesVersionAnalyzer     `json:"kubernetes.version,omitempty" yaml:"kubernetes.version,omitempty" hcl:"kubernetes.version,omitempty"`
-	KubernetesTotalMemory *KubernetesTotalMemoryAnalyzer `json:"kubernetes.total-memory,omitempty" yaml:"kubernetes.total-memory,omitempty" hcl:"kubernetes.total-memory,omitempty"`
+	KubernetesVersion     *KubernetesVersionRequirement     `json:"kubernetes.version,omitempty" yaml:"kubernetes.version,omitempty" hcl:"kubernetes.version,omitempty"`
+	KubernetesTotalMemory *KubernetesTotalMemoryRequirement `json:"kubernetes.total-memory,omitempty" yaml:"kubernetes.total-memory,omitempty" hcl:"kubernetes.total-memory,omitempty"`
 }
 
 // RawSpec is a translated spec from an AnalyzerSpec
 type RawSpec struct {
 	AnalyzerShared `json:",inline" yaml:",inline" hcl:",inline"`
 
-	Raw *RawAnalyzer `json:"raw,omitempty" yaml:"raw,omitempty" hcl:"raw,omitempty"`
+	Raw *RawRequirement `json:"raw,omitempty" yaml:"raw,omitempty" hcl:"raw,omitempty"`
 }
 
 type AnalyzerShared struct {
@@ -27,7 +27,7 @@ type AnalyzerShared struct {
 	CollectRefs []meta.Ref      `json:"collect_refs,omitempty" yaml:"collect_refs,omitempty" hcl:"collect_refs,omitempty"`
 }
 
-func (a AnalyzerSpec) GetAnalyzer() Analyzer {
+func (a AnalyzerSpec) GetRequirement() Requirement {
 	switch {
 	case a.KubernetesVersion != nil:
 		return a.KubernetesVersion

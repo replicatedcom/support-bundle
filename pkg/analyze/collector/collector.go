@@ -35,8 +35,8 @@ func (c *Collector) CollectBundle(
 
 	cmd := cli.NewCli()
 	err := cmd.Generate(cli.GenerateOptions{
-		CfgFiles:         specs,
-		CfgDocs:          specFiles,
+		CfgFiles:         specFiles,
+		CfgDocs:          specs,
 		BundlePath:       dest,
 		SkipDefault:      true,
 		TimeoutSeconds:   int(opts.Timeout.Seconds()),

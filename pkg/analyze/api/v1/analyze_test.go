@@ -29,7 +29,7 @@ analyze:
             analyze: kubernetes-version`,
 
 			expect: AnalyzerSpec{
-				KubernetesVersion: &KubernetesVersionAnalyzer{
+				KubernetesVersion: &KubernetesVersionRequirement{
 					SemverMin: "1.10.0",
 				},
 				AnalyzerShared: AnalyzerShared{
