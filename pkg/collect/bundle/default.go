@@ -104,6 +104,9 @@ func DefaultSpecs() []types.Spec {
 				SpecShared: types.SpecShared{
 					OutputDir: "default/docker",
 				},
+				ContainerListOptions: types.ContainerListOptions{
+					All: true,
+				},
 			},
 		},
 		{
