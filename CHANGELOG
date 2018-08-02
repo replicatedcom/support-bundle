@@ -127,6 +127,7 @@
 0.18.2 /2018-07-18
     * Fix crashes after failing to initialize the Kubernetes plugin
 
-0.19.0 /2018-07-25
+0.19.0 /2018-08-02
     * Added analyze project
     * `specs` is now an alias of `collect.v1`
+    * List all containers, including stopped ones, in `default/docker/container_ls.json`
