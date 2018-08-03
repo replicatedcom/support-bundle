@@ -4882,12 +4882,12 @@
                     "type": "string"
                   },
                   "group_version": {
-                    "description": "The group and version in the format \"group/version\" for the resource kind.",
+                    "description": "Optionally override the default group and version for the resource kind (in the format \"group/version\").",
                     "examples": [
                       "apps/v1beta2",
                       "rbac.authorization.k8s.io/v1beta1"
                     ],
-                    "pattern": "^^(([a-z\\.]+)\\/(v\\d(?:(?:alpha|beta)\\d)?))$",
+                    "pattern": "^(([a-z\\.]+)\\/(v\\d(?:(?:alpha|beta)\\d)?))$",
                     "type": "string"
                   },
                   "include_empty": {
