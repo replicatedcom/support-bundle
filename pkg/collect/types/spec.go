@@ -320,10 +320,11 @@ type KubernetesContainerCpOptions struct {
 }
 
 type KubernetesResourceListOptions struct {
-	SpecShared  `json:",inline,omitempty"`
-	Kind        string              `json:"kind"`
-	Namespace   string              `json:"namespace,omitempty"`
-	ListOptions *metav1.ListOptions `json:"resource_list_options,omitempty"`
+	SpecShared   `json:",inline,omitempty"`
+	Kind         string              `json:"kind"`
+	GroupVersion string              `json:"group_version,omitempty"`
+	Namespace    string              `json:"namespace,omitempty"`
+	ListOptions  *metav1.ListOptions `json:"resource_list_options,omitempty"`
 }
 
 type RetracedEventsOptions struct {
