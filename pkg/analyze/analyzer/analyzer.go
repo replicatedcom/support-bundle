@@ -3,14 +3,13 @@ package analyzer
 import (
 	"context"
 	"io/ioutil"
-	"strings"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
-	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
+	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
 	"github.com/replicatedcom/support-bundle/pkg/templates"
@@ -29,25 +28,24 @@ func New(logger log.Logger, fs afero.Fs) *Analyzer {
 	}
 }
 
-func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, collectBundle string) ([]api.Result, error) {
+func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archivePath string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.AnalyzeBundle"))
 
 	debug.Log(
 		"phase", "analyzer.analyze-bundle")
 
-	r := BundleReader{Fs: a.Fs}
-	index, err := r.GetResultsFromIndex(collectBundle, "index.json")
+	bundleReader, err := bundlereader.NewBundle(a.Fs, archivePath)
 	debug.Log(
 		"phase", "analyzer.get-bundle-index",
-		"index", spew.Sdump(index),
+		"index", spew.Sdump(bundleReader.GetIndex()),
 		"error", err)
 	if err != nil {
-		return nil, errors.Wrap(err, "get index.json from bundle")
+		return nil, errors.Wrapf(err, "new bundle from %s", archivePath)
 	}
 
 	var results []api.Result
 	for _, analyzerSpec := range spec.V1 {
-		result, err := a.analyze(ctx, analyzerSpec, index, collectBundle)
+		result, err := a.analyze(ctx, bundleReader, analyzerSpec)
 		if err != nil {
 			return results, errors.Wrapf(err, "analyze spec")
 		}
@@ -60,7 +58,7 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, collectB
 	return results, nil
 }
 
-func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1.AnalyzerSpec, index []collecttypes.Result, archivePath string) (api.Result, error) {
+func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.BundleReader, analyzerSpec v1.AnalyzerSpec) (api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.analyze"))
 
 	debug.Log(
@@ -70,42 +68,28 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1.AnalyzerSpec, in
 	var result api.Result
 	result.AnalyzerSpec = api.Analyze{V1: []v1.AnalyzerSpec{analyzerSpec}}
 
-	analyzer := analyzerSpec.GetAnalyzer()
+	requirement := analyzerSpec.GetRequirement()
 	debug.Log(
-		"phase", "analyzer.analyze.get-analyzer",
-		"analyzer", spew.Sdump(analyzer))
-	if analyzer == nil {
+		"phase", "analyzer.analyze.get-requirement",
+		"analyzer", spew.Sdump(requirement))
+	if requirement == nil {
 		return result, errors.New("analyzer empty") // TODO: typed error
 	}
 
 	// TODO: analyzer.Validate(analyzerSpec)
 
-	rawSpec, err := analyzer.GetRawSpec()
+	rawSpec, err := getRawSpec(analyzerSpec, requirement)
 	debug.Log(
 		"phase", "analyzer.analyze.get-spec",
 		"rawSpec", spew.Sdump(rawSpec),
 		"error", err)
 	if err != nil {
-		return result, errors.Wrap(err, "get analyzer spec")
+		return result, errors.Wrap(err, "get raw spec")
 	}
-	rawSpec.CollectRefs = analyzerSpec.CollectRefs
-	rawSpec.CollectRefs[0].Ref = "Ref"
-	rawSpec.Meta = analyzerSpec.Meta
-	if analyzerSpec.Message != "" {
-		rawSpec.Message = analyzerSpec.Message
-	}
-	if analyzerSpec.Severity != "" {
-		rawSpec.Severity = analyzerSpec.Severity
-	}
+
 	result.Requirement = rawSpec.Message
 
-	results := matchCollectResults(rawSpec.CollectRefs, index)
-	debug.Log(
-		"phase", "analyzer.analyze.match-collect-results",
-		"results", spew.Sdump(results))
-
-	r := &BundleReader{Fs: a.Fs}
-	data, err := collectRefData(r, rawSpec.CollectRefs, results, archivePath)
+	data, err := collectRefData(bundleReader, rawSpec.CollectRefs)
 	debug.Log(
 		"phase", "analyzer.analyze.build-template-data",
 		"data", spew.Sdump(data),
@@ -115,16 +99,22 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1.AnalyzerSpec, in
 	}
 
 	for _, condition := range rawSpec.Raw.Conditions {
-		vars, err := BuildConditionVariables(*condition.Eval, data) // TODO: will eval be the only condition?
+		debug.Log(
+			"phase", "analyzer.analyze.condition",
+			"condition", spew.Sdump(condition))
+
+		vars, err := BuildConditionVariables(condition, data)
+		debug.Log(
+			"phase", "analyzer.analyze.condition.build",
+			"err", err)
 		if err != nil {
 			return result, errors.Wrap(err, "build variables")
 		}
 		result.Vars = append(result.Vars, vars)
 
-		ok, err := EvalCondition(*condition.Eval, vars)
+		ok, err := EvalCondition(condition, vars)
 		debug.Log(
-			"phase", "analyzer.analyze.condition",
-			"condition", spew.Sdump(condition),
+			"phase", "analyzer.analyze.condition.eval",
 			"met", ok,
 			"err", err)
 		if err != nil {
@@ -155,35 +145,38 @@ func (a *Analyzer) analyze(ctx context.Context, analyzerSpec v1.AnalyzerSpec, in
 	return result, nil
 }
 
-func collectRefData(bundleReader *BundleReader, refs []meta.Ref, results map[string]collecttypes.Result, archivePath string) (map[string]interface{}, error) {
-	data := map[string]interface{}{}
-	for _, ref := range refs {
-		result, ok := results[ref.Ref]
-		if !ok {
-			continue
-		}
-		r, err := bundleReader.FileReaderFromArchive(archivePath, strings.TrimLeft(result.Path, "/"))
-		if err != nil {
-			return data, errors.Wrapf(err, "ref %s", ref.Ref)
-		}
-		b, err := ioutil.ReadAll(r)
-		r.Close()
-		if err != nil {
-			return data, errors.Wrapf(err, "ref %s", ref.Ref)
-		}
-		data[ref.Ref] = string(b)
+func getRawSpec(analyzerSpec v1.AnalyzerSpec, requirement v1.Requirement) (v1.RawSpec, error) {
+	rawSpec, err := requirement.GetRawSpec()
+	if err != nil {
+		return rawSpec, err
 	}
-	return data, nil
+	rawSpec.CollectRefs = analyzerSpec.CollectRefs
+	rawSpec.CollectRefs[0].Ref = "_Ref"
+	rawSpec.Meta = analyzerSpec.Meta
+	if analyzerSpec.Message != "" {
+		rawSpec.Message = analyzerSpec.Message
+	}
+	if analyzerSpec.Severity != "" {
+		rawSpec.Severity = analyzerSpec.Severity
+	}
+	return rawSpec, nil
 }
 
-func matchCollectResults(refs []meta.Ref, index []collecttypes.Result) map[string]collecttypes.Result {
-	matches := map[string]collecttypes.Result{}
+func collectRefData(bundleReader bundlereader.BundleReader, refs []meta.Ref) (map[string]interface{}, error) {
+	data := map[string]interface{}{}
 	for _, ref := range refs {
-		for _, result := range index {
-			if meta.RefMatches(ref, result.Spec.Shared().Meta) {
-				matches[ref.Ref] = result
+		r, err := bundleReader.ReaderFromRef(ref)
+		if err != nil {
+			return data, errors.Wrapf(err, "ref %s", ref.Ref)
+		}
+		if r != nil {
+			b, err := ioutil.ReadAll(r)
+			r.Close()
+			if err != nil {
+				return data, errors.Wrapf(err, "ref %s", ref.Ref)
 			}
+			data[ref.Ref] = string(b)
 		}
 	}
-	return matches
+	return data, nil
 }

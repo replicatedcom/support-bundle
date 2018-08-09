@@ -242,6 +242,14 @@
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
+  digest = "1:bc38c7c481812e178d85160472e231c5e1c9a7f5845d67e23ee4e706933c10d8"
+  name = "github.com/golang/mock"
+  packages = ["gomock"]
+  pruneopts = "UT"
+  revision = "c34cdb4725f4c3844d095133c6e40e448b86589b"
+  version = "v1.1.1"
+
+[[projects]]
   digest = "1:17fe264ee908afc795734e8c4e63db2accabaf57326dbf21763a7d6b86096260"
   name = "github.com/golang/protobuf"
   packages = [
@@ -1033,6 +1041,7 @@
     "github.com/go-kit/kit/log",
     "github.com/go-kit/kit/log/level",
     "github.com/go-stack/stack",
+    "github.com/golang/mock/gomock",
     "github.com/hashicorp/go-multierror",
     "github.com/kylelemons/godebug/pretty",
     "github.com/mcuadros/go-jsonschema-generator",

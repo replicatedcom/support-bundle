@@ -4,7 +4,7 @@
   analyzer_spec:
     v1:
     - collect_refs:
-      - ref: Ref
+      - ref: _Ref
         selector:
           analyze: kubernetes-resource-list-nodes
       kubernetes.total-memory:

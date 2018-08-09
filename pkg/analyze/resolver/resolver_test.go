@@ -45,7 +45,7 @@ analyze:
 				Analyze: api.Analyze{
 					V1: []v1.AnalyzerSpec{
 						{
-							KubernetesTotalMemory: &v1.KubernetesTotalMemoryAnalyzer{
+							KubernetesTotalMemory: &v1.KubernetesTotalMemoryRequirement{
 								Min: "10Gi",
 							},
 							AnalyzerShared: v1.AnalyzerShared{
@@ -57,7 +57,7 @@ analyze:
 							},
 						},
 						{
-							KubernetesVersion: &v1.KubernetesVersionAnalyzer{
+							KubernetesVersion: &v1.KubernetesVersionRequirement{
 								SemverMin: "1.10.0",
 							},
 							AnalyzerShared: v1.AnalyzerShared{

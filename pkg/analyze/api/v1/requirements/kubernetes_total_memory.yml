@@ -5,7 +5,7 @@ raw:
         statements:
           - '{{repl .Empty}}'
         variables:
-          - Empty: '{{repl not .Ref}}'
+          - Empty: '{{repl not ._Ref}}'
       severity: error
       message: >-
         Failed to detect Kubernetes total memory
@@ -14,7 +14,7 @@ raw:
         statements:
           - '{{repl lt (ParseInt .Memory) (ParseInt .Min)}}'
         variables:
-          - Memory: '{{repl Jq .Ref ".items[].status.capacity.memory" | JqMessagesToStringSlice | SumQuantities}}'
+          - Memory: '{{repl Jq ._Ref ".items[].status.capacity.memory" | JqMessagesToStringSlice | SumQuantities}}'
           - Min: '{{repl ParseQuantity "{{{.Min}}}"}}'
       severity: error
       message: >-

@@ -1,4 +1,4 @@
-.PHONY: docker deps fmt vet _vet lint _lint test _test build _build build-deps dep-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
+.PHONY: docker deps fmt vet _vet lint _lint test _test build _build bindata _mockgen mockgen build-deps dep-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
 
 SHELL := /bin/bash
 SRC = $(shell find . -name "*.go")
@@ -49,7 +49,7 @@ _lint:
 	golint ./pkg/... \
 		| grep -v "should have comment" \
 		| grep -v "comment on exported" \
-		| grep -v "pkg/analyze/api/v1/specs.go" \
+		| grep -v "pkg/analyze/api/v1/requirements.go" \
 		|| :
 	golint ./cmd/... \
 		| grep -v "should have comment" \
@@ -58,21 +58,34 @@ _lint:
 
 test: lint _test
 
-_test:
+_test: bindata
 	go test ./pkg/...
 
 build: test _build
 
 _build: bin/analyze bin/support-bundle
 
-pkg/analyze/api/v1/specs.go: pkg/analyze/api/v1/specs/*
+bindata: pkg/analyze/api/v1/requirements.go
+
+pkg/analyze/api/v1/requirements.go: pkg/analyze/api/v1/requirements/*
 	go-bindata \
 		-pkg v1 \
 		-prefix pkg/analyze/api/v1/ \
-		-o pkg/analyze/api/v1/specs.go \
-		pkg/analyze/api/v1/specs/
+		-o pkg/analyze/api/v1/requirements.go \
+		pkg/analyze/api/v1/requirements/
 
-bin/analyze: $(SRC) pkg/analyze/api/v1/specs.go
+_mockgen:
+	rm -rf pkg/test-mocks
+	mkdir -p pkg/test-mocks/collect
+	mockgen \
+		-destination pkg/test-mocks/collect/bundle/bundlereader.go \
+		-package bundle \
+		github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader \
+		BundleReader
+
+mockgen: _mockgen fmt
+
+bin/analyze: $(SRC) pkg/analyze/api/v1/requirements.go
 	go build \
 		-ldflags " \
 		-X $(PKG)/pkg/version.version=$(VERSION) \
@@ -101,6 +114,7 @@ build-deps:
 	go get golang.org/x/tools/cmd/goimports
 	go get github.com/jteeuwen/go-bindata/go-bindata
 	go get github.com/onsi/ginkgo/ginkgo
+	go get github.com/golang/mock/mockgen
 
 dep-deps:
 	go get github.com/golang/dep/cmd/dep
@@ -122,7 +136,7 @@ ci-upload-coverage: .state/coverage.out .state/cc-test-reporter
 
 e2e: e2e-analyze e2e-supportbundle
 
-e2e-analyze: pkg/analyze/api/v1/specs.go
+e2e-analyze: pkg/analyze/api/v1/requirements.go
 	ginkgo -v -r -p e2e/analyze
 
 e2e-supportbundle: e2e-supportbundle-core e2e-supportbundle-docker
