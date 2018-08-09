@@ -162,7 +162,7 @@ func AssetNames() []string {
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
 	"requirements/kubernetes_total_memory.yml": requirementsKubernetes_total_memoryYml,
-	"requirements/kubernetes_version.yml": requirementsKubernetes_versionYml,
+	"requirements/kubernetes_version.yml":      requirementsKubernetes_versionYml,
 }
 
 // AssetDir returns the file names below a certain
@@ -204,10 +204,11 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"requirements": &bintree{nil, map[string]*bintree{
 		"kubernetes_total_memory.yml": &bintree{requirementsKubernetes_total_memoryYml, map[string]*bintree{}},
-		"kubernetes_version.yml": &bintree{requirementsKubernetes_versionYml, map[string]*bintree{}},
+		"kubernetes_version.yml":      &bintree{requirementsKubernetes_versionYml, map[string]*bintree{}},
 	}},
 }}
 
@@ -257,4 +258,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

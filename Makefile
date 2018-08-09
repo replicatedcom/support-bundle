@@ -78,8 +78,8 @@ _mockgen:
 	rm -rf pkg/test-mocks
 	mkdir -p pkg/test-mocks/collect
 	mockgen \
-		-destination pkg/test-mocks/collect/bundlereader.go \
-		-package mockcollect \
+		-destination pkg/test-mocks/collect/bundle/bundlereader.go \
+		-package bundle \
 		github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader \
 		BundleReader
 

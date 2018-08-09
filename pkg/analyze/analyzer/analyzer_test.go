@@ -13,14 +13,13 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
-	mockcollect "github.com/replicatedcom/support-bundle/pkg/test-mocks/collect"
+	collectbundle "github.com/replicatedcom/support-bundle/pkg/test-mocks/collect/bundle"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAnalyzer_analyze(t *testing.T) {
 	type args struct {
-		ctx          context.Context
 		analyzerSpec v1.AnalyzerSpec
 	}
 	tests := []struct {
@@ -33,7 +32,6 @@ func TestAnalyzer_analyze(t *testing.T) {
 		{
 			name: "basic",
 			args: args{
-				ctx: context.Background(),
 				analyzerSpec: v1.AnalyzerSpec{
 					KubernetesTotalMemory: &v1.KubernetesTotalMemoryRequirement{
 						Min: "10Gi",
@@ -67,7 +65,6 @@ func TestAnalyzer_analyze(t *testing.T) {
 		{
 			name: "basic",
 			args: args{
-				ctx: context.Background(),
 				analyzerSpec: v1.AnalyzerSpec{
 					KubernetesTotalMemory: &v1.KubernetesTotalMemoryRequirement{
 						Min: "1Gi",
@@ -100,7 +97,7 @@ func TestAnalyzer_analyze(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mc := gomock.NewController(t)
-			bundleReader := mockcollect.NewMockBundleReader(mc)
+			bundleReader := collectbundle.NewMockBundleReader(mc)
 			defer mc.Finish()
 
 			ref := tt.args.analyzerSpec.CollectRefs[0]
@@ -114,7 +111,7 @@ func TestAnalyzer_analyze(t *testing.T) {
 			a := &Analyzer{
 				Logger: log.NewNopLogger(),
 			}
-			got, err := a.analyze(tt.args.ctx, bundleReader, tt.args.analyzerSpec)
+			got, err := a.analyze(context.Background(), bundleReader, tt.args.analyzerSpec)
 			if tt.wantErr {
 				require.Error(t, err)
 			} else {
