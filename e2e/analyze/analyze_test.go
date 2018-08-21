@@ -90,7 +90,6 @@ var _ = Describe("integration", func() {
 
 				err = cmd.Execute()
 				if testMetadata.ExpectErr {
-					fmt.Println(err)
 					Expect(err).To(Equal(analyze.ErrSeverityThreshold))
 				} else {
 					Expect(err).NotTo(HaveOccurred())
