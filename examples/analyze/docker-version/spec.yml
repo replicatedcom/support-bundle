@@ -1,0 +1,15 @@
+collect:
+  v1:
+    - docker.version: {}
+      output_dir: /docker/version
+      meta:
+        labels:
+          analyze: docker-version
+
+analyze:
+  v1:
+    - docker.version:
+        semver_minimum: 17.06.0-ce
+      collect_refs:
+        - selector:
+            analyze: docker-version

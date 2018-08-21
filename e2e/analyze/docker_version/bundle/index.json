@@ -1,0 +1,26 @@
+[
+  {
+    "path": "/VERSION.json",
+    "format": "",
+    "size": 75,
+    "spec": {
+      "description": "Support bundle version information",
+      "output_dir": "/",
+      "version": {}
+    }
+  },
+  {
+    "path": "/docker/version/docker_version.json",
+    "format": "",
+    "size": 291,
+    "spec": {
+      "output_dir": "/docker/version",
+      "meta": {
+        "labels": {
+          "analyze": "docker-version"
+        }
+      },
+      "docker.version": {}
+    }
+  }
+]

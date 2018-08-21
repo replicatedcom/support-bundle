@@ -1,0 +1,22 @@
+raw:
+  conditions:
+    - eval:
+        operator: and
+        statements:
+          - '{{repl .Empty}}'
+        variables:
+          - Empty: '{{repl not ._Ref}}'
+      severity: error
+      message: >-
+        Failed to detect Docker version
+    - eval:
+        operator: and
+        statements:
+          - '{{repl DockerServerVersionCompare .ServerVer "{{{.ServerVersionMin}}}" | ge 0}}'
+        variables:
+          - ServerVer: '{{repl Trim (Jq ._Ref ".Version" | JqMessagesToString) "v"}}'
+      severity: error
+      message: >-
+        Your Docker version {{repl .ServerVer}} is less than the minimum
+        required version of {{{.ServerVersionMin}}}
+message: Docker version must be at least {{{.ServerVersionMin}}}
