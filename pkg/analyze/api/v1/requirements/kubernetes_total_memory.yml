@@ -12,13 +12,13 @@ raw:
     - eval:
         operator: and
         statements:
-          - '{{repl lt (ParseInt .Memory) (ParseInt .Min)}}'
+          - '{{repl lt (atoi .Memory) (atoi .Min)}}'
         variables:
-          - Memory: '{{repl Jq ._Ref ".items[].status.capacity.memory" | JqMessagesToStringSlice | SumQuantities}}'
-          - Min: '{{repl ParseQuantity "{{{.Min}}}"}}'
+          - Memory: '{{repl jq ._Ref ".items[].status.capacity.memory" | jqMessagesToStringSlice | sumQuantities}}'
+          - Min: '{{repl parseQuantity "{{{.Min}}}"}}'
       severity: error
       message: >-
-        Total memory for your Kubernetes cluster {{repl (ParseInt .Memory) | FormatQuantity}}B is less than the minimum
+        Total memory for your Kubernetes cluster {{repl (atoi .Memory) | formatQuantity}}B is less than the minimum
         required memory of {{{.Min}}}B
 message: Kubernetes total memory must be at least {{{.Min}}}B
  

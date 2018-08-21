@@ -12,9 +12,9 @@ raw:
     - eval:
         operator: and
         statements:
-          - '{{repl DockerServerVersionCompare .ServerVer "{{{.ServerVersionMin}}}" | ge 0}}'
+          - '{{repl dockerServerVersionCompare .ServerVer "{{{.ServerVersionMin}}}" | ge 0}}'
         variables:
-          - ServerVer: '{{repl Trim (Jq ._Ref ".Version" | JqMessagesToString) "v"}}'
+          - ServerVer: '{{repl jq ._Ref ".Version" | jqMessagesToString | trimPrefix "v"}}'
       severity: error
       message: >-
         Your Docker version {{repl .ServerVer}} is less than the minimum

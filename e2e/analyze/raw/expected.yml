@@ -1,0 +1,36 @@
+- message: Total memory for your Kubernetes cluster 7588608KiB is less than the minimum required memory of 10GiB
+  requirement: Kubernetes total memory must be at least 10GiB
+  severity: error
+  analyzer_spec:
+    v1:
+    - raw:
+        conditions:
+          - eval:
+              operator: and
+              statements:
+                - '{{repl .Empty}}'
+              variables:
+                - Empty: '{{repl not .Nodes}}'
+            severity: error
+            message: >-
+              Failed to detect Kubernetes total memory
+          - eval:
+              operator: and
+              statements:
+                - '{{repl lt (atoi .Memory) (atoi .Min)}}'
+              variables:
+                - Memory: '{{repl jq .Nodes ".items[].status.capacity.memory" | jqMessagesToStringSlice | sumQuantities}}'
+                - Min: '{{repl parseQuantity "10Gi"}}'
+            severity: error
+            message: >-
+              Total memory for your Kubernetes cluster {{repl (atoi .Memory) | formatQuantity}}B is less than the minimum
+              required memory of 10GiB
+      message: Kubernetes total memory must be at least 10GiB
+      collect_refs:
+        - ref: Nodes
+          selector:
+            analyze: kubernetes-resource-list-nodes
+  variables:
+  - Empty: "false"
+  - Memory: "7770734592" # 3794304KiB + 3794304KiB = 7588608KiB = 7770734592B
+    Min: "10737418240"

@@ -12,9 +12,9 @@ raw:
     - eval:
         operator: and
         statements:
-          - '{{repl SemverCompare .Semver "{{{.SemverMin}}}" | ge 0}}'
+          - '{{repl semver "{{{.SemverMin}}}" | (semver .Semver).Compare | ge 0}}'
         variables:
-          - Semver: '{{repl Trim (Jq ._Ref ".gitVersion" | JqMessagesToString) "v"}}'
+          - Semver: '{{repl jq ._Ref ".gitVersion" | jqMessagesToString | trimPrefix "v"}}'
       severity: error
       message: >-
         Your Kubernetes version {{repl .Semver}} is less than the minimum

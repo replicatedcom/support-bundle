@@ -9,22 +9,22 @@ import (
 )
 
 func init() {
-	RegisterFunc("Jq", JSONQuery)
+	RegisterFunc("jq", JSONQuery)
 
-	RegisterFunc("JqMessagesToStringSlice", JqMessagesToStringSlice)
-	RegisterFunc("JqMessagesToString", JqMessagesToString)
+	RegisterFunc("jqMessagesToStringSlice", JqMessagesToStringSlice)
+	RegisterFunc("jqMessagesToString", JqMessagesToString)
 }
 
 func JSONQuery(obj, exp string) []interface{} {
 	seq, err := jqpipe.Eval(obj, exp)
 	if err != nil {
-		Panic("Jq", err)
+		Panic("jq", err)
 	}
 	var out []interface{}
 	for _, s := range seq {
 		o, err := unmarshalArbitraryJSON(s)
 		if err != nil {
-			Panic("Jq", err)
+			Panic("jq", err)
 		}
 		out = append(out, o)
 	}
@@ -33,13 +33,13 @@ func JSONQuery(obj, exp string) []interface{} {
 
 func JqMessagesToString(msgs []interface{}) string {
 	if len(msgs) == 0 {
-		Panic("JqMessagesToString", errors.New("jq messages empty"))
+		Panic("jqMessagesToString", errors.New("jq messages empty"))
 	}
 	switch e := msgs[0].(type) {
 	case string:
 		return e
 	default:
-		Panic("JqMessagesToString", fmt.Errorf("type %T unsupported, must be of type string", msgs[0]))
+		Panic("jqMessagesToString", fmt.Errorf("type %T unsupported, must be of type string", msgs[0]))
 		return "" // panic above
 	}
 }
@@ -51,7 +51,7 @@ func JqMessagesToStringSlice(msgs []interface{}) []string {
 		case string:
 			ss = append(ss, e)
 		default:
-			Panic("JqMessagesToStringSlice", fmt.Errorf("type %T unsupported, must be of type string", msg))
+			Panic("jqMessagesToStringSlice", fmt.Errorf("type %T unsupported, must be of type string", msg))
 		}
 	}
 	return ss

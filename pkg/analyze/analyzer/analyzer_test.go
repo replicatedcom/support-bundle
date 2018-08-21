@@ -100,8 +100,11 @@ func TestAnalyzer_analyze(t *testing.T) {
 			bundleReader := collectbundle.NewMockBundleReader(mc)
 			defer mc.Finish()
 
+			// TODO: support for multiple refs
 			ref := tt.args.analyzerSpec.CollectRefs[0]
-			ref.Ref = "_Ref"
+			if ref.Ref == "" {
+				ref.Ref = "_Ref"
+			}
 
 			bundleReader.
 				EXPECT().

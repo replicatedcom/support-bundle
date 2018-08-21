@@ -6,17 +6,17 @@ import (
 )
 
 func init() {
-	RegisterFunc("SemverCompare", SemverCompare)
+	RegisterFunc("semverCompare", SemverCompare)
 }
 
 func SemverCompare(a, b string) int {
 	aV, err := semver.Parse(a)
 	if err != nil {
-		Panic("SemverCompare", errors.Wrap(err, a))
+		Panic("semverCompare", errors.Wrap(err, a))
 	}
 	bV, err := semver.Parse(b)
 	if err != nil {
-		Panic("SemverCompare", errors.Wrapf(err, b))
+		Panic("semverCompare", errors.Wrapf(err, b))
 	}
 	return aV.Compare(bV)
 }

@@ -151,7 +151,9 @@ func getRawSpec(analyzerSpec v1.AnalyzerSpec, requirement v1.Requirement) (v1.Ra
 		return rawSpec, err
 	}
 	rawSpec.CollectRefs = analyzerSpec.CollectRefs
-	rawSpec.CollectRefs[0].Ref = "_Ref"
+	if rawSpec.CollectRefs[0].Ref == "" {
+		rawSpec.CollectRefs[0].Ref = "_Ref"
+	}
 	rawSpec.Meta = analyzerSpec.Meta
 	if analyzerSpec.Message != "" {
 		rawSpec.Message = analyzerSpec.Message
