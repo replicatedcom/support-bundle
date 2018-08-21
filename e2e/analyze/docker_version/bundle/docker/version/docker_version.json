@@ -1,0 +1,12 @@
+{
+  "Version": "18.06.0-ce",
+  "ApiVersion": "1.38",
+  "MinAPIVersion": "1.12",
+  "GitCommit": "0ffa825",
+  "GoVersion": "go1.10.3",
+  "Os": "linux",
+  "Arch": "amd64",
+  "KernelVersion": "4.9.93-linuxkit-aufs",
+  "Experimental": true,
+  "BuildTime": "2018-07-18T19:13:46.000000000+00:00"
+}
