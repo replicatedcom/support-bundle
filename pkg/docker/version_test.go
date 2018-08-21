@@ -13,10 +13,10 @@ var serverVersionFormatTestCases = []struct {
 	v      ServerVersion
 	result string
 }{
-	{ServerVersion{Timever: &Timever{17, 2, 3, ""}}, "17.02.3"},
-	{ServerVersion{Timever: &Timever{17, 2, 3, "ce"}}, "17.02.3-ce"},
-	{ServerVersion{Timever: &Timever{17, 2, 3, "ee-1"}}, "17.02.3-ee-1"},
-	{ServerVersion{Semver: &semver.Version{1, 2, 3, nil, nil}}, "1.2.3"},
+	{ServerVersion{Timever: &Timever{Year: 17, Month: 2, Patch: 3, Release: ""}}, "17.02.3"},
+	{ServerVersion{Timever: &Timever{Year: 17, Month: 2, Patch: 3, Release: "ce"}}, "17.02.3-ce"},
+	{ServerVersion{Timever: &Timever{Year: 17, Month: 2, Patch: 3, Release: "ee-1"}}, "17.02.3-ee-1"},
+	{ServerVersion{Semver: &semver.Version{Major: 1, Minor: 2, Patch: 3, Pre: nil, Build: nil}}, "1.2.3"},
 	{ServerVersion{}, ""},
 }
 
@@ -55,13 +55,13 @@ var serverVersionCompareTestCases = []struct {
 	v2     ServerVersion
 	result int
 }{
-	{ServerVersion{Timever: &Timever{1, 2, 3, ""}}, ServerVersion{Timever: &Timever{1, 2, 3, ""}}, 0},
-	{ServerVersion{Timever: &Timever{1, 2, 3, "ce"}}, ServerVersion{Timever: &Timever{1, 2, 3, "ee"}}, 0},
-	{ServerVersion{Semver: &semver.Version{1, 2, 3, nil, nil}}, ServerVersion{Semver: &semver.Version{1, 2, 3, nil, nil}}, 0},
-	{ServerVersion{Timever: &Timever{1, 2, 3, ""}}, ServerVersion{Semver: &semver.Version{1, 2, 3, nil, nil}}, 1},
-	{ServerVersion{Semver: &semver.Version{1, 2, 3, nil, nil}}, ServerVersion{Timever: &Timever{1, 2, 3, ""}}, -1},
-	{ServerVersion{Timever: &Timever{1, 2, 3, ""}}, ServerVersion{}, 1},
-	{ServerVersion{Semver: &semver.Version{1, 2, 3, nil, nil}}, ServerVersion{}, 1},
+	{ServerVersion{Timever: &Timever{Year: 1, Month: 2, Patch: 3, Release: ""}}, ServerVersion{Timever: &Timever{Year: 1, Month: 2, Patch: 3, Release: ""}}, 0},
+	{ServerVersion{Timever: &Timever{Year: 1, Month: 2, Patch: 3, Release: "ce"}}, ServerVersion{Timever: &Timever{Year: 1, Month: 2, Patch: 3, Release: "ee"}}, 0},
+	{ServerVersion{Semver: &semver.Version{Major: 1, Minor: 2, Patch: 3, Pre: nil, Build: nil}}, ServerVersion{Semver: &semver.Version{Major: 1, Minor: 2, Patch: 3, Pre: nil, Build: nil}}, 0},
+	{ServerVersion{Timever: &Timever{Year: 1, Month: 2, Patch: 3, Release: ""}}, ServerVersion{Semver: &semver.Version{Major: 1, Minor: 2, Patch: 3, Pre: nil, Build: nil}}, 1},
+	{ServerVersion{Semver: &semver.Version{Major: 1, Minor: 2, Patch: 3, Pre: nil, Build: nil}}, ServerVersion{Timever: &Timever{Year: 1, Month: 2, Patch: 3, Release: ""}}, -1},
+	{ServerVersion{Timever: &Timever{Year: 1, Month: 2, Patch: 3, Release: ""}}, ServerVersion{}, 1},
+	{ServerVersion{Semver: &semver.Version{Major: 1, Minor: 2, Patch: 3, Pre: nil, Build: nil}}, ServerVersion{}, 1},
 	{ServerVersion{}, ServerVersion{}, 0},
 }
 
@@ -78,8 +78,8 @@ func TestServerVersionCompare(t *testing.T) {
 }
 
 func TestServerVersionCompareHelper(t *testing.T) {
-	v := ServerVersion{Semver: &semver.Version{1, 2, 3, nil, nil}}
-	v1 := ServerVersion{Timever: &Timever{1, 2, 3, ""}}
+	v := ServerVersion{Semver: &semver.Version{Major: 1, Minor: 2, Patch: 3, Pre: nil, Build: nil}}
+	v1 := ServerVersion{Timever: &Timever{Year: 1, Month: 2, Patch: 3, Release: ""}}
 	if !v.EQ(v) {
 		t.Errorf("%q should be equal to %q", v, v)
 	}

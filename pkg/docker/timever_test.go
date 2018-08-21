@@ -12,9 +12,9 @@ var timeverFormatTestCases = []struct {
 	v      Timever
 	result string
 }{
-	{Timever{7, 3, 123, ""}, "07.03.123"},
-	{Timever{17, 3, 123, "ce"}, "17.03.123-ce"},
-	{Timever{17, 3, 0, "ee-1"}, "17.03.0-ee-1"},
+	{Timever{Year: 7, Month: 3, Patch: 123, Release: ""}, "07.03.123"},
+	{Timever{Year: 17, Month: 3, Patch: 123, Release: "ce"}, "17.03.123-ce"},
+	{Timever{Year: 17, Month: 3, Patch: 0, Release: "ee-1"}, "17.03.0-ee-1"},
 }
 
 func TestTimeverStringer(t *testing.T) {
@@ -52,20 +52,20 @@ var timeverCompareTestCases = []struct {
 	v2     Timever
 	result int
 }{
-	{Timever{1, 0, 0, ""}, Timever{1, 0, 0, ""}, 0},
-	{Timever{2, 0, 0, ""}, Timever{1, 0, 0, ""}, 1},
-	{Timever{0, 1, 0, ""}, Timever{0, 1, 0, ""}, 0},
-	{Timever{0, 2, 0, ""}, Timever{0, 1, 0, ""}, 1},
-	{Timever{0, 0, 1, ""}, Timever{0, 0, 1, ""}, 0},
-	{Timever{0, 0, 2, ""}, Timever{0, 0, 1, ""}, 1},
-	{Timever{1, 2, 3, ""}, Timever{1, 2, 3, ""}, 0},
-	{Timever{2, 2, 4, ""}, Timever{1, 2, 4, ""}, 1},
-	{Timever{1, 3, 3, ""}, Timever{1, 2, 3, ""}, 1},
-	{Timever{1, 2, 4, ""}, Timever{1, 2, 3, ""}, 1},
-	{Timever{1, 0, 0, ""}, Timever{2, 0, 0, ""}, -1},
-	{Timever{2, 0, 0, ""}, Timever{2, 1, 0, ""}, -1},
-	{Timever{2, 1, 0, ""}, Timever{2, 1, 1, ""}, -1},
-	{Timever{1, 0, 0, "ce"}, Timever{1, 0, 0, "ee"}, 0},
+	{Timever{Year: 1, Month: 0, Patch: 0, Release: ""}, Timever{Year: 1, Month: 0, Patch: 0, Release: ""}, 0},
+	{Timever{Year: 2, Month: 0, Patch: 0, Release: ""}, Timever{Year: 1, Month: 0, Patch: 0, Release: ""}, 1},
+	{Timever{Year: 0, Month: 1, Patch: 0, Release: ""}, Timever{Year: 0, Month: 1, Patch: 0, Release: ""}, 0},
+	{Timever{Year: 0, Month: 2, Patch: 0, Release: ""}, Timever{Year: 0, Month: 1, Patch: 0, Release: ""}, 1},
+	{Timever{Year: 0, Month: 0, Patch: 1, Release: ""}, Timever{Year: 0, Month: 0, Patch: 1, Release: ""}, 0},
+	{Timever{Year: 0, Month: 0, Patch: 2, Release: ""}, Timever{Year: 0, Month: 0, Patch: 1, Release: ""}, 1},
+	{Timever{Year: 1, Month: 2, Patch: 3, Release: ""}, Timever{Year: 1, Month: 2, Patch: 3, Release: ""}, 0},
+	{Timever{Year: 2, Month: 2, Patch: 4, Release: ""}, Timever{Year: 1, Month: 2, Patch: 4, Release: ""}, 1},
+	{Timever{Year: 1, Month: 3, Patch: 3, Release: ""}, Timever{Year: 1, Month: 2, Patch: 3, Release: ""}, 1},
+	{Timever{Year: 1, Month: 2, Patch: 4, Release: ""}, Timever{Year: 1, Month: 2, Patch: 3, Release: ""}, 1},
+	{Timever{Year: 1, Month: 0, Patch: 0, Release: ""}, Timever{Year: 2, Month: 0, Patch: 0, Release: ""}, -1},
+	{Timever{Year: 2, Month: 0, Patch: 0, Release: ""}, Timever{Year: 2, Month: 1, Patch: 0, Release: ""}, -1},
+	{Timever{Year: 2, Month: 1, Patch: 0, Release: ""}, Timever{Year: 2, Month: 1, Patch: 1, Release: ""}, -1},
+	{Timever{Year: 1, Month: 0, Patch: 0, Release: "ce"}, Timever{Year: 1, Month: 0, Patch: 0, Release: "ee"}, 0},
 }
 
 func TestTimeverCompare(t *testing.T) {
@@ -115,33 +115,31 @@ func TestTimeverCompareHelper(t *testing.T) {
 	}
 }
 
-type wrongTimeverFormatTest struct {
+var wrongTimeverFormatTestCases = []struct {
 	str string
-}
-
-var wrongTimeverFormatTests = []wrongTimeverFormatTest{
-	{""},
-	{"."},
-	{"1."},
-	{".1"},
-	{"a.b.c"},
-	{"1.a.b"},
-	{"1.1.a"},
-	{"1.a.1"},
-	{"a.1.1"},
-	{".."},
-	{"1.."},
-	{"1.1."},
-	{"1..1"},
-	{"-1.1.1"},
-	{"1.-1.1"},
-	{"1.1.-1"},
-	{"100.1.1"},
-	{"1.13.1"},
+}{
+	{str: ""},
+	{str: "."},
+	{str: "1."},
+	{str: ".1"},
+	{str: "a.b.c"},
+	{str: "1.a.b"},
+	{str: "1.1.a"},
+	{str: "1.a.1"},
+	{str: "a.1.1"},
+	{str: ".."},
+	{str: "1.."},
+	{str: "1.1."},
+	{str: "1..1"},
+	{str: "-1.1.1"},
+	{str: "1.-1.1"},
+	{str: "1.1.-1"},
+	{str: "100.1.1"},
+	{str: "1.13.1"},
 }
 
 func TestTimeverWrongFormat(t *testing.T) {
-	for _, test := range wrongTimeverFormatTests {
+	for _, test := range wrongTimeverFormatTestCases {
 		if res, err := TimeverParse(test.str); err == nil {
 			t.Errorf("Parsing wrong format version %q, expected error but got %q", test.str, res)
 		}
