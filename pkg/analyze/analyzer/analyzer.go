@@ -106,6 +106,7 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		vars, err := BuildConditionVariables(condition, data)
 		debug.Log(
 			"phase", "analyzer.analyze.condition.build",
+			"vars", spew.Sdump(vars),
 			"err", err)
 		if err != nil {
 			return result, errors.Wrap(err, "build variables")

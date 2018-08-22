@@ -69,7 +69,7 @@ func (r *Resolver) ResolveSpec(
 		inline, errI := client.GetCustomerSpec(customerID)
 		debug.Log(
 			"phase", "doc.customer.retrieve",
-			"error", err)
+			"error", errI)
 		if errI != nil {
 			err = multierror.Append(err, errors.Wrap(errI, "retrieve customer doc"))
 		} else {

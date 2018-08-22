@@ -8,19 +8,20 @@ import (
 
 func EvalCondition(condition v1.Condition, vars map[string]interface{}) (bool, error) {
 	// TODO: will eval be the only condition?
-	if condition.Eval == nil {
+	if condition.Eval == nil || len(condition.Eval.Statements) == 0 {
 		// TODO: what should we return here?
 		return false, nil
 	}
 
-	eval := true
+	eval := condition.Eval.Operator != v1.OrOperator
 	for _, statement := range condition.Eval.Statements {
 		b, err := templates.Bool(statement, vars)
 		if err != nil {
 			return false, errors.Wrapf(err, "execute statement %q", statement)
 		}
 		if condition.Eval.Operator == v1.OrOperator {
-			if b == true {
+			eval = eval || b
+			if eval == true {
 				// short circuit
 				return true, nil
 			}
