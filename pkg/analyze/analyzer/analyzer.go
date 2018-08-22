@@ -179,6 +179,8 @@ func collectRefData(bundleReader bundlereader.BundleReader, refs []meta.Ref) (ma
 				return data, errors.Wrapf(err, "ref %s", ref.Ref)
 			}
 			data[ref.Ref] = string(b)
+		} else {
+			data[ref.Ref] = ""
 		}
 	}
 	return data, nil
