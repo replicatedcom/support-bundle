@@ -9,7 +9,7 @@ collect:
 analyze:
   v1:
     - docker.version:
-        semver_minimum: 17.06.0-ce
+        server_version_minimum: 17.06.2
       collect_refs:
         - selector:
             analyze: docker-version

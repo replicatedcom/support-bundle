@@ -1,5 +1,5 @@
-- message: Your Docker version 18.06.0-ce is less than the minimum required version of 18.06.2
-  requirement: Docker version must be at least 18.06.2
+- message: Your Docker version 18.06.0-ce is less than the minimum required version of 18.09.0
+  requirement: Docker version must be at least 18.09.0
   severity: error
   analyzer_spec:
     v1:
@@ -8,7 +8,7 @@
         selector:
           analyze: docker-version
       docker.version:
-        server_version_minimum: 18.06.2
+        server_version_minimum: 18.09.0
   variables:
   - Empty: "false"
   - ServerVer: 18.06.0-ce
