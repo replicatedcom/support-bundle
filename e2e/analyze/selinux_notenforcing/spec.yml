@@ -1,0 +1,6 @@
+analyze:
+  v1:
+    - selinux.notenforcing: {}
+      collect_refs:
+        - selector:
+            analyze: cmd-selinux-status

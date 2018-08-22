@@ -1,0 +1,8 @@
+collect:
+  v1:
+    - os.run-command:
+        name: sestatus
+      output_dir: /commands/sestatus
+      meta:
+        labels:
+          analyze: cmd-selinux-status

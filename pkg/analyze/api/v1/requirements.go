@@ -3,6 +3,7 @@
 // pkg/analyze/api/v1/requirements/docker_version.yml
 // pkg/analyze/api/v1/requirements/kubernetes_total_memory.yml
 // pkg/analyze/api/v1/requirements/kubernetes_version.yml
+// pkg/analyze/api/v1/requirements/selinux_notenforcing.yml
 // DO NOT EDIT!
 
 package v1
@@ -85,7 +86,7 @@ func requirementsDocker_versionYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "requirements/docker_version.yml", size: 731, mode: os.FileMode(420), modTime: time.Unix(1534879648, 0)}
+	info := bindataFileInfo{name: "requirements/docker_version.yml", size: 731, mode: os.FileMode(420), modTime: time.Unix(1534909534, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -105,7 +106,7 @@ func requirementsKubernetes_total_memoryYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "requirements/kubernetes_total_memory.yml", size: 806, mode: os.FileMode(420), modTime: time.Unix(1534878506, 0)}
+	info := bindataFileInfo{name: "requirements/kubernetes_total_memory.yml", size: 806, mode: os.FileMode(420), modTime: time.Unix(1534909534, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -125,7 +126,27 @@ func requirementsKubernetes_versionYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "requirements/kubernetes_version.yml", size: 715, mode: os.FileMode(420), modTime: time.Unix(1534880822, 0)}
+	info := bindataFileInfo{name: "requirements/kubernetes_version.yml", size: 715, mode: os.FileMode(420), modTime: time.Unix(1534909534, 0)}
+	a := &asset{bytes: bytes, info: info}
+	return a, nil
+}
+
+var _requirementsSelinux_notenforcingYml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xac\x52\xc1\x6e\xd4\x30\x10\xbd\xef\x57\x8c\x22\xa4\xb6\xaa\x9a\x03\xc7\x1c\xe0\x80\xda\x13\x48\x88\xe5\x58\x81\xdc\xf8\x35\x19\xc9\xb1\xc3\xcc\x24\x74\xb5\xec\xbf\x23\x27\xac\x17\x2d\x07\x16\x89\x9c\x9c\xf1\x7b\x33\xef\x3d\x8f\xb8\xef\xcd\x86\xa8\x4d\xd1\xb3\x71\x8a\x9a\xff\x88\xee\x08\xb3\x0b\xeb\x39\x7f\x69\x84\x38\x4b\xd2\x90\x8b\xbe\x54\xd5\x9c\x61\x40\x34\x3d\x21\x33\xf7\x6a\xbf\x17\x8c\x81\xea\xfb\x61\xb4\xdd\xe1\x70\x55\x6e\x67\x27\xec\x9e\x02\xce\x08\x0b\xae\x29\xbc\x98\x8c\xea\xaf\x9f\xf0\x7c\xa2\x2a\x66\x08\x67\x10\x44\x92\xfc\xaa\x0e\x50\x75\x1d\x1a\x7a\x73\x57\xfa\x3d\x38\x0e\xf0\x64\x89\x3c\x0c\xad\xd1\xf6\xfe\x3d\xc7\xe9\x85\x86\xe4\xf1\x1f\xcd\xe1\x1b\xd5\x5b\x73\x36\x29\x55\x88\xd9\x94\xaf\x7e\xb7\x7a\x8e\xfd\x90\x3c\x32\xf2\x39\x49\xcb\xb1\xab\x2e\x88\x65\x6d\x7f\xca\x45\xd0\xe1\x65\x3b\x06\x36\xaa\x9a\xc7\x47\xbd\xad\xe8\x7a\xa9\x3d\x70\xf4\x54\x5d\xbf\x1d\x6e\xbe\x1c\xdd\xea\xca\xad\x6f\x5f\x55\x6b\x96\x37\xf4\x9a\x7e\x50\x70\x6a\xe7\x2a\xb3\xb2\x7f\x1b\xf2\x6e\x12\x41\xb4\x25\xd2\xbf\x8c\xb8\xfc\xe1\x8e\xca\x59\x89\x23\x95\xa0\x96\x21\x35\x7d\xee\x59\x97\x63\xbe\x6f\xd7\xf9\x61\x47\x53\xd4\x69\x1c\x93\x18\x7c\x4d\x1f\x03\x9c\x82\xc0\xd6\x43\xc8\xb3\xe6\x4c\x4b\xdf\x24\xd4\xf6\x2e\x76\x20\xeb\xb1\xb6\xb2\x44\x23\x64\x60\x55\x9e\x51\x6f\x8a\xaa\xb2\x32\x93\xda\xb2\x8d\x4f\xf8\x53\xd3\xe6\x67\x00\x00\x00\xff\xff\x5a\x92\xa7\xc9\x3c\x03\x00\x00")
+
+func requirementsSelinux_notenforcingYmlBytes() ([]byte, error) {
+	return bindataRead(
+		_requirementsSelinux_notenforcingYml,
+		"requirements/selinux_notenforcing.yml",
+	)
+}
+
+func requirementsSelinux_notenforcingYml() (*asset, error) {
+	bytes, err := requirementsSelinux_notenforcingYmlBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "requirements/selinux_notenforcing.yml", size: 828, mode: os.FileMode(420), modTime: time.Unix(1534910877, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -182,9 +203,10 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"requirements/docker_version.yml":          requirementsDocker_versionYml,
+	"requirements/docker_version.yml": requirementsDocker_versionYml,
 	"requirements/kubernetes_total_memory.yml": requirementsKubernetes_total_memoryYml,
-	"requirements/kubernetes_version.yml":      requirementsKubernetes_versionYml,
+	"requirements/kubernetes_version.yml": requirementsKubernetes_versionYml,
+	"requirements/selinux_notenforcing.yml": requirementsSelinux_notenforcingYml,
 }
 
 // AssetDir returns the file names below a certain
@@ -226,12 +248,12 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
-
 var _bintree = &bintree{nil, map[string]*bintree{
 	"requirements": &bintree{nil, map[string]*bintree{
-		"docker_version.yml":          &bintree{requirementsDocker_versionYml, map[string]*bintree{}},
+		"docker_version.yml": &bintree{requirementsDocker_versionYml, map[string]*bintree{}},
 		"kubernetes_total_memory.yml": &bintree{requirementsKubernetes_total_memoryYml, map[string]*bintree{}},
-		"kubernetes_version.yml":      &bintree{requirementsKubernetes_versionYml, map[string]*bintree{}},
+		"kubernetes_version.yml": &bintree{requirementsKubernetes_versionYml, map[string]*bintree{}},
+		"selinux_notenforcing.yml": &bintree{requirementsSelinux_notenforcingYml, map[string]*bintree{}},
 	}},
 }}
 
@@ -281,3 +303,4 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
+

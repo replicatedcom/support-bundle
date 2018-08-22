@@ -1,0 +1,14 @@
+- message: SELinux is in enforcing mode. This mode is currently unsupported. Please either disable SELinux or change the mode to permissive.
+  requirement: SELinux must not be in enforcing mode
+  severity: error
+  analyzer_spec:
+    v1:
+    - collect_refs:
+      - ref: _Ref
+        selector:
+          analyze: cmd-selinux-status
+      selinux.notenforcing: {}
+  variables:
+  - Empty: "false"
+  - Status: enabled
+    Mode: enforcing

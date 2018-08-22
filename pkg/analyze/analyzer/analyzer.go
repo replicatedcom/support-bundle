@@ -2,6 +2,7 @@ package analyzer
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 
 	"github.com/go-kit/kit/log"
@@ -111,6 +112,7 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 			return result, errors.Wrap(err, "build variables")
 		}
 		result.Vars = append(result.Vars, vars)
+		fmt.Println(result.Vars)
 
 		ok, err := EvalCondition(condition, vars)
 		debug.Log(

@@ -11,6 +11,8 @@ type AnalyzerSpec struct {
 
 	Raw *RawRequirement `json:"raw,omitempty" yaml:"raw,omitempty" hcl:"raw,omitempty"`
 
+	SelinuxNotEnforcing *SelinuxNotEnforcingRequirement `json:"selinux.notenforcing,omitempty" yaml:"selinux.notenforcing,omitempty" hcl:"selinux.notenforcing,omitempty"`
+
 	DockerVersion *DockerVersionRequirement `json:"docker.version,omitempty" yaml:"docker.version,omitempty" hcl:"docker.version,omitempty"`
 
 	KubernetesVersion     *KubernetesVersionRequirement     `json:"kubernetes.version,omitempty" yaml:"kubernetes.version,omitempty" hcl:"kubernetes.version,omitempty"`
@@ -36,6 +38,9 @@ func (a AnalyzerSpec) GetRequirement() Requirement {
 
 	case a.Raw != nil:
 		return a.Raw
+
+	case a.SelinuxNotEnforcing != nil:
+		return a.SelinuxNotEnforcing
 
 	case a.DockerVersion != nil:
 		return a.DockerVersion
