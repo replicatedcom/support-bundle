@@ -9,6 +9,8 @@ import (
 type AnalyzerSpec struct {
 	AnalyzerShared `json:",inline" yaml:",inline" hcl:",inline"`
 
+	Raw *RawRequirement `json:"raw,omitempty" yaml:"raw,omitempty" hcl:"raw,omitempty"`
+
 	DockerVersion *DockerVersionRequirement `json:"docker.version,omitempty" yaml:"docker.version,omitempty" hcl:"docker.version,omitempty"`
 
 	KubernetesVersion     *KubernetesVersionRequirement     `json:"kubernetes.version,omitempty" yaml:"kubernetes.version,omitempty" hcl:"kubernetes.version,omitempty"`
@@ -31,6 +33,10 @@ type AnalyzerShared struct {
 
 func (a AnalyzerSpec) GetRequirement() Requirement {
 	switch {
+
+	case a.Raw != nil:
+		return a.Raw
+
 	case a.DockerVersion != nil:
 		return a.DockerVersion
 
@@ -38,6 +44,7 @@ func (a AnalyzerSpec) GetRequirement() Requirement {
 		return a.KubernetesVersion
 	case a.KubernetesTotalMemory != nil:
 		return a.KubernetesTotalMemory
+
 	default:
 		return nil
 	}

@@ -6,17 +6,17 @@ import (
 )
 
 func init() {
-	RegisterFunc("DockerServerVersionCompare", DockerServerVersionCompare)
+	RegisterFunc("dockerServerVersionCompare", DockerServerVersionCompare)
 }
 
 func DockerServerVersionCompare(a, b string) int {
 	aV, err := docker.ParseServerVersion(a)
 	if err != nil {
-		Panic("DockerServerVersionCompare", errors.Wrap(err, a))
+		Panic("dockerServerVersionCompare", errors.Wrap(err, a))
 	}
 	bV, err := docker.ParseServerVersion(b)
 	if err != nil {
-		Panic("DockerServerVersionCompare", errors.Wrapf(err, b))
+		Panic("dockerServerVersionCompare", errors.Wrapf(err, b))
 	}
 	return aV.Compare(bV)
 }

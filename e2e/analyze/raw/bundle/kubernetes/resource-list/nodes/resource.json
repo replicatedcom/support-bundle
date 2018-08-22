@@ -1,0 +1,850 @@
+{
+  "metadata": {
+    "selfLink": "/api/v1/nodes",
+    "resourceVersion": "10205412"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "gke-dex-console-skaffold-default-pool-498e5cf9-ncb5",
+        "selfLink": "/api/v1/nodes/gke-dex-console-skaffold-default-pool-498e5cf9-ncb5",
+        "uid": "93525f29-889d-11e8-910f-42010a800109",
+        "resourceVersion": "10205412",
+        "creationTimestamp": "2018-07-16T02:11:39Z",
+        "labels": {
+          "beta.kubernetes.io/arch": "amd64",
+          "beta.kubernetes.io/fluentd-ds-ready": "true",
+          "beta.kubernetes.io/instance-type": "n1-standard-1",
+          "beta.kubernetes.io/os": "linux",
+          "cloud.google.com/gke-nodepool": "default-pool",
+          "cloud.google.com/gke-preemptible": "true",
+          "failure-domain.beta.kubernetes.io/region": "us-central1",
+          "failure-domain.beta.kubernetes.io/zone": "us-central1-b",
+          "kubernetes.io/hostname": "gke-dex-console-skaffold-default-pool-498e5cf9-ncb5"
+        },
+        "annotations": {
+          "node.alpha.kubernetes.io/ttl": "0",
+          "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+        }
+      },
+      "spec": {
+        "podCIDR": "10.28.53.0/24",
+        "providerID": "gce://replicated-qa/us-central1-b/gke-dex-console-skaffold-default-pool-498e5cf9-ncb5",
+        "externalID": "7907503478193668178"
+      },
+      "status": {
+        "capacity": {
+          "cpu": "1",
+          "memory": "3794304Ki",
+          "pods": "110"
+        },
+        "allocatable": {
+          "cpu": "940m",
+          "memory": "2708864Ki",
+          "pods": "110"
+        },
+        "conditions": [
+          {
+            "type": "KernelDeadlock",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T19:56:53Z",
+            "lastTransitionTime": "2018-07-16T02:11:32Z",
+            "reason": "KernelHasNoDeadlock",
+            "message": "kernel has no deadlock"
+          },
+          {
+            "type": "NetworkUnavailable",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T02:11:55Z",
+            "lastTransitionTime": "2018-07-16T02:11:55Z",
+            "reason": "RouteCreated",
+            "message": "RouteController created a route"
+          },
+          {
+            "type": "OutOfDisk",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T19:57:38Z",
+            "lastTransitionTime": "2018-07-16T02:11:39Z",
+            "reason": "KubeletHasSufficientDisk",
+            "message": "kubelet has sufficient disk space available"
+          },
+          {
+            "type": "MemoryPressure",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T19:57:38Z",
+            "lastTransitionTime": "2018-07-16T02:11:39Z",
+            "reason": "KubeletHasSufficientMemory",
+            "message": "kubelet has sufficient memory available"
+          },
+          {
+            "type": "DiskPressure",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T19:57:38Z",
+            "lastTransitionTime": "2018-07-16T02:11:39Z",
+            "reason": "KubeletHasNoDiskPressure",
+            "message": "kubelet has no disk pressure"
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "lastHeartbeatTime": "2018-07-16T19:57:38Z",
+            "lastTransitionTime": "2018-07-16T02:11:59Z",
+            "reason": "KubeletReady",
+            "message": "kubelet is posting ready status. AppArmor enabled"
+          }
+        ],
+        "addresses": [
+          {
+            "type": "InternalIP",
+            "address": "10.128.0.4"
+          },
+          {
+            "type": "ExternalIP",
+            "address": "35.239.41.175"
+          },
+          {
+            "type": "Hostname",
+            "address": "gke-dex-console-skaffold-default-pool-498e5cf9-ncb5"
+          }
+        ],
+        "daemonEndpoints": {
+          "kubeletEndpoint": {
+            "Port": 10250
+          }
+        },
+        "nodeInfo": {
+          "machineID": "c5631ae84722167d6effffdf58352ab2",
+          "systemUUID": "C5631AE8-4722-167D-6EFF-FFDF58352AB2",
+          "bootID": "3785f331-5cd4-4256-8a7e-0e3f6d88e709",
+          "kernelVersion": "4.4.111+",
+          "osImage": "Container-Optimized OS from Google",
+          "containerRuntimeVersion": "docker://17.3.2",
+          "kubeletVersion": "v1.8.8-gke.0",
+          "kubeProxyVersion": "v1.8.8-gke.0",
+          "operatingSystem": "linux",
+          "architecture": "amd64"
+        },
+        "images": [
+          {
+            "names": [
+              "sentry@sha256:741fd9b018742e353c793f3d97edc6a6cd58f07c9635818e399ee3926c8c4a0d",
+              "sentry:8.22"
+            ],
+            "sizeBytes": 541934121
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/node-problem-detector@sha256:f95cab985c26b2f46e9bd43283e0bfa88860c14e0fb0649266babe8b65e9eb2b",
+              "eu.gcr.io/google_containers/node-problem-detector@sha256:f95cab985c26b2f46e9bd43283e0bfa88860c14e0fb0649266babe8b65e9eb2b",
+              "gcr.io/google_containers/node-problem-detector@sha256:f95cab985c26b2f46e9bd43283e0bfa88860c14e0fb0649266babe8b65e9eb2b",
+              "asia.gcr.io/google_containers/node-problem-detector:v0.4.1",
+              "eu.gcr.io/google_containers/node-problem-detector:v0.4.1"
+            ],
+            "sizeBytes": 286561110
+          },
+          {
+            "names": [
+              "postgres@sha256:5284ba74a1065e34cf1bfccd64caf8c497c8dc623d6207b060b5ebd369427d34",
+              "postgres:9.6.2"
+            ],
+            "sizeBytes": 266926469
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/kube-registry-proxy@sha256:1040f25a5273de0d72c54865a8efd47e3292de9fb8e5353e3fa76736b854f2da",
+              "eu.gcr.io/google_containers/kube-registry-proxy@sha256:1040f25a5273de0d72c54865a8efd47e3292de9fb8e5353e3fa76736b854f2da",
+              "gcr.io/google_containers/kube-registry-proxy@sha256:1040f25a5273de0d72c54865a8efd47e3292de9fb8e5353e3fa76736b854f2da",
+              "asia.gcr.io/google_containers/kube-registry-proxy:0.4",
+              "eu.gcr.io/google_containers/kube-registry-proxy:0.4"
+            ],
+            "sizeBytes": 188200073
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/fluentd-gcp@sha256:31a2043cc4dc93208c843cc44d1325f7ebf0d18a863bec738fe62b56965dbf62",
+              "eu.gcr.io/google-containers/fluentd-gcp@sha256:31a2043cc4dc93208c843cc44d1325f7ebf0d18a863bec738fe62b56965dbf62",
+              "gcr.io/google-containers/fluentd-gcp@sha256:31a2043cc4dc93208c843cc44d1325f7ebf0d18a863bec738fe62b56965dbf62",
+              "asia.gcr.io/google-containers/fluentd-gcp:2.0.9",
+              "eu.gcr.io/google-containers/fluentd-gcp:2.0.9"
+            ],
+            "sizeBytes": 172402486
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/fluentd-elasticsearch@sha256:93d41d50a62e51b0fbebabf3c6b82a98075659a4330c03e8d00f4648702a6135",
+              "eu.gcr.io/google-containers/fluentd-elasticsearch@sha256:93d41d50a62e51b0fbebabf3c6b82a98075659a4330c03e8d00f4648702a6135",
+              "gcr.io/google-containers/fluentd-elasticsearch@sha256:93d41d50a62e51b0fbebabf3c6b82a98075659a4330c03e8d00f4648702a6135",
+              "asia.gcr.io/google-containers/fluentd-elasticsearch:v2.0.1",
+              "eu.gcr.io/google-containers/fluentd-elasticsearch:v2.0.1"
+            ],
+            "sizeBytes": 134041284
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/kubernetes-dashboard-amd64@sha256:71a0de5c6a21cb0c2fbcad71a4fef47acd3e61cd78109822d35e1742f9d8140d",
+              "eu.gcr.io/google_containers/kubernetes-dashboard-amd64@sha256:71a0de5c6a21cb0c2fbcad71a4fef47acd3e61cd78109822d35e1742f9d8140d",
+              "gcr.io/google_containers/kubernetes-dashboard-amd64@sha256:71a0de5c6a21cb0c2fbcad71a4fef47acd3e61cd78109822d35e1742f9d8140d",
+              "asia.gcr.io/google_containers/kubernetes-dashboard-amd64:v1.8.0",
+              "eu.gcr.io/google_containers/kubernetes-dashboard-amd64:v1.8.0"
+            ],
+            "sizeBytes": 119155776
+          },
+          {
+            "names": [
+              "gcr.io/google_containers/kube-proxy:v1.8.8-gke.0"
+            ],
+            "sizeBytes": 98230569
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/event-exporter@sha256:0c86fa393401fe57843be1aa3180cd7fd339ef06fa18234ae5b139a85cfa55ec",
+              "eu.gcr.io/google-containers/event-exporter@sha256:0c86fa393401fe57843be1aa3180cd7fd339ef06fa18234ae5b139a85cfa55ec",
+              "gcr.io/google-containers/event-exporter@sha256:0c86fa393401fe57843be1aa3180cd7fd339ef06fa18234ae5b139a85cfa55ec",
+              "asia.gcr.io/google-containers/event-exporter:v0.1.7",
+              "eu.gcr.io/google-containers/event-exporter:v0.1.7"
+            ],
+            "sizeBytes": 91062115
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/kube-addon-manager@sha256:90d80609f044c121b0110d71ac02432cf4c0415e8204f25025666179cbb72387",
+              "eu.gcr.io/google-containers/kube-addon-manager@sha256:90d80609f044c121b0110d71ac02432cf4c0415e8204f25025666179cbb72387",
+              "gcr.io/google-containers/kube-addon-manager@sha256:90d80609f044c121b0110d71ac02432cf4c0415e8204f25025666179cbb72387",
+              "asia.gcr.io/google-containers/kube-addon-manager:v6.5",
+              "eu.gcr.io/google-containers/kube-addon-manager:v6.5"
+            ],
+            "sizeBytes": 79527574
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/rescheduler@sha256:66a900b01c70d695e112d8fa7779255640aab77ccc31f2bb661e6c674fe0d162",
+              "eu.gcr.io/google-containers/rescheduler@sha256:66a900b01c70d695e112d8fa7779255640aab77ccc31f2bb661e6c674fe0d162",
+              "gcr.io/google-containers/rescheduler@sha256:66a900b01c70d695e112d8fa7779255640aab77ccc31f2bb661e6c674fe0d162",
+              "asia.gcr.io/google-containers/rescheduler:v0.3.1",
+              "eu.gcr.io/google-containers/rescheduler:v0.3.1"
+            ],
+            "sizeBytes": 74659350
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/heapster-amd64@sha256:8e04183590f937c274fb95c1397ea0c6b919645c765862e2cc9cb80f097a8fb4",
+              "eu.gcr.io/google_containers/heapster-amd64@sha256:8e04183590f937c274fb95c1397ea0c6b919645c765862e2cc9cb80f097a8fb4",
+              "gcr.io/google_containers/heapster-amd64@sha256:8e04183590f937c274fb95c1397ea0c6b919645c765862e2cc9cb80f097a8fb4",
+              "asia.gcr.io/google_containers/heapster-amd64:v1.4.3",
+              "eu.gcr.io/google_containers/heapster-amd64:v1.4.3"
+            ],
+            "sizeBytes": 73412845
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/metadata-proxy@sha256:279ed21137afcaba2d1e546cc859d3a6c8061a5daeb2f9e854a4825d2cb1fa6f",
+              "eu.gcr.io/google-containers/metadata-proxy@sha256:279ed21137afcaba2d1e546cc859d3a6c8061a5daeb2f9e854a4825d2cb1fa6f",
+              "gcr.io/google-containers/metadata-proxy@sha256:279ed21137afcaba2d1e546cc859d3a6c8061a5daeb2f9e854a4825d2cb1fa6f",
+              "asia.gcr.io/google-containers/metadata-proxy:0.1.3",
+              "eu.gcr.io/google-containers/metadata-proxy:0.1.3"
+            ],
+            "sizeBytes": 61787317
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/prometheus-to-sd@sha256:5831390762c790b0375c202579fd41dd5f40c71950f7538adbe14b0c16f35d56",
+              "eu.gcr.io/google-containers/prometheus-to-sd@sha256:5831390762c790b0375c202579fd41dd5f40c71950f7538adbe14b0c16f35d56",
+              "gcr.io/google-containers/prometheus-to-sd@sha256:5831390762c790b0375c202579fd41dd5f40c71950f7538adbe14b0c16f35d56",
+              "asia.gcr.io/google-containers/prometheus-to-sd:v0.2.2",
+              "eu.gcr.io/google-containers/prometheus-to-sd:v0.2.2"
+            ],
+            "sizeBytes": 55207051
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/cpvpa-amd64@sha256:cfe7b0a11c9c8e18c87b1eb34fef9a7cbb8480a8da11fc2657f78dbf4739f869",
+              "eu.gcr.io/google_containers/cpvpa-amd64@sha256:cfe7b0a11c9c8e18c87b1eb34fef9a7cbb8480a8da11fc2657f78dbf4739f869",
+              "gcr.io/google_containers/cpvpa-amd64@sha256:cfe7b0a11c9c8e18c87b1eb34fef9a7cbb8480a8da11fc2657f78dbf4739f869",
+              "asia.gcr.io/google_containers/cpvpa-amd64:v0.6.0",
+              "eu.gcr.io/google_containers/cpvpa-amd64:v0.6.0"
+            ],
+            "sizeBytes": 51781526
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:791836c2a2471ecb23a975cf12835f2a35ada3f9d841f3f1a363b83eca99e2aa",
+              "eu.gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:791836c2a2471ecb23a975cf12835f2a35ada3f9d841f3f1a363b83eca99e2aa",
+              "gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:791836c2a2471ecb23a975cf12835f2a35ada3f9d841f3f1a363b83eca99e2aa",
+              "asia.gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.1.2",
+              "eu.gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.1.2"
+            ],
+            "sizeBytes": 50481722
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:003f98d9f411ddfa6ff6d539196355e03ddd69fa4ed38c7ffb8fec6f729afe2d",
+              "eu.gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:003f98d9f411ddfa6ff6d539196355e03ddd69fa4ed38c7ffb8fec6f729afe2d",
+              "gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:003f98d9f411ddfa6ff6d539196355e03ddd69fa4ed38c7ffb8fec6f729afe2d",
+              "asia.gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.1.2-r2",
+              "eu.gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.1.2-r2"
+            ],
+            "sizeBytes": 49644153
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/k8s-dns-kube-dns-amd64@sha256:1a3fc069de481ae690188f6f1ba4664b5cc7760af37120f70c86505c79eea61d",
+              "eu.gcr.io/google_containers/k8s-dns-kube-dns-amd64@sha256:1a3fc069de481ae690188f6f1ba4664b5cc7760af37120f70c86505c79eea61d",
+              "gcr.io/google_containers/k8s-dns-kube-dns-amd64@sha256:1a3fc069de481ae690188f6f1ba4664b5cc7760af37120f70c86505c79eea61d",
+              "asia.gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.5",
+              "eu.gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.5"
+            ],
+            "sizeBytes": 49383083
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/ip-masq-agent-amd64@sha256:ea5f1b4eacb38561fb6806cf414adb7b67eda578bd70a94f4b5c90d09e2c7582",
+              "eu.gcr.io/google-containers/ip-masq-agent-amd64@sha256:ea5f1b4eacb38561fb6806cf414adb7b67eda578bd70a94f4b5c90d09e2c7582",
+              "gcr.io/google-containers/ip-masq-agent-amd64@sha256:ea5f1b4eacb38561fb6806cf414adb7b67eda578bd70a94f4b5c90d09e2c7582",
+              "asia.gcr.io/google-containers/ip-masq-agent-amd64:v2.0.2",
+              "eu.gcr.io/google-containers/ip-masq-agent-amd64:v2.0.2"
+            ],
+            "sizeBytes": 48494918
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/glbc@sha256:1903de448fe877ae9219517d577c254d12c4555bc70b2995962e6809ae8869d5",
+              "eu.gcr.io/google_containers/glbc@sha256:1903de448fe877ae9219517d577c254d12c4555bc70b2995962e6809ae8869d5",
+              "gcr.io/google_containers/glbc@sha256:1903de448fe877ae9219517d577c254d12c4555bc70b2995962e6809ae8869d5",
+              "asia.gcr.io/google_containers/glbc:0.9.7",
+              "eu.gcr.io/google_containers/glbc:0.9.7"
+            ],
+            "sizeBytes": 44056760
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/metrics-server-amd64@sha256:49a9f12f7067d11f42c803dbe61ed2c1299959ad85cb315b25ff7eef8e6b8892",
+              "eu.gcr.io/google_containers/metrics-server-amd64@sha256:49a9f12f7067d11f42c803dbe61ed2c1299959ad85cb315b25ff7eef8e6b8892",
+              "gcr.io/google_containers/metrics-server-amd64@sha256:49a9f12f7067d11f42c803dbe61ed2c1299959ad85cb315b25ff7eef8e6b8892",
+              "asia.gcr.io/google_containers/metrics-server-amd64:v0.2.1",
+              "eu.gcr.io/google_containers/metrics-server-amd64:v0.2.1"
+            ],
+            "sizeBytes": 42541759
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/k8s-dns-sidecar-amd64@sha256:9aab42bf6a2a068b797fe7d91a5d8d915b10dbbc3d6f2b10492848debfba6044",
+              "eu.gcr.io/google_containers/k8s-dns-sidecar-amd64@sha256:9aab42bf6a2a068b797fe7d91a5d8d915b10dbbc3d6f2b10492848debfba6044",
+              "gcr.io/google_containers/k8s-dns-sidecar-amd64@sha256:9aab42bf6a2a068b797fe7d91a5d8d915b10dbbc3d6f2b10492848debfba6044",
+              "asia.gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.5",
+              "eu.gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.5"
+            ],
+            "sizeBytes": 41814849
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64@sha256:46b933bb70270c8a02fa6b6f87d440f6f1fce1a5a2a719e164f83f7b109f7544",
+              "eu.gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64@sha256:46b933bb70270c8a02fa6b6f87d440f6f1fce1a5a2a719e164f83f7b109f7544",
+              "gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64@sha256:46b933bb70270c8a02fa6b6f87d440f6f1fce1a5a2a719e164f83f7b109f7544",
+              "asia.gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.5",
+              "eu.gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.5"
+            ],
+            "sizeBytes": 41419289
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/addon-resizer@sha256:dcec9a5c2e20b8df19f3e9eeb87d9054a9e94e71479b935d5cfdbede9ce15895",
+              "eu.gcr.io/google_containers/addon-resizer@sha256:dcec9a5c2e20b8df19f3e9eeb87d9054a9e94e71479b935d5cfdbede9ce15895",
+              "gcr.io/google_containers/addon-resizer@sha256:dcec9a5c2e20b8df19f3e9eeb87d9054a9e94e71479b935d5cfdbede9ce15895",
+              "asia.gcr.io/google_containers/addon-resizer:1.7",
+              "eu.gcr.io/google_containers/addon-resizer:1.7"
+            ],
+            "sizeBytes": 38983736
+          },
+          {
+            "names": [
+              "alpine@sha256:18959d9c6bb2acd6d07d837dc52e6467ab0f7282b36f12322c90f29be101e36d",
+              "alpine:3.6"
+            ],
+            "sizeBytes": 4023449
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/defaultbackend@sha256:fb91f9395ddf44df1ca3adf68b25dcbc269e5d08ba14a40de9abdedafacf93d4",
+              "eu.gcr.io/google_containers/defaultbackend@sha256:fb91f9395ddf44df1ca3adf68b25dcbc269e5d08ba14a40de9abdedafacf93d4",
+              "gcr.io/google_containers/defaultbackend@sha256:fb91f9395ddf44df1ca3adf68b25dcbc269e5d08ba14a40de9abdedafacf93d4",
+              "asia.gcr.io/google_containers/defaultbackend:1.3",
+              "eu.gcr.io/google_containers/defaultbackend:1.3"
+            ],
+            "sizeBytes": 3618880
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/busybox@sha256:545e6a6310a27636260920bc07b994a299b6708a1b26910cfefd335fdfb60d2b",
+              "eu.gcr.io/google_containers/busybox@sha256:545e6a6310a27636260920bc07b994a299b6708a1b26910cfefd335fdfb60d2b",
+              "gcr.io/google_containers/busybox@sha256:545e6a6310a27636260920bc07b994a299b6708a1b26910cfefd335fdfb60d2b",
+              "asia.gcr.io/google_containers/busybox:1.27",
+              "eu.gcr.io/google_containers/busybox:1.27"
+            ],
+            "sizeBytes": 1129289
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/busybox@sha256:4bdd623e848417d96127e16037743f0cd8b528c026e9175e22a84f639eca58ff",
+              "eu.gcr.io/google_containers/busybox@sha256:4bdd623e848417d96127e16037743f0cd8b528c026e9175e22a84f639eca58ff",
+              "gcr.io/google_containers/busybox@sha256:4bdd623e848417d96127e16037743f0cd8b528c026e9175e22a84f639eca58ff",
+              "asia.gcr.io/google_containers/busybox:1.24",
+              "eu.gcr.io/google_containers/busybox:1.24"
+            ],
+            "sizeBytes": 1113554
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/pause-amd64@sha256:163ac025575b775d1c0f9bf0bdd0f086883171eb475b5068e7defa4ca9e76516",
+              "eu.gcr.io/google_containers/pause-amd64@sha256:163ac025575b775d1c0f9bf0bdd0f086883171eb475b5068e7defa4ca9e76516",
+              "gcr.io/google_containers/pause-amd64@sha256:163ac025575b775d1c0f9bf0bdd0f086883171eb475b5068e7defa4ca9e76516",
+              "asia.gcr.io/google_containers/pause-amd64:3.0",
+              "eu.gcr.io/google_containers/pause-amd64:3.0"
+            ],
+            "sizeBytes": 746888
+          }
+        ],
+        "volumesInUse": [
+          "kubernetes.io/gce-pd/gke-dex-console-skaffo-pvc-f230b84c-814b-11e8-910f-42010a800109"
+        ],
+        "volumesAttached": [
+          {
+            "name": "kubernetes.io/gce-pd/gke-dex-console-skaffo-pvc-f230b84c-814b-11e8-910f-42010a800109",
+            "devicePath": "/dev/disk/by-id/google-gke-dex-console-skaffo-pvc-f230b84c-814b-11e8-910f-42010a800109"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "gke-dex-console-skaffold-default-pool-498e5cf9-r7r3",
+        "selfLink": "/api/v1/nodes/gke-dex-console-skaffold-default-pool-498e5cf9-r7r3",
+        "uid": "eeb0f8f5-8868-11e8-910f-42010a800109",
+        "resourceVersion": "10205410",
+        "creationTimestamp": "2018-07-15T19:54:49Z",
+        "labels": {
+          "beta.kubernetes.io/arch": "amd64",
+          "beta.kubernetes.io/fluentd-ds-ready": "true",
+          "beta.kubernetes.io/instance-type": "n1-standard-1",
+          "beta.kubernetes.io/os": "linux",
+          "cloud.google.com/gke-nodepool": "default-pool",
+          "cloud.google.com/gke-preemptible": "true",
+          "failure-domain.beta.kubernetes.io/region": "us-central1",
+          "failure-domain.beta.kubernetes.io/zone": "us-central1-b",
+          "kubernetes.io/hostname": "gke-dex-console-skaffold-default-pool-498e5cf9-r7r3"
+        },
+        "annotations": {
+          "node.alpha.kubernetes.io/ttl": "0",
+          "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+        }
+      },
+      "spec": {
+        "podCIDR": "10.28.52.0/24",
+        "providerID": "gce://replicated-qa/us-central1-b/gke-dex-console-skaffold-default-pool-498e5cf9-r7r3",
+        "externalID": "2308374443709569276"
+      },
+      "status": {
+        "capacity": {
+          "cpu": "1",
+          "memory": "3794304Ki",
+          "pods": "110"
+        },
+        "allocatable": {
+          "cpu": "940m",
+          "memory": "2708864Ki",
+          "pods": "110"
+        },
+        "conditions": [
+          {
+            "type": "KernelDeadlock",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T19:57:09Z",
+            "lastTransitionTime": "2018-07-15T19:53:27Z",
+            "reason": "KernelHasNoDeadlock",
+            "message": "kernel has no deadlock"
+          },
+          {
+            "type": "NetworkUnavailable",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-15T19:55:05Z",
+            "lastTransitionTime": "2018-07-15T19:55:05Z",
+            "reason": "RouteCreated",
+            "message": "RouteController created a route"
+          },
+          {
+            "type": "OutOfDisk",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T19:57:37Z",
+            "lastTransitionTime": "2018-07-15T19:54:49Z",
+            "reason": "KubeletHasSufficientDisk",
+            "message": "kubelet has sufficient disk space available"
+          },
+          {
+            "type": "MemoryPressure",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T19:57:37Z",
+            "lastTransitionTime": "2018-07-15T19:54:49Z",
+            "reason": "KubeletHasSufficientMemory",
+            "message": "kubelet has sufficient memory available"
+          },
+          {
+            "type": "DiskPressure",
+            "status": "False",
+            "lastHeartbeatTime": "2018-07-16T19:57:37Z",
+            "lastTransitionTime": "2018-07-15T19:54:49Z",
+            "reason": "KubeletHasNoDiskPressure",
+            "message": "kubelet has no disk pressure"
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "lastHeartbeatTime": "2018-07-16T19:57:37Z",
+            "lastTransitionTime": "2018-07-15T19:55:10Z",
+            "reason": "KubeletReady",
+            "message": "kubelet is posting ready status. AppArmor enabled"
+          }
+        ],
+        "addresses": [
+          {
+            "type": "InternalIP",
+            "address": "10.128.0.2"
+          },
+          {
+            "type": "ExternalIP",
+            "address": "35.238.240.51"
+          },
+          {
+            "type": "Hostname",
+            "address": "gke-dex-console-skaffold-default-pool-498e5cf9-r7r3"
+          }
+        ],
+        "daemonEndpoints": {
+          "kubeletEndpoint": {
+            "Port": 10250
+          }
+        },
+        "nodeInfo": {
+          "machineID": "251801cb0af818c934d8e67e5a1e461f",
+          "systemUUID": "251801CB-0AF8-18C9-34D8-E67E5A1E461F",
+          "bootID": "d8ab84b5-c45d-43be-988f-6ae13763f5c5",
+          "kernelVersion": "4.4.111+",
+          "osImage": "Container-Optimized OS from Google",
+          "containerRuntimeVersion": "docker://17.3.2",
+          "kubeletVersion": "v1.8.8-gke.0",
+          "kubeProxyVersion": "v1.8.8-gke.0",
+          "operatingSystem": "linux",
+          "architecture": "amd64"
+        },
+        "images": [
+          {
+            "names": [
+              "gcr.io/replicated-qa/sloane-dev-console@sha256:b57f2df545caaf0a2cbcbfd03b6a765de122c36772f3a503576e0466afe90403"
+            ],
+            "sizeBytes": 2643468706
+          },
+          {
+            "names": [
+              "gcr.io/replicated-qa/grayson-dev-console@sha256:11dbede2d4b83535fdac6d66a2cfa85445b2bc3ef0dcf27c7196bd8a03cbada7"
+            ],
+            "sizeBytes": 802108842
+          },
+          {
+            "names": [
+              "gcr.io/replicated-qa/jelena-dev-console@sha256:8fff36c3c6644e55636f38d1d13d7292ae7fd3de7854863227d845e691f70b43"
+            ],
+            "sizeBytes": 346467656
+          },
+          {
+            "names": [
+              "gcr.io/replicated-qa/dmitriy-dev-console@sha256:e7430d68c94448b665c9c1d538ef27426607f2eef9f0ae1d635edb98ecc56209"
+            ],
+            "sizeBytes": 323709267
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/node-problem-detector@sha256:f95cab985c26b2f46e9bd43283e0bfa88860c14e0fb0649266babe8b65e9eb2b",
+              "eu.gcr.io/google_containers/node-problem-detector@sha256:f95cab985c26b2f46e9bd43283e0bfa88860c14e0fb0649266babe8b65e9eb2b",
+              "gcr.io/google_containers/node-problem-detector@sha256:f95cab985c26b2f46e9bd43283e0bfa88860c14e0fb0649266babe8b65e9eb2b",
+              "asia.gcr.io/google_containers/node-problem-detector:v0.4.1",
+              "eu.gcr.io/google_containers/node-problem-detector:v0.4.1"
+            ],
+            "sizeBytes": 286561110
+          },
+          {
+            "names": [
+              "postgres@sha256:d787c76ba77381a61d1fbd7b0ae2e5e990f5db7001609242dbb97c7450a8435e",
+              "postgres:9.5"
+            ],
+            "sizeBytes": 233723651
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/kube-registry-proxy@sha256:1040f25a5273de0d72c54865a8efd47e3292de9fb8e5353e3fa76736b854f2da",
+              "eu.gcr.io/google_containers/kube-registry-proxy@sha256:1040f25a5273de0d72c54865a8efd47e3292de9fb8e5353e3fa76736b854f2da",
+              "gcr.io/google_containers/kube-registry-proxy@sha256:1040f25a5273de0d72c54865a8efd47e3292de9fb8e5353e3fa76736b854f2da",
+              "asia.gcr.io/google_containers/kube-registry-proxy:0.4",
+              "eu.gcr.io/google_containers/kube-registry-proxy:0.4"
+            ],
+            "sizeBytes": 188200073
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/fluentd-gcp@sha256:31a2043cc4dc93208c843cc44d1325f7ebf0d18a863bec738fe62b56965dbf62",
+              "eu.gcr.io/google-containers/fluentd-gcp@sha256:31a2043cc4dc93208c843cc44d1325f7ebf0d18a863bec738fe62b56965dbf62",
+              "gcr.io/google-containers/fluentd-gcp@sha256:31a2043cc4dc93208c843cc44d1325f7ebf0d18a863bec738fe62b56965dbf62",
+              "asia.gcr.io/google-containers/fluentd-gcp:2.0.9",
+              "eu.gcr.io/google-containers/fluentd-gcp:2.0.9"
+            ],
+            "sizeBytes": 172402486
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/fluentd-elasticsearch@sha256:93d41d50a62e51b0fbebabf3c6b82a98075659a4330c03e8d00f4648702a6135",
+              "eu.gcr.io/google-containers/fluentd-elasticsearch@sha256:93d41d50a62e51b0fbebabf3c6b82a98075659a4330c03e8d00f4648702a6135",
+              "gcr.io/google-containers/fluentd-elasticsearch@sha256:93d41d50a62e51b0fbebabf3c6b82a98075659a4330c03e8d00f4648702a6135",
+              "asia.gcr.io/google-containers/fluentd-elasticsearch:v2.0.1",
+              "eu.gcr.io/google-containers/fluentd-elasticsearch:v2.0.1"
+            ],
+            "sizeBytes": 134041284
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/kubernetes-dashboard-amd64@sha256:71a0de5c6a21cb0c2fbcad71a4fef47acd3e61cd78109822d35e1742f9d8140d",
+              "eu.gcr.io/google_containers/kubernetes-dashboard-amd64@sha256:71a0de5c6a21cb0c2fbcad71a4fef47acd3e61cd78109822d35e1742f9d8140d",
+              "gcr.io/google_containers/kubernetes-dashboard-amd64@sha256:71a0de5c6a21cb0c2fbcad71a4fef47acd3e61cd78109822d35e1742f9d8140d",
+              "asia.gcr.io/google_containers/kubernetes-dashboard-amd64:v1.8.0",
+              "eu.gcr.io/google_containers/kubernetes-dashboard-amd64:v1.8.0"
+            ],
+            "sizeBytes": 119155776
+          },
+          {
+            "names": [
+              "prom/prometheus@sha256:0283ae2509e1ccc71830edf382713cc3906aa55ca9418c50911854223829bf0b",
+              "prom/prometheus:v2.3.1"
+            ],
+            "sizeBytes": 118802648
+          },
+          {
+            "names": [
+              "k8s.gcr.io/kubernetes-dashboard-amd64@sha256:dc4026c1b595435ef5527ca598e1e9c4343076926d7d62b365c44831395adbd0",
+              "k8s.gcr.io/kubernetes-dashboard-amd64:v1.8.3"
+            ],
+            "sizeBytes": 102319441
+          },
+          {
+            "names": [
+              "gcr.io/google_containers/kube-proxy:v1.8.8-gke.0"
+            ],
+            "sizeBytes": 98230569
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/event-exporter@sha256:0c86fa393401fe57843be1aa3180cd7fd339ef06fa18234ae5b139a85cfa55ec",
+              "eu.gcr.io/google-containers/event-exporter@sha256:0c86fa393401fe57843be1aa3180cd7fd339ef06fa18234ae5b139a85cfa55ec",
+              "gcr.io/google-containers/event-exporter@sha256:0c86fa393401fe57843be1aa3180cd7fd339ef06fa18234ae5b139a85cfa55ec",
+              "asia.gcr.io/google-containers/event-exporter:v0.1.7",
+              "eu.gcr.io/google-containers/event-exporter:v0.1.7"
+            ],
+            "sizeBytes": 91062115
+          },
+          {
+            "names": [
+              "gcr.io/google-containers/event-exporter@sha256:056e112cbd8e65ca480f85e996e081fdccc808a556846f6d1295c68d46fabcc6",
+              "gcr.io/google-containers/event-exporter:v0.1.8"
+            ],
+            "sizeBytes": 90422178
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/kube-addon-manager@sha256:90d80609f044c121b0110d71ac02432cf4c0415e8204f25025666179cbb72387",
+              "eu.gcr.io/google-containers/kube-addon-manager@sha256:90d80609f044c121b0110d71ac02432cf4c0415e8204f25025666179cbb72387",
+              "gcr.io/google-containers/kube-addon-manager@sha256:90d80609f044c121b0110d71ac02432cf4c0415e8204f25025666179cbb72387",
+              "asia.gcr.io/google-containers/kube-addon-manager:v6.5",
+              "eu.gcr.io/google-containers/kube-addon-manager:v6.5"
+            ],
+            "sizeBytes": 79527574
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/rescheduler@sha256:66a900b01c70d695e112d8fa7779255640aab77ccc31f2bb661e6c674fe0d162",
+              "eu.gcr.io/google-containers/rescheduler@sha256:66a900b01c70d695e112d8fa7779255640aab77ccc31f2bb661e6c674fe0d162",
+              "gcr.io/google-containers/rescheduler@sha256:66a900b01c70d695e112d8fa7779255640aab77ccc31f2bb661e6c674fe0d162",
+              "asia.gcr.io/google-containers/rescheduler:v0.3.1",
+              "eu.gcr.io/google-containers/rescheduler:v0.3.1"
+            ],
+            "sizeBytes": 74659350
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/heapster-amd64@sha256:8e04183590f937c274fb95c1397ea0c6b919645c765862e2cc9cb80f097a8fb4",
+              "eu.gcr.io/google_containers/heapster-amd64@sha256:8e04183590f937c274fb95c1397ea0c6b919645c765862e2cc9cb80f097a8fb4",
+              "gcr.io/google_containers/heapster-amd64@sha256:8e04183590f937c274fb95c1397ea0c6b919645c765862e2cc9cb80f097a8fb4",
+              "asia.gcr.io/google_containers/heapster-amd64:v1.4.3",
+              "eu.gcr.io/google_containers/heapster-amd64:v1.4.3"
+            ],
+            "sizeBytes": 73412845
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/metadata-proxy@sha256:279ed21137afcaba2d1e546cc859d3a6c8061a5daeb2f9e854a4825d2cb1fa6f",
+              "eu.gcr.io/google-containers/metadata-proxy@sha256:279ed21137afcaba2d1e546cc859d3a6c8061a5daeb2f9e854a4825d2cb1fa6f",
+              "gcr.io/google-containers/metadata-proxy@sha256:279ed21137afcaba2d1e546cc859d3a6c8061a5daeb2f9e854a4825d2cb1fa6f",
+              "asia.gcr.io/google-containers/metadata-proxy:0.1.3",
+              "eu.gcr.io/google-containers/metadata-proxy:0.1.3"
+            ],
+            "sizeBytes": 61787317
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/prometheus-to-sd@sha256:5831390762c790b0375c202579fd41dd5f40c71950f7538adbe14b0c16f35d56",
+              "eu.gcr.io/google-containers/prometheus-to-sd@sha256:5831390762c790b0375c202579fd41dd5f40c71950f7538adbe14b0c16f35d56",
+              "gcr.io/google-containers/prometheus-to-sd@sha256:5831390762c790b0375c202579fd41dd5f40c71950f7538adbe14b0c16f35d56",
+              "asia.gcr.io/google-containers/prometheus-to-sd:v0.2.2",
+              "eu.gcr.io/google-containers/prometheus-to-sd:v0.2.2"
+            ],
+            "sizeBytes": 55207051
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/cpvpa-amd64@sha256:cfe7b0a11c9c8e18c87b1eb34fef9a7cbb8480a8da11fc2657f78dbf4739f869",
+              "eu.gcr.io/google_containers/cpvpa-amd64@sha256:cfe7b0a11c9c8e18c87b1eb34fef9a7cbb8480a8da11fc2657f78dbf4739f869",
+              "gcr.io/google_containers/cpvpa-amd64@sha256:cfe7b0a11c9c8e18c87b1eb34fef9a7cbb8480a8da11fc2657f78dbf4739f869",
+              "asia.gcr.io/google_containers/cpvpa-amd64:v0.6.0",
+              "eu.gcr.io/google_containers/cpvpa-amd64:v0.6.0"
+            ],
+            "sizeBytes": 51781526
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:791836c2a2471ecb23a975cf12835f2a35ada3f9d841f3f1a363b83eca99e2aa",
+              "eu.gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:791836c2a2471ecb23a975cf12835f2a35ada3f9d841f3f1a363b83eca99e2aa",
+              "gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:791836c2a2471ecb23a975cf12835f2a35ada3f9d841f3f1a363b83eca99e2aa",
+              "asia.gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.1.2",
+              "eu.gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.1.2"
+            ],
+            "sizeBytes": 50481722
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:003f98d9f411ddfa6ff6d539196355e03ddd69fa4ed38c7ffb8fec6f729afe2d",
+              "eu.gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:003f98d9f411ddfa6ff6d539196355e03ddd69fa4ed38c7ffb8fec6f729afe2d",
+              "gcr.io/google_containers/cluster-proportional-autoscaler-amd64@sha256:003f98d9f411ddfa6ff6d539196355e03ddd69fa4ed38c7ffb8fec6f729afe2d",
+              "asia.gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.1.2-r2",
+              "eu.gcr.io/google_containers/cluster-proportional-autoscaler-amd64:1.1.2-r2"
+            ],
+            "sizeBytes": 49644153
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/k8s-dns-kube-dns-amd64@sha256:1a3fc069de481ae690188f6f1ba4664b5cc7760af37120f70c86505c79eea61d",
+              "eu.gcr.io/google_containers/k8s-dns-kube-dns-amd64@sha256:1a3fc069de481ae690188f6f1ba4664b5cc7760af37120f70c86505c79eea61d",
+              "gcr.io/google_containers/k8s-dns-kube-dns-amd64@sha256:1a3fc069de481ae690188f6f1ba4664b5cc7760af37120f70c86505c79eea61d",
+              "asia.gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.5",
+              "eu.gcr.io/google_containers/k8s-dns-kube-dns-amd64:1.14.5"
+            ],
+            "sizeBytes": 49383083
+          },
+          {
+            "names": [
+              "asia.gcr.io/google-containers/ip-masq-agent-amd64@sha256:ea5f1b4eacb38561fb6806cf414adb7b67eda578bd70a94f4b5c90d09e2c7582",
+              "eu.gcr.io/google-containers/ip-masq-agent-amd64@sha256:ea5f1b4eacb38561fb6806cf414adb7b67eda578bd70a94f4b5c90d09e2c7582",
+              "gcr.io/google-containers/ip-masq-agent-amd64@sha256:ea5f1b4eacb38561fb6806cf414adb7b67eda578bd70a94f4b5c90d09e2c7582",
+              "asia.gcr.io/google-containers/ip-masq-agent-amd64:v2.0.2",
+              "eu.gcr.io/google-containers/ip-masq-agent-amd64:v2.0.2"
+            ],
+            "sizeBytes": 48494918
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/glbc@sha256:1903de448fe877ae9219517d577c254d12c4555bc70b2995962e6809ae8869d5",
+              "eu.gcr.io/google_containers/glbc@sha256:1903de448fe877ae9219517d577c254d12c4555bc70b2995962e6809ae8869d5",
+              "gcr.io/google_containers/glbc@sha256:1903de448fe877ae9219517d577c254d12c4555bc70b2995962e6809ae8869d5",
+              "asia.gcr.io/google_containers/glbc:0.9.7",
+              "eu.gcr.io/google_containers/glbc:0.9.7"
+            ],
+            "sizeBytes": 44056760
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/metrics-server-amd64@sha256:49a9f12f7067d11f42c803dbe61ed2c1299959ad85cb315b25ff7eef8e6b8892",
+              "eu.gcr.io/google_containers/metrics-server-amd64@sha256:49a9f12f7067d11f42c803dbe61ed2c1299959ad85cb315b25ff7eef8e6b8892",
+              "gcr.io/google_containers/metrics-server-amd64@sha256:49a9f12f7067d11f42c803dbe61ed2c1299959ad85cb315b25ff7eef8e6b8892",
+              "asia.gcr.io/google_containers/metrics-server-amd64:v0.2.1",
+              "eu.gcr.io/google_containers/metrics-server-amd64:v0.2.1"
+            ],
+            "sizeBytes": 42541759
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/k8s-dns-sidecar-amd64@sha256:9aab42bf6a2a068b797fe7d91a5d8d915b10dbbc3d6f2b10492848debfba6044",
+              "eu.gcr.io/google_containers/k8s-dns-sidecar-amd64@sha256:9aab42bf6a2a068b797fe7d91a5d8d915b10dbbc3d6f2b10492848debfba6044",
+              "gcr.io/google_containers/k8s-dns-sidecar-amd64@sha256:9aab42bf6a2a068b797fe7d91a5d8d915b10dbbc3d6f2b10492848debfba6044",
+              "asia.gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.5",
+              "eu.gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.5"
+            ],
+            "sizeBytes": 41814849
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64@sha256:46b933bb70270c8a02fa6b6f87d440f6f1fce1a5a2a719e164f83f7b109f7544",
+              "eu.gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64@sha256:46b933bb70270c8a02fa6b6f87d440f6f1fce1a5a2a719e164f83f7b109f7544",
+              "gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64@sha256:46b933bb70270c8a02fa6b6f87d440f6f1fce1a5a2a719e164f83f7b109f7544",
+              "asia.gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.5",
+              "eu.gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:1.14.5"
+            ],
+            "sizeBytes": 41419289
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/addon-resizer@sha256:dcec9a5c2e20b8df19f3e9eeb87d9054a9e94e71479b935d5cfdbede9ce15895",
+              "eu.gcr.io/google_containers/addon-resizer@sha256:dcec9a5c2e20b8df19f3e9eeb87d9054a9e94e71479b935d5cfdbede9ce15895",
+              "gcr.io/google_containers/addon-resizer@sha256:dcec9a5c2e20b8df19f3e9eeb87d9054a9e94e71479b935d5cfdbede9ce15895",
+              "asia.gcr.io/google_containers/addon-resizer:1.7",
+              "eu.gcr.io/google_containers/addon-resizer:1.7"
+            ],
+            "sizeBytes": 38983736
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/defaultbackend@sha256:fb91f9395ddf44df1ca3adf68b25dcbc269e5d08ba14a40de9abdedafacf93d4",
+              "eu.gcr.io/google_containers/defaultbackend@sha256:fb91f9395ddf44df1ca3adf68b25dcbc269e5d08ba14a40de9abdedafacf93d4",
+              "gcr.io/google_containers/defaultbackend@sha256:fb91f9395ddf44df1ca3adf68b25dcbc269e5d08ba14a40de9abdedafacf93d4",
+              "asia.gcr.io/google_containers/defaultbackend:1.3",
+              "eu.gcr.io/google_containers/defaultbackend:1.3"
+            ],
+            "sizeBytes": 3618880
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/busybox@sha256:545e6a6310a27636260920bc07b994a299b6708a1b26910cfefd335fdfb60d2b",
+              "eu.gcr.io/google_containers/busybox@sha256:545e6a6310a27636260920bc07b994a299b6708a1b26910cfefd335fdfb60d2b",
+              "gcr.io/google_containers/busybox@sha256:545e6a6310a27636260920bc07b994a299b6708a1b26910cfefd335fdfb60d2b",
+              "asia.gcr.io/google_containers/busybox:1.27",
+              "eu.gcr.io/google_containers/busybox:1.27"
+            ],
+            "sizeBytes": 1129289
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/busybox@sha256:4bdd623e848417d96127e16037743f0cd8b528c026e9175e22a84f639eca58ff",
+              "eu.gcr.io/google_containers/busybox@sha256:4bdd623e848417d96127e16037743f0cd8b528c026e9175e22a84f639eca58ff",
+              "gcr.io/google_containers/busybox@sha256:4bdd623e848417d96127e16037743f0cd8b528c026e9175e22a84f639eca58ff",
+              "asia.gcr.io/google_containers/busybox:1.24",
+              "eu.gcr.io/google_containers/busybox:1.24"
+            ],
+            "sizeBytes": 1113554
+          },
+          {
+            "names": [
+              "asia.gcr.io/google_containers/pause-amd64@sha256:163ac025575b775d1c0f9bf0bdd0f086883171eb475b5068e7defa4ca9e76516",
+              "eu.gcr.io/google_containers/pause-amd64@sha256:163ac025575b775d1c0f9bf0bdd0f086883171eb475b5068e7defa4ca9e76516",
+              "gcr.io/google_containers/pause-amd64@sha256:163ac025575b775d1c0f9bf0bdd0f086883171eb475b5068e7defa4ca9e76516",
+              "asia.gcr.io/google_containers/pause-amd64:3.0",
+              "eu.gcr.io/google_containers/pause-amd64:3.0"
+            ],
+            "sizeBytes": 746888
+          }
+        ]
+      }
+    }
+  ]
+}

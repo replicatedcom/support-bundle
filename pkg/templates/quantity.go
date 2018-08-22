@@ -6,9 +6,9 @@ import (
 )
 
 func init() {
-	RegisterFunc("ParseQuantity", ParseQuantity)
-	RegisterFunc("FormatQuantity", FormatQuantity)
-	RegisterFunc("SumQuantities", SumQuantities)
+	RegisterFunc("parseQuantity", ParseQuantity)
+	RegisterFunc("formatQuantity", FormatQuantity)
+	RegisterFunc("sumQuantities", SumQuantities)
 }
 
 func SumQuantities(ii []string) int {
@@ -22,7 +22,7 @@ func SumQuantities(ii []string) int {
 func ParseQuantity(str string) int {
 	q, err := resource.ParseQuantity(str)
 	if err != nil {
-		Panic("ParseQuantity", errors.Wrapf(err, "parse %v", str))
+		Panic("parseQuantity", errors.Wrapf(err, "parse %v", str))
 	}
 	return int(q.Value())
 }

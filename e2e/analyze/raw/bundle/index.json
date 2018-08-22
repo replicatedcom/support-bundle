@@ -1,0 +1,28 @@
+[
+  {
+    "path": "/VERSION.json",
+    "format": "",
+    "size": 75,
+    "spec": {
+      "description": "Support bundle version information",
+      "output_dir": "/",
+      "version": {}
+    }
+  },
+  {
+    "path": "/kubernetes/resource-list/nodes/resource.json",
+    "format": "",
+    "size": 44602,
+    "spec": {
+      "output_dir": "/kubernetes/resource-list/nodes",
+      "meta": {
+        "labels": {
+          "analyze": "kubernetes-resource-list-nodes"
+        }
+      },
+      "kubernetes.resource-list": {
+        "kind": "nodes"
+      }
+    }
+  }
+]
