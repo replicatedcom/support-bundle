@@ -1,0 +1,29 @@
+analyze:
+  v1:
+    - raw:
+        conditions:
+          - eval:
+              operator: and
+              statements:
+                - '{{repl .Empty}}'
+              variables:
+                - Empty: '{{repl not .CmdSestatus}}'
+            severity: error
+            message: >-
+              Failed to detect SELinux mode
+          - eval:
+              operator: and
+              statements:
+                - '{{repl eq .Status "enabled"}}'
+                - '{{repl eq .Mode "enforcing"}}'
+              variables:
+                - Status: '{{repl regexSplit ":\\s+" (regexFind "(?m)^SELinux status:.+$" .CmdSestatus) 2 | last}}'
+                - Mode: '{{repl regexSplit ":\\s+" (regexFind "(?m)^Current mode:.+$" .CmdSestatus) 2 | last}}'
+            severity: error
+            message: >-
+              SELinux is in enforcing mode. This mode is currently unsupported. Please either disable SELinux or change the mode to permissive.
+      message: SELinux must not be in enforcing mode
+      collect_refs:
+        - ref: CmdSestatus
+          selector:
+            analyze: cmd-selinux-status

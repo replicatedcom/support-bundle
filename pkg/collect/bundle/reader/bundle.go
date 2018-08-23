@@ -46,12 +46,15 @@ func NewBundle(fs afero.Fs, path string) (BundleReader, error) {
 }
 
 func (b *Bundle) ReaderFromRef(ref meta.Ref) (io.ReadCloser, error) {
-	result := b.resultsFromRef(ref)
-	if result == nil {
-		// TODO: what should we return here?
-		return nil, nil
+	results := b.resultsFromRef(ref)
+	for _, result := range results {
+		// TODO: sometimes we have stdout and stderr, how do we choose one?
+		if result.Size > 0 {
+			return b.Open(strings.TrimLeft(result.Path, "/"))
+		}
 	}
-	return b.Open(strings.TrimLeft(result.Path, "/"))
+	// TODO: what should we return here?
+	return nil, nil
 }
 
 func (b *Bundle) Open(name string) (io.ReadCloser, error) {
@@ -115,13 +118,13 @@ func (b *Bundle) getResultsFromIndex(indexPath string) ([]collecttypes.Result, e
 	return results, json.NewDecoder(reader).Decode(&results)
 }
 
-func (b *Bundle) resultsFromRef(ref meta.Ref) *collecttypes.Result {
+func (b *Bundle) resultsFromRef(ref meta.Ref) (results []collecttypes.Result) {
 	for _, result := range b.index {
 		if meta.RefMatches(ref, result.Spec.Shared().Meta) {
-			return &result
+			results = append(results, result)
 		}
 	}
-	return nil
+	return
 }
 
 type archiveFile struct {

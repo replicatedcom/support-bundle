@@ -1,0 +1,15 @@
+collect:
+  v1:
+    - os.run-command:
+        name: sestatus
+      output_dir: /commands/sestatus
+      meta:
+        labels:
+          analyze: cmd-selinux-status
+
+analyze:
+  v1:
+    - selinux.notenforcing: {}
+      collect_refs:
+        - selector:
+            analyze: cmd-selinux-status

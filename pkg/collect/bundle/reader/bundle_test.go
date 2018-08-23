@@ -1,7 +1,6 @@
 package reader
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -80,7 +79,6 @@ func writeBundle(w io.Writer, bundlePath string) error {
 	for _, info := range files {
 		filePaths = append(filePaths, info.Name())
 	}
-	fmt.Println(filePaths)
 
 	return archiver.TarGz.Write(w, filePaths)
 }

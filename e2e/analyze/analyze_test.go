@@ -44,27 +44,29 @@ var _ = Describe("integration", func() {
 			continue
 		}
 
-		testPath := path.Join(integrationDir, file.Name())
-		testSpecPath := path.Join(testPath, "spec.yml")
-		testExpectedPath := path.Join(testPath, "expected.yml")
-		testBundlePath := path.Join(testPath, "bundle")
-		testBundleDestPath := path.Join(testPath, "bundle.tgz")
-		var testMetadata TestMetadata
-
-		BeforeEach(func() {
-			// read the test metadata
-			metadataBytes, err := ioutil.ReadFile(path.Join(testPath, "metadata.yml"))
-			Expect(err).NotTo(HaveOccurred())
-			err = yaml.Unmarshal(metadataBytes, &testMetadata)
-			Expect(err).NotTo(HaveOccurred())
-		})
-
-		AfterEach(func() {
-			// remove the temporary bundle
-			_ = os.RemoveAll(testBundleDestPath)
-		})
-
 		Context(fmt.Sprintf("When the spec in %q is run", file.Name()), func() {
+
+			fs := afero.NewOsFs()
+
+			testPath := path.Join(integrationDir, file.Name())
+			testSpecPath := path.Join(testPath, "spec.yml")
+			testExpectedPath := path.Join(testPath, "expected.yml")
+			testBundlePath := path.Join(testPath, "bundle")
+			testBundleDestPath := path.Join(testPath, "bundle.tgz")
+			var testMetadata TestMetadata
+
+			BeforeEach(func() {
+				// read the test metadata
+				metadataBytes, err := ioutil.ReadFile(path.Join(testPath, "metadata.yml"))
+				Expect(err).NotTo(HaveOccurred())
+				err = yaml.Unmarshal(metadataBytes, &testMetadata)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			AfterEach(func() {
+				// remove the temporary bundle
+				_ = fs.RemoveAll(testBundleDestPath)
+			})
 
 			It("Should output the expected results", func() {
 
@@ -74,7 +76,7 @@ var _ = Describe("integration", func() {
 				err = yaml.Unmarshal(expected, &outExpected)
 				Expect(err).NotTo(HaveOccurred())
 
-				_, err = makeBundle(afero.NewOsFs(), testBundlePath, testBundleDestPath)
+				_, err = makeBundle(fs, testBundlePath, testBundleDestPath)
 				Expect(err).NotTo(HaveOccurred())
 
 				cmd := cli.RootCmd()
@@ -90,7 +92,7 @@ var _ = Describe("integration", func() {
 
 				err = cmd.Execute()
 				if testMetadata.ExpectErr {
-					Expect(err).To(Equal(analyze.ErrSeverityThreshold))
+					Expect(err).To(Equal(analyze.ErrSeverityThreshold), fmt.Sprintf("Actual: %v", err))
 				} else {
 					Expect(err).NotTo(HaveOccurred())
 				}
