@@ -86,7 +86,7 @@ func requirementsDocker_versionYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "requirements/docker_version.yml", size: 731, mode: os.FileMode(420), modTime: time.Unix(1534909534, 0)}
+	info := bindataFileInfo{name: "requirements/docker_version.yml", size: 731, mode: os.FileMode(420), modTime: time.Unix(1534945396, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -106,7 +106,7 @@ func requirementsKubernetes_total_memoryYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "requirements/kubernetes_total_memory.yml", size: 806, mode: os.FileMode(420), modTime: time.Unix(1534909534, 0)}
+	info := bindataFileInfo{name: "requirements/kubernetes_total_memory.yml", size: 806, mode: os.FileMode(420), modTime: time.Unix(1534945396, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -126,7 +126,7 @@ func requirementsKubernetes_versionYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "requirements/kubernetes_version.yml", size: 715, mode: os.FileMode(420), modTime: time.Unix(1534909534, 0)}
+	info := bindataFileInfo{name: "requirements/kubernetes_version.yml", size: 715, mode: os.FileMode(420), modTime: time.Unix(1534945396, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -146,7 +146,7 @@ func requirementsSelinux_notenforcingYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "requirements/selinux_notenforcing.yml", size: 828, mode: os.FileMode(420), modTime: time.Unix(1534910877, 0)}
+	info := bindataFileInfo{name: "requirements/selinux_notenforcing.yml", size: 828, mode: os.FileMode(420), modTime: time.Unix(1534945396, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

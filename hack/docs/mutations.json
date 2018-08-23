@@ -4656,6 +4656,23 @@
     }
   },
   {
+    "path": "properties.analyze.properties.v1.items.properties[\"docker.version\"]",
+    "merge": {
+      "description": "Check that the Docker version meets the required minimum",
+      "examples": [
+        {
+          "server_version_minimum": "17.12.1"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"docker.version\"].properties.server_version_minimum",
+    "merge": {
+      "description": "The minimum Docker version"
+    }
+  },
+  {
     "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.total-memory\"]",
     "replace": {
       "required": [
@@ -4680,7 +4697,7 @@
   {
     "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.version\"]",
     "merge": {
-      "description": "Check that the total memory for a cluster meets the required minimum",
+      "description": "Check that the Kubernetes version meets the required minimum",
       "examples": [
         {
           "semver_minimum": "1.10.0"
@@ -4691,7 +4708,76 @@
   {
     "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.version\"].properties.semver_minimum",
     "merge": {
-      "description": "The minimum kubernetes version"
+      "description": "The minimum Kubernetes version"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"selinux.notenforcing\"]",
+    "merge": {
+      "description": "Check that SELinux is not in enforcing mode",
+      "properties": {},
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"raw\"]",
+    "merge": {
+      "description": "A fully customizable analyzer (advanced).",
+      "examples": [
+        {
+          "conditions": [
+            {
+              "eval": {
+                "operator": "or",
+                "statements": [
+                  "{{repl .Empty}}",
+                  "{{repl .Fail}}"
+                ],
+                "variables": [
+                  {
+                    "Out": "{{repl .Ref | trimSuffix \"\\n\"}}",
+                    "Empty": "{{repl not .Ref}}"
+                  },
+                  {
+                    "Fail": "{{repl ne .Out \"1\"}}"
+                  }
+                ]
+              },
+              "severity": "error",
+              "message": "Failed to connect to postgres: \"{{repl .Out}}\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions",
+    "merge": {
+      "description": "An array of conditions, evaluated in order, that when met will produce a severity and message."
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions.items.properties.eval.properties.operator",
+    "merge": {
+      "description": "The operator used to evaluate the statements. One of and, or.",
+      "enum": ["and", "or"]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions.items.properties.eval.properties.variables.items",
+    "delete": [
+      "properties"
+    ],
+    "merge": {
+      "description": "Key,value pairs used to define variables",
+      "patternProperties": {
+        ".*": {
+          "type": "string"
+        }
+      }
     }
   },
 
