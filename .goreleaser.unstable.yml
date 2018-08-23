@@ -54,7 +54,6 @@ dockers:
       - "unstable"
   - image: replicated/support-bundle
     dockerfile: deploy/Dockerfile-collect
-    latest: false
     goos: linux
     goarch: amd64
     binary: support-bundle
