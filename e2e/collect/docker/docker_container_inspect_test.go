@@ -53,12 +53,12 @@ specs:
     output_dir: /docker/container-inspect-by-id/
   - docker.container-inspect:
       container: %s
-      output_dir: /docker/container-inspect-by-name/
+    output_dir: /docker/container-inspect-by-name/
   - docker.container-inspect:
       container: %s
-      scrub:
-        regex: "(?m)(\"(?:ENVSCRUBBED|ENVSCRUBBEDANOTHER)=)([^\"]*)(\",?)"
-        replace: "${1}***HIDDEN***${3}"
+    scrub:
+      regex: "(?m)(\"(?:ENVSCRUBBED|ENVSCRUBBEDANOTHER)=)([^\"]*)(\",?)"
+      replace: "${1}***HIDDEN***${3}"
     output_dir: /docker/container-inspect-scrubbed/
   - docker.container-inspect:
       container_list_options:
