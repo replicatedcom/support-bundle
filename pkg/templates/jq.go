@@ -22,7 +22,8 @@ func JSONQuery(obj, exp string) []interface{} {
 	}
 	var out []interface{}
 	for _, s := range seq {
-		o, err := unmarshalArbitraryJSON(s)
+		var o interface{}
+		err := json.Unmarshal(s, &o)
 		if err != nil {
 			Panic("jq", err)
 		}
@@ -55,18 +56,4 @@ func JqMessagesToStringSlice(msgs []interface{}) []string {
 		}
 	}
 	return ss
-}
-
-// "number", "bool", "string", "array", "object"
-func unmarshalArbitraryJSON(obj []byte) (interface{}, error) {
-	a := []interface{}{}
-	obj = append([]byte("["), obj...)
-	obj = append(obj, []byte("]")...)
-	if err := json.Unmarshal(obj, &a); err != nil {
-		return nil, err
-	}
-	if len(a) == 0 {
-		return nil, errors.New("unmarshal json unexpected empty array")
-	}
-	return a[0], nil
 }
