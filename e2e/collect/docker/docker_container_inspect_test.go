@@ -86,7 +86,9 @@ specs:
 			Expect(contents).To(ContainSubstring("Hello World!"))
 			Expect(contents).To(ContainSubstring("ENVNORMAL=normal"))
 			Expect(contents).NotTo(ContainSubstring("ENVSCRUBBED=secret"))
+			Expect(contents).To(ContainSubstring("ENVSCRUBBED=***HIDDEN***"))
 			Expect(contents).NotTo(ContainSubstring("ENVSCRUBBEDANOTHER=anothersecret"))
+			Expect(contents).To(ContainSubstring("ENVSCRUBBEDANOTHER=***HIDDEN***"))
 			Expect(contents).To(ContainSubstring("ENVNORMALTWO=normaltwo"))
 
 			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.json", container1Name))
