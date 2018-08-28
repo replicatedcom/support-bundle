@@ -50,18 +50,24 @@ var _ = Describe("docker.container-inspect", func() {
 specs:
   - docker.container-inspect:
       container: %s
-    output_dir: /docker/container-inspect-by-id/
+      output_dir: /docker/container-inspect-by-id/
   - docker.container-inspect:
       container: %s
-    output_dir: /docker/container-inspect-by-name/
+      output_dir: /docker/container-inspect-by-name/
+  - docker.container-inspect:
+      container: %s
+      scrub:
+        regex: "(?m)(\"(?:ENVSCRUBBED|ENVSCRUBBEDANOTHER)=)([^\"]*)(\",?)"
+        replace: "${1}***HIDDEN***${3}"
+      output_dir: /docker/container-inspect-scrubbed/
   - docker.container-inspect:
       container_list_options:
         all: true
         filters:
           label:
             - foo=bar
-    output_dir: /docker/container-inspect-by-labels/`,
-				container1ID, container2Name))
+      output_dir: /docker/container-inspect-by-labels/`,
+				container1ID, container2Name, container1ID))
 
 			GenerateBundle()
 
@@ -74,6 +80,16 @@ specs:
 			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-name/%s.json", container2Name))
 			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-name/%s.json", container2Name))
 			Expect(contents).To(ContainSubstring("Hello World!"))
+
+			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-scrubbed/%s.json", container1ID))
+			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-scrubbed/%s.json", container1ID))
+			Expect(contents).To(ContainSubstring("Hello World!"))
+			Expect(contents).To(ContainSubstring("ENVNORMAL=normal"))
+			Expect(contents).NotTo(ContainSubstring("ENVSCRUBBED=secret"))
+			Expect(contents).To(ContainSubstring("ENVSCRUBBED=***HIDDEN***"))
+			Expect(contents).NotTo(ContainSubstring("ENVSCRUBBEDANOTHER=anothersecret"))
+			Expect(contents).To(ContainSubstring("ENVSCRUBBEDANOTHER=***HIDDEN***"))
+			Expect(contents).To(ContainSubstring("ENVNORMALTWO=normaltwo"))
 
 			_ = GetResultFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.json", container1Name))
 			contents = GetFileFromBundle(fmt.Sprintf("docker/container-inspect-by-labels/%s.json", container1Name))
