@@ -24,7 +24,7 @@ specs:
 			GenerateBundle()
 			_ = GetResultFromBundle("VERSION.json")
 			contents := GetFileFromBundle("VERSION.json")
-			Expect(contents).To(Equal(`{
+			Expect(contents).To(MatchJSON(`{
   "Version": "",
   "GitSHA": "",
   "BuildTime": "0001-01-01T00:00:00Z"
