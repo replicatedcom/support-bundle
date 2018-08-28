@@ -50,23 +50,23 @@ var _ = Describe("docker.container-inspect", func() {
 specs:
   - docker.container-inspect:
       container: %s
-    output_dir: /docker/container-inspect-by-id/
+      output_dir: /docker/container-inspect-by-id/
   - docker.container-inspect:
       container: %s
-    output_dir: /docker/container-inspect-by-name/
+      output_dir: /docker/container-inspect-by-name/
   - docker.container-inspect:
       container: %s
-    scrub:
-      regex: "(?m)(\"(?:ENVSCRUBBED|ENVSCRUBBEDANOTHER)=)([^\"]*)(\",?)"
-      replace: "${1}***HIDDEN***${3}"
-    output_dir: /docker/container-inspect-scrubbed/
+      scrub:
+        regex: "(?m)(\"(?:ENVSCRUBBED|ENVSCRUBBEDANOTHER)=)([^\"]*)(\",?)"
+        replace: "${1}***HIDDEN***${3}"
+      output_dir: /docker/container-inspect-scrubbed/
   - docker.container-inspect:
       container_list_options:
         all: true
         filters:
           label:
             - foo=bar
-    output_dir: /docker/container-inspect-by-labels/`,
+      output_dir: /docker/container-inspect-by-labels/`,
 				container1ID, container2Name, container1ID))
 
 			GenerateBundle()
