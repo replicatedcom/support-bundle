@@ -135,3 +135,6 @@
 0.19.1 /2018-08-02
     * Added the following resources to kubernetes.resource-list: certificatesigningrequests, clusterrolebindings, clusterroles, controllerrevisions, cronjobs, mutatingwebhookconfigurations, poddisruptionbudgets, rolebindings, roles, validatingwebhookconfigurations, volumeattachments
     * Allow for specifying group/version as an argument to kubernetes.resource-list
+
+0.19.2 /2018-08-28
+    * Fixed an issue that caused type StructuredSource not to honor scrubbing
