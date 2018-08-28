@@ -215,6 +215,12 @@ func MakeDockerContainer(client docker.CommonAPIClient, name string, labels map[
 		Image:  "ubuntu:16.04",
 		Cmd:    cmd,
 		Labels: labels,
+		Env: []string{
+			"ENVNORMAL=normal",
+			"ENVSCRUBBED=secret",
+			"ENVSCRUBBEDANOTHER=anothersecret",
+			"ENVNORMALTWO=normaltwo",
+		},
 	}
 	if config.Cmd == nil {
 		config.Cmd = []string{"sleep", "infinity"}

@@ -95,17 +95,41 @@ func RawScrubber(scrubSpec *types.Scrub) (types.BytesScrubber, error) {
 	}, nil
 }
 
-func filterStreams(readFrom io.Reader, writeTo *io.PipeWriter, scrubber func([]byte) []byte) {
-	lineScanner := bufio.NewScanner(readFrom)
-	for lineScanner.Scan() {
+func filterStreams(readFrom io.Reader, writeTo io.Writer, scrubber func([]byte) []byte) error {
+	// preserve newline at end
+	var counter bytesCounter
+	tee := io.TeeReader(readFrom, &counter)
+	lineScanner := bufio.NewScanner(tee)
+	var total int
+	for i := 0; lineScanner.Scan(); i++ {
 		line := lineScanner.Bytes()
 		line = scrubber(line)
 
-		_, err := writeTo.Write(line)
-		if err != nil {
-			writeTo.CloseWithError(err)
-			return
+		if i > 0 {
+			line = append([]byte("\n"), line...)
 		}
+		n, err := writeTo.Write(line)
+		if err != nil {
+			return err
+		}
+		total += n
 	}
-	writeTo.Close()
+	if err := lineScanner.Err(); err != nil {
+		return err
+	}
+	if total < counter.n {
+		_, err := writeTo.Write([]byte("\n"))
+		return err
+	}
+	return nil
+}
+
+type bytesCounter struct {
+	n int
+}
+
+func (w *bytesCounter) Write(p []byte) (int, error) {
+	n := len(p)
+	w.n += n
+	return n, nil
 }
