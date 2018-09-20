@@ -138,3 +138,6 @@
 
 0.19.2 /2018-08-28
     * Fixed an issue that caused type StructuredSource not to honor scrubbing
+
+0.19.3 /2018-09-20
+    * Patched CVE-2018-14618 in libcurl and curl os packages
