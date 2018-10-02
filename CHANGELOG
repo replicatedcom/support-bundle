@@ -141,3 +141,6 @@
 
 0.19.3 /2018-09-20
     * Patched CVE-2018-14618 in libcurl and curl os packages
+
+0.19.4 /2018-10-01
+    * Patched CVEs in libpython-dev os package
