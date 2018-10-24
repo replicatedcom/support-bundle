@@ -4329,7 +4329,7 @@
   {
     "path": "properties.collect.properties.v1.items.properties[\"os.read-file\"]",
     "merge": {
-      "description": "Read a file from the filesystem",
+      "description": "Read a file or a directory from the filesystem",
       "examples": [
         {
           "output_dir": "/files/etc/bigtool-conf",
