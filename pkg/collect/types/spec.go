@@ -3,7 +3,7 @@ package types
 import (
 	dockertypes "github.com/docker/docker/api/types"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
-	"github.com/retracedhq/retraced-go"
+	retraced "github.com/retracedhq/retraced-go"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -185,7 +185,8 @@ type DockerContainerCpOptions struct {
 
 type DockerContainerExecOptions struct {
 	SpecShared `json:",inline,omitempty"`
-	Container  string                 `json:"container"`
+	Container  string                 `json:"container,omitempty"`
+	Labels     []string               `json:"labels,omitempty"`
 	ExecConfig dockertypes.ExecConfig `json:"exec_config"`
 }
 
