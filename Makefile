@@ -110,7 +110,7 @@ bin/support-bundle: $(SRC)
 	@echo built bin/support-bundle
 
 build-deps:
-	go get github.com/golang/lint/golint
+	go get golang.org/x/lint/golint
 	go get golang.org/x/tools/cmd/goimports
 	go get github.com/jteeuwen/go-bindata/go-bindata
 	go get github.com/onsi/ginkgo/ginkgo
