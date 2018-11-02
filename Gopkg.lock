@@ -664,11 +664,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f08e09802ee6f753be3090572cce24917e0b84e6684bcc9ab8ba8b097891f177"
+  digest = "1:367679de3dbafa1bf8cc31e52198b398d9373651132fe64237f69227da5a44c0"
   name = "github.com/retracedhq/retraced-go"
   packages = ["."]
   pruneopts = "UT"
-  revision = "af91ec4891047cfc79dd2dbe4dd548d61cf82cfd"
+  revision = "1bfee2c53bc8ab483a19f8df1ade31facbd7cebf"
 
 [[projects]]
   digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
