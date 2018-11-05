@@ -147,3 +147,6 @@
 
 0.19.5 /2018-11-01
     * Fixed a bug that could cause a panic when including Retraced events in the support bundle.
+
+0.19.6 /2018-11-05
+    * Patched CVEs in curl/libcurl os package
