@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 
 	dockertypes "github.com/docker/docker/api/types"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
@@ -64,12 +65,14 @@ func (j *Journald) DockerLogs(opts types.JournaldLogsOptions) types.StreamProduc
 			},
 		}
 
-		stdoutR, stderrR, cmdErrCh, err := dockerutil.ContainerRun(ctx, j.dockerClient, config, false)
+		stdoutR, stderrR, _, err := dockerutil.ContainerRun(ctx, j.dockerClient, config, false)
 		if err != nil {
 			return nil, errors.Wrap(err, "container run")
 		}
-		<-cmdErrCh
-		stderrR.Close()
+		go func() {
+			io.Copy(ioutil.Discard, stderrR)
+			stderrR.Close()
+		}()
 		// FIXME: stdoutR never closed
 		return stdoutR, nil
 	}
