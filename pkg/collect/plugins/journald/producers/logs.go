@@ -76,7 +76,9 @@ func (j *Journald) DockerLogs(opts types.JournaldLogsOptions) types.StreamProduc
 }
 
 func buildLogsCmdArgs(opts types.JournaldLogsOptions) []string {
-	var cmd []string
+	cmd := []string{
+		"--no-pager",
+	}
 	if opts.Unit != "" {
 		cmd = append(cmd, "--unit", opts.Unit)
 	}
