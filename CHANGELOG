@@ -150,3 +150,6 @@
 
 0.19.6 /2018-11-05
     * Patched CVEs in curl/libcurl os package
+
+0.19.7 /2018-11-05
+    * Fixed an issue that would cause the Journald logs command to hang indefinitely.
