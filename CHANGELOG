@@ -153,3 +153,6 @@
 
 0.19.7 /2018-11-05
     * Fixed an issue that would cause the Journald logs command to hang indefinitely.
+
+0.19.8 /2018-11-12
+    * Patched CVEs in libgnutls30, libsystemd, systemd, and libudev1 os packages.
