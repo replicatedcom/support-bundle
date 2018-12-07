@@ -7,7 +7,7 @@ import (
 	. "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
 func TestAnalyzeDeserialize(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/collect/plans"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 )
 
 func (k *Kubernetes) ContainerCp(spec types.Spec) []types.Task {

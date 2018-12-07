@@ -26,11 +26,11 @@
 
 [[override]]
   name = "k8s.io/client-go"
-  branch = "release-8.0"
+  branch = "release-10.0"
 
 [[override]]
   name = "k8s.io/apimachinery"
-  revision = "103fd098999dc9c0c88536f5c9ad2e5da39373ae"
+  version = "kubernetes-1.13.0"
 
 [[override]]
   name = "github.com/docker/distribution"
@@ -43,3 +43,7 @@
 [[override]]
   name = "github.com/emicklei/go-restful-swagger12"
   version = "1.0.1"
+
+[[override]]
+  name = "github.com/Azure/go-autorest"
+  revision = "ea233b6412b0421a65dc6160e16c893364664a95"

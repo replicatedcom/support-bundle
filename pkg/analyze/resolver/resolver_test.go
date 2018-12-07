@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	. "github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/spf13/afero"

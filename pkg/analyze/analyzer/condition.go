@@ -2,7 +2,7 @@ package analyzer
 
 import (
 	"github.com/pkg/errors"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/templates"
 )
 

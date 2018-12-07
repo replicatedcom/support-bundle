@@ -1,6 +1,6 @@
 package api
 
-import "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+import v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 
 // Analyze is the top level analyze object
 type Analyze struct {

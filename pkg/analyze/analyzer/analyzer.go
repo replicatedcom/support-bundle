@@ -8,7 +8,7 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
