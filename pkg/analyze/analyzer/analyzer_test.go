@@ -11,7 +11,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	collectbundle "github.com/replicatedcom/support-bundle/pkg/test-mocks/collect/bundle"
 	"github.com/stretchr/testify/assert"

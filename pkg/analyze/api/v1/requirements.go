@@ -203,10 +203,10 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"requirements/docker_version.yml": requirementsDocker_versionYml,
+	"requirements/docker_version.yml":          requirementsDocker_versionYml,
 	"requirements/kubernetes_total_memory.yml": requirementsKubernetes_total_memoryYml,
-	"requirements/kubernetes_version.yml": requirementsKubernetes_versionYml,
-	"requirements/selinux_notenforcing.yml": requirementsSelinux_notenforcingYml,
+	"requirements/kubernetes_version.yml":      requirementsKubernetes_versionYml,
+	"requirements/selinux_notenforcing.yml":    requirementsSelinux_notenforcingYml,
 }
 
 // AssetDir returns the file names below a certain
@@ -248,12 +248,13 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"requirements": &bintree{nil, map[string]*bintree{
-		"docker_version.yml": &bintree{requirementsDocker_versionYml, map[string]*bintree{}},
+		"docker_version.yml":          &bintree{requirementsDocker_versionYml, map[string]*bintree{}},
 		"kubernetes_total_memory.yml": &bintree{requirementsKubernetes_total_memoryYml, map[string]*bintree{}},
-		"kubernetes_version.yml": &bintree{requirementsKubernetes_versionYml, map[string]*bintree{}},
-		"selinux_notenforcing.yml": &bintree{requirementsSelinux_notenforcingYml, map[string]*bintree{}},
+		"kubernetes_version.yml":      &bintree{requirementsKubernetes_versionYml, map[string]*bintree{}},
+		"selinux_notenforcing.yml":    &bintree{requirementsSelinux_notenforcingYml, map[string]*bintree{}},
 	}},
 }}
 
@@ -303,4 +304,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

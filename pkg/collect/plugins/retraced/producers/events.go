@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
-	"github.com/retracedhq/retraced-go"
+	retraced "github.com/retracedhq/retraced-go"
 	jww "github.com/spf13/jwalterweatherman"
 )
 

@@ -156,3 +156,6 @@
 
 0.19.8 /2018-11-12
     * Patched CVEs in libgnutls30, libsystemd, systemd, and libudev1 os packages.
+
+0.20.0 /2018-12-07
+    * Upgrade Kubernetes packages to 1.13.0.

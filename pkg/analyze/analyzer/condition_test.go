@@ -3,7 +3,7 @@ package analyzer
 import (
 	"testing"
 
-	"github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 )
 
 func TestEvalCondition(t *testing.T) {
