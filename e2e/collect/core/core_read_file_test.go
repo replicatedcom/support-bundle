@@ -1,6 +1,7 @@
 package core
 
 import (
+	"io/ioutil"
 	"os"
 
 	. "github.com/onsi/ginkgo"
@@ -70,6 +71,39 @@ specs:
 				Expect(contents).To(Equal(""))
 			})
 		})
+
+		Context("large file provided", func() {
+			It("is able to read the file", func() {
+				hostPath := "/tmp/large.txt"
+				file, err := os.Create(hostPath)
+				Expect(err).NotTo(HaveOccurred())
+
+				// Create 10MB text file
+				data := make([]byte, int(1e7))
+				for i := range data {
+					data[i] = byte('f')
+				}
+				_, err = file.Write(data)
+				Expect(err).NotTo(HaveOccurred())
+
+				WriteBundleConfig(`
+specs:
+    - os.read-file:
+        filepath: /tmp/large.txt
+        output_dir: /os/read-file/largefolder/
+`)
+
+				GenerateBundle()
+
+				outputPath := "os/read-file/largefolder/large.txt"
+				_ = GetResultFromBundle(outputPath)
+				contents := GetFileFromBundle(outputPath)
+
+				osFile, err := ioutil.ReadFile(hostPath)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(contents).To(Equal(string(osFile)))
+			})
+		})
 	})
 })
 
@@ -108,6 +142,39 @@ specs:
 			Expect(contents).To(ContainSubstring("profile.d"))
 
 			ExpectBundleErrorToHaveOccurred("os/read-file/notfound", "docker read file: file not found")
+		})
+
+		Context("large file provided", func() {
+			It("is able to read the file", func() {
+				hostPath := "/tmp/large.txt"
+				file, err := os.Create(hostPath)
+				Expect(err).NotTo(HaveOccurred())
+
+				// Create 10MB text file
+				data := make([]byte, int(1e7))
+				for i := range data {
+					data[i] = byte('f')
+				}
+				_, err = file.Write(data)
+				Expect(err).NotTo(HaveOccurred())
+
+				WriteBundleConfig(`
+specs:
+    - os.read-file:
+        filepath: /tmp/large.txt
+        output_dir: /os/read-file/largefolder/
+`)
+
+				GenerateBundle()
+
+				outputPath := "os/read-file/largefolder/large.txt"
+				_ = GetResultFromBundle(outputPath)
+				contents := GetFileFromBundle(outputPath)
+
+				osFile, err := ioutil.ReadFile(hostPath)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(contents).To(Equal(string(osFile)))
+			})
 		})
 	})
 })
