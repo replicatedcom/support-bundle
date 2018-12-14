@@ -54,8 +54,7 @@ func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config doc
 		return nil, nil, nil, errors.Wrap(err, "container attach")
 	}
 
-	okCh, errCh := client.ContainerWait(ctx, containerInstance.ID, dockercontainertypes.WaitConditionNextExit)
-
+	okCh, errCh := client.ContainerWait(ctx, containerInstance.ID, dockercontainertypes.WaitConditionNotRunning)
 	if err := client.ContainerStart(ctx, containerInstance.ID, dockertypes.ContainerStartOptions{}); err != nil {
 		resp.Close()
 		return nil, nil, nil, errors.Wrap(err, "container start")
