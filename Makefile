@@ -160,7 +160,6 @@ e2e-supportbundle-docker:
 		-it                                                                 \
 		--rm                                                                \
 		-v "$(BUILD_DIR):/go/src/$(PKG)"                                    \
-		-v /tmp/largefolder:/tmp/largefolder                                \
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \

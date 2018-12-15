@@ -146,7 +146,7 @@ specs:
 
 		Context("large file provided", func() {
 			It("is able to read the file", func() {
-				hostPath := "/tmp/largefolder/large.txt"
+				hostPath := "/tmp/large.txt"
 				file, err := os.Create(hostPath)
 				Expect(err).NotTo(HaveOccurred())
 
