@@ -29,6 +29,7 @@ jobs:
             - support-bundle-e2e-build-cache-base
       - run: |
           export GO_DOWNLOAD_URL=https://dl.google.com/go/go1.10.4.linux-amd64.tar.gz
+          export GOPATH=/home/circleci/go
           export GOROOT=/usr/local/go
           export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
           sudo apt update --fix-missing
@@ -40,7 +41,7 @@ jobs:
           sudo mv /tmp/go ${GOROOT}
       - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true circleci/golang:1.10 -c "sleep infinity"
       - run: |
-          GOPATH=/home/circleci/go make build-deps ci-e2e
+          make build-deps ci-e2e
       - save_cache:
           paths:
             - /tmp/go/cache
