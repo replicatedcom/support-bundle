@@ -1,13 +1,21 @@
 package core
 
 import (
-	"io/ioutil"
 	"os"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/replicatedcom/support-bundle/e2e/collect/ginkgo"
 )
+
+func GenerateLargeFileString() string {
+	// Create 10MB string for text file
+	data := make([]byte, int(1e7))
+	for i := range data {
+		data[i] = byte('f')
+	}
+	return string(data)
+}
 
 var _ = Describe("os.read-file", func() {
 
@@ -74,18 +82,8 @@ specs:
 
 		Context("large file provided", func() {
 			It("is able to read the file", func() {
-				hostPath := "/tmp/large.txt"
-				file, err := os.Create(hostPath)
-				Expect(err).NotTo(HaveOccurred())
-
-				// Create 10MB text file
-				data := make([]byte, int(1e7))
-				for i := range data {
-					data[i] = byte('f')
-				}
-				_, err = file.Write(data)
-				Expect(err).NotTo(HaveOccurred())
-
+				expectedContents := GenerateLargeFileString()
+				WriteFile("/tmp/large.txt", expectedContents)
 				WriteBundleConfig(`
 specs:
     - os.read-file:
@@ -98,10 +96,7 @@ specs:
 				outputPath := "os/read-file/largefolder/large.txt"
 				_ = GetResultFromBundle(outputPath)
 				contents := GetFileFromBundle(outputPath)
-
-				osFile, err := ioutil.ReadFile(hostPath)
-				Expect(err).ToNot(HaveOccurred())
-				Expect(contents).To(Equal(string(osFile)))
+				Expect(contents).To(Equal(expectedContents))
 			})
 		})
 	})
@@ -146,17 +141,8 @@ specs:
 
 		Context("large file provided", func() {
 			It("is able to read the file", func() {
-				hostPath := "/tmp/large.txt"
-				file, err := os.Create(hostPath)
-				Expect(err).NotTo(HaveOccurred())
-
-				// Create 10MB text file
-				data := make([]byte, int(1e7))
-				for i := range data {
-					data[i] = byte('f')
-				}
-				_, err = file.Write(data)
-				Expect(err).NotTo(HaveOccurred())
+				expectedContents := GenerateLargeFileString()
+				WriteFile("/tmp/large.txt", expectedContents)
 
 				WriteBundleConfig(`
 specs:
@@ -170,10 +156,7 @@ specs:
 				outputPath := "os/read-file/largefolder/large.txt"
 				_ = GetResultFromBundle(outputPath)
 				contents := GetFileFromBundle(outputPath)
-
-				osFile, err := ioutil.ReadFile(hostPath)
-				Expect(err).ToNot(HaveOccurred())
-				Expect(contents).To(Equal(string(osFile)))
+				Expect(contents).To(Equal(expectedContents))
 			})
 		})
 	})
