@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"path/filepath"
+	"time"
 
 	dockertypes "github.com/docker/docker/api/types"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
@@ -32,7 +33,17 @@ func ReadFile(ctx context.Context, client docker.CommonAPIClient, image, filenam
 	if err != nil {
 		return nil, errors.Wrap(err, "container run")
 	}
-	cmdErr := <-cmdErrCh
+
+	// Error channel will not receive a message
+	// until stdout buffer purged, so for large files
+	// we ignore this error after 1s since stdout
+	// not read until later
+	var cmdErr ContainerCmdError
+	select {
+	case cmdErr = <-cmdErrCh:
+	case <-time.After(time.Second):
+	}
+
 	stderrR.Close()
 	if cmdErr.Error != nil {
 		return stdoutR, cmdErr.Error

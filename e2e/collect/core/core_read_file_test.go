@@ -8,6 +8,15 @@ import (
 	. "github.com/replicatedcom/support-bundle/e2e/collect/ginkgo"
 )
 
+func GenerateLargeFileString() string {
+	// Create 10MB string for text file
+	data := make([]byte, int(1e7))
+	for i := range data {
+		data[i] = byte('f')
+	}
+	return string(data)
+}
+
 var _ = Describe("os.read-file", func() {
 
 	inContainer := os.Getenv("IN_CONTAINER")
@@ -70,6 +79,26 @@ specs:
 				Expect(contents).To(Equal(""))
 			})
 		})
+
+		Context("large file provided", func() {
+			It("is able to read the file", func() {
+				expectedContents := GenerateLargeFileString()
+				WriteFile("/tmp/large.txt", expectedContents)
+				WriteBundleConfig(`
+specs:
+    - os.read-file:
+        filepath: /tmp/large.txt
+        output_dir: /os/read-file/largefolder/
+`)
+
+				GenerateBundle()
+
+				outputPath := "os/read-file/largefolder/large.txt"
+				_ = GetResultFromBundle(outputPath)
+				contents := GetFileFromBundle(outputPath)
+				Expect(contents).To(Equal(expectedContents))
+			})
+		})
 	})
 })
 
@@ -108,6 +137,27 @@ specs:
 			Expect(contents).To(ContainSubstring("profile.d"))
 
 			ExpectBundleErrorToHaveOccurred("os/read-file/notfound", "docker read file: file not found")
+		})
+
+		Context("large file provided", func() {
+			It("is able to read the file", func() {
+				expectedContents := GenerateLargeFileString()
+				WriteFile("/tmp/large.txt", expectedContents)
+
+				WriteBundleConfig(`
+specs:
+    - os.read-file:
+        filepath: /tmp/large.txt
+        output_dir: /os/read-file/largefolder/
+`)
+
+				GenerateBundle()
+
+				outputPath := "os/read-file/largefolder/large.txt"
+				_ = GetResultFromBundle(outputPath)
+				contents := GetFileFromBundle(outputPath)
+				Expect(contents).To(Equal(expectedContents))
+			})
 		})
 	})
 })
