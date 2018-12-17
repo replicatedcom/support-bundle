@@ -40,8 +40,7 @@ jobs:
           sudo mv /tmp/go ${GOROOT}
       - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true circleci/golang:1.10 -c "sleep infinity"
       - run: |
-          export GOPATH=/home/circleci/go
-          make build-deps ci-e2e
+          GOPATH=/home/circleci/go make build-deps ci-e2e
       - save_cache:
           paths:
             - /tmp/go/cache
