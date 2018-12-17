@@ -159,3 +159,6 @@
 
 0.20.0 /2018-12-07
     * Upgrade Kubernetes packages to 1.13.0.
+
+0.20.1 /2018-12-17
+    * Fixed an issue that would cause os.read-file to fail on files > 1MB in size.
