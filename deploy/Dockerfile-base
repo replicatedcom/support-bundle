@@ -8,7 +8,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-instal
     jq \
     \
     \
-  && apt-get upgrade -y perl-base gnupg gpgv \
+  && apt-get upgrade -y perl-base gnupg gpgv libssl1.0.2 \
   && rm -rf /var/lib/apt/lists/* \
   && update-ca-certificates
 RUN export CLOUD_SDK_REPO="cloud-sdk-stretch" && \

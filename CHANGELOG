@@ -162,3 +162,6 @@
 
 0.20.1 /2018-12-17
     * Fixed an issue that would cause os.read-file to fail on files > 1MB in size.
+
+0.20.2 /2018-12-20
+    * Patched CVEs in libssl1.0.2 os packages.
