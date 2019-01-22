@@ -165,3 +165,6 @@
 
 0.20.2 /2018-12-20
     * Patched CVEs in libssl1.0.2 os packages.
+
+0.20.3 /2019-01-22
+    * Patched CVEs in systemd-232-25+deb9u6 os packages.
