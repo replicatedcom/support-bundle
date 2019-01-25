@@ -1,0 +1,80 @@
+specs:
+
+  # kubelet
+  - journald.logs:
+      unit: kubelet
+      reverse: true
+      output_dir: default/kubernetes/kubelet/logs
+
+  # namespace kube-system
+  - docker.logs:
+      description: >-
+        Docker logs for all the containers labeled with
+        io.kubernetes.pod.namespace=kube-system
+      timeout_seconds: 100
+      container_logs_options:
+        timestamps: false
+      container_list_options:
+        all: true
+        filters:
+          label:
+            - io.kubernetes.pod.namespace=kube-system
+      output_dir: default/kubernetes/kube-system/logs
+  - docker.container-inspect:
+      description: >-
+        Docker inspect for all the containers labeled with
+        io.kubernetes.pod.namespace=kube-system
+      container_list_options:
+        all: true
+        filters:
+          label:
+            - io.kubernetes.pod.namespace=kube-system
+      output_dir: default/kubernetes/kube-system/inspect
+
+  # rook
+  - docker.logs:
+      description: >-
+        Rook container logs
+      output_dir: /kubernetes/internal/logs/rook
+      timeout_seconds: 100
+      container_logs_options:
+        timestamps: false
+      container_list_options:
+        all: true
+        filters:
+          label:
+            - io.kubernetes.pod.namespace=rook
+      output_dir: default/kubernetes/rook/logs
+  - docker.container-inspect:
+      description: >-
+        Rook container inspect
+      container_list_options:
+        all: true
+        filters:
+          label:
+            - io.kubernetes.pod.namespace=rook
+      output_dir: default/kubernetes/rook/inspect
+
+  # etcd
+  - os.http-request:
+      url: http://localhost:2379/metrics
+      method: get
+      output_dir: default/kubernetes/metrics/etcd
+
+  # default
+  - kubernetes.resource-list:
+      kind: deployments
+      namespace: ""
+      output_dir: default/kubernetes/resources/deployments
+  - kubernetes.resource-list:
+      kind: events
+      namespace: ""
+      output_dir: default/kubernetes/resources/events
+  - kubernetes.resource-list:
+      kind: jobs
+      namespace: ""
+      output_dir: default/kubernetes/resources/jobs
+  - kubernetes.resource-list:
+      kind: pods
+      namespace: ""
+      output_dir: default/kubernetes/resources/pods

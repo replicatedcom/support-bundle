@@ -74,6 +74,13 @@ pkg/analyze/api/v1/requirements.go: pkg/analyze/api/v1/requirements/*
 		-o pkg/analyze/api/v1/requirements.go \
 		pkg/analyze/api/v1/requirements/
 
+pkg/collect/bundle/defaultspec/asset.go: pkg/collect/bundle/defaultspec/assets/*
+	go-bindata \
+		-pkg defaultspec \
+		-prefix pkg/collect/bundle/defaultspec/ \
+		-o pkg/collect/bundle/defaultspec/asset.go \
+		pkg/collect/bundle/defaultspec/assets/
+
 _mockgen:
 	rm -rf pkg/test-mocks
 	mkdir -p pkg/test-mocks/collect
@@ -97,7 +104,7 @@ bin/analyze: $(SRC) pkg/analyze/api/v1/requirements.go
 		./cmd/analyze
 	@echo built bin/analyze
 
-bin/support-bundle: $(SRC)
+bin/support-bundle: $(SRC) pkg/collect/bundle/defaultspec/asset.go
 	go build \
 		-ldflags " \
 		-X $(PKG)/pkg/version.version=$(VERSION) \

@@ -1,0 +1,44 @@
+specs:
+
+  # native
+  - docker.container-inspect:
+      container_list_options:
+        all: true
+        filters:
+          name:
+            - replicated
+            - retraced
+            - premkit
+            - studio
+      output_dir: default/replicated/native/inspect
+  - docker.logs:
+      container_list_options:
+        all: true
+        filters:
+          name:
+            - replicated
+            - retraced
+            - premkit
+            - studio
+      output_dir: default/replicated/native/logs
+
+  # swarm
+  - docker.stack-service-logs:
+      namespace: replicated
+      description: Logs from services in the replicated stack
+      output_dir: default/replicated/swarm/replicated/service-logs
+  - docker.stack-service-logs:
+      namespace: replicated-retraced
+      description: Logs from services in the retraced stack
+      output_dir: default/replicated/swarm/replicated-retraced/logs
+  - docker.stack-service-logs:
+      namespace: replicated-premkit
+      description: Logs from services in the premkit stack
+      output_dir: default/replicated/swarm/replicated-premkit/logs
+  - docker.stack-service-logs:
+      namespace: replicated-statsd
+      description: Logs from services in the statsd stack
+      output_dir: default/replicated/swarm/replicated-statsd/logs
+
+# kubernetes
+  # TODO
