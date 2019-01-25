@@ -19,7 +19,7 @@ specs:
             - replicated
             - retraced
             - premkit
-            - studio  
+            - studio
       output_dir: default/replicated/native/logs
 
   # swarm

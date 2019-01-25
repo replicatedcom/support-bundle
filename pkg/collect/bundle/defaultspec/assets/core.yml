@@ -109,10 +109,10 @@ specs:
       description: DNS resolv.conf
       output_dir: default/etc
   - os.read-file:
-      filepath: /etc/dnsmasq.conf    
+      filepath: /etc/dnsmasq.conf
       description: dnsmasq.conf
       output_dir: default/etc
   - os.read-file:
-      filepath: /etc/dhcp3/dhclient.conf   
+      filepath: /etc/dhcp3/dhclient.conf
       description: dhcp3 dhclient.conf
       output_dir: default/etc/dhcp3
