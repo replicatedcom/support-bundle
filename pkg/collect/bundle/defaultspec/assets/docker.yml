@@ -1,0 +1,31 @@
+specs:
+
+  - docker.info:
+      output_dir: default/docker
+  - docker.version:
+      output_dir: default/docker
+  - docker.image-ls:
+      output_dir: default/docker
+  - docker.container-ls:
+      all: true
+      output_dir: default/docker
+  - os.read-file:
+      filepath: /etc/docker/daemon.json
+      description: docker daemon json
+      output_dir: default/etc/docker
+  - os.read-file:
+      filepath: /etc/default/docker
+      output_dir: default/etc/default
+  - os.read-file:
+      filepath: /etc/sysconfig/docker
+      output_dir: default/etc/sysconfig
+  - os.read-file:
+      filepath: /etc/systemd/system/docker.service.d/http-proxy.conf
+      output_dir: default/etc/systemd/system/docker.service.d
+  - os.read-file:
+      filepath: /var/log/upstart/docker.log
+      output_dir: default/var/log/upstart
+  - journald.logs:
+      unit: docker
+      since: -14 days
+      output_dir: default/journald/docker

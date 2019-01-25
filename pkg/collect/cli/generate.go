@@ -62,7 +62,11 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, bundle.CustomerJSONSpec(opts.CustomerID))
 
 		if types.GetUseDefaults(customerDoc.Lifecycle) {
-			specs = append(specs, bundle.DefaultSpecs()...)
+			defaultSpecs, err := bundle.DefaultSpecs()
+			if err != nil {
+				return errors.Wrap(err, "get default spec")
+			}
+			specs = append(specs, defaultSpecs...)
 		}
 
 		expectedDefaultTasks++
@@ -134,8 +138,10 @@ func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
 	}
 
 	if opts.CustomerID == "" && !opts.SkipDefault {
-		defaultSpecs := bundle.DefaultSpecs()
-
+		defaultSpecs, err := bundle.DefaultSpecs()
+		if err != nil {
+			return nil, errors.Wrap(err, "get default spec")
+		}
 		specs = append(defaultSpecs, specs...)
 	}
 

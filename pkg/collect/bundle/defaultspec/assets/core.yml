@@ -1,0 +1,118 @@
+specs:
+
+  # system
+  - os.run-command:
+      name: date
+      output_dir: default/commands/date
+  - os.run-command:
+      name: df
+      args: [-al]
+      output_dir: default/commands/df
+  - os.run-command:
+      name: df
+      args: [-ali]
+      output_dir: default/commands/df_inodes
+  - os.run-command:
+      name: dmesg
+      output_dir: default/commands/dmesg
+  - os.run-command:
+      name: free
+      args: [-m]
+      output_dir: default/commands/free
+  - os.run-command:
+      name: ip
+      args: [-o, addr, show]
+      output_dir: default/commands/ip_addr_show
+  - os.run-command:
+      name: ip
+      args: [-o, link, show]
+      output_dir: default/commands/ip_link_show
+  - os.run-command:
+      name: ip
+      args: [-o, route, show]
+      output_dir: default/commands/ip_route_show
+  - os.run-command:
+      name: ps
+      args: [fauxwww]
+      output_dir: default/commands/ps
+  - os.loadavg:
+      output_dir: default/commands/loadavg
+  - os.hostname:
+      output_dir: default/commands/hostname
+  - os.uptime:
+      output_dir: default/commands/uptime
+  - os.read-file:
+      filepath: /etc/fstab
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /etc/hostname
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /etc/hosts
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /etc/os-release
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /etc/system-release
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /etc/centos-release
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /etc/timezone
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /proc/cpuinfo
+      output_dir: default/proc
+  - os.read-file:
+      filepath: /proc/meminfo
+      output_dir: default/proc
+  - os.read-file:
+      filepath: /proc/mounts
+      output_dir: default/proc
+  - os.read-file:
+      filepath: /proc/uptime
+      output_dir: default/proc
+  - os.read-file:
+      filepath: /proc/version
+      output_dir: default/proc
+  - os.read-file:
+      filepath: /proc/vmstat
+      output_dir: default/proc
+
+  # networking & firewall
+  - os.read-file:
+      filepath: /etc/sysconfig/iptables
+      description: iptables sysconfig settings
+      output_dir: default/etc/sysconfig
+  - os.read-file:
+      filepath: /etc/sysconfig/iptables-config
+      description: iptables sysconfig settings
+      output_dir: default/etc/sysconfig
+  - os.read-file:
+      filepath: /etc/sysconfig/ip6tables
+      description: iptables sysconfig settings
+      output_dir: default/etc/sysconfig
+  - os.read-file:
+      filepath: /usr/lib/FirewallD
+      description: firewalld settings
+      output_dir: default/usr/lib
+  - os.read-file:
+      filepath: /etc/firewalld
+      description: firewalld settings
+      output_dir: default/etc
+
+  # dns
+  - os.read-file:
+      filepath: /etc/resolv.conf
+      description: DNS resolv.conf
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /etc/dnsmasq.conf    
+      description: dnsmasq.conf
+      output_dir: default/etc
+  - os.read-file:
+      filepath: /etc/dhcp3/dhclient.conf   
+      description: dhcp3 dhclient.conf
+      output_dir: default/etc/dhcp3
