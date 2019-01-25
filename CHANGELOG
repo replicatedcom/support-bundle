@@ -168,3 +168,6 @@
 
 0.20.3 /2019-01-22
     * Patched CVEs in systemd-232-25+deb9u6 os packages.
+
+0.21.0 /2019-01-25
+    * Merged Replicated production spec into default spec.
