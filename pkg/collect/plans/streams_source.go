@@ -182,6 +182,17 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 		reader = scrubbedReader
 	}
 
+	for _, scrubber := range GlobalScrubbers {
+		if scrubber != nil {
+			scrubbedReader, scrubbedWriter := io.Pipe()
+			go func(reader io.Reader) {
+				err := filterStreams(reader, scrubbedWriter, scrubber)
+				scrubbedWriter.CloseWithError(err)
+			}(reader)
+			reader = scrubbedReader
+		}
+	}
+
 	rawResult := &types.Result{Spec: task.Spec}
 	jsonResult := &types.Result{Spec: task.Spec}
 	humanResult := &types.Result{Spec: task.Spec}

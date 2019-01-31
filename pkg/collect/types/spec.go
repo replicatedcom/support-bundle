@@ -65,6 +65,9 @@ type Spec struct {
 	SupportBundleVersion *SupportBundleVersionOptions `json:"version,omitempty"`
 	CustomerMeta         *CustomerMetaOptions         `json:"meta.customer,omitempty"`
 
+	// undocumented hack to add global redaction
+	GlobalRedaction *GlobalRedactionOptions `json:"meta.redact,omitempty"`
+
 	// CoreHostname gets the hostname of the machine on which we're running
 	CoreHostname    *CoreHostnameOptions    `json:"os.hostname,omitempty"`
 	CoreHTTPRequest *CoreHTTPRequestOptions `json:"os.http-request,omitempty"`
@@ -125,6 +128,13 @@ type CustomerMetaOptions struct {
 	CustomerID     string `json:"customer_id,omitempty"`
 	InstallationID string `json:"installation_id,omitempty"`
 	CustomerName   string `json:"customer_name,omitempty"`
+}
+
+// meta.redact
+
+type GlobalRedactionOptions struct {
+	SpecShared `json:",inline,omitempty"`
+	Scrubs     []Scrub `json:"scrubs,omitempty"`
 }
 
 // plugin.core options
@@ -386,6 +396,8 @@ func (s *Spec) Shared() SpecShared {
 			return s.SupportBundleVersion.SpecShared
 		case s.CustomerMeta != nil:
 			return s.CustomerMeta.SpecShared
+		case s.GlobalRedaction != nil:
+			return s.GlobalRedaction.SpecShared
 
 			// CoreHostname gets the hostname of the machine on which we're running
 		case s.CoreHostname != nil:

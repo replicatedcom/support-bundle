@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"regexp"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -11,6 +12,9 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
+
+var GlobalScrubbers []types.BytesScrubber
+var GlobalScrubbersLock sync.Mutex
 
 func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsSource, error) {
 	task.Spec = spec
@@ -72,7 +76,7 @@ func resultsWithErr(err error, results []*types.Result) []*types.Result {
 	return results
 }
 
-// closseLogErr
+// closeLogErr
 func closeLogErr(c io.Closer) {
 	if err := c.Close(); err != nil {
 		jww.ERROR.Printf("Failed to close closer: %v", err)

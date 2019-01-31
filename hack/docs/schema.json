@@ -480,6 +480,28 @@
                   "include_empty": {
                     "type": "boolean"
                   },
+                  "labels": {
+                    "description": "Labels shared by the container(s) to run the command in",
+                    "example": [
+                      "container.name.label"
+                    ],
+                    "examples": [
+                      [
+                        "container.name.label"
+                      ],
+                      [
+                        "container.name.label=myContainerName"
+                      ],
+                      [
+                        "container.name.label=myContainerName",
+                        "cluster.name=primary"
+                      ]
+                    ],
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "meta": {
                     "type": "object",
                     "properties": {
@@ -519,7 +541,6 @@
                   }
                 },
                 "required": [
-                  "container",
                   "exec_config"
                 ]
               },
@@ -1785,6 +1806,12 @@
                   "include_empty": {
                     "type": "boolean"
                   },
+                  "labels": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "meta": {
                     "type": "object",
                     "properties": {
@@ -1824,7 +1851,6 @@
                   }
                 },
                 "required": [
-                  "container",
                   "exec_config"
                 ]
               },
@@ -5176,6 +5202,72 @@
                   }
                 }
               },
+              "meta.redact": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "include_empty": {
+                    "type": "boolean"
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "labels": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "output_dir": {
+                    "type": "string"
+                  },
+                  "scrub": {
+                    "type": "object",
+                    "properties": {
+                      "regex": {
+                        "type": "string"
+                      },
+                      "replace": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "regex",
+                      "replace"
+                    ]
+                  },
+                  "scrubs": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "regex": {
+                          "type": "string"
+                        },
+                        "replace": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "regex",
+                        "replace"
+                      ]
+                    }
+                  },
+                  "timeout_seconds": {
+                    "type": "integer"
+                  }
+                }
+              },
               "os.hostname": {
                 "description": "Get the hostname",
                 "examples": [
@@ -5413,7 +5505,7 @@
                 "required": []
               },
               "os.read-file": {
-                "description": "Read a file from the filesystem",
+                "description": "Read a file or a directory from the filesystem",
                 "examples": [
                   {
                     "output_dir": "/files/etc/bigtool-conf",
