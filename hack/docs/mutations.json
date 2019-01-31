@@ -1733,7 +1733,19 @@
   {
     "path": "properties.collect.properties.v1.items.properties[\"docker.exec\"].properties.container",
     "merge": {
-      "description": "The container name"
+      "description": "The name of the container to run the command in"
+    }
+  },
+  {
+    "path": "properties.collect.properties.v1.items.properties[\"docker.exec\"].properties.labels",
+    "merge": {
+      "description": "Labels shared by the container(s) to run the command in",
+      "example": ["container.name.label"],
+      "examples": [
+        ["container.name.label"],
+        ["container.name.label=myContainerName"],
+        ["container.name.label=myContainerName", "cluster.name=primary"]
+      ]
     }
   },
   {
