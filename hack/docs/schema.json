@@ -1740,7 +1740,7 @@
                 "type": "object",
                 "properties": {
                   "container": {
-                    "description": "The container name",
+                    "description": "The name of the container to run the command in",
                     "type": "string"
                   },
                   "description": {
@@ -1807,6 +1807,22 @@
                     "type": "boolean"
                   },
                   "labels": {
+                    "description": "Labels shared by the container(s) to run the command in",
+                    "example": [
+                      "container.name.label"
+                    ],
+                    "examples": [
+                      [
+                        "container.name.label"
+                      ],
+                      [
+                        "container.name.label=myContainerName"
+                      ],
+                      [
+                        "container.name.label=myContainerName",
+                        "cluster.name=primary"
+                      ]
+                    ],
                     "type": "array",
                     "items": {
                       "type": "string"

@@ -10,7 +10,7 @@ REPLICATED_LINT_PATH ?= [path/to/replicated-lint]
 deps:
 	yarn
 
-test:
+test: deps
 	yarn test
 
 prebuild:
