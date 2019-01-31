@@ -480,6 +480,28 @@
                   "include_empty": {
                     "type": "boolean"
                   },
+                  "labels": {
+                    "description": "Labels shared by the container(s) to run the command in",
+                    "example": [
+                      "container.name.label"
+                    ],
+                    "examples": [
+                      [
+                        "container.name.label"
+                      ],
+                      [
+                        "container.name.label=myContainerName"
+                      ],
+                      [
+                        "container.name.label=myContainerName",
+                        "cluster.name=primary"
+                      ]
+                    ],
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "meta": {
                     "type": "object",
                     "properties": {
@@ -519,7 +541,6 @@
                   }
                 },
                 "required": [
-                  "container",
                   "exec_config"
                 ]
               },
@@ -1719,7 +1740,7 @@
                 "type": "object",
                 "properties": {
                   "container": {
-                    "description": "The container name",
+                    "description": "The name of the container to run the command in",
                     "type": "string"
                   },
                   "description": {
@@ -1785,6 +1806,28 @@
                   "include_empty": {
                     "type": "boolean"
                   },
+                  "labels": {
+                    "description": "Labels shared by the container(s) to run the command in",
+                    "example": [
+                      "container.name.label"
+                    ],
+                    "examples": [
+                      [
+                        "container.name.label"
+                      ],
+                      [
+                        "container.name.label=myContainerName"
+                      ],
+                      [
+                        "container.name.label=myContainerName",
+                        "cluster.name=primary"
+                      ]
+                    ],
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "meta": {
                     "type": "object",
                     "properties": {
@@ -1824,7 +1867,6 @@
                   }
                 },
                 "required": [
-                  "container",
                   "exec_config"
                 ]
               },
@@ -5413,7 +5455,7 @@
                 "required": []
               },
               "os.read-file": {
-                "description": "Read a file from the filesystem",
+                "description": "Read a file or a directory from the filesystem",
                 "examples": [
                   {
                     "output_dir": "/files/etc/bigtool-conf",
