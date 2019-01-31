@@ -91,7 +91,11 @@ analyze:
 				Fs:     memFS,
 			}
 			// TODO: test customer spec
-			spec, err := resolver.ResolveSpec(context.Background(), files, test.inline, "", "")
+			input := ResolverInput{
+				Files:  files,
+				Inline: test.inline,
+			}
+			spec, err := resolver.ResolveSpec(context.Background(), input)
 			req.NoError(err)
 			req.Equal(test.expect, spec)
 		})

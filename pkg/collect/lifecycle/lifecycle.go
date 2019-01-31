@@ -14,7 +14,8 @@ type Lifecycle struct {
 	DenyUploadPrompt    bool
 	Quiet               bool
 	GenerateBundlePath  string
-	UploadCustomerID    string
+	UploadCustomerID    string // deprecated
+	UploadChannelID     string
 	GraphQLClient       *graphql.Client
 	FileInfo            os.FileInfo
 	// RealGeneratedBundlePath is the actual path the bundle was written to.

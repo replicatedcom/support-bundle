@@ -34,7 +34,11 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().BoolVar(&opts.DenyUploadPrompt, "no-upload", false, "If present, auto-deny any upload prompts")
 
 	cmd.Flags().StringVar(&opts.CustomerID, "customer-id", "", "Replicated Customer ID")
-	cmd.Flags().StringVar(&opts.CustomerEndpoint, "customer-endpoint", cli.DefaultCustomerEndpoint, "Customer API Endpoint")
+	cmd.Flags().StringVar(&opts.Endpoint, "endpoint", cli.DefaultEndpoint, "Customer API Endpoint")
+
+	cmd.Flags().StringVar(&opts.ChannelID, "channel-id", "", "Replicated ChannelID to attempt to get a collector definition from")
+
+	cmd.Flags().MarkDeprecated("customer-id", "This argument is no longer supported. Consider using \"channel-id\"")
 
 	//--out - works, and its totally interactive and everything,
 	// and the bundle just gets dumped to stdout.

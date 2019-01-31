@@ -19,6 +19,14 @@ type Resolver struct {
 	Fs     afero.Fs
 }
 
+type ResolverInput struct {
+	Files      []string
+	Inline     []string
+	CustomerID string
+	ChannelID  string
+	Endpoint   string
+}
+
 func New(logger log.Logger, fs afero.Fs) *Resolver {
 	return &Resolver{
 		Logger: logger,
@@ -26,18 +34,11 @@ func New(logger log.Logger, fs afero.Fs) *Resolver {
 	}
 }
 
-func (r *Resolver) ResolveSpec(
-	ctx context.Context,
-	files []string,
-	inline []string,
-	customerID string,
-	customerEndpoint string,
-) (resolved api.Doc, err error) {
-
+func (r *Resolver) ResolveSpec(ctx context.Context, input ResolverInput) (resolved api.Doc, err error) {
 	debug := level.Debug(log.With(r.Logger, "method", "Resolver.ResolveSpec"))
 
 	cwd, _ := os.Getwd()
-	for _, filename := range files {
+	for _, filename := range input.Files {
 		doc, errI := deserializeDocFile(r.Fs, filename)
 		debug.Log(
 			"phase", "doc.file.deserialize",
@@ -51,7 +52,7 @@ func (r *Resolver) ResolveSpec(
 		}
 	}
 
-	for i, inline := range inline {
+	for i, inline := range input.Inline {
 		doc, errI := api.DeserializeDoc([]byte(inline))
 		debug.Log(
 			"phase", "doc.inline.deserialize",
@@ -64,9 +65,9 @@ func (r *Resolver) ResolveSpec(
 		}
 	}
 
-	if customerID != "" {
-		client := graphql.NewClient(customerEndpoint, http.DefaultClient)
-		inline, errI := client.GetCustomerSpec(customerID)
+	if input.CustomerID != "" {
+		client := graphql.NewClient(input.Endpoint, http.DefaultClient)
+		inline, errI := client.GetCustomerSpec(input.CustomerID)
 		debug.Log(
 			"phase", "doc.customer.retrieve",
 			"error", errI)
@@ -79,6 +80,27 @@ func (r *Resolver) ResolveSpec(
 				"error", errI)
 			if errI != nil {
 				err = multierror.Append(err, errors.Wrap(errI, "deserialize customer doc"))
+			} else {
+				resolved = mergeDocs(resolved, doc)
+			}
+		}
+	}
+
+	if input.ChannelID != "" {
+		client := graphql.NewClient(input.Endpoint, http.DefaultClient)
+		inline, errI := client.GetChannelSpec(input.ChannelID)
+		debug.Log(
+			"phase", "doc.channel.retrieve",
+			"error", errI)
+		if errI != nil {
+			err = multierror.Append(err, errors.Wrap(errI, "retrieve channel doc"))
+		} else {
+			doc, errI := api.DeserializeDoc([]byte(inline))
+			debug.Log(
+				"phase", "doc.channel.deserialize",
+				"error", errI)
+			if errI != nil {
+				err = multierror.Append(err, errors.Wrap(errI, "deserialize channel doc"))
 			} else {
 				resolved = mergeDocs(resolved, doc)
 			}

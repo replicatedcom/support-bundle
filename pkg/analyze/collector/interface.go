@@ -6,14 +6,7 @@ import (
 )
 
 type Interface interface {
-	CollectBundle(
-		ctx context.Context,
-		customerID string,
-		specs []string,
-		specFiles []string,
-		dest string,
-		opts Options,
-	) error
+	CollectBundle(ctx context.Context, input CollectorInput) error
 }
 
 type Options struct {
@@ -23,5 +16,5 @@ type Options struct {
 	EnableKubernetes bool
 	EnableRetraced   bool
 	Timeout          time.Duration
-	CustomerEndpoint string
+	Endpoint         string
 }

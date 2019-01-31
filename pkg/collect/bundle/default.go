@@ -54,6 +54,7 @@ func SupportBundleVersionSpec() types.Spec {
 	}
 }
 
+// Deprecated
 func CustomerJSONSpec(customerID string) types.Spec {
 	return types.Spec{
 		SpecShared: types.SpecShared{
@@ -62,6 +63,18 @@ func CustomerJSONSpec(customerID string) types.Spec {
 		},
 		CustomerMeta: &types.CustomerMetaOptions{
 			CustomerID: customerID,
+		},
+	}
+}
+
+func ChannelJSONSpec(channelID string) types.Spec {
+	return types.Spec{
+		SpecShared: types.SpecShared{
+			Description: "Troubleshoot Channel Collectors",
+			OutputDir:   "/",
+		},
+		ChannelMeta: &types.ChannelMetaOptions{
+			ChannelID: channelID,
 		},
 	}
 }

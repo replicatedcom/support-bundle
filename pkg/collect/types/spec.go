@@ -63,7 +63,8 @@ type Spec struct {
 	// plan-specific config
 
 	SupportBundleVersion *SupportBundleVersionOptions `json:"version,omitempty"`
-	CustomerMeta         *CustomerMetaOptions         `json:"meta.customer,omitempty"`
+	CustomerMeta         *CustomerMetaOptions         `json:"meta.customer,omitempty"` // deprecated
+	ChannelMeta          *ChannelMetaOptions          `json:"meta.channel,omitempty"`
 
 	// undocumented hack to add global redaction
 	GlobalRedaction *GlobalRedactionOptions `json:"meta.redact,omitempty"`
@@ -121,8 +122,7 @@ type SupportBundleVersionOptions struct {
 	SpecShared `json:",inline,omitempty"`
 }
 
-// meta.customer
-
+// meta.customer - deprecated
 type CustomerMetaOptions struct {
 	SpecShared     `json:",inline,omitempty"`
 	CustomerID     string `json:"customer_id,omitempty"`
@@ -131,10 +131,15 @@ type CustomerMetaOptions struct {
 }
 
 // meta.redact
-
 type GlobalRedactionOptions struct {
 	SpecShared `json:",inline,omitempty"`
 	Scrubs     []Scrub `json:"scrubs,omitempty"`
+}
+
+type ChannelMetaOptions struct {
+	SpecShared  `json:",inline,omitempty"`
+	ChannelID   string `json:"channel_id,omitempty"`
+	ChannelName string `json:"channel_name,omitempty"`
 }
 
 // plugin.core options
