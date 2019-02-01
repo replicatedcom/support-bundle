@@ -5219,6 +5219,24 @@
                 }
               },
               "meta.redact": {
+                "description": "A list of scrubbers to apply to all assets. If multiple 'meta.redact' specs are specified, all lists will be used. If a spec specifies a scrubber, it will be run in addition to the global scrubbers.",
+                "examples": [
+                  {
+                    "scrubs": [
+                      {
+                        "regex": "abc",
+                        "replace": "xyz"
+                      }
+                    ],
+                    "output_dir": "redact/"
+                  }
+                ],
+                "_ext_outputs": [
+                  {
+                    "path": "scrubs.json",
+                    "description": "A list of scrubs that were added globally by this item"
+                  }
+                ],
                 "type": "object",
                 "properties": {
                   "description": {
@@ -5262,6 +5280,7 @@
                     ]
                   },
                   "scrubs": {
+                    "description": "the list of scrubbers to apply to all outputs",
                     "type": "array",
                     "items": {
                       "type": "object",
@@ -5282,7 +5301,11 @@
                   "timeout_seconds": {
                     "type": "integer"
                   }
-                }
+                },
+                "required": [
+                  "scrubs",
+                  "output_dir"
+                ]
               },
               "os.hostname": {
                 "description": "Get the hostname",

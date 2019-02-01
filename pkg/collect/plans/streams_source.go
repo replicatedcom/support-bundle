@@ -185,10 +185,10 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 	for _, scrubber := range GlobalScrubbers {
 		if scrubber != nil {
 			scrubbedReader, scrubbedWriter := io.Pipe()
-			go func(reader io.Reader) {
+			go func(reader io.Reader, scrubber types.BytesScrubber) {
 				err := filterStreams(reader, scrubbedWriter, scrubber)
 				scrubbedWriter.CloseWithError(err)
-			}(reader)
+			}(reader, scrubber)
 			reader = scrubbedReader
 		}
 	}
