@@ -4236,6 +4236,38 @@
     }
   },
   {
+    "path": "properties.collect.properties.v1.items.properties[\"meta.redact\"]",
+    "replace": {
+      "required": ["scrubs", "output_dir"]
+    },
+    "merge": {
+      "description": "A list of scrubbers to apply to all assets. If multiple 'meta.redact' specs are specified, all lists will be used. If a spec specifies a scrubber, it will be run in addition to the global scrubbers.",
+      "examples": [
+        {
+          "scrubs": [
+            {
+              "regex":  "abc",
+              "replace": "xyz"
+            }
+          ],
+          "output_dir": "redact/"
+        }
+      ],
+      "_ext_outputs": [
+        {
+          "path": "scrubs.json",
+          "description": "A list of scrubs that were added globally by this item"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.collect.properties.v1.items.properties[\"meta.redact\"].properties.scrubs",
+    "merge": {
+      "description": "the list of scrubbers to apply to all outputs"
+    }
+  },
+  {
     "path": "properties.collect.properties.v1.items.properties[\"os.hostname\"]",
     "merge": {
       "description": "Get the hostname",

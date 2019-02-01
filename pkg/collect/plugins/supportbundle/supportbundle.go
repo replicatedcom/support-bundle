@@ -24,6 +24,8 @@ func (p *SupportBundle) Plan(spec types.Spec) types.Planner {
 		return p.planner.Version
 	case spec.CustomerMeta != nil:
 		return p.planner.CustomerMeta
+	case spec.GlobalRedaction != nil:
+		return p.planner.GlobalRedaction
 	default:
 		return nil
 	}

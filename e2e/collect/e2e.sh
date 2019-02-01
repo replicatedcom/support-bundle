@@ -21,6 +21,7 @@ else
     ginkgo -v -r -p --skip="docker" e2e/collect/core
     # ginkgo -v -r -p --skip="docker" e2e/collect/journald
     ginkgo -v -r -p e2e/collect/supportbundle
+    ginkgo -v -r -p e2e/collect/meta
 fi
 echo
 
