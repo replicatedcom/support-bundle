@@ -171,3 +171,7 @@
 
 0.21.0 /2019-01-25
     * Merged Replicated production spec into default spec.
+
+0.22.0 /2019-02-01
+    * Added meta.redact to allow applying scrubbing regexes to all resources
+
