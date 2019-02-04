@@ -4505,7 +4505,7 @@
 
     },
     "merge": {
-      "description": "Collect Audit Log events from a running Retraced instance",
+      "description": "Collect Audit Log events from a running Audit Log instance",
       "examples": [
         {
           "output_dir": "/audit/events",
