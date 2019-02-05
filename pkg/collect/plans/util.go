@@ -101,28 +101,37 @@ func RawScrubber(scrubSpec *types.Scrub) (types.BytesScrubber, error) {
 
 func filterStreams(readFrom io.Reader, writeTo io.Writer, scrubber func([]byte) []byte) error {
 	// preserve newline at end
-	var counter bytesCounter
-	tee := io.TeeReader(readFrom, &counter)
-	lineScanner := bufio.NewScanner(tee)
-	var total int
-	for i := 0; lineScanner.Scan(); i++ {
-		line := lineScanner.Bytes()
+	var readCounter bytesCounter
+	tee := io.TeeReader(readFrom, &readCounter)
+	lineReader := bufio.NewReader(tee)
+	var writeCounter bytesCounter
+	writeTee := io.MultiWriter(writeTo, &writeCounter)
+
+	i := 0
+	var err error
+	for err == nil {
+		var line []byte
+		line, err = readEntireLine(lineReader)
+		if err != nil {
+			break
+		}
 		line = scrubber(line)
 
 		if i > 0 {
 			line = append([]byte("\n"), line...)
 		}
-		n, err := writeTo.Write(line)
-		if err != nil {
-			return err
+
+		_, werr := writeTee.Write(line)
+		if werr != nil {
+			return werr
 		}
-		total += n
+		i++
 	}
-	if err := lineScanner.Err(); err != nil {
+	if err != nil && err != io.EOF {
 		return err
 	}
-	if total < counter.n {
-		_, err := writeTo.Write([]byte("\n"))
+	for writeCounter.n < readCounter.n {
+		_, err := writeTee.Write([]byte("\n"))
 		return err
 	}
 	return nil
@@ -136,4 +145,18 @@ func (w *bytesCounter) Write(p []byte) (int, error) {
 	n := len(p)
 	w.n += n
 	return n, nil
+}
+
+func readEntireLine(reader *bufio.Reader) ([]byte, error) {
+	var line []byte
+	isPrefix := true
+	var err error
+
+	for isPrefix && err == nil {
+		var newLine []byte
+		newLine, isPrefix, err = reader.ReadLine()
+		line = append(line, newLine...)
+	}
+
+	return line, err
 }

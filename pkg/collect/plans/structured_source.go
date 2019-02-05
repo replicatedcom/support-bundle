@@ -7,6 +7,8 @@ import (
 	"io"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
@@ -65,7 +67,7 @@ func (task *StructuredSource) Exec(ctx context.Context, rootDir string) []*types
 			}
 			data, err := json.Marshal(structured)
 			if err != nil {
-				return nil, err
+				return nil, errors.Wrap(err, "json.Marshal")
 			}
 			return map[string]io.Reader{"": bytes.NewReader(data)}, nil
 		}
