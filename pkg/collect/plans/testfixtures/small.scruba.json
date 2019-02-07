@@ -1,0 +1,18 @@
+{
+  "key": "v_lue",
+  "_rr_yKey": [
+    "item1",
+    {
+      "objKey": "objV_lue"
+    },
+    {
+      "objKey": "obj2V_lue",
+      "objKey2": "obj2V_lue2"
+    }
+  ],
+  "object": {
+    "objKey": "obj2V_lue",
+    "objKey2": "obj2V_lue2",
+    "objArr_y": ["_", "b", "c"]
+  }
+}

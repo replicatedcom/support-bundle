@@ -1,0 +1,18 @@
+{
+  "key": "value",
+  "arrayKey": [
+    "item1",
+    {
+      "objKey": "objValue"
+    },
+    {
+      "objKey": "obj2Value",
+      "objKey2": "obj2Value2"
+    }
+  ],
+  "object": {
+    "objKey": "obj2Value",
+    "objKey2": "obj2Value2",
+    "objArray": ["a", "b", "c"]
+  }
+}
