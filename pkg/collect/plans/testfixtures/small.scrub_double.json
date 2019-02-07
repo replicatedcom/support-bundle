@@ -1,0 +1,18 @@
+{
+  "key_key": "value_value",
+  "arrayKey_arrayKey": [
+    "item1_item1",
+    {
+      "objKey_objKey": "objValue_objValue"
+    },
+    {
+      "objKey_objKey": "obj2Value_obj2Value",
+      "objKey2_objKey2": "obj2Value2_obj2Value2"
+    }
+  ],
+  "object_object": {
+    "objKey_objKey": "obj2Value_obj2Value",
+    "objKey2_objKey2": "obj2Value2_obj2Value2",
+    "objArray_objArray": ["a_a", "b_b", "c_c"]
+  }
+}
