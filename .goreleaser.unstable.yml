@@ -34,7 +34,6 @@ builds:
     hooks: {}
 archive:
   format: tar.gz
-  name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{.Arm }}{{ end }}-unstable'
   files:
     - licence*
     - LICENCE*
@@ -45,19 +44,19 @@ archive:
     - changelog*
     - CHANGELOG*
 dockers:
-  - image: replicated/analyze
+  - image_templates:
+      - replicated/analyze:alpha
     dockerfile: deploy/Dockerfile-analyze
     goos: linux
     goarch: amd64
-    binary: analyze
-    tag_templates:
-      - "unstable"
-  - image: replicated/support-bundle
+    binaries:
+      - analyze
+  - image_templates:
+      - replicated/support-bundle:alpha
     dockerfile: deploy/Dockerfile-collect
     goos: linux
     goarch: amd64
-    binary: support-bundle
-    tag_templates:
-      - "unstable"
+    binaries:
+      - support-bundle
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
