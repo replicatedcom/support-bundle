@@ -136,6 +136,7 @@ type GlobalRedactionOptions struct {
 	Scrubs     []Scrub `json:"scrubs,omitempty"`
 }
 
+// meta.channel
 type ChannelMetaOptions struct {
 	SpecShared  `json:",inline,omitempty"`
 	ChannelID   string `json:"channel_id,omitempty"`
