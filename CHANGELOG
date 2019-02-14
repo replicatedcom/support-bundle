@@ -173,5 +173,12 @@
     * Merged Replicated production spec into default spec.
 
 0.22.0 /2019-02-01
-    * Added meta.redact to allow applying scrubbing regexes to all resources
+    * Added meta.redact to allow applying scrubbing regexes to all resources.
+
+0.22.1 /2019-02-11
+    * Patched CVEs CVE-2019-3822, CVE-2019-3823 and CVE-2018-16890 in curl and libcurl os packages.
+
+0.22.2 /2019-02-??
+    * Fixed an issue that could cause some large files to not be included in
+    support bundles when using meta.redact.
 

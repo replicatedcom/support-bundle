@@ -41,6 +41,28 @@ func TestStructuredSourceScrubber(t *testing.T) {
 			},
 			want: containerInspectSource(t, "testfixtures/retraced-api.scrub.json"),
 		},
+		{
+			name: "scrub_a",
+			fields: fields{
+				Source: genericInspectSource(t, "testfixtures/small.input.json"),
+				RawScrubber: mustRawScrubber(t, &types.Scrub{
+					Regex:   "a",
+					Replace: "_",
+				}),
+			},
+			want: genericInspectSource(t, "testfixtures/small.scruba.json"),
+		},
+		{
+			name: "scrub_double",
+			fields: fields{
+				Source: genericInspectSource(t, "testfixtures/small.input.json"),
+				RawScrubber: mustRawScrubber(t, &types.Scrub{
+					Regex:   `"(\w+)"`,
+					Replace: `"${1}_${1}"`,
+				}),
+			},
+			want: genericInspectSource(t, "testfixtures/small.scrub_double.json"),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -60,11 +82,13 @@ func TestStructuredSourceScrubber(t *testing.T) {
 				RawPath:     "actual",
 			}
 			got := task.Exec(context.Background(), rootDir)
+
 			require.Len(t, got, 1)
 			require.NoError(t, got[0].Error)
 			expected, err := json.Marshal(tt.want)
 			require.NoError(t, err)
 			actual := mustAsset(t, filepath.Join(rootDir, got[0].Path))
+
 			assert.JSONEq(t, string(expected), actual)
 		})
 	}
@@ -76,4 +100,12 @@ func containerInspectSource(t *testing.T, filename string) interface{} {
 	err := json.Unmarshal([]byte(asset), &container)
 	require.NoError(t, err)
 	return container
+}
+
+func genericInspectSource(t *testing.T, filename string) interface{} {
+	asset := mustAsset(t, filename)
+	var generic interface{}
+	err := json.Unmarshal([]byte(asset), &generic)
+	require.NoError(t, err)
+	return generic
 }
