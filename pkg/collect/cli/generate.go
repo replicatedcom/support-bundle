@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	DefaultCustomerEndpoint       = "https://pg.replicated.com/graphql"
+	DefaultEndpoint               = "https://pg.replicated.com/graphql"
 	DefaultGenerateTimeoutSeconds = 60
 )
 
@@ -24,11 +24,13 @@ type GenerateOptions struct {
 	BundlePath          string
 	SkipDefault         bool
 	TimeoutSeconds      int
-	CustomerID          string
-	CustomerEndpoint    string
 	ConfirmUploadPrompt bool
 	DenyUploadPrompt    bool
 	Quiet               bool
+	Endpoint            string
+	ChannelID           string
+
+	CustomerID string // Deprecated
 
 	bundle.PlannerOptions
 }
@@ -39,20 +41,22 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		return errors.Wrap(err, "initialize planner")
 	}
 
-	customerEndpoint := opts.CustomerEndpoint
-	if customerEndpoint == "" {
-		customerEndpoint = DefaultCustomerEndpoint
+	endpoint := opts.Endpoint
+	if endpoint == "" {
+		endpoint = DefaultEndpoint
 	}
 
-	graphQLClient := graphql.NewClient(customerEndpoint, http.DefaultClient)
+	graphQLClient := graphql.NewClient(endpoint, http.DefaultClient)
 	specs, err := resolveLocalSpecs(opts)
 	if err != nil {
 		return errors.Wrap(err, "resolve specs")
 	}
 
 	var customerDoc *types.Doc
+	var channelDoc *types.Doc
 	expectedDefaultTasks := 1 // there is always at least 1 for the version
 
+	// this next if statement and included scope is deprecated
 	if opts.CustomerID != "" {
 		customerDoc, err = getCustomerDoc(graphQLClient, opts.CustomerID)
 		if err != nil {
@@ -62,6 +66,25 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, bundle.CustomerJSONSpec(opts.CustomerID))
 
 		if types.GetUseDefaults(customerDoc.Lifecycle) {
+			defaultSpecs, err := bundle.DefaultSpecs()
+			if err != nil {
+				return errors.Wrap(err, "get default spec")
+			}
+			specs = append(specs, defaultSpecs...)
+		}
+
+		expectedDefaultTasks++
+	}
+
+	if opts.ChannelID != "" {
+		channelDoc, err = getChannelDoc(graphQLClient, opts.ChannelID)
+		if err != nil {
+			return errors.Wrap(err, "get channel spec")
+		}
+		specs = append(specs, channelDoc.Collect.V1...)
+		specs = append(specs, bundle.ChannelJSONSpec(opts.ChannelID))
+
+		if types.GetUseDefaults(channelDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")
@@ -88,21 +111,24 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		GenerateBundlePath:  opts.BundlePath,
 		GraphQLClient:       graphQLClient,
 		UploadCustomerID:    opts.CustomerID,
+		UploadChannelID:     opts.ChannelID,
 		ConfirmUploadPrompt: opts.ConfirmUploadPrompt,
 		DenyUploadPrompt:    opts.DenyUploadPrompt,
 		Quiet:               opts.Quiet,
 	}
 
-	lt := types.DefaultLifecycleTasks
-	if customerDoc != nil && customerDoc.Lifecycle != nil {
-		lt = customerDoc.Lifecycle
+	lifecycleTasks := types.DefaultLifecycleTasks
+	if channelDoc != nil && channelDoc.Lifecycle != nil {
+		lifecycleTasks = channelDoc.Lifecycle
+	} else if customerDoc != nil && customerDoc.Lifecycle != nil {
+		lifecycleTasks = customerDoc.Lifecycle
 	}
 
-	if opts.CustomerID == "" {
-		lt = types.GenerateOnlyLifecycleTasks
+	if opts.CustomerID == "" && opts.ChannelID == "" {
+		lifecycleTasks = types.GenerateOnlyLifecycleTasks
 	}
 
-	if err = lf.Build(lt); err != nil {
+	if err = lf.Build(lifecycleTasks); err != nil {
 		return errors.Wrap(err, "build lifecycle events")
 	}
 
@@ -137,7 +163,7 @@ func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
 		specs = append(specs, argSpecs...)
 	}
 
-	if opts.CustomerID == "" && !opts.SkipDefault {
+	if opts.CustomerID == "" && opts.ChannelID == "" && !opts.SkipDefault {
 		defaultSpecs, err := bundle.DefaultSpecs()
 		if err != nil {
 			return nil, errors.Wrap(err, "get default spec")
@@ -148,6 +174,7 @@ func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
 	return specs, nil
 }
 
+// getCustomerDoc is deprecated
 func getCustomerDoc(gqlClient *graphql.Client, customerID string) (*types.Doc, error) {
 	remoteSpecBody, err := gqlClient.GetCustomerSpec(customerID)
 	if err != nil {
@@ -160,4 +187,18 @@ func getCustomerDoc(gqlClient *graphql.Client, customerID string) (*types.Doc, e
 	}
 
 	return customerDoc, nil
+}
+
+func getChannelDoc(gqlClient *graphql.Client, channelID string) (*types.Doc, error) {
+	remoteSpecBody, err := gqlClient.GetChannelSpec(channelID)
+	if err != nil {
+		return nil, errors.Wrap(err, "get remote spec")
+	}
+
+	channelDoc, err := spec.Unmarshal(remoteSpecBody)
+	if err != nil {
+		return nil, errors.Wrap(err, "parse channel spec")
+	}
+
+	return channelDoc, nil
 }

@@ -11,16 +11,26 @@ import (
 	"github.com/pkg/errors"
 )
 
+// deprecated
 const customerSpecQuery = `
 query {
   supportBundleSpec {
-	spec
-	hydrated
+    spec
+    hydrated
   }
 }
 `
 
-const startUploadMutation = `
+const channelSpecQuery = `
+query channelCollectors($channelId: String) {
+  channelCollectors(channelId: $channelId) {
+    spec
+    hydrated
+  }
+}
+`
+
+const startCustomerUploadMutation = `
 mutation GetPresignedURI($size: Int, $notes: String) {
   uploadSupportBundle(size: $size, notes: $notes) {
     uploadUri,
@@ -31,9 +41,20 @@ mutation GetPresignedURI($size: Int, $notes: String) {
 }
 `
 
-const finishUploadMutation = `
-mutation SetBundleStatus($id: String!, $status: String!) {
-  updateSupportBundle(id: $id, status: $status) {
+const startChannelUploadMutation = `
+mutation GetChannelPresignedURI($channelId: String!, $size: Int, $notes: String) {
+  uploadChannelSupportBundle(channelId: $channelId, size: $size, notes: $notes) {
+    uploadUri,
+    supportBundle {
+      id
+    }
+  }
+}
+`
+
+const markSupportBundleUploadedMutation = `
+mutation FinishUploadSupportBundle($id: String!) {
+  markSupportBundleUploaded(id: $id) {
     id
   }
 }
@@ -59,6 +80,7 @@ func NewClient(endpoint string, client *http.Client) *Client {
 	}
 }
 
+// GetCustomerSpec is deprecated
 func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 	resp, err := c.executeGraphQLQuery(id, Request{
 		Query: customerSpecQuery,
@@ -81,9 +103,40 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 	return []byte(specBody.Data.Hydrated), nil
 }
 
-func (c *Client) GetSupportBundleUploadURI(id string, size int64, notes string) (string, *url.URL, error) {
-	resp, err := c.executeGraphQLQuery(id, Request{
-		Query: startUploadMutation,
+// GetChannelSpec will query the endpoint set in the client with a Replicated ChannelID
+// and will return a fully rendered spec, containing collect and lifecycle keys
+func (c *Client) GetChannelSpec(channelId string) ([]byte, error) {
+	resp, err := c.executeGraphQLQuery("", Request{
+		Query: channelSpecQuery,
+		Variables: map[string]interface{}{
+			"channelId": channelId,
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "executing graphql request")
+	}
+
+	decoder := json.NewDecoder(resp.Body)
+	specBody := ChannelCollectorsResponse{}
+
+	if err := decoder.Decode(&specBody); err != nil {
+		return nil, errors.Wrap(err, "unmarshalling graphql response")
+	}
+
+	if specBody.Errors != nil && len(specBody.Errors) > 0 {
+		return nil, Errors{Errors: specBody.Errors}
+	}
+
+	return []byte(specBody.Data.Hydrated), nil
+}
+
+// GetSupportBundleCustomerUploadURI queries the Endpoint in Client to retrieve a URI that can be used to upload
+// a support bundle for a specific customer
+// This function is deprecated
+func (c *Client) GetSupportBundleCustomerUploadURI(customerID string, size int64, notes string) (string, *url.URL, error) {
+	resp, err := c.executeGraphQLQuery(customerID, Request{
+		Query: startCustomerUploadMutation,
 		Variables: map[string]interface{}{
 			"size":  size,
 			"notes": notes,
@@ -113,12 +166,48 @@ func (c *Client) GetSupportBundleUploadURI(id string, size int64, notes string) 
 	return uploadBody.Data.ID, uri, nil
 }
 
-func (c *Client) UpdateSupportBundleStatus(customerID string, bundleID, status string) error {
-	_, err := c.executeGraphQLQuery(customerID, Request{
-		Query: finishUploadMutation,
+// GetSupportBundleChannelUploadURI queries the Endpoint in Client to retrieve a URI that can be used to upload
+// a support bundle for a specific channel
+func (c *Client) GetSupportBundleChannelUploadURI(channelID string, size int64, notes string) (string, *url.URL, error) {
+	resp, err := c.executeGraphQLQuery("", Request{
+		Query: startChannelUploadMutation,
 		Variables: map[string]interface{}{
-			"id":     bundleID,
-			"status": status,
+			"channelId": channelID,
+			"size":      size,
+			"notes":     notes,
+		},
+	})
+
+	if err != nil {
+		return "", nil, errors.Wrap(err, "executing graphql request")
+	}
+
+	decoder := json.NewDecoder(resp.Body)
+	uploadBody := SupportBundleChannelUploadResponse{}
+
+	if err := decoder.Decode(&uploadBody); err != nil {
+		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
+	}
+
+	fmt.Printf("%#v\n", uploadBody.Data)
+	if uploadBody.Errors != nil && len(uploadBody.Errors) > 0 {
+		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
+	}
+
+	uri, err := url.Parse(uploadBody.Data.UploadURI)
+	if err != nil {
+		return "", nil, errors.Wrap(err, "parsing upload URI")
+	}
+
+	return uploadBody.Data.ID, uri, nil
+}
+
+// MarkSupportBundleUploaded mutates the Endpoint in Client to mark a support bundle as uploaded
+func (c *Client) MarkSupportBundleUploaded(bundleID string) error {
+	_, err := c.executeGraphQLQuery("", Request{
+		Query: markSupportBundleUploadedMutation,
+		Variables: map[string]interface{}{
+			"id": bundleID,
 		},
 	})
 
@@ -140,7 +229,10 @@ func (c *Client) executeGraphQLQuery(auth string, gr Request) (*http.Response, e
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth+":"))))
+
+	if auth != "" {
+		req.Header.Set("Authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(auth+":"))))
+	}
 
 	return c.client.Do(req)
 }

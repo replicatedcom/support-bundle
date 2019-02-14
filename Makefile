@@ -206,7 +206,7 @@ ci-e2e-supportbundle-swarm:
 
 goreleaser: .state/goreleaser
 
-.state/goreleaser: .goreleaser.unstable.yml deploy/Dockerfile-analyze deploy/Dockerfile-collect $(SRC)
+.state/goreleaser: .state/base .goreleaser.unstable.yml deploy/Dockerfile-analyze deploy/Dockerfile-collect $(SRC)
 	@mkdir -p .state
 	curl -sL https://git.io/goreleaser | bash -s -- --snapshot --rm-dist --config .goreleaser.unstable.yml
 	@touch .state/goreleaser
@@ -223,3 +223,8 @@ support-bundle-generate: goreleaser
 		--workdir /out  \
 		$(DOCKER_REPO)/support-bundle:unstable \
 		generate
+
+.state/base: deploy/Dockerfile-base
+	@mkdir -p .state
+	docker build --pull -t replicated/support-bundle:base -f deploy/Dockerfile-base deploy/
+	@touch .state/base

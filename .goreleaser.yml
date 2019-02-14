@@ -45,38 +45,26 @@ archive:
     - changelog*
     - CHANGELOG*
 dockers:
-  - image: replicated/analyze
+  - image_templates:
+      - replicated/analyze:latest
+      - replicated/analyze:{{ .Major }}
+      - replicated/analyze:{{ .Major }}.{{ .Minor }}
+      - replicated/analyze:{{ .Major }}.{{ .Minor }}.{{ .Patch }}
     dockerfile: deploy/Dockerfile-analyze
     goos: linux
     goarch: amd64
-    binary: analyze
-    tag_templates:
-      - "alpha"
-      - "latest"
-      - "{{ .Major }}"
-      - "{{ .Major }}.{{ .Minor }}"
-      - "{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
-      - "{{ .Commit }}"
-  - image: registry.replicated.com/library/support-bundle
+    binaries:
+      - analyze
+  - image_templates:
+      - registry.replicated.com/library/support-bundle:latest
+      - replicated/support-bundle:latest
+      - replicated/support-bundle:{{ .Major }}
+      - replicated/support-bundle:{{ .Major }}.{{ .Minor }}
+      - replicated/support-bundle:{{ .Major }}.{{ .Minor }}.{{ .Patch }}
     dockerfile: deploy/Dockerfile-collect
     goos: linux
     goarch: amd64
-    binary: support-bundle
-    tag_templates:
-      - "{{ .Tag }}"
-      - latest
-  - image: replicated/support-bundle
-    dockerfile: deploy/Dockerfile-collect
-    goos: linux
-    goarch: amd64
-    binary: support-bundle
-    tag_templates:
-      - "alpha"
-      - "stable"
-      - "latest"
-      - "{{ .Major }}"
-      - "{{ .Major }}.{{ .Minor }}"
-      - "{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
-      - "{{ .Commit }}"
+    binaries:
+      - support-bundle
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}

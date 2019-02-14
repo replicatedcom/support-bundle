@@ -39,8 +39,12 @@ func RunCmd() *cobra.Command {
 
 	cmd.Flags().StringArrayP("spec-file", "f", nil, "spec file")
 	cmd.Flags().StringArrayP("spec", "s", nil, "spec doc")
+
 	cmd.Flags().String("customer-id", "", "Replicated Customer ID")
-	cmd.Flags().String("customer-endpoint", collectcli.DefaultCustomerEndpoint, "Replicated customer API endpoint")
+	cmd.Flags().MarkDeprecated("customer-id", "This argument is no longer supported. Consider using \"channel-id\"")
+
+	cmd.Flags().String("channel-id", "", "Replicated ChannelID to attempt to get a collector definition from")
+	cmd.Flags().String("endpoint", collectcli.DefaultEndpoint, "Endpoint to fetch collector definitions fom")
 
 	// analyze flags
 	cmd.Flags().StringP("output", "o", "human", "output format, one of: human|json|yaml")
@@ -63,14 +67,7 @@ func RunCmd() *cobra.Command {
 	return cmd
 }
 
-func analyzeRun(
-	ctx context.Context,
-	ui cli.Ui,
-	outputFormat string,
-	quiet bool,
-	logLevel string,
-) error {
-
+func analyzeRun(ctx context.Context, ui cli.Ui, outputFormat string, quiet bool, logLevel string) error {
 	results, err := analyze.RunE(ctx)
 
 	if !quiet && len(results) > 0 {

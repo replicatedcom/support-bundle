@@ -25,19 +25,12 @@ func NewMock(fs afero.Fs, bundlePath string) *MockCollector {
 	}
 }
 
-func (c *MockCollector) CollectBundle(
-	ctx context.Context,
-	customerID string,
-	specs []string,
-	specFiles []string,
-	dest string,
-	opts Options,
-) error {
-	c.Called(specs, specFiles)
+func (c *MockCollector) CollectBundle(ctx context.Context, input CollectorInput) error {
+	c.Called(input.Specs, input.SpecFiles)
 
-	f, err := c.Fs.Create(dest)
+	f, err := c.Fs.Create(input.Dest)
 	if err != nil {
-		return errors.Wrapf(err, "create file %s", dest)
+		return errors.Wrapf(err, "create file %s", input.Dest)
 	}
 	err = func() error {
 		defer f.Close()

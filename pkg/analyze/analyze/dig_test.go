@@ -11,7 +11,6 @@ import (
 func TestDI(t *testing.T) {
 	req := require.New(t)
 	viper.Set("headless", true)
-	viper.Set("customer-endpoint", "https://g.replicated.com")
 
 	container, err := buildInjector()
 	req.NoError(err)

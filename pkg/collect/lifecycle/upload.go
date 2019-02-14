@@ -61,14 +61,29 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		}
 	}
 
-	if l.UploadCustomerID == "" {
-		return false, errors.New("upload with no customer id")
+	if l.UploadCustomerID == "" && l.UploadChannelID == "" {
+		return false, errors.New("upload with no channel id or customer id")
 	}
 
-	bundleID, url, err := l.GraphQLClient.GetSupportBundleUploadURI(l.UploadCustomerID, l.FileInfo.Size(), l.Notes)
+	var bundleID string
+	var url *url.URL
 
-	if err != nil {
-		return false, errors.Wrap(err, "get presigned URL")
+	if l.UploadChannelID != "" {
+		channelBundleID, channelURL, err := l.GraphQLClient.GetSupportBundleChannelUploadURI(l.UploadChannelID, l.FileInfo.Size(), l.Notes)
+		if err != nil {
+			return false, errors.Wrap(err, "get presigned URL for channel upload")
+		}
+
+		bundleID = channelBundleID
+		url = channelURL
+	} else if l.UploadCustomerID != "" {
+		customerBundleID, customerURL, err := l.GraphQLClient.GetSupportBundleCustomerUploadURI(l.UploadCustomerID, l.FileInfo.Size(), l.Notes)
+		if err != nil {
+			return false, errors.Wrap(err, "get presigned URL for customer upload")
+		}
+
+		bundleID = customerBundleID
+		url = customerURL
 	}
 
 	err = putObject(l.FileInfo, l.RealGeneratedBundlePath, url)
@@ -76,8 +91,8 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		return false, errors.Wrap(err, "uploading to presigned URL")
 	}
 
-	if err = l.GraphQLClient.UpdateSupportBundleStatus(l.UploadCustomerID, bundleID, "uploaded"); err != nil {
-		return false, errors.Wrap(err, "updating bundle status")
+	if err = l.GraphQLClient.MarkSupportBundleUploaded(bundleID); err != nil {
+		return false, errors.Wrap(err, "mark support bundle uploaded")
 	}
 
 	return true, nil

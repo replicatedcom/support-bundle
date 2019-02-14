@@ -37,10 +37,11 @@ type Analyze struct {
 	Collector collector.Interface
 	Analyzer  *analyzer.Analyzer
 
-	SpecFiles        []string
-	Specs            []string
-	CustomerID       string
-	CustomerEndpoint string
+	SpecFiles  []string
+	Specs      []string
+	CustomerID string // deprecated
+	ChannelID  string
+	Endpoint   string
 
 	// analyze
 	SeverityThreshold string
@@ -57,13 +58,7 @@ type Analyze struct {
 }
 
 // New gets an instance using viper to pull config
-func New(
-	v *viper.Viper,
-	logger log.Logger,
-	resolver *resolver.Resolver,
-	collector collector.Interface,
-	analyzer *analyzer.Analyzer,
-) *Analyze {
+func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, collector collector.Interface, analyzer *analyzer.Analyzer) *Analyze {
 	return &Analyze{
 		Logger: logger,
 
@@ -71,10 +66,10 @@ func New(
 		Collector: collector,
 		Analyzer:  analyzer,
 
-		SpecFiles:        cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
-		Specs:            cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
-		CustomerID:       v.GetString("customer-id"),
-		CustomerEndpoint: v.GetString("customer-endpoint"),
+		SpecFiles:  cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
+		Specs:      cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
+		CustomerID: v.GetString("customer-id"),
+		Endpoint:   v.GetString("endpoint"),
 
 		// analyze
 		SeverityThreshold: v.GetString("severity-threshold"),
@@ -104,17 +99,20 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 	debug.Log(
 		"phase", "resolve")
 
-	customerEndpoint := a.CustomerEndpoint
-	if customerEndpoint == "" {
-		customerEndpoint = collectcli.DefaultCustomerEndpoint
+	endpoint := a.Endpoint
+	if endpoint == "" {
+		endpoint = collectcli.DefaultEndpoint
 	}
-	spec, err := a.Resolver.ResolveSpec(
-		ctx,
-		a.SpecFiles,
-		a.Specs,
-		a.CustomerID,
-		customerEndpoint,
-	)
+
+	input := resolver.ResolverInput{
+		Files:      a.SpecFiles,
+		Inline:     a.Specs,
+		CustomerID: a.CustomerID,
+		ChannelID:  a.ChannelID,
+		Endpoint:   a.Endpoint,
+	}
+
+	spec, err := a.Resolver.ResolveSpec(ctx, input)
 	if err != nil {
 		debug.Log(
 			"phase", "resolve",
@@ -178,22 +176,24 @@ func (a *Analyze) collectBundle(ctx context.Context, dest string) error {
 		"timeout", a.CollectTimeout,
 		"dest", dest)
 
-	err := a.Collector.CollectBundle(
-		ctx,
-		a.CustomerID,
-		a.Specs,
-		a.SpecFiles,
-		dest,
-		collector.Options{
+	input := collector.CollectorInput{
+		CustomerID: a.CustomerID,
+		ChannelID:  a.ChannelID,
+		Specs:      a.Specs,
+		SpecFiles:  a.SpecFiles,
+		Dest:       dest,
+		Opts: collector.Options{
 			EnableCore:       a.CollectEnableCore,
 			EnableDocker:     a.CollectEnableDocker,
 			EnableJournald:   a.CollectEnableJournald,
 			EnableKubernetes: a.CollectEnableKubernetes,
 			EnableRetraced:   a.CollectEnableRetraced,
 			Timeout:          a.CollectTimeout,
-			CustomerEndpoint: a.CustomerEndpoint,
+			Endpoint:         a.Endpoint,
 		},
-	)
+	}
+
+	err := a.Collector.CollectBundle(ctx, input)
 	if err != nil {
 		debug.Log(
 			"phase", "bundle.generate",

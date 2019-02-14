@@ -27,9 +27,6 @@ func RootCmd() *cobra.Command {
 	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is /etc/replicated/analyze.yaml)")
 	cmd.PersistentFlags().String("log-level", "off", "Log level")
 
-	// required
-	// cmd.PersistentFlags().String("customer-id", "", "customer id")
-
 	// sub-commands
 	cmd.AddCommand(RunCmd())
 

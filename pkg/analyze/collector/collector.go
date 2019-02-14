@@ -14,53 +14,53 @@ type Collector struct {
 	Logger log.Logger
 }
 
-func New(
-	logger log.Logger,
-) Interface {
+type CollectorInput struct {
+	CustomerID string
+	ChannelID  string
+	Specs      []string
+	SpecFiles  []string
+	Dest       string
+	Opts       Options
+}
+
+func New(logger log.Logger) Interface {
 	return &Collector{
 		Logger: logger,
 	}
 }
 
-func (c *Collector) CollectBundle(
-	ctx context.Context,
-	customerID string,
-	specs []string,
-	specFiles []string,
-	dest string,
-	opts Options,
-) error {
-
+func (c *Collector) CollectBundle(ctx context.Context, input CollectorInput) error {
 	debug := level.Debug(log.With(c.Logger, "method", "Collector.Collect"))
 
 	cmd := cli.NewCli()
 	err := cmd.Generate(cli.GenerateOptions{
-		CfgFiles:         specFiles,
-		CfgDocs:          specs,
-		BundlePath:       dest,
+		CfgFiles:         input.SpecFiles,
+		CfgDocs:          input.Specs,
+		BundlePath:       input.Dest,
 		SkipDefault:      true,
-		TimeoutSeconds:   int(opts.Timeout.Seconds()),
-		CustomerID:       customerID,
-		CustomerEndpoint: opts.CustomerEndpoint,
+		TimeoutSeconds:   int(input.Opts.Timeout.Seconds()),
+		CustomerID:       input.CustomerID,
+		ChannelID:        input.ChannelID,
+		Endpoint:         input.Opts.Endpoint,
 		DenyUploadPrompt: true,
 		Quiet:            true,
 		PlannerOptions: bundle.PlannerOptions{
-			EnableCore:       opts.EnableCore,
-			EnableDocker:     opts.EnableDocker,
-			EnableJournald:   opts.EnableJournald,
-			EnableKubernetes: opts.EnableKubernetes,
-			EnableRetraced:   opts.EnableRetraced,
+			EnableCore:       input.Opts.EnableCore,
+			EnableDocker:     input.Opts.EnableDocker,
+			EnableJournald:   input.Opts.EnableJournald,
+			EnableKubernetes: input.Opts.EnableKubernetes,
+			EnableRetraced:   input.Opts.EnableRetraced,
 
-			RequireJournald:   opts.EnableJournald,
-			RequireKubernetes: opts.EnableKubernetes,
-			RequireRetraced:   opts.EnableRetraced,
+			RequireJournald:   input.Opts.EnableJournald,
+			RequireKubernetes: input.Opts.EnableKubernetes,
+			RequireRetraced:   input.Opts.EnableRetraced,
 		},
 	})
 
 	debug.Log(
 		"phase", "bundle.generate",
-		"timeout", opts.Timeout,
-		"dest", dest,
+		"timeout", input.Opts.Timeout,
+		"dest", input.Dest,
 		"error", err)
 
 	return errors.Wrap(err, "generate")

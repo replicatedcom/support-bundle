@@ -23,9 +23,27 @@ type SupportBundleResult struct {
 	SupportBundle `json:"supportBundleSpec"`
 }
 
+type ChannelCollectorsResponse struct {
+	Data   *ChannelCollectorsResult `json:"data,omitempty"`
+	Errors []Error                  `json:"errors,omitempty"`
+}
+
+type ChannelCollectorsResult struct {
+	SupportBundle `json:"channelCollectors,omitempty"`
+}
+
 type SupportBundle struct {
 	Spec     string `json:"spec,omitempty"`
 	Hydrated string `json:"hydrated,omitempty"`
+}
+
+type SupportBundleChannelUploadResponse struct {
+	Data   *SupportBundleChannelRequestResult `json:"data,omitempty"`
+	Errors []Error                            `json:"errors,omitempty"`
+}
+
+type SupportBundleChannelRequestResult struct {
+	UploadSupportBundle `json:"uploadChannelSupportBundle,omitempty"`
 }
 
 type SupportBundleUploadResponse struct {
