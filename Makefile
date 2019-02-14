@@ -221,7 +221,7 @@ support-bundle-generate: goreleaser
 		--env LOG_LEVEL=DEBUG \
 		--pid host \
 		--workdir /out  \
-		$(DOCKER_REPO)/support-bundle:unstable \
+		$(DOCKER_REPO)/support-bundle:alpha \
 		generate
 
 .state/base: deploy/Dockerfile-base
