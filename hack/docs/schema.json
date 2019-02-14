@@ -5218,6 +5218,60 @@
                   }
                 }
               },
+              "meta.channel": {
+                "type": "object",
+                "properties": {
+                  "channel_id": {
+                    "type": "string"
+                  },
+                  "channel_name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "include_empty": {
+                    "type": "boolean"
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "labels": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "output_dir": {
+                    "type": "string"
+                  },
+                  "scrub": {
+                    "type": "object",
+                    "properties": {
+                      "regex": {
+                        "type": "string"
+                      },
+                      "replace": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "regex",
+                      "replace"
+                    ]
+                  },
+                  "timeout_seconds": {
+                    "type": "integer"
+                  }
+                }
+              },
               "meta.redact": {
                 "description": "A list of scrubbers to apply to all assets. If multiple 'meta.redact' specs are specified, all lists will be used. If a spec specifies a scrubber, it will be run in addition to the global scrubbers.",
                 "examples": [

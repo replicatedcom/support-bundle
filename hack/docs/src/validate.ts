@@ -37,7 +37,8 @@ export function shouldSkipKey(schemaKey: string) {
     schemaKey === "scrub" ||
     schemaKey === "timeout_seconds" ||
     schemaKey === "include_empty" ||
-    schemaKey === "meta.customer";
+    schemaKey === "meta.customer" ||
+    schemaKey === "meta.channel";
 }
 
 export function validate(schemaType: any, path: string, maxDepth: number, schema: any, hasOutput: boolean) {
