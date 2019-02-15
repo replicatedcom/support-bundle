@@ -189,7 +189,6 @@ func (c *Client) GetSupportBundleChannelUploadURI(channelID string, size int64, 
 		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	fmt.Printf("%#v\n", uploadBody.Data)
 	if uploadBody.Errors != nil && len(uploadBody.Errors) > 0 {
 		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
 	}
