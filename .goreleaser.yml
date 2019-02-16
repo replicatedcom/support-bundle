@@ -57,6 +57,9 @@ dockers:
       - analyze
   - image_templates:
       - registry.replicated.com/library/support-bundle:latest
+      - registry.replicated.com/library/support-bundle:{{ .Major }}
+      - registry.replicated.com/library/support-bundle:{{ .Major }}.{{ .Minor }}
+      - registry.replicated.com/library/support-bundle:{{ .Major }}.{{ .Minor }}.{{ .Patch }}
       - replicated/support-bundle:latest
       - replicated/support-bundle:{{ .Major }}
       - replicated/support-bundle:{{ .Major }}.{{ .Minor }}
