@@ -1,7 +1,6 @@
 package spec
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
@@ -47,6 +46,53 @@ func TestUnmarshal(t *testing.T) {
 		want types.Doc
 	}{
 		{
+			name: "lifecycle",
+			yaml: `
+collect:
+  v1: []
+lifecycle:
+  v1:
+    - generate: {}
+    - message:
+        contents: word`,
+			want: types.Doc{
+				Collect: types.Collect{
+					V1: []types.Spec{},
+				},
+				Lifecycle: []types.LifecycleTask{
+					{
+						Generate: &types.GenerateOptions{UseDefaults: false},
+					},
+					{
+						Message: &types.MessageOptions{Contents: "word"},
+					},
+				},
+			},
+		},
+		{
+			name: "lifecycle",
+			yaml: `
+collect:
+  v1: []
+lifecycle:
+  - generate: {}
+  - message:
+      contents: word`,
+			want: types.Doc{
+				Collect: types.Collect{
+					V1: []types.Spec{},
+				},
+				Lifecycle: []types.LifecycleTask{
+					{
+						Generate: &types.GenerateOptions{UseDefaults: false},
+					},
+					{
+						Message: &types.MessageOptions{Contents: "word"},
+					},
+				},
+			},
+		},
+		{
 			name: "specs",
 			yaml: `
 specs:
@@ -86,11 +132,12 @@ collect:
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, err := Unmarshal([]byte(tt.yaml)); err != nil {
-				t.Errorf("Unmarshal() error = %v", err)
-			} else if !reflect.DeepEqual(*got, tt.want) {
-				t.Errorf("Unmarshal() = %+v, want %+v", got, tt.want)
-			}
+			req := require.New(t)
+
+			got, err := Unmarshal([]byte(tt.yaml))
+
+			req.NoError(err)
+			req.Equal(tt.want, *got, "input: %s", tt.yaml)
 		})
 	}
 

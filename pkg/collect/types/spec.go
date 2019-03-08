@@ -17,6 +17,11 @@ type Collect struct {
 	V1 []Spec `json:"v1,omitempty"`
 }
 
+// Lifecycle is the top level lifecycle object
+type Lifecycle struct {
+	V1 []LifecycleTask `json:"v1,omitempty"`
+}
+
 type LifecycleTask struct {
 	Generate *GenerateOptions `json:"generate,omitempty"`
 	Message  *MessageOptions  `json:"message,omitempty"`
