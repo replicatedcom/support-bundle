@@ -14,6 +14,10 @@ import (
 )
 
 func ReadFile(ctx context.Context, client docker.CommonAPIClient, image, filename string, securityOpt []string) (io.ReadCloser, error) {
+	if _, err := FileExists(ctx, client, image, filename, securityOpt); err != nil {
+		return nil, err
+	}
+
 	dir := filepath.Dir(filename)
 	base := filepath.Base(filename)
 	config := dockertypes.ContainerCreateConfig{
