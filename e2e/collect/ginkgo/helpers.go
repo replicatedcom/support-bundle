@@ -17,6 +17,7 @@ import (
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	dockernetworktypes "github.com/docker/docker/api/types/network"
 	docker "github.com/docker/docker/client"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	cmd "github.com/replicatedcom/support-bundle/cmd/support-bundle/commands"
 	"github.com/replicatedcom/support-bundle/pkg/collect/cli"
@@ -41,6 +42,7 @@ func EnterNewTempDir() {
 	Expect(err).NotTo(HaveOccurred())
 	tmpdir, err = ioutil.TempDir("", "support-bundle")
 	Expect(err).NotTo(HaveOccurred())
+	fmt.Fprintln(GinkgoWriter, "Entering temp dir", tmpdir)
 	err = os.Chdir(GetTempDir())
 	Expect(err).NotTo(HaveOccurred())
 }

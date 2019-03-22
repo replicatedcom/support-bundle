@@ -12,15 +12,17 @@ import (
 )
 
 func FileExists(ctx context.Context, client docker.CommonAPIClient, image string, filename string, securityOpt []string) (bool, error) {
+	dir := filepath.Dir(filename)
+	base := filepath.Base(filename)
 	config := dockertypes.ContainerCreateConfig{
 		Config: &dockercontainertypes.Config{
 			Image:      image,
 			Entrypoint: []string{},
-			Cmd:        []string{"test", "-e", "/host/ws"},
+			Cmd:        []string{"test", "-e", filepath.Join("/host", base)},
 		},
 		HostConfig: &dockercontainertypes.HostConfig{
 			Binds: []string{
-				fmt.Sprintf("%s:/host", filepath.Dir(filename)),
+				fmt.Sprintf("%s:/host", dir),
 			},
 			SecurityOpt: securityOpt,
 		},
@@ -35,6 +37,10 @@ func FileExists(ctx context.Context, client docker.CommonAPIClient, image string
 	stderrR.Close()
 	if cmdErr.Error != nil {
 		return false, cmdErr.Error
+	} else if cmdErr.StatusCode == 1 {
+		return false, errors.New("file not found")
+	} else if cmdErr.StatusCode != 0 {
+		return false, fmt.Errorf("error status code %d", cmdErr.StatusCode)
 	}
-	return cmdErr.Error != nil && cmdErr.StatusCode == 0, cmdErr.Error
+	return true, nil
 }

@@ -188,3 +188,6 @@
 
 0.23.2 /2019-03-05
     * Fixed container image vulnerability CVE-2019-1559 in libssl
+
+0.23.3 /2019-03-22
+    * Fixed error message in errors.json when os.read-file file does not exist
