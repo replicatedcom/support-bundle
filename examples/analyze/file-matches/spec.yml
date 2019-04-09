@@ -1,3 +1,13 @@
+collect:
+  v1:
+    - os.run-command:
+        name: ps
+        args: [auxwww]
+      output_dir: /commands/ps
+      meta:
+        labels:
+          analyze: ps-aux
+
 analyze:
   v1:
     - file-matches:

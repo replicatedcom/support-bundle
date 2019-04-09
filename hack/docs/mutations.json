@@ -4810,6 +4810,30 @@
     }
   },
   {
+    "path": "properties.analyze.properties.v1.items.properties[\"file-matches\"]",
+    "merge": {
+      "description": "Check that specified file matched the regular expressoin",
+      "examples": [
+        {
+          "regex": "/chef-client",
+          "message": "Chef Client detected"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"file-matches\"].properties.regex",
+    "merge": {
+      "description": "A regular expression with which to test the match"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"file-matches\"].properties.message",
+    "merge": {
+      "description": "Override the file matching condition message"
+    }
+  },
+  {
     "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions",
     "merge": {
       "description": "An array of conditions, evaluated in order, that when met will produce a severity and message."

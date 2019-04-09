@@ -63,6 +63,30 @@
                   "server_version_minimum"
                 ]
               },
+              "file-matches": {
+                "description": "Check that specified file matched the regular expressoin",
+                "examples": [
+                  {
+                    "regex": "/chef-client",
+                    "message": "Chef Client detected"
+                  }
+                ],
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "description": "Override the file matching condition message",
+                    "type": "string"
+                  },
+                  "regex": {
+                    "description": "A regular expression with which to test the match",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "regex",
+                  "message"
+                ]
+              },
               "kubernetes.total-memory": {
                 "description": "Check that the total memory for a cluster meets the required minimum",
                 "examples": [
@@ -191,6 +215,9 @@
                           "required": [
                             "statements"
                           ]
+                        },
+                        "is_precondition": {
+                          "type": "boolean"
                         },
                         "message": {
                           "type": "string"
