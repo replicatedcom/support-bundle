@@ -11,6 +11,8 @@ type AnalyzerSpec struct {
 
 	Raw *RawRequirement `json:"raw,omitempty" yaml:"raw,omitempty" hcl:"raw,omitempty"`
 
+	FileMatches *FileMatchesRequirement `json:"file-matches,omitempty" yaml:"file-matches,omitempty" hcl:"file-matches,omitempty"`
+
 	SelinuxNotEnforcing *SelinuxNotEnforcingRequirement `json:"selinux.notenforcing,omitempty" yaml:"selinux.notenforcing,omitempty" hcl:"selinux.notenforcing,omitempty"`
 
 	DockerVersion *DockerVersionRequirement `json:"docker.version,omitempty" yaml:"docker.version,omitempty" hcl:"docker.version,omitempty"`
@@ -38,6 +40,9 @@ func (a AnalyzerSpec) GetRequirement() Requirement {
 
 	case a.Raw != nil:
 		return a.Raw
+
+	case a.FileMatches != nil:
+		return a.FileMatches
 
 	case a.SelinuxNotEnforcing != nil:
 		return a.SelinuxNotEnforcing

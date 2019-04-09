@@ -1,0 +1,2 @@
+root     26671  0.0  0.0 180224  2524 ?        S    01:37   0:00  \\_ /usr/sbin/CROND -n
+root      1128  0.0  0.1 307096 72152 ?        Ssl  Aug27   0:09 /opt/chef/bin/ruby /opt/chef/bin/chef-client 

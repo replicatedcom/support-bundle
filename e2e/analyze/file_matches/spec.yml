@@ -1,0 +1,10 @@
+analyze:
+  v1:
+    - file-matches:
+        regex: '/chef-client'
+        message: 'Chef Client detected'
+      severity: warn
+      message: The server must not be running the Chef Client
+      collect_refs:
+        - selector:
+            analyze: ps-aux

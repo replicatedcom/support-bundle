@@ -9,8 +9,9 @@ type Condition struct {
 }
 
 type ConditionShared struct {
-	Severity common.Severity `json:"severity" yaml:"severity" hcl:"severity"`
-	Message  string          `json:"message,omitempty" yaml:"message,omitempty" hcl:"message,omitempty"`
+	Severity       common.Severity `json:"severity" yaml:"severity" hcl:"severity"`
+	Message        string          `json:"message,omitempty" yaml:"message,omitempty" hcl:"message,omitempty"`
+	IsPrecondition bool            `json:"is_precondition,omitempty" yaml:"is_precondition,omitempty" hcl:"is_precondition,omitempty"`
 }
 
 type EvalCondition struct {

@@ -124,7 +124,7 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 
 		if ok {
 			// severity override
-			if rawSpec.Severity != "" {
+			if !condition.IsPrecondition && rawSpec.Severity != "" {
 				result.Severity = rawSpec.Severity
 			} else {
 				result.Severity = condition.Severity

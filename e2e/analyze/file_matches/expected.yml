@@ -1,0 +1,19 @@
+- message: Chef Client detected
+  requirement: The server must not be running the Chef Client
+  severity: warn
+  analyzer_spec:
+    v1:
+      - file-matches:
+          message: Chef Client detected
+          regex: /chef-client
+        message: The server must not be running the Chef Client
+        severity: warn
+        collect_refs:
+          - ref: _Ref
+            selector:
+              analyze: ps-aux
+  variables:
+    - Empty: "false"
+      Ref: "root     26671  0.0  0.0 180224  2524 ?        S    01:37   0:00  \\\\_ /usr/sbin/CROND -n\nroot      1128  0.0  0.1 307096 72152 ?        Ssl  Aug27   0:09 /opt/chef/bin/ruby /opt/chef/bin/chef-client \n"
+    - Match: "true"
+      Regex: /chef-client

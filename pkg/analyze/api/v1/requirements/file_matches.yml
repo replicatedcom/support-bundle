@@ -1,0 +1,24 @@
+raw:
+  conditions:
+    - eval:
+        operator: and
+        statements:
+          - '{{repl .Empty}}'
+        variables:
+          - Ref: '{{repl ._Ref}}'
+          - Empty: '{{repl not ._Ref}}'
+      severity: error
+      is_precondition: true
+      message: >-
+        File not found
+    - eval:
+        operator: and
+        statements:
+          - '{{repl .Match | eq "true"}}'
+        variables:
+          - Regex: '{{{.Regex}}}'
+          - Match: '{{repl regexMatch .Regex ._Ref}}'
+      severity: error
+      message: >-
+        {{{if not .Message}}}File matches regular expression{{{else}}}{{{.Message}}}{{{end}}}
+message: The file must match the regular expression "{{{.Regex}}}"

@@ -7,6 +7,7 @@ raw:
         variables:
           - Empty: '{{repl not ._Ref}}'
       severity: error
+      is_precondition: true
       message: >-
         Failed to detect Kubernetes version
     - eval:

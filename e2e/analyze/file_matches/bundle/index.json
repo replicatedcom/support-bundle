@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/VERSION.json",
+    "format": "",
+    "size": 75,
+    "spec": {
+      "description": "Support bundle version information",
+      "output_dir": "/",
+      "version": {}
+    }
+  },
+  {
+    "path": "/commands/ps/stderr",
+    "format": "",
+    "size": 0,
+    "spec": {
+      "output_dir": "/commands/ps",
+      "meta": {
+        "labels": {
+          "analyze": "ps-aux"
+        }
+      },
+      "os.run-command": {
+        "name": "ps",
+        "args": [
+          "auxwww"
+        ]
+      }
+    }
+  },
+  {
+    "path": "/commands/ps/stdout",
+    "format": "",
+    "size": 143768,
+    "spec": {
+      "output_dir": "/commands/ps",
+      "meta": {
+        "labels": {
+          "analyze": "ps-aux"
+        }
+      },
+      "os.run-command": {
+        "name": "ps",
+        "args": [
+          "auxwww"
+        ]
+      }
+    }
+  }
+]
