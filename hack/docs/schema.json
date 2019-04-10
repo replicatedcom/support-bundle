@@ -238,6 +238,10 @@
             "description": "A list of items to include in the support bundle",
             "type": "object",
             "properties": {
+              "defer": {
+                "description": "Defer this task until the end of generation. These tasks must execute quickly as they will have a short timeout irrespective of the bundle timeout.",
+                "type": "boolean"
+              },
               "description": {
                 "description": "A description of the file(s) that will be collected by this spec",
                 "examples": [
@@ -292,6 +296,9 @@
                       "my-sweet-app"
                     ],
                     "type": "string"
+                  },
+                  "defer": {
+                    "type": "boolean"
                   },
                   "description": {
                     "type": "string"
@@ -416,6 +423,9 @@
                       "supergoodtool-www"
                     ],
                     "type": "string"
+                  },
+                  "defer": {
+                    "type": "boolean"
                   },
                   "description": {
                     "type": "string"
@@ -619,6 +629,9 @@
                     },
                     "required": []
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -781,6 +794,9 @@
                     },
                     "required": []
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -885,6 +901,9 @@
                   },
                   "Size": {
                     "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)",
+                    "type": "boolean"
+                  },
+                  "defer": {
                     "type": "boolean"
                   },
                   "description": {
@@ -1660,6 +1679,9 @@
                       "Config"
                     ]
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -1742,6 +1764,9 @@
                   "container": {
                     "description": "The name of the container to run the command in",
                     "type": "string"
+                  },
+                  "defer": {
+                    "type": "boolean"
                   },
                   "description": {
                     "type": "string"
@@ -1906,6 +1931,9 @@
                       }
                     }
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -1988,6 +2016,9 @@
                       }
                     }
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -2051,6 +2082,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -2217,6 +2251,9 @@
                     },
                     "required": []
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -2293,6 +2330,9 @@
                         "type": "array"
                       }
                     }
+                  },
+                  "defer": {
+                    "type": "boolean"
                   },
                   "description": {
                     "type": "string"
@@ -2393,6 +2433,9 @@
                   },
                   "Size": {
                     "description": "Option to be used to filter the list of containers, as in [The Docker API](https://github.com/moby/moby/blob/master/api/types/client.go#L61)",
+                    "type": "boolean"
+                  },
+                  "defer": {
                     "type": "boolean"
                   },
                   "description": {
@@ -3166,6 +3209,9 @@
                       "Config"
                     ]
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -3298,6 +3344,9 @@
                       "Details"
                     ]
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -3412,6 +3461,9 @@
                       }
                     }
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -3489,6 +3541,9 @@
                         "type": "array"
                       }
                     }
+                  },
+                  "defer": {
+                    "type": "boolean"
                   },
                   "description": {
                     "type": "string"
@@ -3623,6 +3678,9 @@
                       "Details"
                     ]
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -3692,6 +3750,9 @@
                             "type": "array"
                           }
                         }
+                      },
+                      "defer": {
+                        "type": "boolean"
                       },
                       "description": {
                         "type": "string"
@@ -3766,6 +3827,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -3821,6 +3885,9 @@
                             "type": "array"
                           }
                         }
+                      },
+                      "defer": {
+                        "type": "boolean"
                       },
                       "description": {
                         "type": "string"
@@ -3901,6 +3968,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -4052,6 +4122,9 @@
                       "Details"
                     ]
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -4201,6 +4274,9 @@
                       "Details"
                     ]
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -4300,6 +4376,9 @@
                       }
                     }
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -4361,6 +4440,72 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "include_empty": {
+                    "type": "boolean"
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "labels": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "output_dir": {
+                    "type": "string"
+                  },
+                  "scrub": {
+                    "type": "object",
+                    "properties": {
+                      "regex": {
+                        "type": "string"
+                      },
+                      "replace": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "regex",
+                      "replace"
+                    ]
+                  },
+                  "timeout_seconds": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "goroutines": {
+                "description": "The goroutine stacks from the support bundle program printed in debug=2 format",
+                "examples": [
+                  {
+                    "output_dir": "/support-bundle/"
+                  }
+                ],
+                "_ext_outputs": [
+                  {
+                    "path": "goroutines",
+                    "description": "Goroutine stacks"
+                  }
+                ],
+                "type": "object",
+                "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -4427,6 +4572,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -4503,6 +4651,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -4566,6 +4717,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -4667,6 +4821,9 @@
                       "api"
                     ],
                     "type": "string"
+                  },
+                  "defer": {
+                    "type": "boolean"
                   },
                   "description": {
                     "type": "string"
@@ -4840,6 +4997,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5033,6 +5193,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5154,6 +5317,72 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "include_empty": {
+                    "type": "boolean"
+                  },
+                  "meta": {
+                    "type": "object",
+                    "properties": {
+                      "labels": {
+                        "type": "object",
+                        "properties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "output_dir": {
+                    "type": "string"
+                  },
+                  "scrub": {
+                    "type": "object",
+                    "properties": {
+                      "regex": {
+                        "type": "string"
+                      },
+                      "replace": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "regex",
+                      "replace"
+                    ]
+                  },
+                  "timeout_seconds": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "logs": {
+                "description": "Debug level logs from the support bundle progam",
+                "examples": [
+                  {
+                    "output_dir": "/support-bundle/"
+                  }
+                ],
+                "_ext_outputs": [
+                  {
+                    "path": "logs",
+                    "description": "Debug logs"
+                  }
+                ],
+                "type": "object",
+                "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5227,6 +5456,9 @@
                   "channel_name": {
                     "type": "string"
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5293,6 +5525,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5380,6 +5615,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5450,6 +5688,9 @@
                   "body": {
                     "description": "The request body",
                     "type": "string"
+                  },
+                  "defer": {
+                    "type": "boolean"
                   },
                   "description": {
                     "type": "string"
@@ -5547,6 +5788,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5616,6 +5860,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5708,6 +5955,9 @@
                       "type": "string"
                     }
                   },
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5786,6 +6036,9 @@
                 ],
                 "type": "object",
                 "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
                   "description": {
                     "type": "string"
                   },
@@ -5886,6 +6139,9 @@
                     "description": "An API token for communicating with the audit log instance",
                     "type": "string",
                     "required": []
+                  },
+                  "defer": {
+                    "type": "boolean"
                   },
                   "description": {
                     "type": "string"

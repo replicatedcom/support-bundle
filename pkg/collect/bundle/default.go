@@ -44,13 +44,15 @@ func DefaultSpecs() ([]types.Spec, error) {
 	return defaultSpec, nil
 }
 
-func SupportBundleVersionSpec() types.Spec {
-	return types.Spec{
-		SpecShared: types.SpecShared{
-			Description: "Support bundle version information",
-			OutputDir:   "/",
+func SupportBundleSpecs() []types.Spec {
+	return []types.Spec{
+		{
+			SpecShared: types.SpecShared{
+				Description: "Support bundle version information",
+				OutputDir:   "/",
+			},
+			SupportBundleVersion: &types.SupportBundleVersionOptions{},
 		},
-		SupportBundleVersion: &types.SupportBundleVersionOptions{},
 	}
 }
 

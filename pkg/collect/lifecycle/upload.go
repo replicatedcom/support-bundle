@@ -29,7 +29,7 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		BundlePath: l.GenerateBundlePath,
 	}
 
-	var outputWriter io.Writer = os.Stderr
+	var outputWriter io.Writer = os.Stdout
 	if l.Quiet {
 		outputWriter = ioutil.Discard
 	}
@@ -126,7 +126,7 @@ func (task *UploadTask) askForConfirmation(autoconfirmed bool, opts *templateOpt
 		if err := runTemplate(&b, "message", task.Options.Prompt.Message, opts); err != nil {
 			return false, errors.Wrap(err, "template message")
 		}
-		fmt.Fprintf(os.Stderr, "%s %s: ", b.String(), def)
+		fmt.Fprintf(os.Stdout, "%s %s: ", b.String(), def)
 
 		response, err := reader.ReadString('\n')
 		if err != nil {

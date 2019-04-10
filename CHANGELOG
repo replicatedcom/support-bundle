@@ -191,3 +191,7 @@
 
 0.23.3 /2019-03-22
     * Fixed error message in errors.json when os.read-file file does not exist
+
+0.24.0 /2019-04-09
+    * Added internal "goroutines" and "logs" collectors and included in the default bundle at default/support-bundle/
+    * All debug logs now go to stdout

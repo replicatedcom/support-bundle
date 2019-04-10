@@ -4,10 +4,9 @@ import (
 	"path"
 
 	"github.com/pkg/errors"
-	jww "github.com/spf13/jwalterweatherman"
-
 	"github.com/replicatedcom/support-bundle/pkg/collect/plans"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func (d *Docker) ContainerExec(spec types.Spec) []types.Task {

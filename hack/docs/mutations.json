@@ -189,6 +189,40 @@
     }
   },
   {
+    "path": "properties.collect.properties.v1.items.properties.defer",
+    "merge": {
+      "description": "Defer this task until the end of generation. These tasks must execute quickly as they will have a short timeout irrespective of the bundle timeout."
+    }
+  },
+  {
+    "path": "properties.collect.properties.v1.items.properties[\"goroutines\"]",
+    "merge": {
+      "description": "The goroutine stacks from the support bundle program printed in debug=2 format",
+      "examples": [
+        {
+          "output_dir": "/support-bundle/"
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "goroutines", "description": "Goroutine stacks"}
+      ]
+    }
+  },
+  {
+    "path": "properties.collect.properties.v1.items.properties[\"logs\"]",
+    "merge": {
+      "description": "Debug level logs from the support bundle progam",
+      "examples": [
+        {
+          "output_dir": "/support-bundle/"
+        }
+      ],
+      "_ext_outputs": [
+        {"path": "logs", "description": "Debug logs"}
+      ]
+    }
+  },
+  {
     "path": "properties.collect.properties.v1.items.properties[\"docker.container-cp\"]",
     "replace": {
       "required": [

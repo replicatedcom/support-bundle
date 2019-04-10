@@ -25,7 +25,7 @@ func NewMock(fs afero.Fs, bundlePath string) *MockCollector {
 	}
 }
 
-func (c *MockCollector) CollectBundle(ctx context.Context, input CollectorInput) error {
+func (c *MockCollector) CollectBundle(ctx context.Context, input Input) error {
 	c.Called(input.Specs, input.SpecFiles)
 
 	f, err := c.Fs.Create(input.Dest)

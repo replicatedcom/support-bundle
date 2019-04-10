@@ -6,7 +6,7 @@ import (
 )
 
 type Interface interface {
-	CollectBundle(ctx context.Context, input CollectorInput) error
+	CollectBundle(ctx context.Context, input Input) error
 }
 
 type Options struct {

@@ -104,7 +104,7 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 		endpoint = collectcli.DefaultEndpoint
 	}
 
-	input := resolver.ResolverInput{
+	input := resolver.Input{
 		Files:      a.SpecFiles,
 		Inline:     a.Specs,
 		CustomerID: a.CustomerID,
@@ -176,7 +176,7 @@ func (a *Analyze) collectBundle(ctx context.Context, dest string) error {
 		"timeout", a.CollectTimeout,
 		"dest", dest)
 
-	input := collector.CollectorInput{
+	input := collector.Input{
 		CustomerID: a.CustomerID,
 		ChannelID:  a.ChannelID,
 		Specs:      a.Specs,

@@ -34,6 +34,7 @@ export function shouldSkipKey(schemaKey: string) {
   return schemaKey === "output_dir" ||
     schemaKey === "description" ||
     schemaKey === "meta" ||
+    schemaKey === "defer" ||
     schemaKey === "scrub" ||
     schemaKey === "timeout_seconds" ||
     schemaKey === "include_empty" ||

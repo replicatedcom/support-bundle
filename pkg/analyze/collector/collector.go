@@ -14,7 +14,7 @@ type Collector struct {
 	Logger log.Logger
 }
 
-type CollectorInput struct {
+type Input struct {
 	CustomerID string
 	ChannelID  string
 	Specs      []string
@@ -29,7 +29,7 @@ func New(logger log.Logger) Interface {
 	}
 }
 
-func (c *Collector) CollectBundle(ctx context.Context, input CollectorInput) error {
+func (c *Collector) CollectBundle(ctx context.Context, input Input) error {
 	debug := level.Debug(log.With(c.Logger, "method", "Collector.Collect"))
 
 	cmd := cli.NewCli()

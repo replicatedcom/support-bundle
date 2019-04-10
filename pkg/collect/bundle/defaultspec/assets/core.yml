@@ -1,5 +1,15 @@
 specs:
 
+  # support-bundle
+  - goroutines: {}
+    description: Support bundle goroutine dump
+    output_dir: default/support-bundle
+    defer: true
+  - logs: {}
+    description: Support bundle logs
+    output_dir: default/support-bundle
+    defer: true
+
   # system
   - os.run-command:
       name: date

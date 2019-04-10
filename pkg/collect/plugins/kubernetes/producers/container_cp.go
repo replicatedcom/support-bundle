@@ -7,13 +7,12 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
+	jww "github.com/spf13/jwalterweatherman"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/remotecommand"
 	"k8s.io/client-go/util/exec"
-
-	jww "github.com/spf13/jwalterweatherman"
 )
 
 // ContainerCp copies a file/folder from the provided directory within the pod+container.
