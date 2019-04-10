@@ -189,6 +189,12 @@
     }
   },
   {
+    "path": "properties.collect.properties.v1.items.properties.defer",
+    "merge": {
+      "description": "Defer this task until the end of generation. These tasks must execute quickly as they will have a short timeout irrespective of the bundle timeout."
+    }
+  },
+  {
     "path": "properties.collect.properties.v1.items.properties[\"goroutines\"]",
     "merge": {
       "description": "The goroutine stacks from the support bundle program printed in debug=2 format",
