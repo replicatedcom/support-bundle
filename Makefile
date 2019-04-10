@@ -128,7 +128,7 @@ dep-deps:
 
 .state/coverage.out: $(SRC)
 	@mkdir -p .state/
-	go test -coverprofile=.state/coverage.out -v ./pkg/...
+	go test -race -coverprofile=.state/coverage.out -v ./pkg/...
 
 ci-test: lint .state/coverage.out
 

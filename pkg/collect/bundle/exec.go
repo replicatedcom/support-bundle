@@ -67,9 +67,16 @@ func exec(ctx context.Context, rootDir string, tasks []types.Task) []*types.Resu
 	defer cancel()
 
 	for _, task := range tasks {
+		result := make(chan []*types.Result, 1)
+
+		go func(task types.Task) {
+			result <- task.Exec(taskCtx, rootDir)
+		}(task)
+
 		go func(task types.Task) {
 			select {
-			case results <- task.Exec(taskCtx, rootDir):
+			case r := <-result:
+				results <- r
 			case <-ctx.Done():
 				b, _ := json.Marshal(task.GetSpec())
 				jww.WARN.Println("Task failed to complete before context was canceled:", string(b))
@@ -89,7 +96,12 @@ func exec(ctx context.Context, rootDir string, tasks []types.Task) []*types.Resu
 
 func contextTimeoutSub(ctx context.Context, less time.Duration) (context.Context, context.CancelFunc) {
 	if deadline, ok := ctx.Deadline(); ok {
-		return context.WithTimeout(ctx, time.Until(deadline)-less)
+		dur := time.Until(deadline)
+		// if less is greated than deadline*2
+		if dur-less < dur/2 {
+			return context.WithTimeout(ctx, dur/2)
+		}
+		return context.WithTimeout(ctx, dur-less)
 	}
 	return context.WithCancel(ctx)
 }
