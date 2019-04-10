@@ -97,7 +97,7 @@ func exec(ctx context.Context, rootDir string, tasks []types.Task) []*types.Resu
 func contextTimeoutSub(ctx context.Context, less time.Duration) (context.Context, context.CancelFunc) {
 	if deadline, ok := ctx.Deadline(); ok {
 		dur := time.Until(deadline)
-		// if less is greated than deadline*2
+		// the minimum timeout is half the remaining duration
 		if dur-less < dur/2 {
 			return context.WithTimeout(ctx, dur/2)
 		}
