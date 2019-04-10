@@ -37,6 +37,11 @@ func (e ErrFileNotFound) Error() string {
 	return fmt.Sprintf("Failed to find %s in support bundle.", e.Filename)
 }
 
+func SetupLogger() {
+	// jww.SetLogOutput(GinkgoWriter)
+	jww.SetStdoutThreshold(jww.LevelTrace)
+}
+
 func EnterNewTempDir() {
 	cwd, err = os.Getwd()
 	Expect(err).NotTo(HaveOccurred())

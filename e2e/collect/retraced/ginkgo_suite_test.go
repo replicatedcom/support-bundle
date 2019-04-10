@@ -5,12 +5,11 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	jww "github.com/spf13/jwalterweatherman"
+	"github.com/replicatedcom/support-bundle/e2e/collect/ginkgo"
 )
 
 func TestCore(t *testing.T) {
-	jww.SetLogOutput(GinkgoWriter)
-	jww.SetLogThreshold(jww.LevelTrace)
+	ginkgo.SetupLogger()
 
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Retraced")

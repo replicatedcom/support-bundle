@@ -15,6 +15,7 @@ import (
 	dockerclient "github.com/replicatedcom/support-bundle/pkg/docker"
 	kubernetesclient "github.com/replicatedcom/support-bundle/pkg/kubernetes"
 	"github.com/replicatedcom/support-bundle/pkg/logger"
+	"github.com/replicatedcom/support-bundle/pkg/util"
 	jww "github.com/spf13/jwalterweatherman"
 	"k8s.io/client-go/kubernetes"
 	restclient "k8s.io/client-go/rest"
@@ -38,13 +39,13 @@ type PlannerOptions struct {
 	RequireRetraced   bool
 }
 
-func NewPlanner(opts PlannerOptions, inContainer bool) (*Planner, error) {
+func NewPlanner(opts PlannerOptions, inContainer bool, logOutput *util.Buffer) (*Planner, error) {
 	dockerClient, dockerErr := newDockerClient(opts, inContainer)
 	kubernetesClient, kubernetesClientConfig, kubernetesErr := newKubernetesClientAndConfig(opts)
 
 	var p Planner
 
-	p.AddPlugin(supportbundle.New())
+	p.AddPlugin(supportbundle.New(logOutput))
 
 	if opts.EnableCore {
 		if !inContainer || dockerErr == nil {

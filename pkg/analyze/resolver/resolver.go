@@ -19,7 +19,7 @@ type Resolver struct {
 	Fs     afero.Fs
 }
 
-type ResolverInput struct {
+type Input struct {
 	Files      []string
 	Inline     []string
 	CustomerID string
@@ -34,7 +34,7 @@ func New(logger log.Logger, fs afero.Fs) *Resolver {
 	}
 }
 
-func (r *Resolver) ResolveSpec(ctx context.Context, input ResolverInput) (resolved api.Doc, err error) {
+func (r *Resolver) ResolveSpec(ctx context.Context, input Input) (resolved api.Doc, err error) {
 	debug := level.Debug(log.With(r.Logger, "method", "Resolver.ResolveSpec"))
 
 	cwd, _ := os.Getwd()

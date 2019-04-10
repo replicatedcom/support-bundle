@@ -60,6 +60,7 @@ type SpecShared struct {
 	Scrub          *Scrub     `json:"scrub,omitempty"`
 	IncludeEmpty   bool       `json:"include_empty,omitempty"`
 	Meta           *meta.Meta `json:"meta,omitempty"`
+	Defer          bool       `json:"defer,omitempty"`
 }
 
 type Spec struct {
@@ -67,9 +68,11 @@ type Spec struct {
 
 	// plan-specific config
 
-	SupportBundleVersion *SupportBundleVersionOptions `json:"version,omitempty"`
-	CustomerMeta         *CustomerMetaOptions         `json:"meta.customer,omitempty"` // deprecated
-	ChannelMeta          *ChannelMetaOptions          `json:"meta.channel,omitempty"`
+	SupportBundleVersion    *SupportBundleVersionOptions    `json:"version,omitempty"`
+	SupportBundleGoroutines *SupportBundleGoroutinesOptions `json:"goroutines,omitempty"`
+	SupportBundleLogs       *SupportBundleLogsOptions       `json:"logs,omitempty"`
+	CustomerMeta            *CustomerMetaOptions            `json:"meta.customer,omitempty"` // deprecated
+	ChannelMeta             *ChannelMetaOptions             `json:"meta.channel,omitempty"`
 
 	// undocumented hack to add global redaction
 	GlobalRedaction *GlobalRedactionOptions `json:"meta.redact,omitempty"`
@@ -124,6 +127,14 @@ type Spec struct {
 // plugin.supportbundle options
 
 type SupportBundleVersionOptions struct {
+	SpecShared `json:",inline,omitempty"`
+}
+
+type SupportBundleGoroutinesOptions struct {
+	SpecShared `json:",inline,omitempty"`
+}
+
+type SupportBundleLogsOptions struct {
 	SpecShared `json:",inline,omitempty"`
 }
 
@@ -373,8 +384,8 @@ type Scrub struct {
 	Replace string `json:"replace"`
 }
 
-// Todo maybe cache this or something
-// this gets the shared stuff for a spec
+// Shared gets the shared stuff for a spec
+// TODO: maybe cache this or something
 //
 //  ideally we want to move to
 //
@@ -400,11 +411,15 @@ type Scrub struct {
 //    output_dir: /bar
 //
 //  then /foo will be used
-func (s *Spec) Shared() SpecShared {
+func (s Spec) Shared() SpecShared {
 	shared := func() SpecShared {
 		switch {
 		case s.SupportBundleVersion != nil:
 			return s.SupportBundleVersion.SpecShared
+		case s.SupportBundleGoroutines != nil:
+			return s.SupportBundleGoroutines.SpecShared
+		case s.SupportBundleLogs != nil:
+			return s.SupportBundleLogs.SpecShared
 		case s.CustomerMeta != nil:
 			return s.CustomerMeta.SpecShared
 		case s.GlobalRedaction != nil:
@@ -516,6 +531,10 @@ func (s *Spec) Shared() SpecShared {
 
 	if shared.TimeoutSeconds == 0 {
 		shared.TimeoutSeconds = s.TimeoutSeconds
+	}
+
+	if shared.Defer == false {
+		shared.Defer = s.Defer
 	}
 
 	return shared

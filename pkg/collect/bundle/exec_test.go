@@ -11,8 +11,9 @@ import (
 )
 
 type taskStub struct {
-	elapse  time.Duration
-	results []*types.Result
+	elapse   time.Duration
+	results  []*types.Result
+	deferred bool
 }
 
 func (t taskStub) Exec(ctx context.Context, rootDir string) []*types.Result {
@@ -21,7 +22,9 @@ func (t taskStub) Exec(ctx context.Context, rootDir string) []*types.Result {
 }
 
 func (t taskStub) GetSpec() types.Spec {
-	return types.Spec{}
+	return types.Spec{
+		SpecShared: types.SpecShared{Defer: t.deferred},
+	}
 }
 
 func TestExec(t *testing.T) {
@@ -69,8 +72,20 @@ func TestExec(t *testing.T) {
 			},
 		},
 	}
+	deferredResults := taskStub{
+		elapse: time.Nanosecond,
+		results: []*types.Result{
+			{
+				Spec: types.Spec{SpecShared: types.SpecShared{
+					Description: "Support bundle goroutine dump",
+					Defer:       true,
+				}},
+				Path: "/support-bundle/goroutines",
+			},
+		},
+	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
 	results := Exec(ctx, "/dir", []types.Task{
 		nilResults,
@@ -78,12 +93,16 @@ func TestExec(t *testing.T) {
 		singleResults,
 		mixedResults,
 		slowResults,
+		deferredResults,
+	}, func(opts *ExecOptions) {
+		opts.DeferredTimeout = 100 * time.Millisecond
 	})
 
-	assert.Len(t, results, 4)
+	assert.Len(t, results, 6)
 	assert.Contains(t, results, singleResults.results[0])
 	assert.Contains(t, results, mixedResults.results[0])
 	assert.Contains(t, results, mixedResults.results[1])
 	assert.Contains(t, results, mixedResults.results[2])
 	assert.NotContains(t, results, slowResults.results[0])
+	assert.Contains(t, results, deferredResults.results[0])
 }

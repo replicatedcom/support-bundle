@@ -3,42 +3,93 @@ package bundle
 import (
 	"context"
 	"encoding/json"
+	"time"
 
+	"github.com/replicatedcom/support-bundle/pkg/collect/plans"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-func Exec(ctx context.Context, rootDir string, tasks []types.Task) []*types.Result {
+const (
+	DeferredTimeoutDefault = 5 * time.Second
+)
+
+type ExecOptions struct {
+	DeferredTimeout time.Duration
+}
+
+type Option func(*ExecOptions)
+
+func Exec(ctx context.Context, rootDir string, tasks []types.Task, opts ...Option) []*types.Result {
+	var startTasks, deferredTasks []types.Task
+
+	for _, task := range tasks {
+		if task.GetSpec().Shared().Defer {
+			deferredTasks = append(deferredTasks, task)
+		} else {
+			startTasks = append(startTasks, task)
+		}
+	}
+
+	var results []*types.Result
+
+	jww.DEBUG.Println("Running tasks...")
+
+	results = append(results, exec(ctx, rootDir, startTasks)...)
+
+	jww.DEBUG.Println("Running tasks complete")
+
+	options := ExecOptions{
+		DeferredTimeout: DeferredTimeoutDefault,
+	}
+	for _, opt := range opts {
+		opt(&options)
+	}
+
+	// hardcode short deferred task timeout of 5 seconds
+	deferredCtx, cancel := context.WithTimeout(context.Background(), options.DeferredTimeout)
+	defer cancel()
+
+	jww.DEBUG.Println("Running deferred tasks...")
+
+	results = append(results, exec(deferredCtx, rootDir, deferredTasks)...)
+
+	jww.DEBUG.Println("Running deferred tasks complete")
+
+	return results
+}
+
+func exec(ctx context.Context, rootDir string, tasks []types.Task) []*types.Result {
 	results := make(chan []*types.Result)
+
+	// allow for tasks to time themselves out before we cancel
+	taskCtx, cancel := contextTimeoutSub(ctx, time.Second)
+	defer cancel()
 
 	for _, task := range tasks {
 		go func(task types.Task) {
 			select {
-			case results <- task.Exec(ctx, rootDir):
+			case results <- task.Exec(taskCtx, rootDir):
 			case <-ctx.Done():
 				b, _ := json.Marshal(task.GetSpec())
 				jww.WARN.Println("Task failed to complete before context was canceled:", string(b))
+
+				// TODO: the task can probably send a better error here
+				results <- plans.PreparedError(ctx.Err(), task.GetSpec()).Exec(ctx, rootDir)
 			}
 		}(task)
 	}
 
 	var accm []*types.Result
-
-	pending := len(tasks)
-	if pending == 0 {
-		return accm
+	for i := 0; i < len(tasks); i++ {
+		accm = append(accm, <-results...)
 	}
+	return accm
+}
 
-	for {
-		select {
-		case r := <-results:
-			accm = append(accm, r...)
-			pending--
-			if pending == 0 {
-				return accm
-			}
-		case <-ctx.Done():
-			return accm
-		}
+func contextTimeoutSub(ctx context.Context, less time.Duration) (context.Context, context.CancelFunc) {
+	if deadline, ok := ctx.Deadline(); ok {
+		return context.WithTimeout(ctx, time.Until(deadline)-less)
 	}
+	return context.WithCancel(ctx)
 }

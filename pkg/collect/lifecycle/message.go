@@ -13,7 +13,7 @@ type MessageTask struct {
 
 func (t *MessageTask) Execute(l *Lifecycle) (bool, error) {
 	if !l.Quiet {
-		fmt.Fprintln(os.Stderr, t.Options.Contents)
+		fmt.Fprintln(os.Stdout, t.Options.Contents)
 	}
 	return true, nil
 }

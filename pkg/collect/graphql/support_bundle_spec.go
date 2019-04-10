@@ -105,11 +105,11 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 
 // GetChannelSpec will query the endpoint set in the client with a Replicated ChannelID
 // and will return a fully rendered spec, containing collect and lifecycle keys
-func (c *Client) GetChannelSpec(channelId string) ([]byte, error) {
+func (c *Client) GetChannelSpec(channelID string) ([]byte, error) {
 	resp, err := c.executeGraphQLQuery("", Request{
 		Query: channelSpecQuery,
 		Variables: map[string]interface{}{
-			"channelId": channelId,
+			"channelId": channelID,
 		},
 	})
 

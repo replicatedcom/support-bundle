@@ -22,7 +22,6 @@ func NewSupportBundleCommand(cli *cli.Cli) *cobra.Command {
 
 	cmd := NewRootCommand(cli)
 	cmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
-		jww.SetLogOutput(os.Stderr)
 		if opts.verbose {
 			jww.SetStdoutThreshold(jww.LevelTrace)
 		} else if opts.quiet {

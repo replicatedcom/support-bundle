@@ -11,6 +11,8 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/collect/lifecycle"
 	"github.com/replicatedcom/support-bundle/pkg/collect/spec"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
+	"github.com/replicatedcom/support-bundle/pkg/util"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 const (
@@ -36,7 +38,11 @@ type GenerateOptions struct {
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
-	planner, err := bundle.NewPlanner(opts.PlannerOptions, os.Getenv("IN_CONTAINER") != "")
+	logOutput := &util.Buffer{}
+	jww.SetLogOutput(logOutput)
+	jww.SetLogThreshold(jww.LevelDebug)
+
+	planner, err := bundle.NewPlanner(opts.PlannerOptions, os.Getenv("IN_CONTAINER") != "", logOutput)
 	if err != nil {
 		return errors.Wrap(err, "initialize planner")
 	}
@@ -140,7 +146,9 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 }
 
 func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
-	specs := []types.Spec{bundle.SupportBundleVersionSpec()}
+	specs := []types.Spec{}
+
+	specs = append(specs, bundle.SupportBundleSpecs()...)
 
 	for _, cfgFile := range opts.CfgFiles {
 		yaml, err := ioutil.ReadFile(cfgFile)

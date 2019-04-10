@@ -59,7 +59,7 @@ _lint:
 test: lint _test
 
 _test: bindata
-	go test ./pkg/...
+	go test -race ./pkg/...
 
 build: test _build
 

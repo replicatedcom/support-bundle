@@ -91,7 +91,7 @@ analyze:
 				Fs:     memFS,
 			}
 			// TODO: test customer spec
-			input := ResolverInput{
+			input := Input{
 				Files:  files,
 				Inline: test.inline,
 			}
