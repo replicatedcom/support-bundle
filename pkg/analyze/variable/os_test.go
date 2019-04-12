@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
 func TestOs_ExtractValue(t *testing.T) {
@@ -32,7 +34,15 @@ UBUNTU_CODENAME=xenial`,
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			v := &Os{}
-			got, err := v.ExtractValue(strings.NewReader(tt.input))
+			got, err := v.ExtractValue(strings.NewReader(tt.input), collecttypes.Result{
+				Path: "/default/etc/os-release",
+				Spec: collecttypes.Spec{
+					CoreReadFile: &collecttypes.CoreReadFileOptions{
+						Filepath: "/etc/os-release",
+					},
+				},
+				Size: 1,
+			})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Os.ExtractValue() error = %v, wantErr %v", err, tt.wantErr)
 				return

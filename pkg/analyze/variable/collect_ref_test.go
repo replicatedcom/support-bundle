@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable/distiller"
+	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
 func TestCollectRef_ExtractValue(t *testing.T) {
@@ -84,7 +85,7 @@ UBUNTU_CODENAME=xenial`,
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r := strings.NewReader(tt.input)
-			got, err := tt.collectRef.ExtractValue(r)
+			got, err := tt.collectRef.ExtractValue(r, collecttypes.Result{})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CollectRef.ExtractValue() error = %v, wantErr %v", err, tt.wantErr)
 				return

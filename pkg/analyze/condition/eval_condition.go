@@ -6,8 +6,10 @@ import (
 
 var _ Interface = new(EvalCondition)
 
-type EvalCondition string
+type EvalCondition struct {
+	Value string `json:",inline" yaml:",inline" hcl:",inline"`
+}
 
 func (c *EvalCondition) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
-	return templates.Bool(string(*c), data)
+	return templates.Bool(c.Value, data)
 }

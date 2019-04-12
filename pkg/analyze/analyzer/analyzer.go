@@ -11,6 +11,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
 	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
 	"github.com/spf13/afero"
@@ -44,7 +45,7 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archiveP
 	}
 
 	var results []api.Result
-	var multiErr error
+	var multiErr *multierror.Error
 	for _, analyzerSpec := range spec.V1 {
 		result, err := a.analyze(ctx, bundleReader, analyzerSpec)
 		if err != nil {
@@ -64,7 +65,7 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archiveP
 	debug.Log(
 		"phase", "analyzer.analyze-bundle",
 		"status", "complete")
-	return results, nil
+	return results, multiErr.ErrorOrNil()
 }
 
 func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.BundleReader, analyzerSpec v1.Analyzer) (api.Result, error) {
@@ -102,14 +103,20 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		"error", err)
 	if err != nil {
 		if analyzerSpec.Messages.PreconditionError != nil {
-			result.Message = analyzerSpec.Messages.PreconditionError
 			result.Severity = analyzerSpec.Messages.PreconditionError.Severity
+			result.Message, err = message.ExecuteTemplates(analyzerSpec.Messages.PreconditionError, result.Variables)
+			if err != nil {
+				return result, errors.Wrap(err, "execute precondition error message template")
+			}
 		}
 		return result, errors.Wrap(err, "eval preconditions")
 	} else if !preconditionsOk {
 		if analyzerSpec.Messages.PreconditionFalse != nil {
-			result.Message = analyzerSpec.Messages.PreconditionFalse
 			result.Severity = analyzerSpec.Messages.PreconditionFalse.Severity
+			result.Message, err = message.ExecuteTemplates(analyzerSpec.Messages.PreconditionFalse, result.Variables)
+			if err != nil {
+				return result, errors.Wrap(err, "execute precondition false message template")
+			}
 		}
 		return result, nil
 	}
@@ -123,21 +130,31 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		"error", err)
 	if err != nil {
 		if analyzerSpec.Messages.ConditionError != nil {
-			result.Message = analyzerSpec.Messages.ConditionError
 			result.Severity = analyzerSpec.Messages.ConditionError.Severity
+			result.Message, err = message.ExecuteTemplates(analyzerSpec.Messages.ConditionError, result.Variables)
+			if err != nil {
+				return result, errors.Wrap(err, "execute condition error message template")
+			}
 		}
 		return result, errors.Wrap(err, "eval conditions")
 	} else if !conditionsOk {
 		if analyzerSpec.Messages.ConditionFalse != nil {
-			result.Message = analyzerSpec.Messages.ConditionFalse
 			result.Severity = analyzerSpec.Messages.ConditionFalse.Severity
+			result.Message, err = message.ExecuteTemplates(analyzerSpec.Messages.ConditionFalse, result.Variables)
+			if err != nil {
+				return result, errors.Wrap(err, "execute condition false message template")
+			}
 		}
 		return result, nil
 	}
 
 	if analyzerSpec.Messages.ConditionTrue != nil {
-		result.Message = analyzerSpec.Messages.ConditionTrue
 		result.Severity = analyzerSpec.Messages.ConditionTrue.Severity
+		result.Message, err = message.ExecuteTemplates(analyzerSpec.Messages.ConditionTrue, result.Variables)
+		if err != nil {
+			fmt.Println("+++", err)
+			return result, errors.Wrap(err, "execute condition true message template")
+		}
 	}
 
 	debug.Log(

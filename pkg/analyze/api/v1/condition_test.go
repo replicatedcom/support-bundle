@@ -7,9 +7,6 @@ import (
 )
 
 func TestCondition_Eval(t *testing.T) {
-	evalOsIsRhel := condition.EvalCondition(`{{repl eq .os "rhel"}}`)
-	evalError := condition.EvalCondition(`{{repl thisisnotafunc .os "rhel"}}`)
-
 	tests := []struct {
 		name      string
 		condition Condition
@@ -83,7 +80,9 @@ func TestCondition_Eval(t *testing.T) {
 		{
 			name: "eval true",
 			condition: Condition{
-				EvalCondition: &evalOsIsRhel,
+				EvalCondition: &condition.EvalCondition{
+					Value: `{{repl eq .os "rhel"}}`,
+				},
 			},
 			data: map[string]interface{}{
 				"os": "rhel",
@@ -93,7 +92,9 @@ func TestCondition_Eval(t *testing.T) {
 		{
 			name: "eval false",
 			condition: Condition{
-				EvalCondition: &evalOsIsRhel,
+				EvalCondition: &condition.EvalCondition{
+					Value: `{{repl eq .os "rhel"}}`,
+				},
 			},
 			data: map[string]interface{}{
 				"os": "centos",
@@ -103,7 +104,9 @@ func TestCondition_Eval(t *testing.T) {
 		{
 			name: "eval error",
 			condition: Condition{
-				EvalCondition: &evalError,
+				EvalCondition: &condition.EvalCondition{
+					Value: `{{repl thisisnotafunc .os "rhel"}}`,
+				},
 			},
 			data: map[string]interface{}{
 				"os": "centos",

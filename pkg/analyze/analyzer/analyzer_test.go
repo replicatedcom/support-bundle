@@ -2,7 +2,6 @@ package analyzer
 
 import (
 	"context"
-	"io"
 	"io/ioutil"
 	"strings"
 	"testing"
@@ -12,6 +11,11 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/variable"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/variable/distiller"
+	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	collectbundle "github.com/replicatedcom/support-bundle/pkg/test-mocks/collect/bundle"
 	"github.com/stretchr/testify/assert"
@@ -19,76 +23,245 @@ import (
 )
 
 func TestAnalyzer_analyze(t *testing.T) {
-	type args struct {
-		analyzerSpec v1.Analyzer
-	}
-	tests := []struct {
-		name         string
-		args         args
-		returnReader io.ReadCloser
-		want         api.Result
-		wantErr      bool
-	}{
+	collectResultEtcOsRelease := []collecttypes.Result{
 		{
-			name: "basic",
-			args: args{
-				analyzerSpec: v1.Analyzer{
-					KubernetesTotalMemory: &v1.KubernetesTotalMemoryRequirement{
-						Min: "10Gi",
+			Path: "/default/etc/os-release",
+			Spec: collecttypes.Spec{
+				CoreReadFile: &collecttypes.CoreReadFileOptions{
+					Filepath: "/etc/os-release",
+				},
+			},
+			Size: 1,
+		},
+	}
+
+	ubuntu1404EtcOsReleaseContents := `NAME="Ubuntu"
+VERSION="14.04.6 LTS, Trusty Tahr"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 14.04.6 LTS"
+VERSION_ID="14.04"
+HOME_URL="http://www.ubuntu.com/"
+SUPPORT_URL="http://help.ubuntu.com/"
+BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"`
+
+	ubuntu1804EtcOsReleaseContents := `NAME="Ubuntu"
+VERSION="18.04.2 LTS (Bionic Beaver)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 18.04.2 LTS"
+VERSION_ID="18.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=bionic
+UBUNTU_CODENAME=bionic`
+
+	centos7EtcOsReleaseContents := `NAME="CentOS Linux"
+VERSION="7 (Core)"
+ID="centos"
+ID_LIKE="rhel fedora"
+VERSION_ID="7"
+PRETTY_NAME="CentOS Linux 7 (Core)"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:centos:centos:7"
+HOME_URL="https://www.centos.org/"
+BUG_REPORT_URL="https://bugs.centos.org/"
+
+CENTOS_MANTISBT_PROJECT="CentOS-7"
+CENTOS_MANTISBT_PROJECT_VERSION="7"
+REDHAT_SUPPORT_PRODUCT="centos"
+REDHAT_SUPPORT_PRODUCT_VERSION="7"
+`
+
+	analyzerSpec := v1.Analyzer{
+		RegisterVariables: []v1.Variable{
+			{
+				Name: "os",
+				Os:   &variable.Os{},
+			},
+			{
+				Name: "osVersion",
+				CollectRef: &variable.CollectRef{
+					Ref: meta.Ref{
+						Selector: meta.Selector{"analyze": "/etc/os-release"},
 					},
-					AnalyzerShared: v1.AnalyzerShared{
-						CollectRefs: []meta.Ref{
-							{
-								Selector: meta.Selector{
-									"analyze": "kubernetes-total-memory",
-								},
-							},
-						},
+					RegexpCapture: &distiller.RegexpCapture{
+						Regexp: `(?m)^VERSION_ID="([^"]+)"`,
+						Index:  1,
 					},
 				},
 			},
-			returnReader: ioutil.NopCloser(strings.NewReader(`{"items": [
-				{"status": {"capacity": {"memory": "3000000Ki"},"allocatable": {"memory": "2708864Ki"}}},
-				{"status": {"capacity": {"memory": "3000000Ki"},"allocatable": {"memory": "2708864Ki"}}}
-			]}`)),
+		},
+		Preconditions: v1.AndPredicate{
+			{
+				StringCompare: &condition.StringCompare{
+					Compare: condition.Compare{Eq: "ubuntu"},
+				},
+				Ref: "os",
+			},
+		},
+		Conditions: v1.AndPredicate{
+			{
+				EvalCondition: &condition.EvalCondition{
+					Value: `{{repl lt .osVersion "16.04" | not}}`, // gte
+				},
+				Ref: "osVersion",
+			},
+		},
+		Messages: v1.Messages{
+			ConditionTrue: &message.Message{
+				Primary:  "Ubuntu version is {{repl .osVersion}}",
+				Detail:   "Ubuntu version must be at least 16.04",
+				Severity: common.SeverityInfo,
+			},
+			ConditionFalse: &message.Message{
+				Primary:  "Ubuntu version is {{repl .osVersion}}",
+				Detail:   "Ubuntu version must be at least 16.04",
+				Severity: common.SeverityWarn,
+			},
+			PreconditionFalse: &message.Message{
+				Primary:  "OS is not Ubuntu",
+				Detail:   "Ubuntu version must be at least 16.04",
+				Severity: common.SeverityDebug,
+			},
+			ConditionError: &message.Message{
+				Primary:  "Failed to detect Ubuntu version",
+				Detail:   "Ubuntu version must be at least 16.04",
+				Severity: common.SeverityError,
+			},
+			PreconditionError: &message.Message{
+				Primary:  "Failed to detect OS",
+				Detail:   "Ubuntu version must be at least 16.04",
+				Severity: common.SeverityError,
+			},
+		},
+	}
+
+	tests := []struct {
+		name            string
+		analyzerSpec    v1.Analyzer
+		registerExpects func(*collectbundle.MockBundleReader)
+		want            api.Result
+		wantErr         bool
+	}{
+		{
+			name:         "condition true",
+			analyzerSpec: analyzerSpec,
+			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
+				bundleReader.
+					EXPECT().
+					GetIndex().
+					Return(collectResultEtcOsRelease)
+
+				bundleReader.
+					EXPECT().
+					Open("/default/etc/os-release").
+					Return(ioutil.NopCloser(strings.NewReader(ubuntu1804EtcOsReleaseContents)), nil)
+
+				bundleReader.
+					EXPECT().
+					ResultsFromRef(meta.Ref{
+						Selector: meta.Selector{"analyze": "/etc/os-release"},
+					}).
+					Return(collectResultEtcOsRelease)
+
+				bundleReader.
+					EXPECT().
+					Open("/default/etc/os-release").
+					Return(ioutil.NopCloser(strings.NewReader(ubuntu1804EtcOsReleaseContents)), nil)
+			},
 			want: api.Result{
-				Requirement: "Kubernetes total memory must be at least 10GiB",
-				Message:     "Total memory for your Kubernetes cluster 6000000KiB is less than the minimum required memory of 10GiB",
-				Severity:    common.SeverityError,
-				Vars: []map[string]interface{}{
-					{"Empty": "false"},
-					{"Memory": "6144000000", "Min": "10737418240"},
+				Message: &message.Message{
+					Primary:  "Ubuntu version is 18.04",
+					Detail:   "Ubuntu version must be at least 16.04",
+					Severity: common.SeverityInfo,
+				},
+				Severity: common.SeverityInfo,
+				Variables: map[string]interface{}{
+					"os":        "ubuntu",
+					"osVersion": "18.04",
 				},
 				Error: "",
 			},
 		},
 		{
-			name: "basic",
-			args: args{
-				analyzerSpec: v1.AnalyzerSpec{
-					KubernetesTotalMemory: &v1.KubernetesTotalMemoryRequirement{
-						Min: "1Gi",
-					},
-					AnalyzerShared: v1.AnalyzerShared{
-						CollectRefs: []meta.Ref{
-							{
-								Selector: meta.Selector{
-									"analyze": "kubernetes-total-memory",
-								},
-							},
-						},
-					},
-				},
+			name:         "condition false",
+			analyzerSpec: analyzerSpec,
+			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
+				bundleReader.
+					EXPECT().
+					GetIndex().
+					Return(collectResultEtcOsRelease)
+
+				bundleReader.
+					EXPECT().
+					Open("/default/etc/os-release").
+					Return(ioutil.NopCloser(strings.NewReader(ubuntu1404EtcOsReleaseContents)), nil)
+
+				bundleReader.
+					EXPECT().
+					ResultsFromRef(meta.Ref{
+						Selector: meta.Selector{"analyze": "/etc/os-release"},
+					}).
+					Return(collectResultEtcOsRelease)
+
+				bundleReader.
+					EXPECT().
+					Open("/default/etc/os-release").
+					Return(ioutil.NopCloser(strings.NewReader(ubuntu1404EtcOsReleaseContents)), nil)
 			},
-			returnReader: ioutil.NopCloser(strings.NewReader(`{"items": [
-				{"status": {"capacity": {"memory": "3000000Ki"},"allocatable": {"memory": "2708864Ki"}}},
-				{"status": {"capacity": {"memory": "3000000Ki"},"allocatable": {"memory": "2708864Ki"}}}
-			]}`)),
 			want: api.Result{
-				Requirement: "Kubernetes total memory must be at least 1GiB",
-				Vars: []map[string]interface{}{
-					{"Empty": "false"},
-					{"Memory": "6144000000", "Min": "1073741824"},
+				Message: &message.Message{
+					Primary:  "Ubuntu version is 14.04",
+					Detail:   "Ubuntu version must be at least 16.04",
+					Severity: common.SeverityWarn,
+				},
+				Severity: common.SeverityWarn,
+				Variables: map[string]interface{}{
+					"os":        "ubuntu",
+					"osVersion": "14.04",
+				},
+				Error: "",
+			},
+		},
+		{
+			name:         "precondition false",
+			analyzerSpec: analyzerSpec,
+			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
+				bundleReader.
+					EXPECT().
+					GetIndex().
+					Return(collectResultEtcOsRelease)
+
+				bundleReader.
+					EXPECT().
+					Open("/default/etc/os-release").
+					Return(ioutil.NopCloser(strings.NewReader(centos7EtcOsReleaseContents)), nil)
+
+				bundleReader.
+					EXPECT().
+					ResultsFromRef(meta.Ref{
+						Selector: meta.Selector{"analyze": "/etc/os-release"},
+					}).
+					Return(collectResultEtcOsRelease)
+
+				bundleReader.
+					EXPECT().
+					Open("/default/etc/os-release").
+					Return(ioutil.NopCloser(strings.NewReader(centos7EtcOsReleaseContents)), nil)
+			},
+			want: api.Result{
+				Message: &message.Message{
+					Primary:  "OS is not Ubuntu",
+					Detail:   "Ubuntu version must be at least 16.04",
+					Severity: common.SeverityDebug,
+				},
+				Severity: common.SeverityDebug,
+				Variables: map[string]interface{}{
+					"os":        "centos",
+					"osVersion": "7",
 				},
 				Error: "",
 			},
@@ -100,27 +273,20 @@ func TestAnalyzer_analyze(t *testing.T) {
 			bundleReader := collectbundle.NewMockBundleReader(mc)
 			defer mc.Finish()
 
-			// TODO: support for multiple refs
-			ref := tt.args.analyzerSpec.CollectRefs[0]
-			if ref.Ref == "" {
-				ref.Ref = "_Ref"
+			if tt.registerExpects != nil {
+				tt.registerExpects(bundleReader)
 			}
-
-			bundleReader.
-				EXPECT().
-				ReaderFromRef(ref).
-				Return(tt.returnReader, nil)
 
 			a := &Analyzer{
 				Logger: log.NewNopLogger(),
 			}
-			got, err := a.analyze(context.Background(), bundleReader, tt.args.analyzerSpec)
+			got, err := a.analyze(context.Background(), bundleReader, tt.analyzerSpec)
 			if tt.wantErr {
 				require.Error(t, err)
 			} else {
 				assert.NoError(t, err)
 			}
-			tt.want.AnalyzerSpec = api.Analyze{V1: []v1.AnalyzerSpec{tt.args.analyzerSpec}}
+			tt.want.AnalyzerSpec = api.Analyze{V1: []v1.Analyzer{tt.analyzerSpec}}
 			assert.Equal(t, got, tt.want)
 		})
 	}
