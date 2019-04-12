@@ -10,7 +10,7 @@ import (
 var _ Interface = new(RegexpMatch)
 
 type RegexpMatch struct {
-	Regexp string
+	Regexp string `json:"regexp" yaml:"regexp" hcl:"regexp"`
 }
 
 func (c *RegexpMatch) Eval(ref interface{}, data map[string]interface{}) (bool, error) {

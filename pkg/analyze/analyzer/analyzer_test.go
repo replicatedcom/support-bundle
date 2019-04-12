@@ -23,7 +23,7 @@ import (
 )
 
 func TestAnalyzer_analyze(t *testing.T) {
-	osVersionGte1604Eval := condition.EvalCondition(`{{repl lt .osVersion "16.04" | not}}`) // gte
+	osVersionGte1604Eval := condition.EvalCondition(`{{repl lt .osVersion "16.04" | not}}`)
 
 	collectResultEtcOsRelease := []collecttypes.Result{
 		{
