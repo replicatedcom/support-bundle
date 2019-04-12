@@ -15,6 +15,7 @@ import (
 )
 
 type BundleReader interface {
+	ResultsFromRef(ref meta.Ref) []collecttypes.Result
 	ReaderFromRef(ref meta.Ref) (io.ReadCloser, error)
 	Open(name string) (io.ReadCloser, error)
 	GetIndex() []collecttypes.Result
@@ -45,8 +46,17 @@ func NewBundle(fs afero.Fs, path string) (BundleReader, error) {
 	return b, nil
 }
 
+func (b *Bundle) ResultsFromRef(ref meta.Ref) (results []collecttypes.Result) {
+	for _, result := range b.index {
+		if meta.RefMatches(ref, result.Spec.Shared().Meta) {
+			results = append(results, result)
+		}
+	}
+	return
+}
+
 func (b *Bundle) ReaderFromRef(ref meta.Ref) (io.ReadCloser, error) {
-	results := b.resultsFromRef(ref)
+	results := b.ResultsFromRef(ref)
 	for _, result := range results {
 		// TODO: sometimes we have stdout and stderr, how do we choose one?
 		if result.Size > 0 {
@@ -116,15 +126,6 @@ func (b *Bundle) getResultsFromIndex(indexPath string) ([]collecttypes.Result, e
 	defer reader.Close()
 	var results []collecttypes.Result
 	return results, json.NewDecoder(reader).Decode(&results)
-}
-
-func (b *Bundle) resultsFromRef(ref meta.Ref) (results []collecttypes.Result) {
-	for _, result := range b.index {
-		if meta.RefMatches(ref, result.Spec.Shared().Meta) {
-			results = append(results, result)
-		}
-	}
-	return
 }
 
 type archiveFile struct {

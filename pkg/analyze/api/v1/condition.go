@@ -1,27 +1,41 @@
 package v1
 
-import "github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
+import (
+	"reflect"
+	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
+)
 
 type Condition struct {
-	ConditionShared `json:",inline" yaml:",inline" hcl:",inline"`
+	// built-in
+	EvalCondition *condition.EvalCondition `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
+	StringCompare *condition.StringCompare `json:"stringCompare,omitempty" yaml:"stringCompare,omitempty" hcl:"stringCompare,omitempty"`
 
-	Eval *EvalCondition `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
+	// predicates
+	And *AndPredicate `json:"and,omitempty" yaml:"and,omitempty" hcl:"and,omitempty"`
+	Or  *OrPredicate  `json:"or,omitempty" yaml:"or,omitempty" hcl:"or,omitempty"`
+	Not *NotPredicate `json:"not,omitempty" yaml:"not,omitempty" hcl:"not,omitempty"`
+
+	// common
+	Ref string `json:"ref,omitempty" yaml:"ref,omitempty" hcl:"ref,omitempty"`
 }
 
-type ConditionShared struct {
-	Severity common.Severity `json:"severity" yaml:"severity" hcl:"severity"`
-	Message  string          `json:"message,omitempty" yaml:"message,omitempty" hcl:"message,omitempty"`
+func (c *Condition) Eval(data map[string]interface{}) (bool, error) {
+	val := reflect.Indirect(reflect.ValueOf(c))
+	for i := 0; i < val.NumField(); i++ {
+		if e, ok := val.Field(i).Interface().(condition.Interface); ok && !reflect.ValueOf(e).IsNil() {
+			b, err := condition.Eval(e, c.Ref, data)
+			if err != nil {
+				return false, errors.Wrapf(err, "condition %q", getTagName(val, i, "yaml"))
+			}
+			return b, nil
+		}
+	}
+	return false, errors.New("no condition defined")
 }
 
-type EvalCondition struct {
-	Operator   EvalOperator        `json:"operator,omitempty" yaml:"operator,omitempty" hcl:"operator,omitempty"`
-	Statements []string            `json:"statements" yaml:"statements" hcl:"statements"`
-	Variables  []map[string]string `json:"variables,omitempty" yaml:"variables,omitempty" hcl:"variables,omitempty"`
+func getTagName(v reflect.Value, i int, key string) string {
+	return strings.SplitN(v.Type().Field(i).Tag.Get(key), ",", 2)[0]
 }
-
-type EvalOperator string
-
-const (
-	AndOperator EvalOperator = "and"
-	OrOperator  EvalOperator = "or"
-)

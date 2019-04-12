@@ -2,17 +2,17 @@ package analyzer
 
 import (
 	"context"
-	"io/ioutil"
+	"fmt"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	multierror "github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
-	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
-	"github.com/replicatedcom/support-bundle/pkg/templates"
 	"github.com/spf13/afero"
 )
 
@@ -44,10 +44,19 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archiveP
 	}
 
 	var results []api.Result
+	var multiErr error
 	for _, analyzerSpec := range spec.V1 {
 		result, err := a.analyze(ctx, bundleReader, analyzerSpec)
 		if err != nil {
-			return results, errors.Wrapf(err, "analyze spec")
+			result.Error = fmt.Sprintf("%v", err)
+			if result.Severity == "" {
+				result.Severity = common.SeverityError
+			}
+			multiErr = multierror.Append(multiErr, err)
+		} else {
+			if result.Severity == "" {
+				result.Severity = common.SeverityInfo
+			}
 		}
 		results = append(results, result)
 	}
@@ -58,7 +67,7 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archiveP
 	return results, nil
 }
 
-func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.BundleReader, analyzerSpec v1.AnalyzerSpec) (api.Result, error) {
+func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.BundleReader, analyzerSpec v1.Analyzer) (api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.analyze"))
 
 	debug.Log(
@@ -66,77 +75,69 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		"spec", spew.Sdump(analyzerSpec))
 
 	var result api.Result
-	result.AnalyzerSpec = api.Analyze{V1: []v1.AnalyzerSpec{analyzerSpec}}
+	result.Variables = map[string]interface{}{}
+	result.AnalyzerSpec = api.Analyze{V1: []v1.Analyzer{analyzerSpec}}
 
-	requirement := analyzerSpec.GetRequirement()
-	debug.Log(
-		"phase", "analyzer.analyze.get-requirement",
-		"analyzer", spew.Sdump(requirement))
-	if requirement == nil {
-		return result, errors.New("analyzer empty") // TODO: typed error
+	for _, variable := range analyzerSpec.RegisterVariables {
+		reg, err := variable.Register(bundleReader)
+		for key, val := range reg {
+			result.Variables[key] = val
+		}
+		debug.Log(
+			"phase", "analyzer.analyze.register-variable",
+			"variable", spew.Sdump(variable),
+			"register", reg,
+			"error", err)
+		if err != nil {
+			return result, errors.Wrapf(err, "register variable %s", variable.Name)
+		}
 	}
 
-	// TODO: analyzer.Validate(analyzerSpec)
-
-	rawSpec, err := getRawSpec(analyzerSpec, requirement)
+	preconditionsOk, err := analyzerSpec.Preconditions.Eval(nil, result.Variables)
 	debug.Log(
-		"phase", "analyzer.analyze.get-spec",
-		"rawSpec", spew.Sdump(rawSpec),
+		"phase", "analyzer.analyze.eval-preconditions",
+		"preconditions", spew.Sdump(analyzerSpec.Preconditions),
+		"variables", result.Variables,
+		"ok", preconditionsOk,
 		"error", err)
 	if err != nil {
-		return result, errors.Wrap(err, "get raw spec")
+		if analyzerSpec.Messages.PreconditionError != nil {
+			result.Message = analyzerSpec.Messages.PreconditionError
+			result.Severity = analyzerSpec.Messages.PreconditionError.Severity
+		}
+		return result, errors.Wrap(err, "eval preconditions")
+	} else if !preconditionsOk {
+		if analyzerSpec.Messages.PreconditionFalse != nil {
+			result.Message = analyzerSpec.Messages.PreconditionFalse
+			result.Severity = analyzerSpec.Messages.PreconditionFalse.Severity
+		}
+		return result, nil
 	}
 
-	result.Requirement = rawSpec.Message
-
-	data, err := collectRefData(bundleReader, rawSpec.CollectRefs)
+	conditionsOk, err := analyzerSpec.Conditions.Eval(nil, result.Variables)
 	debug.Log(
-		"phase", "analyzer.analyze.build-template-data",
-		"data", spew.Sdump(data),
+		"phase", "analyzer.analyze.eval-conditions",
+		"conditions", spew.Sdump(analyzerSpec.Conditions),
+		"variables", result.Variables,
+		"ok", conditionsOk,
 		"error", err)
 	if err != nil {
-		return result, errors.Wrap(err, "collect ref data")
+		if analyzerSpec.Messages.ConditionError != nil {
+			result.Message = analyzerSpec.Messages.ConditionError
+			result.Severity = analyzerSpec.Messages.ConditionError.Severity
+		}
+		return result, errors.Wrap(err, "eval conditions")
+	} else if !conditionsOk {
+		if analyzerSpec.Messages.ConditionFalse != nil {
+			result.Message = analyzerSpec.Messages.ConditionFalse
+			result.Severity = analyzerSpec.Messages.ConditionFalse.Severity
+		}
+		return result, nil
 	}
 
-	for _, condition := range rawSpec.Raw.Conditions {
-		debug.Log(
-			"phase", "analyzer.analyze.condition",
-			"condition", spew.Sdump(condition))
-
-		vars, err := BuildConditionVariables(condition, data)
-		debug.Log(
-			"phase", "analyzer.analyze.condition.build",
-			"vars", spew.Sdump(vars),
-			"err", err)
-		if err != nil {
-			return result, errors.Wrap(err, "build variables")
-		}
-		result.Vars = append(result.Vars, vars)
-
-		ok, err := EvalCondition(condition, vars)
-		debug.Log(
-			"phase", "analyzer.analyze.condition.eval",
-			"met", ok,
-			"err", err)
-		if err != nil {
-			return result, errors.Wrap(err, "check condition")
-		}
-
-		if ok {
-			// severity override
-			if rawSpec.Severity != "" {
-				result.Severity = rawSpec.Severity
-			} else {
-				result.Severity = condition.Severity
-			}
-
-			message, err := templates.String(condition.Message, vars)
-			if err != nil {
-				return result, errors.Wrap(err, "execute message template")
-			}
-			result.Message = message
-			break
-		}
+	if analyzerSpec.Messages.ConditionTrue != nil {
+		result.Message = analyzerSpec.Messages.ConditionTrue
+		result.Severity = analyzerSpec.Messages.ConditionTrue.Severity
 	}
 
 	debug.Log(
@@ -144,44 +145,4 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		"status", "complete")
 
 	return result, nil
-}
-
-func getRawSpec(analyzerSpec v1.AnalyzerSpec, requirement v1.Requirement) (v1.RawSpec, error) {
-	rawSpec, err := requirement.GetRawSpec()
-	if err != nil {
-		return rawSpec, err
-	}
-	rawSpec.CollectRefs = analyzerSpec.CollectRefs
-	if rawSpec.CollectRefs[0].Ref == "" {
-		rawSpec.CollectRefs[0].Ref = "_Ref"
-	}
-	rawSpec.Meta = analyzerSpec.Meta
-	if analyzerSpec.Message != "" {
-		rawSpec.Message = analyzerSpec.Message
-	}
-	if analyzerSpec.Severity != "" {
-		rawSpec.Severity = analyzerSpec.Severity
-	}
-	return rawSpec, nil
-}
-
-func collectRefData(bundleReader bundlereader.BundleReader, refs []meta.Ref) (map[string]interface{}, error) {
-	data := map[string]interface{}{}
-	for _, ref := range refs {
-		r, err := bundleReader.ReaderFromRef(ref)
-		if err != nil {
-			return data, errors.Wrapf(err, "ref %s", ref.Ref)
-		}
-		if r != nil {
-			b, err := ioutil.ReadAll(r)
-			r.Close()
-			if err != nil {
-				return data, errors.Wrapf(err, "ref %s", ref.Ref)
-			}
-			data[ref.Ref] = string(b)
-		} else {
-			data[ref.Ref] = ""
-		}
-	}
-	return data, nil
 }

@@ -85,3 +85,15 @@ func (m *MockBundleReader) ReaderFromRef(arg0 meta.Ref) (io.ReadCloser, error) {
 func (mr *MockBundleReaderMockRecorder) ReaderFromRef(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReaderFromRef", reflect.TypeOf((*MockBundleReader)(nil).ReaderFromRef), arg0)
 }
+
+// ResultsFromRef mocks base method
+func (m *MockBundleReader) ResultsFromRef(arg0 meta.Ref) []types.Result {
+	ret := m.ctrl.Call(m, "ResultsFromRef", arg0)
+	ret0, _ := ret[0].([]types.Result)
+	return ret0
+}
+
+// ResultsFromRef indicates an expected call of ResultsFromRef
+func (mr *MockBundleReaderMockRecorder) ResultsFromRef(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResultsFromRef", reflect.TypeOf((*MockBundleReader)(nil).ResultsFromRef), arg0)
+}

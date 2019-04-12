@@ -20,7 +20,7 @@ import (
 
 func TestAnalyzer_analyze(t *testing.T) {
 	type args struct {
-		analyzerSpec v1.AnalyzerSpec
+		analyzerSpec v1.Analyzer
 	}
 	tests := []struct {
 		name         string
@@ -32,7 +32,7 @@ func TestAnalyzer_analyze(t *testing.T) {
 		{
 			name: "basic",
 			args: args{
-				analyzerSpec: v1.AnalyzerSpec{
+				analyzerSpec: v1.Analyzer{
 					KubernetesTotalMemory: &v1.KubernetesTotalMemoryRequirement{
 						Min: "10Gi",
 					},
