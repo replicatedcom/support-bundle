@@ -271,7 +271,7 @@ var resourceListFnMappings = []resourceListFnMapping{
 	},
 	{
 		aliases: []string{"statefulsets", "sts"},
-		fn:      resourceListReplicaSetsAppsV1,
+		fn:      resourceListStatefulSetsAppsV1,
 		gvfns: map[string]resourceListFn{
 			"apps/v1":      resourceListStatefulSetsAppsV1,
 			"apps/v1beta2": resourceListStatefulSetsAppsV1beta2,
