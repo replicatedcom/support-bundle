@@ -257,7 +257,7 @@ type DockerServiceLsOptions struct {
 }
 
 type DockerServicePsOptions struct {
-	SpecShared          `json:",inline,omitempty"`
+	// no SpecShared as DockerTaskLsOptions includes it already
 	DockerTaskLsOptions `json:",inline,omitempty"`
 }
 
@@ -345,7 +345,7 @@ type KubernetesResourceListOptions struct {
 }
 
 type RetracedEventsOptions struct {
-	SpecShared               `json:",inline,omitempty"`
+	// no SpecShared as RetracedAPIClientOptions includes it already
 	RetracedAPIClientOptions `json:",inline"`
 	Mask                     *retraced.EventNodeMask   `json:"mask,omitempty"`
 	Query                    *retraced.StructuredQuery `json:"query,omitempty"`
