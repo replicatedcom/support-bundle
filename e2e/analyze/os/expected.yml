@@ -1,0 +1,16 @@
+- message:
+    primary: OS is CentOS
+    detail: Is the os CentOS?
+    severity: info
+  severity: info
+  analyzer_spec: '{"v1":[{"name":"os-is-centos","registerVariables":[{"os":{},"name":"os"}],"condition":{"stringCompare":{"eq":"centos"},"ref":"os"},"messages":{"conditionFalse":{"primary":"OS is not CentOS","detail":"Is the os CentOS?","severity":"warn"},"conditionTrue":{"primary":"OS is CentOS","detail":"Is the os CentOS?","severity":"info"}}}]}'
+  variables:
+    os: centos
+- message:
+    primary: OS is not Ubuntu
+    detail: Is the os Ubuntu?
+    severity: warn
+  severity: warn
+  analyzer_spec: '{"v1":[{"name":"os-is-ubuntu","registerVariables":[{"os":{},"name":"os"}],"condition":{"stringCompare":{"eq":"ubuntu"},"ref":"os"},"messages":{"conditionFalse":{"primary":"OS is not Ubuntu","detail":"Is the os Ubuntu?","severity":"warn"},"conditionTrue":{"primary":"OS is Ubuntu","detail":"Is the os Ubuntu?","severity":"info"}}}]}'
+  variables:
+    os: centos

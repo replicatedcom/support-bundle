@@ -10,8 +10,8 @@ import (
 
 type Variable struct {
 	// built-in
-	Os         *variable.Os         `json:"os,omitempty" yaml:"os,omitempty" hcl:"os,omitempty"`
 	CollectRef *variable.CollectRef `json:"collectRef,omitempty" yaml:"collectRef,omitempty" hcl:"collectRef,omitempty"`
+	Os         *variable.Os         `json:"os,omitempty" yaml:"os,omitempty" hcl:"os,omitempty"`
 
 	// common
 	Name string `json:"name" yaml:"name" hcl:"name"`

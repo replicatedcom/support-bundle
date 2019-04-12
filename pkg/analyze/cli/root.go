@@ -25,6 +25,7 @@ func RootCmd() *cobra.Command {
 	cobra.OnInitialize(initConfig)
 
 	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is /etc/replicated/analyze.yaml)")
+	cmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose mode (log-level=debug)")
 	cmd.PersistentFlags().String("log-level", "off", "Log level")
 
 	// sub-commands

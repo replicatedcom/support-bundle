@@ -26,8 +26,8 @@ func RunE(ctx context.Context) ([]api.Result, error) {
 
 func Get() (*Analyze, error) {
 	// who injects the injectors?
-	logLevel := viper.GetViper().GetString("log-level")
-	debug := log.With(level.Debug(logger.New(logLevel)), "component", "injector", "phase", "instance.get")
+	logger := logger.FromViper(viper.GetViper())
+	debug := log.With(level.Debug(logger), "component", "injector", "phase", "instance.get")
 
 	debug.Log("event", "injector.build")
 	injector, err := buildInjector()

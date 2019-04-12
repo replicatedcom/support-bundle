@@ -6,7 +6,7 @@ type Analyzer struct {
 	Name              string     `json:"name" yaml:"name" hcl:"name"`
 	RegisterVariables []Variable `json:"registerVariables" yaml:"registerVariables" hcl:"registerVariables"`
 	Precondition      *Condition `json:"precondition,omitempty" yaml:"precondition,omitempty" hcl:"precondition,omitempty"`
-	Condition         *Condition `json:"condition" yaml:"condition" hcl:"condition"`
+	Condition         Condition  `json:"condition" yaml:"condition" hcl:"condition"`
 	Messages          Messages   `json:"messages" yaml:"messages" hcl:"messages"`
 }
 

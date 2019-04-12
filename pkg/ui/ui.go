@@ -8,23 +8,18 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-func New(
-	outW io.Writer, errW io.Writer,
-	forceColor, noColor bool,
-) cli.Ui {
-	base := &cli.BasicUi{
+func New(inR io.Reader, outW io.Writer, errW io.Writer) cli.Ui {
+	return &cli.BasicUi{
+		Reader:      inR,
 		Writer:      outW,
 		ErrorWriter: errW,
 	}
+}
 
-	if !isInteractive() && !forceColor {
+func Colored(base cli.Ui, force bool) cli.Ui {
+	if !(isInteractive() || force) {
 		return base
 	}
-
-	if noColor {
-		return base
-	}
-
 	return &cli.ColoredUi{
 		OutputColor: cli.UiColorNone,
 		ErrorColor:  cli.UiColorRed,

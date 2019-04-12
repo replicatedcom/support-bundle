@@ -13,7 +13,7 @@ type Message struct {
 	Severity common.Severity `json:"severity,omitempty" yaml:"severity,omitempty" hcl:"severity,omitempty"`
 }
 
-func ExecuteTemplates(m *Message, data interface{}) (*Message, error) {
+func (m *Message) Render(data interface{}) (*Message, error) {
 	var multiErr *multierror.Error
 	var err error
 	built := &Message{Severity: m.Severity}

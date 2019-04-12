@@ -20,7 +20,14 @@ var (
 
 // FromViper builds a logger from env using viper
 func FromViper(v *viper.Viper) log.Logger {
-	return New(v.GetString("log-level"))
+	return New(GetLevel(v))
+}
+
+func GetLevel(v *viper.Viper) string {
+	if v.GetBool("verbose") {
+		return "debug"
+	}
+	return v.GetString("log-level")
 }
 
 // New instantiates the global logger instance if not already created

@@ -11,6 +11,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/render"
 	collectcli "github.com/replicatedcom/support-bundle/pkg/collect/cli"
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
+	"github.com/replicatedcom/support-bundle/pkg/logger"
 	"github.com/replicatedcom/support-bundle/pkg/ui"
 	"github.com/replicatedcom/support-bundle/pkg/version"
 	"github.com/spf13/cobra"
@@ -25,15 +26,17 @@ func RunCmd() *cobra.Command {
 		Short: "collect and analyze troubleshoot spec",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			v := viper.GetViper()
+			logLevel := logger.GetLevel(v)
+			cli := ui.New(nil, cmd.OutOrStdout(), cmd.OutOrStderr())
+			if v.GetString("output") == "human" && !v.GetBool("no-color") {
+				cli = ui.Colored(cli, v.GetBool("force-color"))
+			}
 			return analyzeRun(
 				context.Background(),
-				ui.New(
-					cmd.OutOrStdout(), cmd.OutOrStderr(),
-					v.GetBool("force-color"), v.GetBool("no-color"),
-				),
+				cli,
 				v.GetString("output"),
 				v.GetBool("quiet"),
-				v.GetString("log-level"))
+				logLevel)
 		},
 	}
 
@@ -71,9 +74,9 @@ func analyzeRun(ctx context.Context, ui cli.Ui, outputFormat string, quiet bool,
 	results, err := analyze.RunE(ctx)
 
 	if !quiet && len(results) > 0 {
-		r := render.New(ui, outputFormat)
-		var b bytes.Buffer
-		if errRender := r.RenderResults(ctx, &b, results); errRender != nil {
+		b := bytes.NewBuffer(nil)
+		r := render.New(b, outputFormat)
+		if errRender := r.RenderResults(ctx, results); errRender != nil {
 			err = errRender
 		} else {
 			ui.Output(b.String())
