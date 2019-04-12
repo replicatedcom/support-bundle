@@ -9,5 +9,5 @@ import (
 
 type Interface interface {
 	MatchResults(bundlereader.BundleReader) []collecttypes.Result
-	ExtractValue(r io.Reader, result collecttypes.Result) (interface{}, error)
+	ExtractValue(r io.Reader, result collecttypes.Result, data interface{}) (interface{}, error)
 }

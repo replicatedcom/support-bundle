@@ -8,7 +8,7 @@ import (
 var _ Interface = new(StringCompare)
 
 type StringCompare struct {
-	Compare
+	Compare `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
 func (c *StringCompare) Eval(ref interface{}, data map[string]interface{}) (bool, error) {

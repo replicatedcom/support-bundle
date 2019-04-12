@@ -23,6 +23,8 @@ import (
 )
 
 func TestAnalyzer_analyze(t *testing.T) {
+	osVersionGte1604Eval := condition.EvalCondition(`{{repl lt .osVersion "16.04" | not}}`) // gte
+
 	collectResultEtcOsRelease := []collecttypes.Result{
 		{
 			Path: "/default/etc/os-release",
@@ -94,21 +96,15 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 				},
 			},
 		},
-		Preconditions: v1.AndPredicate{
-			{
-				StringCompare: &condition.StringCompare{
-					Compare: condition.Compare{Eq: "ubuntu"},
-				},
-				Ref: "os",
+		Precondition: &v1.Condition{
+			StringCompare: &condition.StringCompare{
+				Compare: condition.Compare{Eq: "ubuntu"},
 			},
+			Ref: "os",
 		},
-		Conditions: v1.AndPredicate{
-			{
-				EvalCondition: &condition.EvalCondition{
-					Value: `{{repl lt .osVersion "16.04" | not}}`, // gte
-				},
-				Ref: "osVersion",
-			},
+		Condition: &v1.Condition{
+			EvalCondition: &osVersionGte1604Eval,
+			Ref:           "osVersion",
 		},
 		Messages: v1.Messages{
 			ConditionTrue: &message.Message{

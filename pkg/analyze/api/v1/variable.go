@@ -17,13 +17,13 @@ type Variable struct {
 	Name string `json:"name" yaml:"name" hcl:"name"`
 }
 
-func (v *Variable) Register(bundleReader bundlereader.BundleReader) (map[string]interface{}, error) {
+func (v *Variable) Register(bundleReader bundlereader.BundleReader, data interface{}) (map[string]interface{}, error) {
 	var value interface{}
 	val := reflect.Indirect(reflect.ValueOf(v))
 	for i := 0; i < val.NumField(); i++ {
 		if v, ok := val.Field(i).Interface().(variable.Interface); ok && !reflect.ValueOf(v).IsNil() {
 			var err error
-			value, err = variable.Extract(v, bundleReader)
+			value, err = variable.Extract(v, bundleReader, data)
 			if err != nil {
 				return nil, errors.Wrapf(err, "variable %q", getTagName(val, i, "yaml"))
 			} else if value != nil {

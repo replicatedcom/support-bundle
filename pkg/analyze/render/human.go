@@ -28,14 +28,15 @@ func (e *HumanEncoder) Encode(v interface{}) error {
 
 func (e *HumanEncoder) encodeResults(results []api.Result) error {
 	for _, result := range results {
+		// TODO
 		msg := fmt.Sprintf(
 			"%s %s\n",
 			e.severitySymbol(result.Severity),
-			result.Requirement)
-		if result.Message != "" {
+			result.Message.Detail)
+		if result.Message != nil {
 			msg += fmt.Sprintf(
 				"%s\n",
-				result.Message)
+				result.Message.Primary)
 		}
 		e.severityOut(result.Severity)(msg)
 	}

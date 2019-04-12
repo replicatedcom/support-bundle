@@ -10,7 +10,9 @@ import (
 
 type Condition struct {
 	// built-in
+	Empty         *condition.Empty         `json:"empty,omitempty" yaml:"empty,omitempty" hcl:"empty,omitempty"`
 	EvalCondition *condition.EvalCondition `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
+	RegexpMatch   *condition.RegexpMatch   `json:"regexpMatch,omitempty" yaml:"regexpMatch,omitempty" hcl:"regexpMatch,omitempty"`
 	StringCompare *condition.StringCompare `json:"stringCompare,omitempty" yaml:"stringCompare,omitempty" hcl:"stringCompare,omitempty"`
 
 	// predicates

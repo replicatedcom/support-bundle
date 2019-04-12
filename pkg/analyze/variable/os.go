@@ -41,7 +41,7 @@ func (v *Os) MatchResults(bundleReader bundlereader.BundleReader) (results []col
 	return
 }
 
-func (v *Os) ExtractValue(r io.Reader, result collecttypes.Result) (interface{}, error) {
+func (v *Os) ExtractValue(r io.Reader, result collecttypes.Result, data interface{}) (interface{}, error) {
 	parts := strings.Split(result.Spec.CoreReadFile.Filepath, "/")
 	switch parts[len(parts)-1] {
 

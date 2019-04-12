@@ -49,7 +49,6 @@ _lint:
 	golint ./pkg/... \
 		| grep -v "should have comment" \
 		| grep -v "comment on exported" \
-		| grep -v "pkg/analyze/api/v1/requirements.go" \
 		|| :
 	golint ./cmd/... \
 		| grep -v "should have comment" \
@@ -65,14 +64,7 @@ build: test _build
 
 _build: bin/analyze bin/support-bundle
 
-bindata: pkg/analyze/api/v1/requirements.go
-
-pkg/analyze/api/v1/requirements.go: pkg/analyze/api/v1/requirements/*
-	go-bindata \
-		-pkg v1 \
-		-prefix pkg/analyze/api/v1/ \
-		-o pkg/analyze/api/v1/requirements.go \
-		pkg/analyze/api/v1/requirements/
+bindata: pkg/collect/bundle/defaultspec/asset.go
 
 pkg/collect/bundle/defaultspec/asset.go: pkg/collect/bundle/defaultspec/assets/*
 	go-bindata \
@@ -92,7 +84,7 @@ _mockgen:
 
 mockgen: _mockgen fmt
 
-bin/analyze: $(SRC) pkg/analyze/api/v1/requirements.go
+bin/analyze: $(SRC)
 	go build \
 		-ldflags " \
 		-X $(PKG)/pkg/version.version=$(VERSION) \
@@ -143,7 +135,7 @@ ci-upload-coverage: .state/coverage.out .state/cc-test-reporter
 
 e2e: e2e-analyze e2e-supportbundle
 
-e2e-analyze: pkg/analyze/api/v1/requirements.go
+e2e-analyze:
 	ginkgo -v -r -p e2e/analyze
 
 e2e-supportbundle: e2e-supportbundle-core e2e-supportbundle-docker

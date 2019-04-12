@@ -80,7 +80,7 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 	result.AnalyzerSpec = api.Analyze{V1: []v1.Analyzer{analyzerSpec}}
 
 	for _, variable := range analyzerSpec.RegisterVariables {
-		reg, err := variable.Register(bundleReader)
+		reg, err := variable.Register(bundleReader, result.Variables)
 		for key, val := range reg {
 			result.Variables[key] = val
 		}
@@ -94,10 +94,10 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		}
 	}
 
-	preconditionsOk, err := analyzerSpec.Preconditions.Eval(nil, result.Variables)
+	preconditionsOk, err := analyzerSpec.Precondition.Eval(result.Variables)
 	debug.Log(
 		"phase", "analyzer.analyze.eval-preconditions",
-		"preconditions", spew.Sdump(analyzerSpec.Preconditions),
+		"preconditions", spew.Sdump(analyzerSpec.Precondition),
 		"variables", result.Variables,
 		"ok", preconditionsOk,
 		"error", err)
@@ -121,10 +121,10 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		return result, nil
 	}
 
-	conditionsOk, err := analyzerSpec.Conditions.Eval(nil, result.Variables)
+	conditionsOk, err := analyzerSpec.Condition.Eval(result.Variables)
 	debug.Log(
 		"phase", "analyzer.analyze.eval-conditions",
-		"conditions", spew.Sdump(analyzerSpec.Conditions),
+		"conditions", spew.Sdump(analyzerSpec.Condition),
 		"variables", result.Variables,
 		"ok", conditionsOk,
 		"error", err)

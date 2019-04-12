@@ -150,7 +150,7 @@ UBUNTU_CODENAME=xenial`)), nil)
 				tt.registerExpects(bundleReader)
 			}
 
-			got, err := tt.variable.Register(bundleReader)
+			got, err := tt.variable.Register(bundleReader, nil)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Variable.Register() error = %v, wantErr %v", err, tt.wantErr)
 				return

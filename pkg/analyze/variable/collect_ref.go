@@ -32,7 +32,7 @@ func (v *CollectRef) MatchResults(bundleReader bundlereader.BundleReader) []coll
 	return bundleReader.ResultsFromRef(v.Ref)
 }
 
-func (v *CollectRef) ExtractValue(r io.Reader, result collecttypes.Result) (interface{}, error) {
+func (v *CollectRef) ExtractValue(r io.Reader, result collecttypes.Result, data interface{}) (interface{}, error) {
 	val := reflect.Indirect(reflect.ValueOf(v))
 	for i := 0; i < val.NumField(); i++ {
 		if d, ok := val.Field(i).Interface().(distiller.Interface); ok && !reflect.ValueOf(d).IsNil() {

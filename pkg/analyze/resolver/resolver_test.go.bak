@@ -43,7 +43,7 @@ analyze:
 
 			expect: api.Doc{
 				Analyze: api.Analyze{
-					V1: []v1.AnalyzerSpec{
+					V1: []v1.Analyzer{
 						{
 							KubernetesTotalMemory: &v1.KubernetesTotalMemoryRequirement{
 								Min: "10Gi",
