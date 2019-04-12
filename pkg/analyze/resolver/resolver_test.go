@@ -124,7 +124,7 @@ analyze:
 									},
 								},
 							},
-							Condition: &v1.Condition{
+							Condition: v1.Condition{
 								EvalCondition: &osVersionGte1604Eval,
 							},
 							Messages: v1.Messages{
@@ -177,7 +177,7 @@ analyze:
 									},
 								},
 							},
-							Condition: &v1.Condition{
+							Condition: v1.Condition{
 								RegexpMatch: &condition.RegexpMatch{
 									Regexp: "/chef-client",
 								},

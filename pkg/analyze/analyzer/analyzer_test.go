@@ -2,6 +2,7 @@ package analyzer
 
 import (
 	"context"
+	"encoding/json"
 	"io/ioutil"
 	"strings"
 	"testing"
@@ -102,7 +103,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 			},
 			Ref: "os",
 		},
-		Condition: &v1.Condition{
+		Condition: v1.Condition{
 			EvalCondition: &osVersionGte1604Eval,
 			Ref:           "osVersion",
 		},
@@ -282,7 +283,8 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 			} else {
 				assert.NoError(t, err)
 			}
-			tt.want.AnalyzerSpec = api.Analyze{V1: []v1.Analyzer{tt.analyzerSpec}}
+			b, _ := json.Marshal(api.Analyze{V1: []v1.Analyzer{tt.analyzerSpec}})
+			tt.want.AnalyzerSpec = string(b)
 			assert.Equal(t, got, tt.want)
 		})
 	}
