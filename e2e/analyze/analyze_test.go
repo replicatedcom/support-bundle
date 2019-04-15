@@ -84,10 +84,11 @@ var _ = Describe("integration", func() {
 				cmd.SetOutput(buf)
 				cmd.SetArgs([]string{
 					"run",
-					fmt.Sprintf("--collect-bundle-path=%s", testBundleDestPath),
 					fmt.Sprintf("--spec-file=%s", testSpecPath),
 					"--output=yaml",
 					"--log-level=off",
+					"--",
+					testBundleDestPath,
 				})
 
 				err = cmd.Execute()

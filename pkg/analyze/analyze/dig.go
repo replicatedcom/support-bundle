@@ -8,7 +8,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyzer"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	"github.com/replicatedcom/support-bundle/pkg/fs"
 	"github.com/replicatedcom/support-bundle/pkg/logger"
@@ -16,12 +15,12 @@ import (
 	"go.uber.org/dig"
 )
 
-func RunE(ctx context.Context) ([]api.Result, error) {
+func RunE(ctx context.Context, bundlePath string) ([]api.Result, error) {
 	a, err := Get()
 	if err != nil {
 		return nil, err
 	}
-	return a.Execute(ctx)
+	return a.Execute(ctx, bundlePath)
 }
 
 func Get() (*Analyze, error) {
@@ -59,7 +58,6 @@ func buildInjector() (*dig.Container, error) {
 		fs.FromViper,
 
 		resolver.New,
-		collector.New,
 		analyzer.New,
 
 		New,

@@ -17,16 +17,23 @@ func (c *StringCompare) Eval(ref interface{}, data map[string]interface{}) (bool
 		str = fmt.Sprintf("%v", ref)
 	}
 	switch {
-	case c.Eq != "":
-		return str == c.Eq, nil
-	case c.Lt != "":
-		return str < c.Lt, nil
-	case c.Lte != "":
-		return str <= c.Lte, nil
-	case c.Gt != "":
-		return str > c.Gt, nil
-	case c.Gte != "":
-		return str >= c.Gte, nil
+	case c.Eq != nil:
+		return str == fmt.Sprintf("%v", c.Eq), nil
+	case c.Lt != nil:
+		return str < fmt.Sprintf("%v", c.Lt), nil
+	case c.Lte != nil:
+		return str <= fmt.Sprintf("%v", c.Lte), nil
+	case c.Gt != nil:
+		return str > fmt.Sprintf("%v", c.Gt), nil
+	case c.Gte != nil:
+		return str >= fmt.Sprintf("%v", c.Gte), nil
+	case c.In != nil:
+		for _, i := range c.In {
+			if str == fmt.Sprintf("%v", i) {
+				return true, nil
+			}
+		}
+		return false, nil
 	default:
 		return false, errors.New("comparison function expected")
 	}

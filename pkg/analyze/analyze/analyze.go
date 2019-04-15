@@ -2,10 +2,7 @@ package analyze
 
 import (
 	"context"
-	"os"
-	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -13,7 +10,6 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyzer"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	collectcli "github.com/replicatedcom/support-bundle/pkg/collect/cli"
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
@@ -33,9 +29,8 @@ var (
 type Analyze struct {
 	Logger log.Logger
 
-	Resolver  *resolver.Resolver
-	Collector collector.Interface
-	Analyzer  *analyzer.Analyzer
+	Resolver *resolver.Resolver
+	Analyzer *analyzer.Analyzer
 
 	SpecFiles  []string
 	Specs      []string
@@ -45,26 +40,15 @@ type Analyze struct {
 
 	// analyze
 	SeverityThreshold string
-	CollectBundlePath string
-
-	// collect
-	CollectEnableCore       bool
-	CollectEnableDocker     bool
-	CollectEnableJournald   bool
-	CollectEnableKubernetes bool
-	CollectEnableRetraced   bool
-	CollectTimeout          time.Duration
-	CollectTmpDir           string
 }
 
 // New gets an instance using viper to pull config
-func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, collector collector.Interface, analyzer *analyzer.Analyzer) *Analyze {
+func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, analyzer *analyzer.Analyzer) *Analyze {
 	return &Analyze{
 		Logger: logger,
 
-		Resolver:  resolver,
-		Collector: collector,
-		Analyzer:  analyzer,
+		Resolver: resolver,
+		Analyzer: analyzer,
 
 		SpecFiles:  cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
 		Specs:      cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
@@ -73,20 +57,10 @@ func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, collect
 
 		// analyze
 		SeverityThreshold: v.GetString("severity-threshold"),
-		CollectBundlePath: v.GetString("collect-bundle-path"),
-
-		// collect
-		CollectEnableCore:       v.GetBool("collect-core"),
-		CollectEnableDocker:     v.GetBool("collect-docker"),
-		CollectEnableJournald:   v.GetBool("collect-journald"),
-		CollectEnableKubernetes: v.GetBool("collect-kubernetes"),
-		CollectEnableRetraced:   v.GetBool("collect-retraced"),
-		CollectTimeout:          v.GetDuration("collect-timeout"),
-		CollectTmpDir:           v.GetString("collect-temporary-directory"),
 	}
 }
 
-func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
+func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyze.Execute"))
 
 	debug.Log("method", "configure", "phase", "initialize",
@@ -95,6 +69,11 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 		"buildTime", version.BuildTime(),
 		"buildTimeFallback", version.GetBuild().TimeFallback,
 	)
+
+	if bundlePath == "" {
+		// stdin?
+		return nil, errors.New("bundle path not specified")
+	}
 
 	debug.Log(
 		"phase", "resolve")
@@ -132,17 +111,6 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 		"phase", "resolve",
 		"status", "complete")
 
-	bundlePath := a.CollectBundlePath
-	if bundlePath == "" {
-		bundlePath = filepath.Join(a.CollectTmpDir, "bundle.tgz")
-		defer os.RemoveAll(bundlePath)
-
-		err := a.collectBundle(ctx, bundlePath)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	debug.Log(
 		"phase", "analyze",
 		"spec", spew.Sdump(spec.Analyze))
@@ -166,45 +134,6 @@ func (a *Analyze) Execute(ctx context.Context) ([]api.Result, error) {
 		return results, ErrSeverityThreshold
 	}
 	return results, nil
-}
-
-func (a *Analyze) collectBundle(ctx context.Context, dest string) error {
-	debug := level.Debug(log.With(a.Logger, "method", "Analyze.collect"))
-
-	debug.Log(
-		"phase", "bundle.generate",
-		"timeout", a.CollectTimeout,
-		"dest", dest)
-
-	input := collector.Input{
-		CustomerID: a.CustomerID,
-		ChannelID:  a.ChannelID,
-		Specs:      a.Specs,
-		SpecFiles:  a.SpecFiles,
-		Dest:       dest,
-		Opts: collector.Options{
-			EnableCore:       a.CollectEnableCore,
-			EnableDocker:     a.CollectEnableDocker,
-			EnableJournald:   a.CollectEnableJournald,
-			EnableKubernetes: a.CollectEnableKubernetes,
-			EnableRetraced:   a.CollectEnableRetraced,
-			Timeout:          a.CollectTimeout,
-			Endpoint:         a.Endpoint,
-		},
-	}
-
-	err := a.Collector.CollectBundle(ctx, input)
-	if err != nil {
-		debug.Log(
-			"phase", "bundle.generate",
-			"error", err)
-	}
-
-	debug.Log(
-		"phase", "bundle.generate",
-		"status", "complete")
-
-	return errors.Wrap(err, "generate bundle")
 }
 
 func didResultsFailSeverityThreshold(results []api.Result, threshold common.Severity) bool {

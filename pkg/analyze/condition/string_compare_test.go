@@ -62,6 +62,34 @@ func TestStringCompare_Eval(t *testing.T) {
 			},
 			want: false,
 		},
+		{
+			name: "in",
+			stringCompare: StringCompare{
+				Compare: Compare{
+					In: []interface{}{
+						"bbb", "aaa", "ccc",
+					},
+				},
+			},
+			args: args{
+				ref: "aaa",
+			},
+			want: true,
+		},
+		{
+			name: "not in",
+			stringCompare: StringCompare{
+				Compare: Compare{
+					In: []interface{}{
+						"bbb", "ccc",
+					},
+				},
+			},
+			args: args{
+				ref: "aaa",
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
