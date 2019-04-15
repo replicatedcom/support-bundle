@@ -15,10 +15,10 @@ var (
 	osReleaseRegexp     = `(?m)^ID="?([^"\n]+)"?`
 	systemReleaseRegexp = `(CentOS|Red Hat Enterprise Linux Server|Amazon Linux AMI) release `
 
-	_ Interface = new(Os)
-
 	_ = regexp.MustCompile(osReleaseRegexp)
 	_ = regexp.MustCompile(systemReleaseRegexp)
+
+	_ Interface = new(Os)
 )
 
 type Os struct {
@@ -26,16 +26,13 @@ type Os struct {
 
 func (v *Os) MatchResults(bundleReader bundlereader.BundleReader) (results []collecttypes.Result) {
 	for _, result := range bundleReader.GetIndex() {
-		switch {
-		case result.Spec.CoreReadFile != nil:
-			if result.Spec.CoreReadFile.Filepath == "/etc/os-release" ||
-				result.Spec.CoreReadFile.Filepath == "/usr/lib/os-release" ||
-				result.Spec.CoreReadFile.Filepath == "/etc/system-release" {
-
-				if result.Size > 0 {
-					results = append(results, result)
-				}
-			}
+		if matchAny(
+			result,
+			matcherCoreReadFileFilepath("/etc/os-release"),
+			matcherCoreReadFileFilepath("/usr/lib/os-release"),
+			matcherCoreReadFileFilepath("/etc/system-release"),
+		) {
+			results = append(results, result)
 		}
 	}
 	return

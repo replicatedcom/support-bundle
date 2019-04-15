@@ -1,0 +1,15 @@
+analyze:
+  v1:
+    - name: os-uptime
+      registerVariables:
+        - name: osUptime
+          os.uptime: {}
+      condition:
+        not:
+          empty: {}
+          ref: osUptime
+      messages:
+        conditionTrue:
+          primary: '{{repl seconds .osUptime}}'
+          detail: Host has been up for {{repl seconds .osUptime}}
+          severity: info

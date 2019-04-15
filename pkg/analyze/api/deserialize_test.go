@@ -39,7 +39,7 @@ func TestSerialization(t *testing.T) {
     precondition:
       or:
       - eval: '{{repl eq .os "centos"}}'
-      - eval: '{{repl eq .ref "centos"}}'
+      - eval: '{{repl eq .Ref "centos"}}'
         ref: os
       - ref: os
         stringCompare:

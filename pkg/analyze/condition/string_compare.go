@@ -12,24 +12,21 @@ type StringCompare struct {
 }
 
 func (c *StringCompare) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
-	var str string
-	if ref != nil {
-		str = fmt.Sprintf("%v", ref)
-	}
+	v := toString(ref)
 	switch {
 	case c.Eq != nil:
-		return str == fmt.Sprintf("%v", c.Eq), nil
+		return v == toString(c.Eq), nil
 	case c.Lt != nil:
-		return str < fmt.Sprintf("%v", c.Lt), nil
+		return v < toString(c.Lt), nil
 	case c.Lte != nil:
-		return str <= fmt.Sprintf("%v", c.Lte), nil
+		return v <= toString(c.Lte), nil
 	case c.Gt != nil:
-		return str > fmt.Sprintf("%v", c.Gt), nil
+		return v > toString(c.Gt), nil
 	case c.Gte != nil:
-		return str >= fmt.Sprintf("%v", c.Gte), nil
+		return v >= toString(c.Gte), nil
 	case c.In != nil:
 		for _, i := range c.In {
-			if str == fmt.Sprintf("%v", i) {
+			if v == toString(i) {
 				return true, nil
 			}
 		}
@@ -37,4 +34,11 @@ func (c *StringCompare) Eval(ref interface{}, data map[string]interface{}) (bool
 	default:
 		return false, errors.New("comparison function expected")
 	}
+}
+
+func toString(v interface{}) string {
+	if v == nil {
+		return ""
+	}
+	return fmt.Sprintf("%s", v)
 }

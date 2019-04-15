@@ -21,7 +21,7 @@ import (
 
 func TestResolverResolveSpec(t *testing.T) {
 	eqOsCentosEval := condition.EvalCondition(`{{repl eq .os "centos"}}`)
-	eqRefCentosEval := condition.EvalCondition(`{{repl eq .ref "centos"}}`)
+	eqRefCentosEval := condition.EvalCondition(`{{repl eq .Ref "centos"}}`)
 	osVersionGte1604Eval := condition.EvalCondition(`{{repl lt .osVersion "16.04" | not}}`)
 
 	tests := []struct {
@@ -63,7 +63,7 @@ analyze:
     precondition:
       or:
       - eval: '{{repl eq .os "centos"}}'
-      - eval: '{{repl eq .ref "centos"}}'
+      - eval: '{{repl eq .Ref "centos"}}'
         ref: os
       - ref: os
         stringCompare:
