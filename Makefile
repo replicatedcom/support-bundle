@@ -64,7 +64,14 @@ build: test _build
 
 _build: bin/analyze bin/support-bundle
 
-bindata: pkg/collect/bundle/defaultspec/asset.go
+bindata: pkg/analyze/api/v1/defaultspec/asset.go pkg/collect/bundle/defaultspec/asset.go
+
+pkg/analyze/api/v1/defaultspec/asset.go: pkg/analyze/api/v1/defaultspec/assets/*
+	go-bindata \
+		-pkg defaultspec \
+		-prefix pkg/analyze/api/v1/defaultspec/ \
+		-o pkg/analyze/api/v1/defaultspec/asset.go \
+		pkg/analyze/api/v1/defaultspec/assets/
 
 pkg/collect/bundle/defaultspec/asset.go: pkg/collect/bundle/defaultspec/assets/*
 	go-bindata \
@@ -84,7 +91,7 @@ _mockgen:
 
 mockgen: _mockgen fmt
 
-bin/analyze: $(SRC)
+bin/analyze: $(SRC) pkg/analyze/api/v1/defaultspec/asset.go
 	go build \
 		-ldflags " \
 		-X $(PKG)/pkg/version.version=$(VERSION) \

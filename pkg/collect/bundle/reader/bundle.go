@@ -47,7 +47,7 @@ func NewBundle(fs afero.Fs, path string) (BundleReader, error) {
 }
 
 func (b *Bundle) ResultsFromRef(ref meta.Ref) (results []collecttypes.Result) {
-	for _, result := range b.index {
+	for _, result := range b.GetIndex() {
 		if meta.RefMatches(ref, result.Spec.Shared().Meta) {
 			results = append(results, result)
 		}

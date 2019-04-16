@@ -34,8 +34,20 @@ func New(logger log.Logger, fs afero.Fs) *Resolver {
 	}
 }
 
-func (r *Resolver) ResolveSpec(ctx context.Context, input Input) (resolved api.Doc, err error) {
+func (r *Resolver) ResolveSpec(ctx context.Context, input Input, skipDefault bool) (resolved api.Doc, err error) {
 	debug := level.Debug(log.With(r.Logger, "method", "Resolver.ResolveSpec"))
+
+	if !skipDefault {
+		doc, errI := r.ResolveDefaultSpec(ctx)
+		debug.Log(
+			"phase", "resolve.spec.default",
+			"error", errI)
+		if errI != nil {
+			err = multierror.Append(err, errors.Wrap(errI, "resolve default spec"))
+		} else {
+			resolved = mergeDocs(resolved, doc)
+		}
+	}
 
 	cwd, _ := os.Getwd()
 	for _, filename := range input.Files {

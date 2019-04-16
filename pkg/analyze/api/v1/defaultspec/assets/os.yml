@@ -1,0 +1,87 @@
+analyze:
+  v1:
+    - name: os.ubuntu
+      registerVariables:
+        - name: os
+          os: {}
+      condition:
+        stringCompare:
+          eq: ubuntu
+        ref: os
+      messages:
+        conditionTrue:
+          primary: OS is Ubuntu
+          detail: Operating System is Ubuntu
+          severity: info
+        conditionFalse:
+          primary: OS is not Ubuntu
+          detail: Operating System is not Ubuntu
+          severity: debug
+    - name: os.alpine
+      registerVariables:
+        - name: os
+          os: {}
+      condition:
+        stringCompare:
+          eq: alpine
+        ref: os
+      messages:
+        conditionTrue:
+          primary: OS is Alpine
+          detail: Operating System is Alpine
+          severity: info
+        conditionFalse:
+          primary: OS is not Alpine
+          detail: Operating System is not Alpine
+          severity: debug
+    - name: os.centos
+      registerVariables:
+        - name: os
+          os: {}
+      condition:
+        stringCompare:
+          eq: centos
+        ref: os
+      messages:
+        conditionTrue:
+          primary: OS is CentOS
+          detail: Operating System is CentOS
+          severity: info
+        conditionFalse:
+          primary: OS is not CentOS
+          detail: Operating System is not CentOS
+          severity: debug
+    - name: os.rhel
+      registerVariables:
+        - name: os
+          os: {}
+      condition:
+        stringCompare:
+          eq: rhel
+        ref: os
+      messages:
+        conditionTrue:
+          primary: OS is RHEL
+          detail: Operating System is RHEL
+          severity: info
+        conditionFalse:
+          primary: OS is not RHEL
+          detail: Operating System is not RHEL
+          severity: debug
+    - name: os.debian
+      registerVariables:
+        - name: os
+          os: {}
+      condition:
+        stringCompare:
+          eq: debian
+        ref: os
+      messages:
+        conditionTrue:
+          primary: OS is Debian
+          detail: Operating System is Debian
+          severity: info
+        conditionFalse:
+          primary: OS is not Debian
+          detail: Operating System is not Debian
+          severity: debug

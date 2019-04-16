@@ -6,20 +6,19 @@ import (
 	"testing"
 
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable/distiller"
-	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
-func TestCollectRef_ExtractValue(t *testing.T) {
+func TestDistiller_Distill(t *testing.T) {
 	tests := []struct {
-		name       string
-		collectRef CollectRef
-		input      string
-		want       interface{}
-		wantErr    bool
+		name      string
+		distiller Distiller
+		input     string
+		want      interface{}
+		wantErr   bool
 	}{
 		{
 			name: "match",
-			collectRef: CollectRef{
+			distiller: Distiller{
 				RegexpCapture: &distiller.RegexpCapture{
 					Regexp: `(?m)^VERSION_ID="([^"]+)"`,
 					Index:  1,
@@ -40,7 +39,7 @@ UBUNTU_CODENAME=xenial`,
 		},
 		{
 			name: "match scannable",
-			collectRef: CollectRef{
+			distiller: Distiller{
 				RegexpCapture: &distiller.RegexpCapture{
 					Regexp: `(?m)^VERSION_ID="([^"]+)"`,
 					Index:  0,
@@ -62,7 +61,7 @@ UBUNTU_CODENAME=xenial`,
 		},
 		{
 			name: "no match",
-			collectRef: CollectRef{
+			distiller: Distiller{
 				RegexpCapture: &distiller.RegexpCapture{
 					Regexp: `NOMATCH`,
 				},
@@ -72,7 +71,7 @@ UBUNTU_CODENAME=xenial`,
 		},
 		{
 			name: "no match scannable",
-			collectRef: CollectRef{
+			distiller: Distiller{
 				RegexpCapture: &distiller.RegexpCapture{
 					Regexp: `NOMATCH`,
 				},
@@ -85,13 +84,13 @@ UBUNTU_CODENAME=xenial`,
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r := strings.NewReader(tt.input)
-			got, err := tt.collectRef.ExtractValue(r, collecttypes.Result{}, nil)
+			got, err := tt.distiller.Distill(r)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CollectRef.ExtractValue() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Distiller.Distill() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("CollectRef.ExtractValue() = %v, want %v", got, tt.want)
+				t.Errorf("Distiller.Distill() = %v, want %v", got, tt.want)
 			}
 		})
 	}

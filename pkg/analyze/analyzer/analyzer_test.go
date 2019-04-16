@@ -90,9 +90,11 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 					Ref: meta.Ref{
 						Selector: meta.Selector{"analyze": "/etc/os-release"},
 					},
-					RegexpCapture: &distiller.RegexpCapture{
-						Regexp: `(?m)^VERSION_ID="([^"]+)"`,
-						Index:  1,
+					Distiller: variable.Distiller{
+						RegexpCapture: &distiller.RegexpCapture{
+							Regexp: `(?m)^VERSION_ID="([^"]+)"`,
+							Index:  1,
+						},
 					},
 				},
 			},
@@ -140,7 +142,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 		name            string
 		analyzerSpec    v1.Analyzer
 		registerExpects func(*collectbundle.MockBundleReader)
-		want            api.Result
+		want            *api.Result
 		wantErr         bool
 	}{
 		{
@@ -169,7 +171,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 					Open("/default/etc/os-release").
 					Return(ioutil.NopCloser(strings.NewReader(ubuntu1804EtcOsReleaseContents)), nil)
 			},
-			want: api.Result{
+			want: &api.Result{
 				Message: &message.Message{
 					Primary:  "Ubuntu version is 18.04",
 					Detail:   "Ubuntu version must be at least 16.04",
@@ -209,7 +211,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 					Open("/default/etc/os-release").
 					Return(ioutil.NopCloser(strings.NewReader(ubuntu1404EtcOsReleaseContents)), nil)
 			},
-			want: api.Result{
+			want: &api.Result{
 				Message: &message.Message{
 					Primary:  "Ubuntu version is 14.04",
 					Detail:   "Ubuntu version must be at least 16.04",
@@ -249,7 +251,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 					Open("/default/etc/os-release").
 					Return(ioutil.NopCloser(strings.NewReader(centos7EtcOsReleaseContents)), nil)
 			},
-			want: api.Result{
+			want: &api.Result{
 				Message: &message.Message{
 					Primary:  "OS is not Ubuntu",
 					Detail:   "Ubuntu version must be at least 16.04",

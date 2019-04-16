@@ -42,6 +42,7 @@ func RunCmd() *cobra.Command {
 
 	cmd.Flags().StringArrayP("spec-file", "f", nil, "spec file")
 	cmd.Flags().StringArrayP("spec", "s", nil, "spec doc")
+	cmd.Flags().Bool("skip-default", false, "Skip the default analyze spec")
 
 	cmd.Flags().String("customer-id", "", "Replicated Customer ID")
 	cmd.Flags().MarkDeprecated("customer-id", "This argument is no longer supported. Consider using \"channel-id\"")

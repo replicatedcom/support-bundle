@@ -87,6 +87,7 @@ var _ = Describe("integration", func() {
 					fmt.Sprintf("--spec-file=%s", testSpecPath),
 					"--output=yaml",
 					"--log-level=off",
+					"--skip-default",
 					"--",
 					testBundleDestPath,
 				})

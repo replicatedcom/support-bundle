@@ -34,11 +34,12 @@ type Analyze struct {
 	BundleResolver *bundleresolver.Factory
 	Analyzer       *analyzer.Analyzer
 
-	SpecFiles  []string
-	Specs      []string
-	CustomerID string // deprecated
-	ChannelID  string
-	Endpoint   string
+	SpecFiles   []string
+	Specs       []string
+	SkipDefault bool
+	CustomerID  string // deprecated
+	ChannelID   string
+	Endpoint    string
 
 	// analyze
 	SeverityThreshold string
@@ -53,10 +54,11 @@ func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, bundleR
 		BundleResolver: bundleResolver,
 		Analyzer:       analyzer,
 
-		SpecFiles:  cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
-		Specs:      cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
-		CustomerID: v.GetString("customer-id"),
-		Endpoint:   v.GetString("endpoint"),
+		SpecFiles:   cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
+		Specs:       cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
+		SkipDefault: v.GetBool("skip-default"),
+		CustomerID:  v.GetString("customer-id"),
+		Endpoint:    v.GetString("endpoint"),
 
 		// analyze
 		SeverityThreshold: v.GetString("severity-threshold"),
@@ -94,7 +96,7 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 		Endpoint:   a.Endpoint,
 	}
 
-	spec, err := a.Resolver.ResolveSpec(ctx, input)
+	spec, err := a.Resolver.ResolveSpec(ctx, input, a.SkipDefault)
 	if err != nil {
 		debug.Log(
 			"phase", "resolve",
