@@ -6,6 +6,7 @@ import (
 )
 
 type Result struct {
+	Name         string                 `json:"name" yaml:"name" hcl:"name"`
 	Message      *message.Message       `json:"message" yaml:"message" hcl:"message"`
 	Severity     common.Severity        `json:"severity" yaml:"severity" hcl:"severity"`
 	AnalyzerSpec string                 `json:"analyzer_spec" yaml:"analyzer_spec" hcl:"analyzer_spec"`

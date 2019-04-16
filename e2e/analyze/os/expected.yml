@@ -1,4 +1,5 @@
-- message:
+- name: os-is-centos
+  message:
     primary: OS is CentOS
     detail: Is the os CentOS?
     severity: info
@@ -6,7 +7,8 @@
   analyzer_spec: '{"v1":[{"name":"os-is-centos","registerVariables":[{"os":{},"name":"os"}],"condition":{"stringCompare":{"eq":"centos"},"ref":"os"},"messages":{"conditionFalse":{"primary":"OS is not CentOS","detail":"Is the os CentOS?","severity":"warn"},"conditionTrue":{"primary":"OS is CentOS","detail":"Is the os CentOS?","severity":"info"}}}]}'
   variables:
     os: centos
-- message:
+- name: os-is-ubuntu
+  message:
     primary: OS is not Ubuntu
     detail: Is the os Ubuntu?
     severity: warn

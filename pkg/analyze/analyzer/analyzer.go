@@ -74,6 +74,7 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		"spec", spew.Sdump(analyzerSpec))
 
 	var result api.Result
+	result.Name = analyzerSpec.Name
 	result.Variables = map[string]interface{}{}
 	marshaledSpec, err := json.Marshal(api.Analyze{V1: []v1.Analyzer{analyzerSpec}})
 	if err != nil {

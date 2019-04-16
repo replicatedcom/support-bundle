@@ -1,4 +1,5 @@
-- message:
+- name: os-uptime
+  message:
     primary: 15h5m32s
     detail: Host has been up for 15h5m32s
     severity: info
