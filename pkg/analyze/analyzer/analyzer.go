@@ -19,23 +19,21 @@ import (
 
 type Analyzer struct {
 	Logger log.Logger
-	Fs     afero.Fs
 }
 
 func New(logger log.Logger, fs afero.Fs) *Analyzer {
 	return &Analyzer{
 		Logger: logger,
-		Fs:     fs,
 	}
 }
 
-func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archivePath string) ([]api.Result, error) {
+func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, fs afero.Fs, archivePath string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.AnalyzeBundle"))
 
 	debug.Log(
 		"phase", "analyzer.analyze-bundle")
 
-	bundleReader, err := bundlereader.NewBundle(a.Fs, archivePath)
+	bundleReader, err := bundlereader.NewBundle(fs, archivePath)
 	debug.Log(
 		"phase", "analyzer.get-bundle-index",
 		"index", spew.Sdump(bundleReader.GetIndex()),

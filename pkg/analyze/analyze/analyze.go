@@ -11,6 +11,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
+	bundleresolver "github.com/replicatedcom/support-bundle/pkg/collect/bundle/resolver"
 	collectcli "github.com/replicatedcom/support-bundle/pkg/collect/cli"
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/spew"
@@ -29,8 +30,9 @@ var (
 type Analyze struct {
 	Logger log.Logger
 
-	Resolver *resolver.Resolver
-	Analyzer *analyzer.Analyzer
+	Resolver       *resolver.Resolver
+	BundleResolver *bundleresolver.Factory
+	Analyzer       *analyzer.Analyzer
 
 	SpecFiles  []string
 	Specs      []string
@@ -43,12 +45,13 @@ type Analyze struct {
 }
 
 // New gets an instance using viper to pull config
-func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, analyzer *analyzer.Analyzer) *Analyze {
+func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, bundleResolver *bundleresolver.Factory, analyzer *analyzer.Analyzer) *Analyze {
 	return &Analyze{
 		Logger: logger,
 
-		Resolver: resolver,
-		Analyzer: analyzer,
+		Resolver:       resolver,
+		BundleResolver: bundleResolver,
+		Analyzer:       analyzer,
 
 		SpecFiles:  cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
 		Specs:      cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
@@ -112,13 +115,30 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 		"status", "complete")
 
 	debug.Log(
+		"phase", "bundle.resolve",
+		"bundlePath", bundlePath)
+
+	fs, resolvedPath, err := a.BundleResolver.Fs(bundlePath)
+	if err != nil {
+		debug.Log(
+			"phase", "bundle.resolve",
+			"error", err)
+		return nil, errors.Wrap(err, "resolve bundle")
+	}
+
+	debug.Log(
+		"phase", "bundle.resolve",
+		"status", "complete")
+
+	debug.Log(
 		"phase", "analyze",
 		"spec", spew.Sdump(spec.Analyze))
 
 	results, err := a.Analyzer.AnalyzeBundle(
 		ctx,
 		spec.Analyze,
-		bundlePath)
+		fs,
+		resolvedPath)
 	if err != nil {
 		debug.Log(
 			"phase", "analyze",
