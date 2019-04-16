@@ -218,7 +218,7 @@ analyze:
 				Files:  files,
 				Inline: test.inline,
 			}
-			spec, err := resolver.ResolveSpec(context.Background(), input)
+			spec, err := resolver.ResolveSpec(context.Background(), input, true)
 			req.NoError(err)
 			req.Equal(test.expect, spec)
 		})

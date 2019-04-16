@@ -97,9 +97,11 @@ UBUNTU_CODENAME=xenial`)), nil)
 					Ref: meta.Ref{
 						Selector: meta.Selector{"analyze": "/etc/os-release"},
 					},
-					RegexpCapture: &distiller.RegexpCapture{
-						Regexp: `(?m)^VERSION_ID="([^"]+)"`,
-						Index:  1,
+					Distiller: variable.Distiller{
+						RegexpCapture: &distiller.RegexpCapture{
+							Regexp: `(?m)^VERSION_ID="([^"]+)"`,
+							Index:  1,
+						},
 					},
 				},
 				Name: "osVersion",
