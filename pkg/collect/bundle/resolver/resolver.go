@@ -1,6 +1,9 @@
 package resolver
 
 import (
+	"fmt"
+
+	"github.com/go-kit/kit/log"
 	"github.com/pkg/errors"
 	"github.com/spf13/afero"
 )
@@ -10,10 +13,16 @@ var (
 		new(S3Resolver),
 		new(FileResolver),
 	}
+
+	resolversMap = map[string]Resolver{
+		"file": new(FileResolver),
+		"s3":   new(S3Resolver),
+	}
 )
 
 type Factory struct {
-	resolvers []Resolver
+	Logger    log.Logger
+	Resolvers []Resolver
 }
 
 type Resolver interface {
@@ -21,30 +30,41 @@ type Resolver interface {
 	Resolve(name string) (afero.Fs, string, error)
 }
 
-func NewWithDefaults() *Factory {
+func NewWithDefaults(logger log.Logger) *Factory {
 	return &Factory{
-		resolvers: DefaultResolvers,
+		Logger:    logger,
+		Resolvers: DefaultResolvers,
 	}
 }
 
-func New(resolvers []Resolver) *Factory {
+func New(logger log.Logger, resolvers []Resolver) *Factory {
 	if resolvers == nil {
-		return NewWithDefaults()
+		return NewWithDefaults(logger)
 	}
 	return &Factory{
-		resolvers: resolvers,
+		Logger:    logger,
+		Resolvers: resolvers,
 	}
 }
 
 func (f *Factory) Fs(name string) (afero.Fs, string, error) {
-	for _, resolver := range f.resolvers {
-		forced, ok, err := resolver.Detect(name)
+	forced, name := getForcedGetter(name)
+	if forced != "" {
+		resolver, ok := resolversMap[forced]
+		if !ok {
+			return nil, "", fmt.Errorf("unknown forced resolver %s", forced)
+		}
+		fs, path, err := resolver.Resolve(name)
+		return fs, path, errors.Wrapf(err, "resolve %T", resolver)
+	}
+	for _, resolver := range f.Resolvers {
+		name, ok, err := resolver.Detect(name)
 		if err != nil {
 			return nil, "", errors.Wrapf(err, "detect %T", resolver)
 		} else if !ok {
 			continue
 		}
-		fs, path, err := resolver.Resolve(forced)
+		fs, path, err := resolver.Resolve(name)
 		return fs, path, errors.Wrapf(err, "resolve %T", resolver)
 	}
 	return nil, "", errors.New("unsupported fs")

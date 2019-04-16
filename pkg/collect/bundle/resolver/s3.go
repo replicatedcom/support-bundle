@@ -42,6 +42,9 @@ func (g *S3Resolver) Resolve(name string) (afero.Fs, string, error) {
 		return nil, "", errors.Wrap(err, "parse s3 url")
 	}
 	config := g.getAWSConfig(region, u, creds)
+	if endpoint := os.Getenv("AWS_ENDPOINT"); endpoint != "" {
+		config = config.WithEndpoint(endpoint)
+	}
 	sess := session.New(config)
 	client := s3.New(sess)
 	return aferoS3.NewFs(bucket, client), path, nil

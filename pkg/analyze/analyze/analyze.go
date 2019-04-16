@@ -116,21 +116,15 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 		"phase", "resolve",
 		"status", "complete")
 
+	fs, resolvedPath, err := a.BundleResolver.Fs(bundlePath)
 	debug.Log(
 		"phase", "bundle.resolve",
-		"bundlePath", bundlePath)
-
-	fs, resolvedPath, err := a.BundleResolver.Fs(bundlePath)
+		"bundlePath", bundlePath,
+		"resolvedPath", resolvedPath,
+		"error", err)
 	if err != nil {
-		debug.Log(
-			"phase", "bundle.resolve",
-			"error", err)
 		return nil, errors.Wrap(err, "resolve bundle")
 	}
-
-	debug.Log(
-		"phase", "bundle.resolve",
-		"status", "complete")
 
 	debug.Log(
 		"phase", "analyze",
