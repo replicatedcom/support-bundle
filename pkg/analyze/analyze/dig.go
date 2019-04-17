@@ -9,9 +9,9 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyzer"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
-	bundleresolver "github.com/replicatedcom/support-bundle/pkg/collect/bundle/resolver"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/fs"
+	"github.com/replicatedcom/support-bundle/pkg/getter"
 	"github.com/replicatedcom/support-bundle/pkg/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/dig"
@@ -68,7 +68,7 @@ func buildInjector() (*dig.Container, error) {
 		fs.FromViper,
 
 		resolver.New,
-		bundleresolver.NewWithDefaults,
+		getter.NewWithDefaults,
 		analyzer.New,
 
 		New,

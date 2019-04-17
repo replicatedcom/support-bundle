@@ -20,21 +20,23 @@ import (
 
 type Analyzer struct {
 	Logger log.Logger
+	Fs     afero.Fs
 }
 
 func New(logger log.Logger, fs afero.Fs) *Analyzer {
 	return &Analyzer{
 		Logger: logger,
+		Fs:     fs,
 	}
 }
 
-func (a *Analyzer) DiscoverBundles(ctx context.Context, fs afero.Fs, archivePath string) (map[string][]collecttypes.Result, error) {
+func (a *Analyzer) DiscoverBundles(ctx context.Context, archivePath string) (map[string][]collecttypes.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.DiscoverBundles"))
 
 	debug.Log(
 		"phase", "analyzer.discover-bundles")
 
-	bundleReader, err := bundlereader.NewMultiBundle(fs, archivePath)
+	bundleReader, err := bundlereader.NewMultiBundle(a.Fs, archivePath)
 	debug.Log(
 		"phase", "analyzer.discover-bundles",
 		"len", len(bundleReader.GetBundles()),
@@ -50,13 +52,13 @@ func (a *Analyzer) DiscoverBundles(ctx context.Context, fs afero.Fs, archivePath
 	return bundles, nil
 }
 
-func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, fs afero.Fs, archivePath, bundleRootSubpath string) ([]api.Result, error) {
+func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archivePath, bundleRootSubpath string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.AnalyzeBundle"))
 
 	debug.Log(
 		"phase", "analyzer.analyze-bundle")
 
-	bundleReader, err := bundlereader.NewBundle(fs, archivePath, bundleRootSubpath)
+	bundleReader, err := bundlereader.NewBundle(a.Fs, archivePath, bundleRootSubpath)
 	debug.Log(
 		"phase", "analyzer.get-bundle-index",
 		// "index", util.SpewJSON(bundleReader.GetIndex()), // TOO NOISY

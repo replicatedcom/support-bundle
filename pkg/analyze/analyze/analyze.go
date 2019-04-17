@@ -2,6 +2,7 @@ package analyze
 
 import (
 	"context"
+	"os"
 	"strings"
 
 	"github.com/go-kit/kit/log"
@@ -11,10 +12,10 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
-	bundleresolver "github.com/replicatedcom/support-bundle/pkg/collect/bundle/resolver"
 	collectcli "github.com/replicatedcom/support-bundle/pkg/collect/cli"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
+	"github.com/replicatedcom/support-bundle/pkg/getter"
 	"github.com/replicatedcom/support-bundle/pkg/version"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
@@ -30,9 +31,9 @@ var (
 type Analyze struct {
 	Logger log.Logger
 
-	Resolver       *resolver.Resolver
-	BundleResolver *bundleresolver.Factory
-	Analyzer       *analyzer.Analyzer
+	Resolver *resolver.Resolver
+	Getter   getter.Interface
+	Analyzer *analyzer.Analyzer
 
 	SpecFiles         []string
 	Specs             []string
@@ -47,13 +48,13 @@ type Analyze struct {
 }
 
 // New gets an instance using viper to pull config
-func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, bundleResolver *bundleresolver.Factory, analyzer *analyzer.Analyzer) *Analyze {
+func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, getter *getter.Getter, analyzer *analyzer.Analyzer) *Analyze {
 	return &Analyze{
 		Logger: logger,
 
-		Resolver:       resolver,
-		BundleResolver: bundleResolver,
-		Analyzer:       analyzer,
+		Resolver: resolver,
+		Getter:   getter,
+		Analyzer: analyzer,
 
 		SpecFiles:         cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
 		Specs:             cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
@@ -70,6 +71,8 @@ func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, bundleR
 func (a *Analyze) Inspect(ctx context.Context, bundlePath string) (map[string][]collecttypes.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyze.Inspect"))
 
+	defer os.RemoveAll(a.Getter.DstDir())
+
 	debug.Log("method", "configure", "phase", "initialize",
 		"version", version.Version(),
 		"gitSHA", version.GitSHA(),
@@ -77,14 +80,14 @@ func (a *Analyze) Inspect(ctx context.Context, bundlePath string) (map[string][]
 		"buildTimeFallback", version.GetBuild().TimeFallback,
 	)
 
-	fs, resolvedPath, err := a.BundleResolver.Fs(bundlePath)
+	resolvedPath, err := a.Getter.Get(bundlePath)
 	debug.Log(
-		"phase", "bundle.resolve",
+		"phase", "bundle.get",
 		"bundlePath", bundlePath,
 		"resolvedPath", resolvedPath,
 		"error", err)
 	if err != nil {
-		return nil, errors.Wrap(err, "resolve bundle")
+		return nil, errors.Wrap(err, "get bundle")
 	}
 
 	debug.Log(
@@ -92,7 +95,6 @@ func (a *Analyze) Inspect(ctx context.Context, bundlePath string) (map[string][]
 
 	bundles, err := a.Analyzer.DiscoverBundles(
 		ctx,
-		fs,
 		resolvedPath)
 	if err != nil {
 		debug.Log(
@@ -110,6 +112,8 @@ func (a *Analyze) Inspect(ctx context.Context, bundlePath string) (map[string][]
 
 func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyze.Execute"))
+
+	defer os.RemoveAll(a.Getter.DstDir())
 
 	debug.Log("method", "configure", "phase", "initialize",
 		"version", version.Version(),
@@ -159,14 +163,14 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 		"phase", "resolve",
 		"status", "complete")
 
-	fs, resolvedPath, err := a.BundleResolver.Fs(bundlePath)
+	resolvedPath, err := a.Getter.Get(bundlePath)
 	debug.Log(
-		"phase", "bundle.resolve",
+		"phase", "bundle.get",
 		"bundlePath", bundlePath,
 		"resolvedPath", resolvedPath,
 		"error", err)
 	if err != nil {
-		return nil, errors.Wrap(err, "resolve bundle")
+		return nil, errors.Wrap(err, "get bundle")
 	}
 
 	debug.Log(
@@ -175,7 +179,6 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 	results, err := a.Analyzer.AnalyzeBundle(
 		ctx,
 		spec.Analyze,
-		fs,
 		resolvedPath,
 		a.BundleRootSubpath)
 	if err != nil {
