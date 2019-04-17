@@ -31,6 +31,10 @@ func RefMatches(ref Ref, meta *Meta) bool {
 	return len(ref.Name) > 0 || len(ref.Selector) > 0
 }
 
+func (m Meta) String() string {
+	return fmt.Sprintf("<Meta name=\"%s\",labels=\"%v\">", m.Name, m.Labels)
+}
+
 func (r Ref) String() string {
 	return fmt.Sprintf("<Ref name=\"%s\",selector=\"%v\">", r.Name, r.Selector)
 }

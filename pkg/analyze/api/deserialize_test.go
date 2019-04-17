@@ -40,17 +40,17 @@ func TestSerialization(t *testing.T) {
       or:
       - eval: '{{repl eq .os "centos"}}'
       - eval: '{{repl eq .Ref "centos"}}'
-        ref: os
-      - ref: os
-        stringCompare:
+        variableRef: os
+      - stringCompare:
           eq: centos
+        variableRef: os
     registerVariables:
     - name: os
       os: {}
   - condition:
-      ref: ps
       regexpMatch:
         regexp: /chef-client
+      variableRef: ps
     messages:
       conditionTrue:
         detail: The server must not be running the Chef Client
@@ -60,7 +60,7 @@ func TestSerialization(t *testing.T) {
     precondition:
       not:
         empty: {}
-        ref: ps
+        variableRef: ps
     registerVariables:
     - collectRef:
         selector:

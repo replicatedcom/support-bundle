@@ -8,11 +8,11 @@ analyze:
       precondition:
         not:
           empty: {}
-          ref: ps
+          variableRef: ps
       condition:
         regexpMatch:
           regexp: 'puppet agent '
-        ref: ps
+        variableRef: ps
       messages:
         conditionTrue:
           primary: Managed By Puppet
@@ -30,11 +30,11 @@ analyze:
       precondition:
         not:
           empty: {}
-          ref: ps
+          variableRef: ps
       condition:
         regexpMatch:
           regexp: 'chef-client'
-        ref: ps
+        variableRef: ps
       messages:
         conditionTrue:
           primary: Managed By Chef

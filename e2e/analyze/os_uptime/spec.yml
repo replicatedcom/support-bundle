@@ -7,7 +7,7 @@ analyze:
       condition:
         not:
           empty: {}
-          ref: osUptime
+          variableRef: osUptime
       messages:
         conditionTrue:
           primary: '{{repl seconds .osUptime}}'

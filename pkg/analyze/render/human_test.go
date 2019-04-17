@@ -51,7 +51,7 @@ func TestHumanEncoder_Encode(t *testing.T) {
 			want: `! Ubuntu version is 14.04
 Ubuntu version must be at least 16.04
 
-ℹ Ubuntu version is 18.04
+✓ Ubuntu version is 18.04
 Ubuntu version must be at least 16.04
 
 ✗ Panic!!!

@@ -7,7 +7,7 @@ analyze:
       condition:
         stringCompare:
           eq: centos
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is CentOS
@@ -24,7 +24,7 @@ analyze:
       condition:
         stringCompare:
           eq: ubuntu
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is Ubuntu

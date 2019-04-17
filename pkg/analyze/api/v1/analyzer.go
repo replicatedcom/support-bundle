@@ -1,9 +1,13 @@
 package v1
 
-import "github.com/replicatedcom/support-bundle/pkg/analyze/message"
+import (
+	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
+	"github.com/replicatedcom/support-bundle/pkg/meta"
+)
 
 type Analyzer struct {
-	Name              string     `json:"name" yaml:"name" hcl:"name"`
+	meta.Meta `json:",inline" yaml:",inline" hcl:",inline"`
+
 	RegisterVariables []Variable `json:"registerVariables" yaml:"registerVariables" hcl:"registerVariables"`
 	Precondition      *Condition `json:"precondition,omitempty" yaml:"precondition,omitempty" hcl:"precondition,omitempty"`
 	Condition         Condition  `json:"condition" yaml:"condition" hcl:"condition"`

@@ -1,6 +1,8 @@
 package condition
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+)
 
 func Eval(condition Interface, ref string, data map[string]interface{}) (bool, error) {
 	value, err := resolveRef(ref, data)

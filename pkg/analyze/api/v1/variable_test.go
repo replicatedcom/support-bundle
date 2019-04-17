@@ -25,8 +25,10 @@ func TestVariable_Register(t *testing.T) {
 		{
 			name: "os ubuntu",
 			variable: Variable{
-				Os:   &variable.Os{},
-				Name: "os",
+				Os: &variable.Os{},
+				Meta: meta.Meta{
+					Name: "os",
+				},
 			},
 			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
 				bundleReader.
@@ -64,8 +66,10 @@ UBUNTU_CODENAME=xenial`)), nil)
 		{
 			name: "os rhel 6",
 			variable: Variable{
-				Os:   &variable.Os{},
-				Name: "os",
+				Os: &variable.Os{},
+				Meta: meta.Meta{
+					Name: "os",
+				},
 			},
 			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
 				bundleReader.
@@ -104,7 +108,9 @@ UBUNTU_CODENAME=xenial`)), nil)
 						},
 					},
 				},
-				Name: "osVersion",
+				Meta: meta.Meta{
+					Name: "osVersion",
+				},
 			},
 			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
 				bundleReader.

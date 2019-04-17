@@ -25,13 +25,13 @@ func TestCondition_Eval(t *testing.T) {
 						StringCompare: &condition.StringCompare{
 							Compare: condition.Compare{Eq: "centos"},
 						},
-						Ref: "os",
+						VariableRef: "os",
 					},
 					{
 						StringCompare: &condition.StringCompare{
 							Compare: condition.Compare{Eq: "rhel"},
 						},
-						Ref: "os",
+						VariableRef: "os",
 					},
 				},
 			},
@@ -48,13 +48,13 @@ func TestCondition_Eval(t *testing.T) {
 						StringCompare: &condition.StringCompare{
 							Compare: condition.Compare{Eq: "centos"},
 						},
-						Ref: "os",
+						VariableRef: "os",
 					},
 					{
 						StringCompare: &condition.StringCompare{
 							Compare: condition.Compare{Eq: "rhel"},
 						},
-						Ref: "os",
+						VariableRef: "os",
 					},
 				},
 			},
@@ -71,7 +71,7 @@ func TestCondition_Eval(t *testing.T) {
 						StringCompare: &condition.StringCompare{
 							Compare: condition.Compare{Eq: "centos"},
 						},
-						Ref: "os",
+						VariableRef: "os",
 					},
 				},
 			},

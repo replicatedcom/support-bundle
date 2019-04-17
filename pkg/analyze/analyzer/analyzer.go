@@ -167,7 +167,7 @@ func resultFromAnalysis(msg *message.Message, analysisErr error, analyzerSpec v1
 	}
 
 	result = &api.Result{
-		Name:      analyzerSpec.Name,
+		Meta:      analyzerSpec.Meta,
 		Variables: data,
 	}
 

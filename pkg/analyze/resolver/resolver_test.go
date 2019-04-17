@@ -64,10 +64,10 @@ analyze:
       or:
       - eval: '{{repl eq .os "centos"}}'
       - eval: '{{repl eq .Ref "centos"}}'
-        ref: os
-      - ref: os
-        stringCompare:
+        variableRef: os
+      - stringCompare:
           eq: centos
+        variableRef: os
     registerVariables:
     - name: os
       os: {}`},
@@ -75,9 +75,9 @@ analyze:
 analyze:
   v1:
   - condition:
-      ref: ps
       regexpMatch:
         regexp: /chef-client
+      variableRef: ps
     messages:
       conditionTrue:
         detail: The server must not be running the Chef Client
@@ -87,7 +87,7 @@ analyze:
     precondition:
       not:
         empty: {}
-        ref: ps
+        variableRef: ps
     registerVariables:
     - collectRef:
         selector:
@@ -98,11 +98,15 @@ analyze:
 				Analyze: api.Analyze{
 					V1: []v1.Analyzer{
 						{
-							Name: "centos-min-version",
+							Meta: meta.Meta{
+								Name: "centos-min-version",
+							},
 							RegisterVariables: []v1.Variable{
 								{
-									Name: "os",
-									Os:   &variable.Os{},
+									Meta: meta.Meta{
+										Name: "os",
+									},
+									Os: &variable.Os{},
 								},
 							},
 							Precondition: &v1.Condition{
@@ -112,7 +116,7 @@ analyze:
 									},
 									{
 										EvalCondition: &eqRefCentosEval,
-										Ref:           "os",
+										VariableRef:   "os",
 									},
 									{
 										StringCompare: &condition.StringCompare{
@@ -120,7 +124,7 @@ analyze:
 												Eq: "centos",
 											},
 										},
-										Ref: "os",
+										VariableRef: "os",
 									},
 								},
 							},
@@ -156,10 +160,14 @@ analyze:
 							},
 						},
 						{
-							Name: "chef-client",
+							Meta: meta.Meta{
+								Name: "chef-client",
+							},
 							RegisterVariables: []v1.Variable{
 								{
-									Name: "ps",
+									Meta: meta.Meta{
+										Name: "ps",
+									},
 									CollectRef: &variable.CollectRef{
 										Ref: meta.Ref{
 											Selector: meta.Selector{
@@ -172,8 +180,8 @@ analyze:
 							Precondition: &v1.Condition{
 								Not: &v1.NotPredicate{
 									Condition: v1.Condition{
-										Empty: &condition.Empty{},
-										Ref:   "ps",
+										Empty:       &condition.Empty{},
+										VariableRef: "ps",
 									},
 								},
 							},
@@ -181,7 +189,7 @@ analyze:
 								RegexpMatch: &condition.RegexpMatch{
 									Regexp: "/chef-client",
 								},
-								Ref: "ps",
+								VariableRef: "ps",
 							},
 							Messages: v1.Messages{
 								ConditionTrue: &message.Message{

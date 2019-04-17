@@ -3,10 +3,12 @@ package api
 import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
+	"github.com/replicatedcom/support-bundle/pkg/meta"
 )
 
 type Result struct {
-	Name         string                 `json:"name" yaml:"name" hcl:"name"`
+	meta.Meta `json:",inline" yaml:",inline" hcl:",inline"`
+
 	Message      *message.Message       `json:"message" yaml:"message" hcl:"message"`
 	Severity     common.Severity        `json:"severity" yaml:"severity" hcl:"severity"`
 	AnalyzerSpec string                 `json:"analyzer_spec" yaml:"analyzer_spec" hcl:"analyzer_spec"`

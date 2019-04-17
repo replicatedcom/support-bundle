@@ -81,11 +81,15 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 	analyzerSpec := v1.Analyzer{
 		RegisterVariables: []v1.Variable{
 			{
-				Name: "os",
-				Os:   &variable.Os{},
+				Meta: meta.Meta{
+					Name: "os",
+				},
+				Os: &variable.Os{},
 			},
 			{
-				Name: "osVersion",
+				Meta: meta.Meta{
+					Name: "osVersion",
+				},
 				CollectRef: &variable.CollectRef{
 					Ref: meta.Ref{
 						Selector: meta.Selector{"analyze": "/etc/os-release"},
@@ -103,11 +107,11 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 			StringCompare: &condition.StringCompare{
 				Compare: condition.Compare{Eq: "ubuntu"},
 			},
-			Ref: "os",
+			VariableRef: "os",
 		},
 		Condition: v1.Condition{
 			EvalCondition: &osVersionGte1604Eval,
-			Ref:           "osVersion",
+			VariableRef:   "osVersion",
 		},
 		Messages: v1.Messages{
 			ConditionTrue: &message.Message{

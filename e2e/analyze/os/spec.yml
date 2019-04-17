@@ -1,13 +1,16 @@
 analyze:
   v1:
-    - name: os-is-centos
+    - name: os.centos
+      labels:
+        desired_position: "0"
+        icon_key: os_centos
       registerVariables:
         - name: os
           os: {}
       condition:
         stringCompare:
           eq: centos
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is CentOS
@@ -17,14 +20,17 @@ analyze:
           primary: OS is not CentOS
           detail: Is the os CentOS?
           severity: warn
-    - name: os-is-ubuntu
+    - name: os.ubuntu
+      labels:
+        desired_position: "0"
+        icon_key: os_ubuntu
       registerVariables:
         - name: os
           os: {}
       condition:
         stringCompare:
           eq: ubuntu
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is Ubuntu

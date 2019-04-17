@@ -4,7 +4,7 @@
     detail: This server is not running a puppet agent
     severity: debug
   severity: debug
-  analyzer_spec: '{"v1":[{"name":"processes.configmanagement.puppet","registerVariables":[{"fileMatch":{"path":"default/commands/ps/stdout"},"name":"ps"}],"precondition":{"not":{"empty":{},"ref":"ps"}},"condition":{"regexpMatch":{"regexp":"puppet agent "},"ref":"ps"},"messages":{"conditionFalse":{"primary":"No Puppet","detail":"This server is not running a puppet agent","severity":"debug"},"conditionTrue":{"primary":"Managed By Puppet","detail":"This server is running a Puppet agent","severity":"info"}}}]}'
+  analyzer_spec: '{"v1":[{"name":"processes.configmanagement.puppet","registerVariables":[{"name":"ps","fileMatch":{"path":"default/commands/ps/stdout"}}],"precondition":{"not":{"variableRef":"ps","empty":{}}},"condition":{"variableRef":"ps","regexpMatch":{"regexp":"puppet agent "}},"messages":{"conditionFalse":{"primary":"No Puppet","detail":"This server is not running a puppet agent","severity":"debug"},"conditionTrue":{"primary":"Managed By Puppet","detail":"This server is running a Puppet agent","severity":"info"}}}]}'
   variables:
     ps: "root     26671  0.0  0.0 180224  2524 ?        S    01:37   0:00  \\\\_ /usr/sbin/CROND -n\nroot      1128  0.0  0.1 307096 72152 ?        Ssl  Aug27   0:09 /opt/chef/bin/ruby /opt/chef/bin/chef-client \n"
 - name: processes.configmanagement.chef
@@ -13,6 +13,6 @@
     detail: This server is running a Chef client
     severity: info
   severity: info
-  analyzer_spec: '{"v1":[{"name":"processes.configmanagement.chef","registerVariables":[{"fileMatch":{"path":"default/commands/ps/stdout"},"name":"ps"}],"precondition":{"not":{"empty":{},"ref":"ps"}},"condition":{"regexpMatch":{"regexp":"chef-client"},"ref":"ps"},"messages":{"conditionFalse":{"primary":"No Chef","detail":"This server is not running a Chef client","severity":"debug"},"conditionTrue":{"primary":"Managed By Chef","detail":"This server is running a Chef client","severity":"info"}}}]}'
+  analyzer_spec: '{"v1":[{"name":"processes.configmanagement.chef","registerVariables":[{"name":"ps","fileMatch":{"path":"default/commands/ps/stdout"}}],"precondition":{"not":{"variableRef":"ps","empty":{}}},"condition":{"variableRef":"ps","regexpMatch":{"regexp":"chef-client"}},"messages":{"conditionFalse":{"primary":"No Chef","detail":"This server is not running a Chef client","severity":"debug"},"conditionTrue":{"primary":"Managed By Chef","detail":"This server is running a Chef client","severity":"info"}}}]}'
   variables:
     ps: "root     26671  0.0  0.0 180224  2524 ?        S    01:37   0:00  \\\\_ /usr/sbin/CROND -n\nroot      1128  0.0  0.1 307096 72152 ?        Ssl  Aug27   0:09 /opt/chef/bin/ruby /opt/chef/bin/chef-client \n"

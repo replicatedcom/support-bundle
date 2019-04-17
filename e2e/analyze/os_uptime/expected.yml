@@ -4,6 +4,6 @@
     detail: Host has been up for 15h5m32s
     severity: info
   severity: info
-  analyzer_spec: '{"v1":[{"name":"os-uptime","registerVariables":[{"os.uptime":{},"name":"osUptime"}],"condition":{"not":{"empty":{},"ref":"osUptime"}},"messages":{"conditionTrue":{"primary":"{{repl seconds .osUptime}}","detail":"Host has been up for {{repl seconds .osUptime}}","severity":"info"}}}]}'
+  analyzer_spec: '{"v1":[{"name":"os-uptime","registerVariables":[{"name":"osUptime","os.uptime":{}}],"condition":{"not":{"variableRef":"osUptime","empty":{}}},"messages":{"conditionTrue":{"primary":"{{repl seconds .osUptime}}","detail":"Host has been up for {{repl seconds .osUptime}}","severity":"info"}}}]}'
   variables:
     osUptime: 54332
