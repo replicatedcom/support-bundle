@@ -20,7 +20,8 @@ import (
 )
 
 type TestMetadata struct {
-	ExpectErr bool `yaml:"expect_err"`
+	BundleRootSubpath string `yaml:"bundle_root_subpath"`
+	ExpectErr         bool   `yaml:"expect_err"`
 }
 
 func TestCore(t *testing.T) {
@@ -88,6 +89,7 @@ var _ = Describe("integration", func() {
 					"--output=yaml",
 					"--log-level=off",
 					"--skip-default",
+					fmt.Sprintf("--bundle-root-subpath=%s", testMetadata.BundleRootSubpath),
 					"--",
 					testBundleDestPath,
 				})

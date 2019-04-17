@@ -5,6 +5,8 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"io"
+	"os"
+	"path/filepath"
 	"strings"
 
 	multierror "github.com/hashicorp/go-multierror"
@@ -25,14 +27,16 @@ type BundleReader interface {
 type Bundle struct {
 	Fs     afero.Fs
 	Path   string
+	Prefix string
 	index  []collecttypes.Result
 	errors []collecttypes.Result
 }
 
-func NewBundle(fs afero.Fs, path string) (BundleReader, error) {
+func NewBundle(fs afero.Fs, path, prefix string) (*Bundle, error) {
 	b := &Bundle{
-		Fs:   fs,
-		Path: path,
+		Fs:     fs,
+		Path:   path,
+		Prefix: prefix,
 	}
 	var err error
 	b.index, err = b.getResultsFromIndex("index.json")
@@ -75,6 +79,10 @@ func (b *Bundle) Open(name string) (io.ReadCloser, error) {
 		}
 	}()
 
+	if _, err := b.Fs.Stat(b.Path); os.IsNotExist(err) {
+		return nil, err
+	}
+
 	file, err := b.Fs.Open(b.Path)
 	if err != nil {
 		return nil, err
@@ -87,19 +95,27 @@ func (b *Bundle) Open(name string) (io.ReadCloser, error) {
 	}
 	closeFns = append(closeFns, gzr.Close)
 
+	if b.Prefix != "" {
+		name = filepath.Join(b.Prefix, name)
+	}
+
 	tr := tar.NewReader(gzr)
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
-			return nil, io.ErrUnexpectedEOF
+			return nil, &os.PathError{
+				Op:   "stat",
+				Path: name,
+				Err:  os.ErrNotExist,
+			}
 		} else if err != nil {
 			return nil, err
 		}
-		if header == nil {
+		if header == nil || header.Typeflag != tar.TypeReg {
 			continue
 		}
 
-		if header.Name == name && header.Typeflag == tar.TypeReg {
+		if header.Name == name {
 			af := &archiveFile{
 				tr:       tr,
 				closeFns: closeFns,

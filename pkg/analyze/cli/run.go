@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	"context"
+	"strings"
 
 	"github.com/mitchellh/cli"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyze"
@@ -16,9 +17,17 @@ import (
 	"github.com/spf13/viper"
 )
 
+type RunOptions struct {
+	Output string
+	Quiet  bool
+}
+
 // RunCmd will collect and analyze a troubleshoot spec
 func RunCmd() *cobra.Command {
 	version.Init()
+
+	var opts RunOptions
+
 	cmd := &cobra.Command{
 		Use:   "run [BUNDLE]",
 		Short: "analyze a troubleshoot bundle archive",
@@ -27,15 +36,14 @@ func RunCmd() *cobra.Command {
 			v := viper.GetViper()
 			logLevel := logger.GetLevel(v)
 			cli := ui.New(nil, cmd.OutOrStdout(), cmd.OutOrStderr())
-			if v.GetString("output") == "human" && !v.GetBool("no-color") {
+			if opts.Output == "human" && !v.GetBool("no-color") {
 				cli = ui.Colored(cli, v.GetBool("force-color"))
 			}
 			return analyzeRun(
 				context.Background(),
-				args[0],
 				cli,
-				v.GetString("output"),
-				v.GetBool("quiet"),
+				args[0],
+				opts,
 				logLevel)
 		},
 	}
@@ -43,6 +51,7 @@ func RunCmd() *cobra.Command {
 	cmd.Flags().StringArrayP("spec-file", "f", nil, "spec file")
 	cmd.Flags().StringArrayP("spec", "s", nil, "spec doc")
 	cmd.Flags().Bool("skip-default", false, "Skip the default analyze spec")
+	cmd.Flags().String("bundle-root-subpath", "", "The subpath within the archive at which the bundle root resides")
 
 	cmd.Flags().String("customer-id", "", "Replicated Customer ID")
 	cmd.Flags().MarkDeprecated("customer-id", "This argument is no longer supported. Consider using \"channel-id\"")
@@ -52,8 +61,8 @@ func RunCmd() *cobra.Command {
 
 	// analyze flags
 	// cmd.Flags().StringP("collect-bundle-path", "b", "", "path to collect bundle archive") // required
-	cmd.Flags().StringP("output", "o", "human", "output format, one of: human|json|yaml")
-	cmd.Flags().BoolP("quiet", "q", false, "suppress normal output")
+	cmd.Flags().StringVarP(&opts.Output, "output", "o", "human", "output format, one of: human|json|yaml")
+	cmd.Flags().BoolVarP(&opts.Quiet, "quiet", "q", false, "suppress normal output")
 	cmd.Flags().String("severity-threshold", "error", "the severity threshold at which to exit with an error")
 
 	viper.BindPFlags(cmd.Flags())
@@ -62,16 +71,16 @@ func RunCmd() *cobra.Command {
 	return cmd
 }
 
-func analyzeRun(ctx context.Context, bundlePath string, ui cli.Ui, outputFormat string, quiet bool, logLevel string) error {
+func analyzeRun(ctx context.Context, ui cli.Ui, bundlePath string, opts RunOptions, logLevel string) error {
 	results, err := analyze.RunE(ctx, bundlePath)
 
-	if !quiet && len(results) > 0 {
+	if !opts.Quiet && len(results) > 0 {
 		b := bytes.NewBuffer(nil)
-		r := render.New(b, outputFormat)
+		r := render.New(b, opts.Output)
 		if errRender := r.RenderResults(ctx, results); errRender != nil {
 			err = errRender
 		} else {
-			ui.Output(b.String())
+			ui.Output(strings.TrimSuffix(b.String(), "\n")) // u.Output adds a newline
 		}
 	}
 

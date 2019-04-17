@@ -50,7 +50,7 @@ func TestBundle_ReaderFromRef(t *testing.T) {
 			require.NoError(t, err)
 			err = writeBundle(f, tt.bundlePath)
 			require.NoError(t, err)
-			bundle, err := NewBundle(fs, "./bundle.tgz")
+			bundle, err := NewBundle(fs, "./bundle.tgz", "")
 			require.NoError(t, err)
 			r, err := bundle.ReaderFromRef(tt.ref)
 			require.NoError(t, err)

@@ -15,6 +15,7 @@ var cfgFile string
 // RootCmd represents the base command when called without any subcommands
 func RootCmd() *cobra.Command {
 	version.Init()
+
 	cmd := &cobra.Command{
 		Use:           "analyze",
 		Short:         "troubleshoot analysis tool",
@@ -29,6 +30,7 @@ func RootCmd() *cobra.Command {
 	cmd.PersistentFlags().String("log-level", "off", "Log level")
 
 	// sub-commands
+	cmd.AddCommand(InspectCmd())
 	cmd.AddCommand(RunCmd())
 
 	viper.BindPFlags(cmd.Flags())

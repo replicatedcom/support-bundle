@@ -13,7 +13,8 @@ import (
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
 	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
-	"github.com/replicatedcom/support-bundle/pkg/spew"
+	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
+	"github.com/replicatedcom/support-bundle/pkg/util"
 	"github.com/spf13/afero"
 )
 
@@ -27,16 +28,38 @@ func New(logger log.Logger, fs afero.Fs) *Analyzer {
 	}
 }
 
-func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, fs afero.Fs, archivePath string) ([]api.Result, error) {
+func (a *Analyzer) DiscoverBundles(ctx context.Context, fs afero.Fs, archivePath string) (map[string][]collecttypes.Result, error) {
+	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.DiscoverBundles"))
+
+	debug.Log(
+		"phase", "analyzer.discover-bundles")
+
+	bundleReader, err := bundlereader.NewMultiBundle(fs, archivePath)
+	debug.Log(
+		"phase", "analyzer.discover-bundles",
+		"len", len(bundleReader.GetBundles()),
+		"error", err)
+	if err != nil {
+		return nil, errors.Wrapf(err, "discover bundles from %s", archivePath)
+	}
+
+	bundles := map[string][]collecttypes.Result{}
+	for prefix, bundle := range bundleReader.GetBundles() {
+		bundles[prefix] = bundle.GetIndex()
+	}
+	return bundles, nil
+}
+
+func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, fs afero.Fs, archivePath, bundleRootSubpath string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.AnalyzeBundle"))
 
 	debug.Log(
 		"phase", "analyzer.analyze-bundle")
 
-	bundleReader, err := bundlereader.NewBundle(fs, archivePath)
+	bundleReader, err := bundlereader.NewBundle(fs, archivePath, bundleRootSubpath)
 	debug.Log(
 		"phase", "analyzer.get-bundle-index",
-		"index", spew.Sdump(bundleReader.GetIndex()),
+		// "index", util.SpewJSON(bundleReader.GetIndex()), // TOO NOISY
 		"error", err)
 	if err != nil {
 		return nil, errors.Wrapf(err, "new bundle from %s", archivePath)
@@ -65,7 +88,7 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 
 	debug.Log(
 		"phase", "analyzer.analyze",
-		"spec", spew.Sdump(analyzerSpec))
+		"spec", util.SpewJSON(analyzerSpec))
 
 	data, err := a.registerVariables(analyzerSpec, bundleReader)
 	if err != nil {
@@ -92,8 +115,8 @@ func (a *Analyzer) registerVariables(analyzerSpec v1.Analyzer, bundleReader bund
 		}
 		debug.Log(
 			"phase", "analyzer.analyze.register-variable",
-			"variable", spew.Sdump(variable),
-			"register", spew.Sdump(reg),
+			"variable", util.SpewJSON(variable),
+			"register", util.SpewJSON(reg),
 			"error", err)
 		if err != nil {
 			return data, errors.Wrapf(err, "register variable %s", variable.Name)
@@ -109,8 +132,8 @@ func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]inte
 		preconditionsOk, err := analyzerSpec.Precondition.Eval(data)
 		debug.Log(
 			"phase", "analyzer.analyze.preconditions-eval",
-			"preconditions", spew.Sdump(analyzerSpec.Precondition),
-			"variables", spew.Sdump(data),
+			"preconditions", util.SpewJSON(analyzerSpec.Precondition),
+			"variables", util.SpewJSON(data),
 			"ok", preconditionsOk,
 			"error", err)
 		if err != nil {
@@ -123,8 +146,8 @@ func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]inte
 	conditionsOk, err := analyzerSpec.Condition.Eval(data)
 	debug.Log(
 		"phase", "analyzer.analyze.conditions-eval",
-		"conditions", spew.Sdump(analyzerSpec.Condition),
-		"variables", spew.Sdump(data),
+		"conditions", util.SpewJSON(analyzerSpec.Condition),
+		"variables", util.SpewJSON(data),
 		"ok", conditionsOk,
 		"error", err)
 	if err != nil {

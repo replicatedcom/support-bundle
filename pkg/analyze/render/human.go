@@ -23,11 +23,12 @@ func NewHumanEncoder(w io.Writer, colored, force bool) *HumanEncoder {
 }
 
 func (e *HumanEncoder) Encode(v interface{}) error {
-	results, ok := v.([]api.Result)
-	if !ok {
+	switch typed := v.(type) {
+	case []api.Result:
+		return e.encodeResults(typed)
+	default:
 		return fmt.Errorf("unexpected type %T", v)
 	}
-	return e.encodeResults(results)
 }
 
 func (e *HumanEncoder) encodeResults(results []api.Result) error {
@@ -73,8 +74,10 @@ func (e *HumanEncoder) severitySymbol(severity common.Severity) string {
 		return "✗"
 	case common.SeverityWarn:
 		return "!"
-	case common.SeverityInfo:
+	case common.SeverityDebug:
 		return "ℹ"
+	case common.SeverityInfo:
+		return "✓"
 	default:
 		return "✓"
 	}

@@ -13,8 +13,8 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	bundleresolver "github.com/replicatedcom/support-bundle/pkg/collect/bundle/resolver"
 	collectcli "github.com/replicatedcom/support-bundle/pkg/collect/cli"
+	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
-	"github.com/replicatedcom/support-bundle/pkg/spew"
 	"github.com/replicatedcom/support-bundle/pkg/version"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
@@ -34,12 +34,13 @@ type Analyze struct {
 	BundleResolver *bundleresolver.Factory
 	Analyzer       *analyzer.Analyzer
 
-	SpecFiles   []string
-	Specs       []string
-	SkipDefault bool
-	CustomerID  string // deprecated
-	ChannelID   string
-	Endpoint    string
+	SpecFiles         []string
+	Specs             []string
+	SkipDefault       bool
+	BundleRootSubpath string
+	CustomerID        string // deprecated
+	ChannelID         string
+	Endpoint          string
 
 	// analyze
 	SeverityThreshold string
@@ -54,15 +55,57 @@ func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, bundleR
 		BundleResolver: bundleResolver,
 		Analyzer:       analyzer,
 
-		SpecFiles:   cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
-		Specs:       cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
-		SkipDefault: v.GetBool("skip-default"),
-		CustomerID:  v.GetString("customer-id"),
-		Endpoint:    v.GetString("endpoint"),
+		SpecFiles:         cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
+		Specs:             cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
+		SkipDefault:       v.GetBool("skip-default"),
+		BundleRootSubpath: v.GetString("bundle-root-subpath"),
+		CustomerID:        v.GetString("customer-id"),
+		Endpoint:          v.GetString("endpoint"),
 
 		// analyze
 		SeverityThreshold: v.GetString("severity-threshold"),
 	}
+}
+
+func (a *Analyze) Inspect(ctx context.Context, bundlePath string) (map[string][]collecttypes.Result, error) {
+	debug := level.Debug(log.With(a.Logger, "method", "Analyze.Inspect"))
+
+	debug.Log("method", "configure", "phase", "initialize",
+		"version", version.Version(),
+		"gitSHA", version.GitSHA(),
+		"buildTime", version.BuildTime(),
+		"buildTimeFallback", version.GetBuild().TimeFallback,
+	)
+
+	fs, resolvedPath, err := a.BundleResolver.Fs(bundlePath)
+	debug.Log(
+		"phase", "bundle.resolve",
+		"bundlePath", bundlePath,
+		"resolvedPath", resolvedPath,
+		"error", err)
+	if err != nil {
+		return nil, errors.Wrap(err, "resolve bundle")
+	}
+
+	debug.Log(
+		"phase", "discover")
+
+	bundles, err := a.Analyzer.DiscoverBundles(
+		ctx,
+		fs,
+		resolvedPath)
+	if err != nil {
+		debug.Log(
+			"phase", "discover",
+			"error", err)
+		return bundles, errors.Wrap(err, "analyze")
+	}
+
+	debug.Log(
+		"phase", "discover",
+		"status", "complete")
+
+	return bundles, nil
 }
 
 func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result, error) {
@@ -127,14 +170,14 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 	}
 
 	debug.Log(
-		"phase", "analyze",
-		"spec", spew.Sdump(spec.Analyze))
+		"phase", "analyze")
 
 	results, err := a.Analyzer.AnalyzeBundle(
 		ctx,
 		spec.Analyze,
 		fs,
-		resolvedPath)
+		resolvedPath,
+		a.BundleRootSubpath)
 	if err != nil {
 		debug.Log(
 			"phase", "analyze",

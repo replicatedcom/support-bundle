@@ -4,6 +4,9 @@ analyze:
       registerVariables:
       - fileMatch:
           path: default/commands/ps/stdout
+          regexpCapture:
+            regexp: '.+puppet agent .*'
+            index: 0
         name: ps
       precondition:
         not:
@@ -26,6 +29,9 @@ analyze:
       registerVariables:
       - fileMatch:
           path: default/commands/ps/stdout
+          regexpCapture:
+            regexp: '.+chef-client.*'
+            index: 0
         name: ps
       precondition:
         not:

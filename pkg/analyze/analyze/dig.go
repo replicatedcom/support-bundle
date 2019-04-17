@@ -10,11 +10,20 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
 	bundleresolver "github.com/replicatedcom/support-bundle/pkg/collect/bundle/resolver"
+	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/fs"
 	"github.com/replicatedcom/support-bundle/pkg/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/dig"
 )
+
+func InspectE(ctx context.Context, bundlePath string) (map[string][]collecttypes.Result, error) {
+	a, err := Get()
+	if err != nil {
+		return nil, err
+	}
+	return a.Inspect(ctx, bundlePath)
+}
 
 func RunE(ctx context.Context, bundlePath string) ([]api.Result, error) {
 	a, err := Get()
