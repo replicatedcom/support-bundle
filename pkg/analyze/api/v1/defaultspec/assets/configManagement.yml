@@ -1,6 +1,8 @@
 analyze:
   v1:
     - name: processes.configmanagement.puppet
+      labels:
+        iconKey: puppet_logo
       registerVariables:
       - fileMatch:
           path: default/commands/ps/stdout
@@ -26,6 +28,8 @@ analyze:
           detail: This server is not running a puppet agent
           severity: debug
     - name: processes.configmanagement.chef
+      labels:
+        iconKey: chef_logo
       registerVariables:
       - fileMatch:
           path: default/commands/ps/stdout

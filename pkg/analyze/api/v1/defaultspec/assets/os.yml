@@ -1,6 +1,8 @@
 analyze:
   v1:
     - name: os.ubuntu
+      labels:
+        iconKey: os_ubuntu
       registerVariables:
         - name: os
           os: {}
@@ -18,6 +20,8 @@ analyze:
           detail: Operating System is not Ubuntu
           severity: debug
     - name: os.alpine
+      labels:
+        iconKey: os_alpine
       registerVariables:
         - name: os
           os: {}
@@ -35,6 +39,8 @@ analyze:
           detail: Operating System is not Alpine
           severity: debug
     - name: os.centos
+      labels:
+        iconKey: os_centos
       registerVariables:
         - name: os
           os: {}
@@ -69,6 +75,8 @@ analyze:
           detail: Operating System is not RHEL
           severity: debug
     - name: os.debian
+      labels:
+        iconKey: os_debian
       registerVariables:
         - name: os
           os: {}

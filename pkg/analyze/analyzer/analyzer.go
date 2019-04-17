@@ -167,9 +167,10 @@ func resultFromAnalysis(msg *message.Message, analysisErr error, analyzerSpec v1
 	}
 
 	result = &api.Result{
-		Meta:      analyzerSpec.Meta,
 		Variables: data,
 	}
+	result.Meta.Name = analyzerSpec.Meta.Name
+	result.Meta.Labels = mergeLabels(result.Meta.Labels, analyzerSpec.Meta.Labels)
 
 	var marshalledSpec []byte
 	marshalledSpec, err = json.Marshal(api.Analyze{V1: []v1.Analyzer{analyzerSpec}})
@@ -190,6 +191,10 @@ func resultFromAnalysis(msg *message.Message, analysisErr error, analyzerSpec v1
 		}
 	}
 
+	if msg == nil {
+		return
+	}
+
 	result.Message, err = msg.Render(data)
 	if err != nil {
 		result.Severity = common.SeverityError
@@ -197,6 +202,24 @@ func resultFromAnalysis(msg *message.Message, analysisErr error, analyzerSpec v1
 		return
 	}
 	result.Severity = result.Message.Severity
+	// override labels with message labels
+	result.Meta.Labels = mergeLabels(result.Meta.Labels, result.Message.Meta.Labels)
 
 	return
+}
+
+func mergeLabels(merge ...map[string]string) map[string]string {
+	var m map[string]string
+	for _, a := range merge {
+		if a == nil {
+			continue
+		}
+		if m == nil {
+			m = map[string]string{}
+		}
+		for key, val := range a {
+			m[key] = val
+		}
+	}
+	return m
 }

@@ -3,6 +3,7 @@ package analyzer
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"strings"
 	"testing"
@@ -292,6 +293,178 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 			b, _ := json.Marshal(api.Analyze{V1: []v1.Analyzer{tt.analyzerSpec}})
 			tt.want.AnalyzerSpec = string(b)
 			assert.Equal(t, got, tt.want)
+		})
+	}
+}
+
+func Test_resultFromAnalysis(t *testing.T) {
+	type args struct {
+		msg          *message.Message
+		analysisErr  error
+		analyzerSpec v1.Analyzer
+		data         map[string]interface{}
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantResult *api.Result
+		wantErr    bool
+	}{
+		{
+			name: "message with label override",
+			args: args{
+				msg: &message.Message{
+					Meta: meta.Meta{
+						Name: "the warning message",
+						Labels: map[string]string{
+							"iconKey": "oh_no",
+						},
+					},
+					Primary:  "{{repl .someVar}} primary",
+					Detail:   "{{repl .someVar}} detail",
+					Severity: common.SeverityWarn,
+				},
+				analysisErr: nil,
+				analyzerSpec: v1.Analyzer{
+					Meta: meta.Meta{
+						Name: "the analyzer",
+						Labels: map[string]string{
+							"desiredPosition": "1",
+							"iconKey":         "oh_yes",
+						},
+					},
+				},
+				data: map[string]interface{}{
+					"someVar": "THE VALUE",
+				},
+			},
+			wantResult: &api.Result{
+				Meta: meta.Meta{
+					Name: "the analyzer",
+					Labels: map[string]string{
+						"desiredPosition": "1",
+						"iconKey":         "oh_no",
+					},
+				},
+				Message: &message.Message{
+					Meta: meta.Meta{
+						Name: "the warning message",
+						Labels: map[string]string{
+							"iconKey": "oh_no",
+						},
+					},
+					Primary:  "THE VALUE primary",
+					Detail:   "THE VALUE detail",
+					Severity: common.SeverityWarn,
+				},
+				Severity: common.SeverityWarn,
+				Variables: map[string]interface{}{
+					"someVar": "THE VALUE",
+				},
+				Error: "",
+			},
+		},
+		{
+			name: "error",
+			args: args{
+				msg:         nil,
+				analysisErr: errors.New("THIS IS THE ERROR"),
+				analyzerSpec: v1.Analyzer{
+					Meta: meta.Meta{
+						Name: "the analyzer",
+						Labels: map[string]string{
+							"desiredPosition": "1",
+							"iconKey":         "oh_yes",
+						},
+					},
+				},
+				data: map[string]interface{}{
+					"someVar": "THE VALUE",
+				},
+			},
+			wantResult: &api.Result{
+				Meta: meta.Meta{
+					Name: "the analyzer",
+					Labels: map[string]string{
+						"desiredPosition": "1",
+						"iconKey":         "oh_yes",
+					},
+				},
+				Message:  nil,
+				Severity: common.SeverityError,
+				Variables: map[string]interface{}{
+					"someVar": "THE VALUE",
+				},
+				Error: "THIS IS THE ERROR",
+			},
+			wantErr: true,
+		},
+		{
+			name: "message and error",
+			args: args{
+				msg: &message.Message{
+					Meta: meta.Meta{
+						Name: "the warning message",
+						Labels: map[string]string{
+							"iconKey": "oh_no",
+						},
+					},
+					Primary:  "{{repl .someVar}} primary",
+					Detail:   "{{repl .someVar}} detail",
+					Severity: common.SeverityWarn,
+				},
+				analysisErr: errors.New("THIS IS THE ERROR"),
+				analyzerSpec: v1.Analyzer{
+					Meta: meta.Meta{
+						Name: "the analyzer",
+						Labels: map[string]string{
+							"desiredPosition": "1",
+							"iconKey":         "oh_yes",
+						},
+					},
+				},
+				data: map[string]interface{}{
+					"someVar": "THE VALUE",
+				},
+			},
+			wantResult: &api.Result{
+				Meta: meta.Meta{
+					Name: "the analyzer",
+					Labels: map[string]string{
+						"desiredPosition": "1",
+						"iconKey":         "oh_no",
+					},
+				},
+				Message: &message.Message{
+					Meta: meta.Meta{
+						Name: "the warning message",
+						Labels: map[string]string{
+							"iconKey": "oh_no",
+						},
+					},
+					Primary:  "THE VALUE primary",
+					Detail:   "THE VALUE detail",
+					Severity: common.SeverityWarn,
+				},
+				Severity: common.SeverityWarn,
+				Variables: map[string]interface{}{
+					"someVar": "THE VALUE",
+				},
+				Error: "THIS IS THE ERROR",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotResult, err := resultFromAnalysis(tt.args.msg, tt.args.analysisErr, tt.args.analyzerSpec, tt.args.data)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("resultFromAnalysis() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			b, _ := json.Marshal(api.Analyze{V1: []v1.Analyzer{tt.args.analyzerSpec}})
+			tt.wantResult.AnalyzerSpec = string(b)
+			assert.Equal(t, tt.wantResult, gotResult)
 		})
 	}
 }

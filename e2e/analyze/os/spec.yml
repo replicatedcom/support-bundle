@@ -2,8 +2,8 @@ analyze:
   v1:
     - name: os.centos
       labels:
-        desired_position: "0"
-        icon_key: os_centos
+        desiredPosition: "0"
+        iconKey: os_centos
       registerVariables:
         - name: os
           os: {}
@@ -22,8 +22,8 @@ analyze:
           severity: warn
     - name: os.ubuntu
       labels:
-        desired_position: "0"
-        icon_key: os_ubuntu
+        desiredPosition: "0"
+        iconKey: os_ubuntu
       registerVariables:
         - name: os
           os: {}
