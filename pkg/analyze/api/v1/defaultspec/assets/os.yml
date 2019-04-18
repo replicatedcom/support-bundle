@@ -9,7 +9,7 @@ analyze:
       condition:
         stringCompare:
           eq: ubuntu
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is Ubuntu
@@ -28,7 +28,7 @@ analyze:
       condition:
         stringCompare:
           eq: alpine
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is Alpine
@@ -47,7 +47,7 @@ analyze:
       condition:
         stringCompare:
           eq: centos
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is CentOS
@@ -58,13 +58,15 @@ analyze:
           detail: Operating System is not CentOS
           severity: debug
     - name: os.rhel
+      labels:
+        iconKey: os_rhel
       registerVariables:
         - name: os
           os: {}
       condition:
         stringCompare:
           eq: rhel
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is RHEL
@@ -83,7 +85,7 @@ analyze:
       condition:
         stringCompare:
           eq: debian
-        ref: os
+        variableRef: os
       messages:
         conditionTrue:
           primary: OS is Debian

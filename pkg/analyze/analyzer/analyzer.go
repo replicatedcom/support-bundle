@@ -208,6 +208,7 @@ func resultFromAnalysis(msg *message.Message, analysisErr error, analyzerSpec v1
 	return
 }
 
+// mergeLabels will not mutate the maps as arguments
 func mergeLabels(merge ...map[string]string) map[string]string {
 	var m map[string]string
 	for _, a := range merge {

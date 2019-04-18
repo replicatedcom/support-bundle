@@ -7,7 +7,7 @@
     detail: Is the os CentOS?
     severity: info
   severity: info
-  analyzer_spec: '{"v1":[{"name":"os.centos","labels":{"desiredPosition":"0","iconKey":"os_centos"},"registerVariables":[{"name":"os","os":{}}],"condition":{"variableRef":"os","stringCompare":{"eq":"centos"}},"messages":{"conditionFalse":{"primary":"OS is not CentOS","detail":"Is the os CentOS?","severity":"warn"},"conditionTrue":{"primary":"OS is CentOS","detail":"Is the os CentOS?","severity":"info"}}}]}'
+  analyzerSpec: '{"v1":[{"name":"os.centos","labels":{"desiredPosition":"0","iconKey":"os_centos"},"registerVariables":[{"name":"os","os":{}}],"condition":{"variableRef":"os","stringCompare":{"eq":"centos"}},"messages":{"conditionFalse":{"primary":"OS is not CentOS","detail":"Is the os CentOS?","severity":"warn"},"conditionTrue":{"primary":"OS is CentOS","detail":"Is the os CentOS?","severity":"info"}}}]}'
   variables:
     os: centos
 - name: os.ubuntu
@@ -19,6 +19,6 @@
     detail: Is the os Ubuntu?
     severity: warn
   severity: warn
-  analyzer_spec: '{"v1":[{"name":"os.ubuntu","labels":{"desiredPosition":"0","iconKey":"os_ubuntu"},"registerVariables":[{"name":"os","os":{}}],"condition":{"variableRef":"os","stringCompare":{"eq":"ubuntu"}},"messages":{"conditionFalse":{"primary":"OS is not Ubuntu","detail":"Is the os Ubuntu?","severity":"warn"},"conditionTrue":{"primary":"OS is Ubuntu","detail":"Is the os Ubuntu?","severity":"info"}}}]}'
+  analyzerSpec: '{"v1":[{"name":"os.ubuntu","labels":{"desiredPosition":"0","iconKey":"os_ubuntu"},"registerVariables":[{"name":"os","os":{}}],"condition":{"variableRef":"os","stringCompare":{"eq":"ubuntu"}},"messages":{"conditionFalse":{"primary":"OS is not Ubuntu","detail":"Is the os Ubuntu?","severity":"warn"},"conditionTrue":{"primary":"OS is Ubuntu","detail":"Is the os Ubuntu?","severity":"info"}}}]}'
   variables:
     os: centos
