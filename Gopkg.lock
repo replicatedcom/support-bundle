@@ -88,7 +88,7 @@
   revision = "1fca145dffbcaa8fe914309b1ec0cfc67500fe61"
 
 [[projects]]
-  digest = "1:04ea2d18bcfb35674d20309b16b0583cab2db348afa2e164c1893a8b48deb04b"
+  digest = "1:ced9b678d6fdca06376ad5a1203bf7ab164a500268714fedaebdb3b9e90e6530"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -124,7 +124,6 @@
     "private/protocol/restxml",
     "private/protocol/xml/xmlutil",
     "service/s3",
-    "service/s3/s3iface",
     "service/sts",
   ]
   pruneopts = "UT"
@@ -890,14 +889,6 @@
   version = "v0.5.4"
 
 [[projects]]
-  branch = "master"
-  digest = "1:d4f28f2aaf78b6a5ecd9ee2372ea67cf53f3b79bd23cd7091757cd0d5248b3c5"
-  name = "github.com/wreulicke/afero-s3"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "264ff7146edba45b89612a9b1a8a7353b658dbb8"
-
-[[projects]]
   digest = "1:ce72568389d111aa2d94b2d6b3c0213ab4699a05cbc6e203ed578f379bedef8f"
   name = "go.opencensus.io"
   packages = [
@@ -1404,12 +1395,6 @@
   input-imports = [
     "github.com/Masterminds/sprig",
     "github.com/andrewchambers/go-jqpipe",
-    "github.com/aws/aws-sdk-go/aws",
-    "github.com/aws/aws-sdk-go/aws/credentials",
-    "github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds",
-    "github.com/aws/aws-sdk-go/aws/ec2metadata",
-    "github.com/aws/aws-sdk-go/aws/session",
-    "github.com/aws/aws-sdk-go/service/s3",
     "github.com/blang/semver",
     "github.com/davecgh/go-spew/spew",
     "github.com/divolgin/archiver/compressor",
@@ -1428,7 +1413,6 @@
     "github.com/go-stack/stack",
     "github.com/golang/mock/gomock",
     "github.com/hashicorp/go-getter",
-    "github.com/hashicorp/go-getter/helper/url",
     "github.com/hashicorp/go-multierror",
     "github.com/kylelemons/godebug/pretty",
     "github.com/mcuadros/go-jsonschema-generator",
@@ -1447,7 +1431,6 @@
     "github.com/spf13/viper",
     "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/require",
-    "github.com/wreulicke/afero-s3",
     "go.uber.org/dig",
     "golang.org/x/crypto/ssh/terminal",
     "golang.org/x/net/context/ctxhttp",

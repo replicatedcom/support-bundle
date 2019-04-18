@@ -3,7 +3,9 @@ package analyze
 import (
 	"context"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -71,7 +73,7 @@ func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, getter 
 func (a *Analyze) Inspect(ctx context.Context, bundlePath string) (map[string][]collecttypes.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyze.Inspect"))
 
-	defer os.RemoveAll(a.Getter.DstDir())
+	defer a.deferCleanup()()
 
 	debug.Log("method", "configure", "phase", "initialize",
 		"version", version.Version(),
@@ -113,7 +115,7 @@ func (a *Analyze) Inspect(ctx context.Context, bundlePath string) (map[string][]
 func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyze.Execute"))
 
-	defer os.RemoveAll(a.Getter.DstDir())
+	defer a.deferCleanup()()
 
 	debug.Log("method", "configure", "phase", "initialize",
 		"version", version.Version(),
@@ -196,6 +198,29 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 		return results, ErrSeverityThreshold
 	}
 	return results, nil
+}
+
+func (a *Analyze) deferCleanup() func() {
+	sigs := make(chan os.Signal, 2)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		<-sigs
+		a.cleanup()
+		os.Exit(1)
+	}()
+
+	return func() {
+		err := recover() // make sure that we clean up after ourselves no matter what
+		a.cleanup()
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func (a *Analyze) cleanup() error {
+	return os.RemoveAll(a.Getter.DstDir())
 }
 
 func didResultsFailSeverityThreshold(results []api.Result, threshold common.Severity) bool {
