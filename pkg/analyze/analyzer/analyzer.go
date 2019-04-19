@@ -11,6 +11,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
 	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
@@ -118,7 +119,9 @@ func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]inte
 			"variables", util.SpewJSON(data),
 			"ok", preconditionsOk,
 			"error", err)
-		if err != nil {
+		if errors.Cause(err) == condition.ErrNotFound {
+			return analyzerSpec.Messages.PreconditionError, nil
+		} else if err != nil {
 			return analyzerSpec.Messages.PreconditionError, errors.Wrap(err, "eval preconditions")
 		} else if !preconditionsOk {
 			return analyzerSpec.Messages.PreconditionFalse, nil
@@ -132,7 +135,9 @@ func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]inte
 		"variables", util.SpewJSON(data),
 		"ok", conditionsOk,
 		"error", err)
-	if err != nil {
+	if errors.Cause(err) == condition.ErrNotFound {
+		return analyzerSpec.Messages.ConditionError, nil
+	} else if err != nil {
 		return analyzerSpec.Messages.ConditionError, errors.Wrap(err, "eval conditions")
 	} else if !conditionsOk {
 		return analyzerSpec.Messages.ConditionFalse, nil

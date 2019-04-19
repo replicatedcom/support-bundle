@@ -4,6 +4,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var ErrNotFound = errors.New("not found")
+
 func Eval(condition Interface, ref string, data map[string]interface{}) (bool, error) {
 	value, err := resolveRef(ref, data)
 	if err != nil {
@@ -18,8 +20,8 @@ func resolveRef(ref string, data map[string]interface{}) (interface{}, error) {
 		return nil, nil
 	}
 	value, ok := data[ref]
-	if !ok {
-		return nil, errors.New("not found")
+	if !ok || value == nil {
+		return nil, ErrNotFound
 	}
 	return value, nil
 }

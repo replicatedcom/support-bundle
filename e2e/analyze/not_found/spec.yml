@@ -7,10 +7,6 @@ analyze:
       registerVariables:
         - name: os
           os: {}
-      precondition:
-        not:
-          empty: {}
-          ref: os
       condition:
         stringCompare:
           eq: centos
@@ -24,27 +20,26 @@ analyze:
           primary: OS is not CentOS
           detail: Is the os CentOS?
           severity: warn
-    - name: os.ubuntu
+    - name: processes.configmanagement.puppet
       labels:
-        desiredPosition: "0"
-        iconKey: os_ubuntu
+        iconKey: puppet_logo
       registerVariables:
-        - name: os
-          os: {}
-      precondition:
-        not:
-          empty: {}
-          ref: os
+      - fileMatch:
+          path: default/commands/ps/stdout
+          regexpCapture:
+            regexp: '.+puppet agent .*'
+            index: 0
+        name: ps
       condition:
-        stringCompare:
-          eq: ubuntu
-        variableRef: os
+        regexpMatch:
+          regexp: 'puppet agent '
+        variableRef: ps
       messages:
         conditionTrue:
-          primary: OS is Ubuntu
-          detail: Is the os Ubuntu?
+          primary: Managed By Puppet
+          detail: This server is running a Puppet agent
           severity: info
         conditionFalse:
-          primary: OS is not Ubuntu
-          detail: Is the os Ubuntu?
-          severity: warn
+          primary: No Puppet
+          detail: This server is not running a puppet agent
+          severity: debug

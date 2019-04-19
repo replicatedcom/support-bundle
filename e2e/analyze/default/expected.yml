@@ -1,0 +1,55 @@
+- name: os.ubuntu
+  labels:
+    iconKey: os_ubuntu
+  message:
+    primary: OS is not Ubuntu
+    detail: Operating System is not Ubuntu
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.alpine
+  labels:
+    iconKey: os_alpine
+  message:
+    primary: OS is not Alpine
+    detail: Operating System is not Alpine
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.centos
+  labels:
+    iconKey: os_centos
+  message:
+    primary: OS is CentOS
+    detail: Operating System is CentOS
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.rhel
+  labels:
+    iconKey: os_rhel
+  message:
+    primary: OS is not RHEL
+    detail: Operating System is not RHEL
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.debian
+  labels:
+    iconKey: os_debian
+  message:
+    primary: OS is not Debian
+    detail: Operating System is not Debian
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos

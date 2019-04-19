@@ -14,14 +14,17 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyze"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/cli"
 	"github.com/spf13/afero"
 	yaml "gopkg.in/yaml.v2"
 )
 
 type TestMetadata struct {
-	BundleRootSubpath string `yaml:"bundle_root_subpath"`
-	ExpectErr         bool   `yaml:"expect_err"`
+	BundleRootSubpath       string `yaml:"bundle_root_subpath"`
+	ExpectErr               bool   `yaml:"expect_err"`
+	IncludeDefaultSpec      bool   `yaml:"include_default_spec"`
+	IgnoreAnalyzeResultSpec bool   `yaml:"ignore_analyze_result_spec"`
 }
 
 func TestCore(t *testing.T) {
@@ -73,26 +76,32 @@ var _ = Describe("integration", func() {
 
 				expected, err := ioutil.ReadFile(testExpectedPath)
 				Expect(err).NotTo(HaveOccurred())
-				var outExpected []interface{}
+				var outExpected []api.Result
 				err = yaml.Unmarshal(expected, &outExpected)
 				Expect(err).NotTo(HaveOccurred())
 
 				_, err = makeBundle(fs, testBundlePath, testBundleDestPath)
 				Expect(err).NotTo(HaveOccurred())
 
-				cmd := cli.RootCmd()
-				buf := new(bytes.Buffer)
-				cmd.SetOutput(buf)
-				cmd.SetArgs([]string{
+				args := []string{
 					"run",
 					fmt.Sprintf("--spec-file=%s", testSpecPath),
 					"--output=yaml",
 					"--log-level=off",
-					"--skip-default",
-					fmt.Sprintf("--bundle-root-subpath=%s", testMetadata.BundleRootSubpath),
-					"--",
-					testBundleDestPath,
-				})
+				}
+				if testMetadata.BundleRootSubpath != "" {
+					args = append(args, fmt.Sprintf("--bundle-root-subpath=%s", testMetadata.BundleRootSubpath))
+				}
+				if !testMetadata.IncludeDefaultSpec {
+					args = append(args, "--skip-default")
+				}
+
+				cmd := cli.RootCmd()
+				buf := new(bytes.Buffer)
+				cmd.SetOutput(buf)
+				cmd.SetArgs(append(args, []string{
+					"--", testBundleDestPath,
+				}...))
 
 				err = cmd.Execute()
 				if testMetadata.ExpectErr {
@@ -101,9 +110,18 @@ var _ = Describe("integration", func() {
 					Expect(err).NotTo(HaveOccurred())
 				}
 
-				var outActual []interface{}
+				var outActual []api.Result
 				err = yaml.Unmarshal(buf.Bytes(), &outActual)
 				Expect(err).NotTo(HaveOccurred())
+
+				if testMetadata.IgnoreAnalyzeResultSpec {
+					for i := range outExpected {
+						outExpected[i].AnalyzerSpec = ""
+					}
+					for i := range outActual {
+						outActual[i].AnalyzerSpec = ""
+					}
+				}
 
 				Expect(outActual).To(Equal(outExpected), pretty.Compare(outActual, outExpected))
 

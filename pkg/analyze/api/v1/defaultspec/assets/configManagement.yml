@@ -10,14 +10,10 @@ analyze:
             regexp: '.+puppet agent .*'
             index: 0
         name: ps
-      precondition:
-        not:
-          empty: {}
-          ref: ps
       condition:
         regexpMatch:
           regexp: 'puppet agent '
-        ref: ps
+        variableRef: ps
       messages:
         conditionTrue:
           primary: Managed By Puppet
@@ -37,14 +33,10 @@ analyze:
             regexp: '.+chef-client.*'
             index: 0
         name: ps
-      precondition:
-        not:
-          empty: {}
-          ref: ps
       condition:
         regexpMatch:
           regexp: 'chef-client'
-        ref: ps
+        variableRef: ps
       messages:
         conditionTrue:
           primary: Managed By Chef

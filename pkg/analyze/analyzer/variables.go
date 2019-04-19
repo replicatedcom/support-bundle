@@ -8,10 +8,9 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/variable"
-
 	"github.com/pkg/errors"
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/variable"
 	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/util"
