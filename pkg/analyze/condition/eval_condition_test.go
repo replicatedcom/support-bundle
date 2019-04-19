@@ -6,6 +6,7 @@ func TestEvalCondition_Eval(t *testing.T) {
 	type args struct {
 		ref  interface{}
 		data map[string]interface{}
+		err  error
 	}
 	tests := []struct {
 		name    string
@@ -53,6 +54,14 @@ func TestEvalCondition_Eval(t *testing.T) {
 			want: false,
 		},
 		{
+			name: "ref error not found",
+			eval: EvalCondition(`{{repl not .Ref}}`),
+			args: args{
+				err: ErrNotFound,
+			},
+			want: true,
+		},
+		{
 			name:    "error",
 			eval:    EvalCondition(`{{repl blah}}`),
 			wantErr: true,
@@ -60,7 +69,7 @@ func TestEvalCondition_Eval(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.eval.Eval(tt.args.ref, tt.args.data)
+			got, err := tt.eval.Eval(tt.args.ref, tt.args.data, tt.args.err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("EvalCondition.Eval() error = %v, wantErr %v", err, tt.wantErr)
 				return

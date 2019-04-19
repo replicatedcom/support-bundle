@@ -6,6 +6,7 @@ func TestStringCompare_Eval(t *testing.T) {
 	type args struct {
 		ref  interface{}
 		data map[string]interface{}
+		err  error
 	}
 	tests := []struct {
 		name          string
@@ -93,7 +94,7 @@ func TestStringCompare_Eval(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.stringCompare.Eval(tt.args.ref, tt.args.data)
+			got, err := tt.stringCompare.Eval(tt.args.ref, tt.args.data, tt.args.err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("StringCompare.Eval() error = %v, wantErr %v", err, tt.wantErr)
 				return

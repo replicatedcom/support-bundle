@@ -6,6 +6,7 @@ func TestRegexpMatch_Eval(t *testing.T) {
 	type args struct {
 		ref  interface{}
 		data map[string]interface{}
+		err  error
 	}
 	tests := []struct {
 		name        string
@@ -47,7 +48,7 @@ func TestRegexpMatch_Eval(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.regexpMatch.Eval(tt.args.ref, tt.args.data)
+			got, err := tt.regexpMatch.Eval(tt.args.ref, tt.args.data, tt.args.err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RegexpMatch.Eval() error = %v, wantErr %v", err, tt.wantErr)
 				return

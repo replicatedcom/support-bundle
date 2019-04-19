@@ -1,11 +1,16 @@
 package condition
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/pkg/errors"
+)
 
 func TestEmpty_Eval(t *testing.T) {
 	type args struct {
 		ref  interface{}
 		data map[string]interface{}
+		err  error
 	}
 	tests := []struct {
 		name    string
@@ -31,15 +36,17 @@ func TestEmpty_Eval(t *testing.T) {
 			want: false,
 		},
 		{
-			name:  "not exists",
+			name:  "ref error",
 			empty: Empty{},
-			args:  args{},
-			want:  true,
+			args: args{
+				err: errors.New("ERROR"),
+			},
+			want: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.empty.Eval(tt.args.ref, tt.args.data)
+			got, err := tt.empty.Eval(tt.args.ref, tt.args.data, tt.args.err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Empty.Eval() error = %v, wantErr %v", err, tt.wantErr)
 				return
