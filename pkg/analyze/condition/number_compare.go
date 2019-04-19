@@ -6,13 +6,16 @@ import (
 	"strconv"
 )
 
-var _ Interface = new(StringCompare)
+var _ Interface = new(NumberCompare)
 
 type NumberCompare struct {
 	Compare `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
-func (c *NumberCompare) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
+func (c *NumberCompare) Eval(ref interface{}, data map[string]interface{}, err error) (bool, error) {
+	if err != nil {
+		return false, err
+	}
 	v := toFloat64(ref)
 	switch {
 	case c.Eq != nil:

@@ -13,7 +13,10 @@ type RegexpMatch struct {
 	Regexp string `json:"regexp" yaml:"regexp" hcl:"regexp"`
 }
 
-func (c *RegexpMatch) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
+func (c *RegexpMatch) Eval(ref interface{}, data map[string]interface{}, err error) (bool, error) {
+	if err != nil {
+		return false, err
+	}
 	var str string
 	if ref != nil {
 		str = fmt.Sprintf("%v", ref)

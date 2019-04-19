@@ -1,13 +1,15 @@
 package condition
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var _ Interface = new(Empty)
 
 type Empty struct {
 }
 
-func (c *Empty) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
+func (c *Empty) Eval(ref interface{}, data map[string]interface{}, err error) (bool, error) {
 	var str string
 	if ref != nil {
 		str = fmt.Sprintf("%v", ref)

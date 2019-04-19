@@ -11,7 +11,10 @@ type StringCompare struct {
 	Compare `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
-func (c *StringCompare) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
+func (c *StringCompare) Eval(ref interface{}, data map[string]interface{}, err error) (bool, error) {
+	if err != nil {
+		return false, err
+	}
 	v := toString(ref)
 	switch {
 	case c.Eq != nil:

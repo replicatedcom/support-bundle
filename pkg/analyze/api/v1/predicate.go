@@ -10,7 +10,7 @@ type NotPredicate struct {
 	Condition `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
-func (c *AndPredicate) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
+func (c *AndPredicate) Eval(ref interface{}, data map[string]interface{}, err error) (bool, error) {
 	for i, condition := range *c {
 		b, err := condition.Eval(data)
 		if err != nil || !b {
@@ -20,7 +20,7 @@ func (c *AndPredicate) Eval(ref interface{}, data map[string]interface{}) (bool,
 	return true, nil
 }
 
-func (c *OrPredicate) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
+func (c *OrPredicate) Eval(ref interface{}, data map[string]interface{}, err error) (bool, error) {
 	for i, condition := range *c {
 		b, err := condition.Eval(data)
 		if err != nil || b {
@@ -30,7 +30,7 @@ func (c *OrPredicate) Eval(ref interface{}, data map[string]interface{}) (bool, 
 	return false, nil
 }
 
-func (c *NotPredicate) Eval(ref interface{}, data map[string]interface{}) (bool, error) {
+func (c *NotPredicate) Eval(ref interface{}, data map[string]interface{}, err error) (bool, error) {
 	b, err := c.Condition.Eval(data)
 	if err != nil {
 		return b, err
