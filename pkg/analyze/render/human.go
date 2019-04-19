@@ -32,6 +32,12 @@ func (e *HumanEncoder) Encode(v interface{}) error {
 }
 
 func (e *HumanEncoder) encodeResults(results []api.Result) error {
+	if len(results) == 0 {
+		symbol := e.severitySymbol(common.SeverityWarn)
+		e.UI.Warn(fmt.Sprintf("%s Results empty\n", symbol))
+		return nil
+	}
+
 	for _, result := range results {
 		if result.Message == nil {
 			continue

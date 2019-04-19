@@ -1,6 +1,7 @@
 package variable
 
 import (
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -8,15 +9,16 @@ import (
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
-func TestOs_ExtractValue(t *testing.T) {
+func TestOs_Distill(t *testing.T) {
 	tests := []struct {
-		name    string
-		input   string
-		want    interface{}
-		wantErr bool
+		name     string
+		input    string
+		filepath string
+		want     string
+		wantErr  bool
 	}{
 		{
-			name: "match",
+			name: "ubuntu",
 			input: `NAME="Ubuntu"
 VERSION="16.04.5 LTS (Xenial Xerus)"
 ID=ubuntu
@@ -28,21 +30,28 @@ SUPPORT_URL="http://help.ubuntu.com/"
 BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
 VERSION_CODENAME=xenial
 UBUNTU_CODENAME=xenial`,
-			want: "ubuntu",
+			filepath: "/etc/os-release",
+			want:     "ubuntu",
+		},
+		{
+			name:     "rhel",
+			input:    `Red Hat Enterprise Linux Server release 6.10 (Santiago)`,
+			filepath: "/etc/system-release",
+			want:     "rhel",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			v := &Os{}
-			got, err := v.ExtractValue(strings.NewReader(tt.input), collecttypes.Result{
-				Path: "/default/etc/os-release",
+			got, err := v.DistillReader(strings.NewReader(tt.input), collecttypes.Result{
+				Path: filepath.Join("/default", tt.filepath),
 				Spec: collecttypes.Spec{
 					CoreReadFile: &collecttypes.CoreReadFileOptions{
-						Filepath: "/etc/os-release",
+						Filepath: tt.filepath,
 					},
 				},
 				Size: 1,
-			}, nil)
+			})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Os.ExtractValue() error = %v, wantErr %v", err, tt.wantErr)
 				return

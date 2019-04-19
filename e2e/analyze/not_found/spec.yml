@@ -1,0 +1,50 @@
+analyze:
+  v1:
+    - name: os.centos
+      labels:
+        desiredPosition: "0"
+        iconKey: os_centos
+      registerVariables:
+        - name: os
+          os: {}
+      precondition:
+        not:
+          empty: {}
+          ref: os
+      condition:
+        stringCompare:
+          eq: centos
+        variableRef: os
+      messages:
+        conditionTrue:
+          primary: OS is CentOS
+          detail: Is the os CentOS?
+          severity: info
+        conditionFalse:
+          primary: OS is not CentOS
+          detail: Is the os CentOS?
+          severity: warn
+    - name: os.ubuntu
+      labels:
+        desiredPosition: "0"
+        iconKey: os_ubuntu
+      registerVariables:
+        - name: os
+          os: {}
+      precondition:
+        not:
+          empty: {}
+          ref: os
+      condition:
+        stringCompare:
+          eq: ubuntu
+        variableRef: os
+      messages:
+        conditionTrue:
+          primary: OS is Ubuntu
+          detail: Is the os Ubuntu?
+          severity: info
+        conditionFalse:
+          primary: OS is not Ubuntu
+          detail: Is the os Ubuntu?
+          severity: warn

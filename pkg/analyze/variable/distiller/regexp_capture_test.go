@@ -10,7 +10,7 @@ func TestRegexpCapture_Distill(t *testing.T) {
 		name          string
 		regexpCapture RegexpCapture
 		input         string
-		want          interface{}
+		want          string
 		wantErr       bool
 	}{
 		{
@@ -39,7 +39,7 @@ UBUNTU_CODENAME=xenial`,
 				Index:  1,
 			},
 			input: `BLAH BLAH`,
-			want:  nil,
+			want:  "",
 		},
 		{
 			name: "os release version",

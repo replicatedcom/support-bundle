@@ -2,7 +2,6 @@ package v1
 
 import (
 	"reflect"
-	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
@@ -26,19 +25,23 @@ type Condition struct {
 }
 
 func (c *Condition) Eval(data map[string]interface{}) (bool, error) {
+	e, tagName, ok := c.GetCondition()
+	if !ok {
+		return false, errors.New("condition not defined")
+	}
+	b, err := condition.Eval(e, c.VariableRef, data)
+	if err != nil {
+		return false, errors.Wrapf(err, "condition %q", tagName)
+	}
+	return b, nil
+}
+
+func (c *Condition) GetCondition() (condition.Interface, string, bool) {
 	val := reflect.Indirect(reflect.ValueOf(c))
 	for i := 0; i < val.NumField(); i++ {
 		if e, ok := val.Field(i).Interface().(condition.Interface); ok && !reflect.ValueOf(e).IsNil() {
-			b, err := condition.Eval(e, c.VariableRef, data)
-			if err != nil {
-				return false, errors.Wrapf(err, "condition %q", getTagName(val, i, "yaml"))
-			}
-			return b, nil
+			return e, getTagName(val, i, "yaml"), true
 		}
 	}
-	return false, errors.New("no condition defined")
-}
-
-func getTagName(v reflect.Value, i int, key string) string {
-	return strings.SplitN(v.Type().Field(i).Tag.Get(key), ",", 2)[0]
+	return nil, "", false
 }

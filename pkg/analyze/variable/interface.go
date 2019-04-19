@@ -3,11 +3,19 @@ package variable
 import (
 	"io"
 
-	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
 type Interface interface {
-	MatchResults(bundlereader.BundleReader) []collecttypes.Result
-	ExtractValue(r io.Reader, result collecttypes.Result, data interface{}) (interface{}, error)
+	ResultDistiller
+	ValueExtractor
+}
+
+type ResultDistiller interface {
+	MatchResults(index []collecttypes.Result) []collecttypes.Result
+	DistillReader(r io.Reader, result collecttypes.Result) (string, error)
+}
+
+type ValueExtractor interface {
+	ExtractValue(distilled interface{}, data interface{}) (interface{}, error)
 }

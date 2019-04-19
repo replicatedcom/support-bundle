@@ -82,12 +82,16 @@ pkg/collect/bundle/defaultspec/asset.go: pkg/collect/bundle/defaultspec/assets/*
 
 _mockgen:
 	rm -rf pkg/test-mocks
-	mkdir -p pkg/test-mocks/collect
 	mockgen \
-		-destination pkg/test-mocks/collect/bundle/bundlereader.go \
-		-package bundle \
+		-destination pkg/test-mocks/collect/bundle/reader/bundlereader.go \
+		-package reader \
 		github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader \
 		BundleReader
+	mockgen \
+		-destination pkg/test-mocks/collect/bundle/reader/scanner.go \
+		-package reader \
+		github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader \
+		Scanner
 
 mockgen: _mockgen fmt
 

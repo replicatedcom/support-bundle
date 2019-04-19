@@ -7,7 +7,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable/distiller"
-	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
@@ -24,8 +23,8 @@ var (
 type Os struct {
 }
 
-func (v *Os) MatchResults(bundleReader bundlereader.BundleReader) (results []collecttypes.Result) {
-	for _, result := range bundleReader.GetIndex() {
+func (v *Os) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
+	for _, result := range index {
 		if matchAny(
 			result,
 			matcherCoreReadFileFilepath("/etc/os-release"),
@@ -38,7 +37,7 @@ func (v *Os) MatchResults(bundleReader bundlereader.BundleReader) (results []col
 	return
 }
 
-func (v *Os) ExtractValue(r io.Reader, result collecttypes.Result, data interface{}) (interface{}, error) {
+func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (string, error) {
 	parts := strings.Split(result.Spec.CoreReadFile.Filepath, "/")
 	switch parts[len(parts)-1] {
 
@@ -47,8 +46,8 @@ func (v *Os) ExtractValue(r io.Reader, result collecttypes.Result, data interfac
 			Regexp: osReleaseRegexp,
 			Index:  1,
 		}
-		b, err := distiller.Distill(d, r, false)
-		return b, errors.Wrap(err, "distill regexpCapture")
+		str, err := distiller.Distill(d, r, false)
+		return str, errors.Wrap(err, "distill regexpCapture")
 
 	case "system-release":
 		// special cases for:
@@ -59,20 +58,22 @@ func (v *Os) ExtractValue(r io.Reader, result collecttypes.Result, data interfac
 			Regexp: systemReleaseRegexp,
 			Index:  1,
 		}
-		b, err := distiller.Distill(d, r, false)
+		str, err := distiller.Distill(d, r, false)
 		if err != nil {
-			return nil, errors.Wrap(err, "distill regexpCapture")
-		} else if b != nil {
-			switch strings.ToLower(b.(string)) {
-			case "centos":
-				return "centos", nil
-			case "red hat enterprise linux server":
-				return "rhel", nil
-			case "amazon linux ami":
-				return "amzn", nil
-			}
+			return str, errors.Wrap(err, "distill regexpCapture")
+		}
+		switch strings.ToLower(str) {
+		case "centos":
+			return "centos", nil
+		case "red hat enterprise linux server":
+			return "rhel", nil
+		case "amazon linux ami":
+			return "amzn", nil
 		}
 	}
+	return "", nil
+}
 
-	return nil, nil
+func (v *Os) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+	return distilled, nil
 }

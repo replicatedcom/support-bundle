@@ -74,7 +74,7 @@ func RunCmd() *cobra.Command {
 func analyzeRun(ctx context.Context, ui cli.Ui, bundlePath string, opts RunOptions, logLevel string) error {
 	results, err := analyze.RunE(ctx, bundlePath)
 
-	if !opts.Quiet && len(results) > 0 {
+	if !opts.Quiet && (len(results) > 0 || err == nil) {
 		b := bytes.NewBuffer(nil)
 		r := render.New(b, opts.Output)
 		if errRender := r.RenderResults(ctx, results); errRender != nil {

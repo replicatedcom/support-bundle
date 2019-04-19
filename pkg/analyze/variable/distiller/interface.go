@@ -1,5 +1,5 @@
 package distiller
 
 type Interface interface {
-	Distill(string) (interface{}, error)
+	Distill(string) (string, error)
 }

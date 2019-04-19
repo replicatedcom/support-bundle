@@ -70,7 +70,7 @@ func (b *MultiBundle) discoverBundles() error {
 			continue
 		}
 
-		parts := strings.Split(header.Name, "/")
+		parts := filepath.SplitList(header.Name)
 		if parts[len(parts)-1] != "index.json" {
 			continue
 		}
@@ -81,7 +81,7 @@ func (b *MultiBundle) discoverBundles() error {
 		}
 
 		// It seems safe to assume this is the root of a bundle
-		prefix := filepath.Join(parts[:len(parts)-1]...)
+		prefix := strings.Join(parts[:len(parts)-1], "/")
 		bundle, err := NewBundle(b.Fs, b.Path, prefix)
 		if err != nil {
 			return errors.Wrapf(err, "new bundle at prefix %s", prefix)

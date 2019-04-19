@@ -4,7 +4,6 @@ import (
 	"io"
 	"strings"
 
-	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
@@ -18,12 +17,12 @@ type FileMatch struct {
 	Distiller `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
-func (v *FileMatch) MatchResults(bundleReader bundlereader.BundleReader) []collecttypes.Result {
+func (v *FileMatch) MatchResults(index []collecttypes.Result) []collecttypes.Result {
 	if v.Path == "" {
 		return nil
 	}
 	var results []collecttypes.Result
-	for _, result := range bundleReader.GetIndex() {
+	for _, result := range index {
 		if strings.HasPrefix(strings.TrimPrefix(result.Path, "/"), strings.TrimPrefix(v.Path, "/")) {
 			results = append(results, result)
 		}
@@ -31,6 +30,10 @@ func (v *FileMatch) MatchResults(bundleReader bundlereader.BundleReader) []colle
 	return results
 }
 
-func (v *FileMatch) ExtractValue(r io.Reader, result collecttypes.Result, data interface{}) (interface{}, error) {
+func (v *FileMatch) DistillReader(r io.Reader, result collecttypes.Result) (string, error) {
 	return v.Distiller.Distill(r)
+}
+
+func (v *FileMatch) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+	return distilled, nil
 }

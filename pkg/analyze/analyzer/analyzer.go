@@ -67,7 +67,7 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archiveP
 		return nil, errors.Wrapf(err, "new bundle from %s", archivePath)
 	}
 
-	var results []api.Result
+	results := []api.Result{} // results should never be nil
 	var multiErr *multierror.Error
 	for _, analyzerSpec := range spec.V1 {
 		result, err := a.analyze(ctx, bundleReader, analyzerSpec)
@@ -82,6 +82,7 @@ func (a *Analyzer) AnalyzeBundle(ctx context.Context, spec api.Analyze, archiveP
 	debug.Log(
 		"phase", "analyzer.analyze-bundle",
 		"status", "complete")
+
 	return results, multiErr.ErrorOrNil()
 }
 
@@ -92,7 +93,7 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		"phase", "analyzer.analyze",
 		"spec", util.SpewJSON(analyzerSpec))
 
-	data, err := a.registerVariables(analyzerSpec, bundleReader)
+	data, err := a.registerVariables(analyzerSpec.RegisterVariables, bundleReader)
 	if err != nil {
 		return resultFromAnalysis(nil, err, analyzerSpec, data)
 	}
@@ -104,27 +105,6 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		"status", "complete")
 
 	return resultFromAnalysis(message, err, analyzerSpec, data)
-}
-
-func (a *Analyzer) registerVariables(analyzerSpec v1.Analyzer, bundleReader bundlereader.BundleReader) (map[string]interface{}, error) {
-	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.registerVariables"))
-
-	data := map[string]interface{}{}
-	for _, variable := range analyzerSpec.RegisterVariables {
-		reg, err := variable.Register(bundleReader, data)
-		for key, val := range reg {
-			data[key] = val
-		}
-		debug.Log(
-			"phase", "analyzer.analyze.register-variable",
-			"variable", util.SpewJSON(variable),
-			"register", util.SpewJSON(reg),
-			"error", err)
-		if err != nil {
-			return data, errors.Wrapf(err, "register variable %s", variable.Name)
-		}
-	}
-	return data, nil
 }
 
 func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]interface{}) (*message.Message, error) {

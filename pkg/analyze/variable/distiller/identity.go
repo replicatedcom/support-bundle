@@ -5,6 +5,6 @@ var _ Interface = new(Identity)
 type Identity struct {
 }
 
-func (d *Identity) Distill(input string) (interface{}, error) {
+func (d *Identity) Distill(input string) (string, error) {
 	return input, nil
 }

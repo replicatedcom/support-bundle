@@ -3,7 +3,6 @@ package variable
 import (
 	"io"
 
-	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 )
@@ -18,10 +17,19 @@ type CollectRef struct {
 	Distiller `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
-func (v *CollectRef) MatchResults(bundleReader bundlereader.BundleReader) []collecttypes.Result {
-	return bundleReader.ResultsFromRef(v.Ref)
+func (v *CollectRef) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
+	for _, result := range index {
+		if meta.RefMatches(v.Ref, result.Spec.Shared().Meta) {
+			results = append(results, result)
+		}
+	}
+	return
 }
 
-func (v *CollectRef) ExtractValue(r io.Reader, result collecttypes.Result, data interface{}) (interface{}, error) {
+func (v *CollectRef) DistillReader(r io.Reader, result collecttypes.Result) (string, error) {
 	return v.Distiller.Distill(r)
+}
+
+func (v *CollectRef) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+	return distilled, nil
 }

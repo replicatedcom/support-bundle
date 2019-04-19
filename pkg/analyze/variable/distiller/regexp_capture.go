@@ -13,14 +13,14 @@ type RegexpCapture struct {
 	Index  int    `json:"index,omitempty" yaml:"index,omitempty" hcl:"index,omitempty"`
 }
 
-func (d *RegexpCapture) Distill(input string) (interface{}, error) {
+func (d *RegexpCapture) Distill(input string) (string, error) {
 	re, err := regexp.Compile(d.Regexp)
 	if err != nil {
-		return nil, errors.Wrap(err, "regexp compile")
+		return "", errors.Wrap(err, "regexp compile")
 	}
 	matches := re.FindStringSubmatch(input)
 	if len(matches) < d.Index+1 {
-		return nil, nil
+		return "", nil
 	}
 	return matches[d.Index], nil
 }

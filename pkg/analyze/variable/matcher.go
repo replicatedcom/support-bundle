@@ -2,6 +2,7 @@ package variable
 
 import (
 	"reflect"
+	"strings"
 
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
@@ -35,7 +36,7 @@ func matcherCollector(field interface{}) matcher {
 func matcherCoreReadFileFilepath(filepath string) matcher {
 	return func(result collecttypes.Result) bool {
 		return result.Spec.CoreReadFile != nil &&
-			result.Spec.CoreReadFile.Filepath == filepath &&
+			strings.TrimLeft(result.Spec.CoreReadFile.Filepath, "/") == strings.TrimLeft(filepath, "/") &&
 			result.Size > 0
 	}
 }

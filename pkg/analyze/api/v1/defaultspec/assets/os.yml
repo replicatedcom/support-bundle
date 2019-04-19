@@ -6,6 +6,10 @@ analyze:
       registerVariables:
         - name: os
           os: {}
+      precondition:
+        not:
+          empty: {}
+          ref: os
       condition:
         stringCompare:
           eq: ubuntu
@@ -25,6 +29,10 @@ analyze:
       registerVariables:
         - name: os
           os: {}
+      precondition:
+        not:
+          empty: {}
+          ref: os
       condition:
         stringCompare:
           eq: alpine
@@ -44,6 +52,10 @@ analyze:
       registerVariables:
         - name: os
           os: {}
+      precondition:
+        not:
+          empty: {}
+          ref: os
       condition:
         stringCompare:
           eq: centos
@@ -63,6 +75,10 @@ analyze:
       registerVariables:
         - name: os
           os: {}
+      precondition:
+        not:
+          empty: {}
+          ref: os
       condition:
         stringCompare:
           eq: rhel
@@ -82,6 +98,10 @@ analyze:
       registerVariables:
         - name: os
           os: {}
+      precondition:
+        not:
+          empty: {}
+          ref: os
       condition:
         stringCompare:
           eq: debian

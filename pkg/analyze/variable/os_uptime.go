@@ -7,7 +7,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable/distiller"
-	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
@@ -22,8 +21,8 @@ var (
 type OsUptime struct {
 }
 
-func (v *OsUptime) MatchResults(bundleReader bundlereader.BundleReader) (results []collecttypes.Result) {
-	for _, result := range bundleReader.GetIndex() {
+func (v *OsUptime) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
+	for _, result := range index {
 		if matchAny(
 			result,
 			matcherCoreReadFileFilepath("/proc/uptime"),
@@ -35,16 +34,20 @@ func (v *OsUptime) MatchResults(bundleReader bundlereader.BundleReader) (results
 	return
 }
 
-func (v *OsUptime) ExtractValue(r io.Reader, result collecttypes.Result, data interface{}) (interface{}, error) {
+func (v *OsUptime) DistillReader(r io.Reader, result collecttypes.Result) (string, error) {
 	d := &distiller.RegexpCapture{
 		Regexp: osUptimeRegexp,
 		Index:  1,
 	}
 	b, err := distiller.Distill(d, r, false)
-	if err != nil {
-		return nil, errors.Wrap(err, "distill regexpCapture")
+	return string(b), errors.Wrap(err, "distill regexpCapture")
+}
+
+func (v *OsUptime) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+	if distilled == nil {
+		return nil, nil
 	}
-	i, err := strconv.ParseFloat(b.(string), 64)
+	i, err := strconv.ParseFloat(distilled.(string), 64)
 	if err != nil {
 		return nil, errors.Wrap(err, "parse float")
 	}

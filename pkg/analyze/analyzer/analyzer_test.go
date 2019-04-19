@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"strings"
 	"testing"
 
@@ -17,9 +17,10 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable/distiller"
+	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
-	collectbundle "github.com/replicatedcom/support-bundle/pkg/test-mocks/collect/bundle"
+	mockbundlereader "github.com/replicatedcom/support-bundle/pkg/test-mocks/collect/bundle/reader"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -33,6 +34,13 @@ func TestAnalyzer_analyze(t *testing.T) {
 			Spec: collecttypes.Spec{
 				CoreReadFile: &collecttypes.CoreReadFileOptions{
 					Filepath: "/etc/os-release",
+				},
+				SpecShared: collecttypes.SpecShared{
+					Meta: &meta.Meta{
+						Labels: map[string]string{
+							"analyze": "etc.os-release",
+						},
+					},
 				},
 			},
 			Size: 1,
@@ -93,7 +101,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 				},
 				CollectRef: &variable.CollectRef{
 					Ref: meta.Ref{
-						Selector: meta.Selector{"analyze": "/etc/os-release"},
+						Selector: meta.Selector{"analyze": "etc.os-release"},
 					},
 					Distiller: variable.Distiller{
 						RegexpCapture: &distiller.RegexpCapture{
@@ -146,35 +154,59 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 	tests := []struct {
 		name            string
 		analyzerSpec    v1.Analyzer
-		registerExpects func(*collectbundle.MockBundleReader)
+		registerExpects func(*mockbundlereader.MockBundleReader, *gomock.Controller)
 		want            *api.Result
 		wantErr         bool
 	}{
 		{
 			name:         "condition true",
 			analyzerSpec: analyzerSpec,
-			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
+			registerExpects: func(bundleReader *mockbundlereader.MockBundleReader, mc *gomock.Controller) {
 				bundleReader.
 					EXPECT().
 					GetIndex().
 					Return(collectResultEtcOsRelease)
 
-				bundleReader.
+				scanner := mockbundlereader.NewMockScanner(mc)
+
+				scanner.
 					EXPECT().
-					Open("/default/etc/os-release").
-					Return(ioutil.NopCloser(strings.NewReader(ubuntu1804EtcOsReleaseContents)), nil)
+					Next().
+					Return(&bundlereader.ScannerFile{
+						Name:   "/blah/blah",
+						Reader: strings.NewReader("blah blah"),
+					}, nil)
+
+				scanner.
+					EXPECT().
+					Next().
+					Return(&bundlereader.ScannerFile{
+						Name:   "/default/etc/os-release",
+						Reader: strings.NewReader(ubuntu1804EtcOsReleaseContents),
+					}, nil)
+
+				scanner.
+					EXPECT().
+					Next().
+					Return(&bundlereader.ScannerFile{
+						Name:   "/blah/blah/blah",
+						Reader: strings.NewReader("blah blah blah"),
+					}, nil)
+
+				scanner.
+					EXPECT().
+					Next().
+					Return(nil, io.EOF)
 
 				bundleReader.
 					EXPECT().
-					ResultsFromRef(meta.Ref{
-						Selector: meta.Selector{"analyze": "/etc/os-release"},
-					}).
-					Return(collectResultEtcOsRelease)
+					NewScanner().
+					Return(scanner, nil)
 
-				bundleReader.
+				scanner.
 					EXPECT().
-					Open("/default/etc/os-release").
-					Return(ioutil.NopCloser(strings.NewReader(ubuntu1804EtcOsReleaseContents)), nil)
+					Close().
+					Return(nil)
 			},
 			want: &api.Result{
 				Message: &message.Message{
@@ -193,28 +225,36 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 		{
 			name:         "condition false",
 			analyzerSpec: analyzerSpec,
-			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
+			registerExpects: func(bundleReader *mockbundlereader.MockBundleReader, mc *gomock.Controller) {
 				bundleReader.
 					EXPECT().
 					GetIndex().
 					Return(collectResultEtcOsRelease)
 
-				bundleReader.
+				scanner := mockbundlereader.NewMockScanner(mc)
+
+				scanner.
 					EXPECT().
-					Open("/default/etc/os-release").
-					Return(ioutil.NopCloser(strings.NewReader(ubuntu1404EtcOsReleaseContents)), nil)
+					Next().
+					Return(&bundlereader.ScannerFile{
+						Name:   "/default/etc/os-release",
+						Reader: strings.NewReader(ubuntu1404EtcOsReleaseContents),
+					}, nil)
+
+				scanner.
+					EXPECT().
+					Next().
+					Return(nil, io.EOF)
 
 				bundleReader.
 					EXPECT().
-					ResultsFromRef(meta.Ref{
-						Selector: meta.Selector{"analyze": "/etc/os-release"},
-					}).
-					Return(collectResultEtcOsRelease)
+					NewScanner().
+					Return(scanner, nil)
 
-				bundleReader.
+				scanner.
 					EXPECT().
-					Open("/default/etc/os-release").
-					Return(ioutil.NopCloser(strings.NewReader(ubuntu1404EtcOsReleaseContents)), nil)
+					Close().
+					Return(nil)
 			},
 			want: &api.Result{
 				Message: &message.Message{
@@ -233,28 +273,36 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 		{
 			name:         "precondition false",
 			analyzerSpec: analyzerSpec,
-			registerExpects: func(bundleReader *collectbundle.MockBundleReader) {
+			registerExpects: func(bundleReader *mockbundlereader.MockBundleReader, mc *gomock.Controller) {
 				bundleReader.
 					EXPECT().
 					GetIndex().
 					Return(collectResultEtcOsRelease)
 
-				bundleReader.
+				scanner := mockbundlereader.NewMockScanner(mc)
+
+				scanner.
 					EXPECT().
-					Open("/default/etc/os-release").
-					Return(ioutil.NopCloser(strings.NewReader(centos7EtcOsReleaseContents)), nil)
+					Next().
+					Return(&bundlereader.ScannerFile{
+						Name:   "/default/etc/os-release",
+						Reader: strings.NewReader(centos7EtcOsReleaseContents),
+					}, nil)
+
+				scanner.
+					EXPECT().
+					Next().
+					Return(nil, io.EOF)
 
 				bundleReader.
 					EXPECT().
-					ResultsFromRef(meta.Ref{
-						Selector: meta.Selector{"analyze": "/etc/os-release"},
-					}).
-					Return(collectResultEtcOsRelease)
+					NewScanner().
+					Return(scanner, nil)
 
-				bundleReader.
+				scanner.
 					EXPECT().
-					Open("/default/etc/os-release").
-					Return(ioutil.NopCloser(strings.NewReader(centos7EtcOsReleaseContents)), nil)
+					Close().
+					Return(nil)
 			},
 			want: &api.Result{
 				Message: &message.Message{
@@ -274,11 +322,11 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mc := gomock.NewController(t)
-			bundleReader := collectbundle.NewMockBundleReader(mc)
+			bundleReader := mockbundlereader.NewMockBundleReader(mc)
 			defer mc.Finish()
 
 			if tt.registerExpects != nil {
-				tt.registerExpects(bundleReader)
+				tt.registerExpects(bundleReader, mc)
 			}
 
 			a := &Analyzer{
@@ -292,7 +340,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 			}
 			b, _ := json.Marshal(api.Analyze{V1: []v1.Analyzer{tt.analyzerSpec}})
 			tt.want.AnalyzerSpec = string(b)
-			assert.Equal(t, got, tt.want)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
