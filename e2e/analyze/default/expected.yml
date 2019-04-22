@@ -8,8 +8,7 @@
   severity: info
   analyzerSpec: 'IGNORED'
   variables:
-    proc: ["0","1","2","3","4","5","6","7"]
-    numproc: "8"
+    numproc: 8
 - name: os.ubuntu
   labels:
     iconKey: os_ubuntu

@@ -22,16 +22,14 @@ type OsUptime struct {
 }
 
 func (v *OsUptime) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
-	for _, result := range index {
-		if matchAny(
-			result,
-			matcherCoreReadFileFilepath("/proc/uptime"),
-			matcherCollector(&collecttypes.CoreUptimeOptions{}),
-		) {
-			results = append(results, result)
-		}
-	}
-	return
+	return matchAny(
+		matchCollector(&collecttypes.CoreUptimeOptions{}),
+		(&CoreReadFilePath{
+			Paths: []string{
+				"/proc/uptime",
+			},
+		}).MatchResults,
+	)(index)
 }
 
 func (v *OsUptime) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {

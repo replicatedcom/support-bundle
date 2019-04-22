@@ -11,11 +11,13 @@ type Variable struct {
 	meta.Meta `json:",inline" yaml:",inline" hcl:",inline"`
 
 	// built-in
-	CollectRef *variable.CollectRef `json:"collectRef,omitempty" yaml:"collectRef,omitempty" hcl:"collectRef,omitempty"`
-	Eval       *variable.Eval       `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
-	FileMatch  *variable.FileMatch  `json:"fileMatch,omitempty" yaml:"fileMatch,omitempty" hcl:"fileMatch,omitempty"`
-	Os         *variable.Os         `json:"os,omitempty" yaml:"os,omitempty" hcl:"os,omitempty"`
-	OsUptime   *variable.OsUptime   `json:"os.uptime,omitempty" yaml:"os.uptime,omitempty" hcl:"os.uptime,omitempty"`
+	CollectRef       *variable.CollectRef       `json:"collectRef,omitempty" yaml:"collectRef,omitempty" hcl:"collectRef,omitempty"`
+	CoreReadFilePath *variable.CoreReadFilePath `json:"coreReadFilePath,omitempty" yaml:"coreReadFilePath,omitempty" hcl:"coreReadFilePath,omitempty"`
+	CPUCores         *variable.CPUCores         `json:"cpuCores,omitempty" yaml:"cpuCores,omitempty" hcl:"cpuCores,omitempty"`
+	Eval             *variable.Eval             `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
+	FileMatch        *variable.FileMatch        `json:"fileMatch,omitempty" yaml:"fileMatch,omitempty" hcl:"fileMatch,omitempty"`
+	Os               *variable.Os               `json:"os,omitempty" yaml:"os,omitempty" hcl:"os,omitempty"`
+	OsUptime         *variable.OsUptime         `json:"os.uptime,omitempty" yaml:"os.uptime,omitempty" hcl:"os.uptime,omitempty"`
 }
 
 func (v *Variable) GetName() string {

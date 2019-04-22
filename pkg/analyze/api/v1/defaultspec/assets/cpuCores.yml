@@ -4,26 +4,16 @@ analyze:
       labels:
         iconKey: os_cpu
       registerVariables:
-        - name: proc
-          fileMatch:
-            paths:
-              - default/proc/cpuinfo
-              - daemon/proc/cpuinfo
-            regexpCaptureAll:
-              regexp: 'processor\s+:\s+(\d+)'
-              index: 1
         - name: numproc
-          eval: '{{repl if .proc}}{{repl len .proc}}{{repl end}}'
+          cpuCores: {}
+      precondition:
+        not:
+          empty: {}
+          variableRef: numproc
       condition:
-        and:
-          - not:
-              empty: {}
-              variableRef: numproc
-          - numberCompare:
-              gt: 0
-            variableRef: numproc
+        eval: "true"
       messages:
-        conditionFalse:
+        preconditionFalse:
           primary: Unknown
           detail: Could not determine number of CPU Cores. Ensure your specs include a command os.read-file["/proc/cpuinfo"].
           severity: debug

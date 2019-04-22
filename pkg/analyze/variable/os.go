@@ -24,17 +24,14 @@ type Os struct {
 }
 
 func (v *Os) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
-	for _, result := range index {
-		if matchAny(
-			result,
-			matcherCoreReadFileFilepath("/etc/os-release"),
-			matcherCoreReadFileFilepath("/usr/lib/os-release"),
-			matcherCoreReadFileFilepath("/etc/system-release"),
-		) {
-			results = append(results, result)
-		}
+	m := &CoreReadFilePath{
+		Paths: []string{
+			"/etc/os-release",
+			"/usr/lib/os-release",
+			"/etc/system-release",
+		},
 	}
-	return
+	return m.MatchResults(index)
 }
 
 func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
