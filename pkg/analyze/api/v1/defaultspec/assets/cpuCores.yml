@@ -1,0 +1,33 @@
+analyze:
+  v1:
+    - name: cpucores.usage
+      labels:
+        iconKey: os_cpu
+      registerVariables:
+        - name: proc
+          fileMatch:
+            paths:
+              - default/proc/cpuinfo
+              - daemon/proc/cpuinfo
+            regexpCaptureAll:
+              regexp: 'processor\s+:\s+(\d+)'
+              index: 1
+        - name: numproc
+          eval: '{{repl if .proc}}{{repl len .proc}}{{repl end}}'
+      condition:
+        and:
+          - not:
+              empty: {}
+              variableRef: numproc
+          - numberCompare:
+              gt: 0
+            variableRef: numproc
+      messages:
+        conditionFalse:
+          primary: Unknown
+          detail: Could not determine number of CPU Cores. Ensure your specs include a command os.read-file["/proc/cpuinfo"].
+          severity: debug
+        conditionTrue:
+          primary: '{{repl .numproc}}'
+          detail: Number of CPU Cores is {{repl .numproc}}
+          severity: info

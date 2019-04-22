@@ -27,7 +27,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 		name       string
 		bundlePath string
 		variables  []v1.Variable
-		want       map[string][]string
+		want       map[string][]interface{}
 		wantErr    bool
 	}{
 		{
@@ -39,7 +39,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 						Name: "majorVersion",
 					},
 					FileMatch: &variable.FileMatch{
-						Path: "/kubernetes/version/server_version.json",
+						Paths: []string{"/kubernetes/version/server_version.json"},
 						Distiller: variable.Distiller{
 							RegexpCapture: &distiller.RegexpCapture{
 								Regexp: `"major": "([^"]+)"`,
@@ -65,9 +65,9 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 					},
 				},
 			},
-			want: map[string][]string{
-				"majorVersion": []string{"1"},
-				"minorVersion": []string{"8+"},
+			want: map[string][]interface{}{
+				"majorVersion": []interface{}{"1"},
+				"minorVersion": []interface{}{"8+"},
 			},
 		},
 		{
@@ -76,7 +76,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 			variables: []v1.Variable{
 				{
 					FileMatch: &variable.FileMatch{
-						Path: "/kubernetes/version/server_version.json",
+						Paths: []string{"/kubernetes/version/server_version.json"},
 						Distiller: variable.Distiller{
 							RegexpCapture: &distiller.RegexpCapture{
 								Regexp: `"gitCommit": "([^"]+)"`,
@@ -109,14 +109,14 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 						Name: "gitCommit",
 					},
 					FileMatch: &variable.FileMatch{
-						Path: "/etc/os-release/stdout",
+						Paths: []string{"/etc/os-release/stdout"},
 						Distiller: variable.Distiller{
 							Identity: &distiller.Identity{},
 						},
 					},
 				},
 			},
-			want: map[string][]string{},
+			want: map[string][]interface{}{},
 		},
 		{
 			name:       "no distiller",
@@ -127,12 +127,12 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 						Name: "serverVersionJson",
 					},
 					FileMatch: &variable.FileMatch{
-						Path: "/kubernetes/version/server_version.json",
+						Paths: []string{"/kubernetes/version/server_version.json"},
 					},
 				},
 			},
-			want: map[string][]string{
-				"serverVersionJson": []string{"{\n  \"major\": \"1\",\n  \"minor\": \"8+\",\n  \"gitVersion\": \"v1.8.10-gke.0\",\n  \"gitCommit\": \"16ebd0de8e0ab2d1ef86d5b16ab1899b624a77cd\",\n  \"gitTreeState\": \"clean\",\n  \"buildDate\": \"2018-03-20T20:21:01Z\",\n  \"goVersion\": \"go1.8.3b4\",\n  \"compiler\": \"gc\",\n  \"platform\": \"linux/amd64\"\n}\n"},
+			want: map[string][]interface{}{
+				"serverVersionJson": []interface{}{"{\n  \"major\": \"1\",\n  \"minor\": \"8+\",\n  \"gitVersion\": \"v1.8.10-gke.0\",\n  \"gitCommit\": \"16ebd0de8e0ab2d1ef86d5b16ab1899b624a77cd\",\n  \"gitTreeState\": \"clean\",\n  \"buildDate\": \"2018-03-20T20:21:01Z\",\n  \"goVersion\": \"go1.8.3b4\",\n  \"compiler\": \"gc\",\n  \"platform\": \"linux/amd64\"\n}\n"},
 			},
 		},
 		{
@@ -144,7 +144,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 						Name: "gitCommit",
 					},
 					FileMatch: &variable.FileMatch{
-						Path: "/kubernetes/version/server_version.json",
+						Paths: []string{"/kubernetes/version/server_version.json"},
 						Distiller: variable.Distiller{
 							RegexpCapture: &distiller.RegexpCapture{
 								Regexp: `(`,
@@ -155,7 +155,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 				},
 			},
 			wantErr: true,
-			want:    map[string][]string{},
+			want:    map[string][]interface{}{},
 		},
 	}
 	for _, tt := range tests {
@@ -188,7 +188,7 @@ func TestAnalyzer_extractValues(t *testing.T) {
 	tests := []struct {
 		name                     string
 		variables                []v1.Variable
-		variableNamesToDistilled map[string][]string
+		variableNamesToDistilled map[string][]interface{}
 		want                     map[string]interface{}
 		wantErr                  bool
 	}{
@@ -208,8 +208,8 @@ func TestAnalyzer_extractValues(t *testing.T) {
 					Eval: &evalUpper,
 				},
 			},
-			variableNamesToDistilled: map[string][]string{
-				"os": []string{"centos"},
+			variableNamesToDistilled: map[string][]interface{}{
+				"os": []interface{}{"centos"},
 			},
 			want: map[string]interface{}{
 				"os":      "centos",

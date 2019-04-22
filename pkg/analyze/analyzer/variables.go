@@ -36,7 +36,7 @@ func (a *Analyzer) registerVariables(variables []v1.Variable, bundleReader bundl
 	return data, errors.Wrap(err, "extract values")
 }
 
-func (a *Analyzer) extractValues(variables []v1.Variable, variableNamesToDistilled map[string][]string) (map[string]interface{}, error) {
+func (a *Analyzer) extractValues(variables []v1.Variable, variableNamesToDistilled map[string][]interface{}) (map[string]interface{}, error) {
 	data := map[string]interface{}{}
 
 	for _, v := range variables {
@@ -68,7 +68,7 @@ func (a *Analyzer) extractValues(variables []v1.Variable, variableNamesToDistill
 	return data, nil
 }
 
-func (a *Analyzer) distillBundle(variables []v1.Variable, bundleReader bundlereader.BundleReader) (map[string][]string, error) {
+func (a *Analyzer) distillBundle(variables []v1.Variable, bundleReader bundlereader.BundleReader) (map[string][]interface{}, error) {
 	variablesMap := map[string]variable.Interface{}
 	resultsToVariables := map[collecttypes.Result][]string{}
 
@@ -95,7 +95,7 @@ func (a *Analyzer) distillBundle(variables []v1.Variable, bundleReader bundlerea
 	}
 	defer scanner.Close()
 
-	values := map[string][]string{}
+	values := map[string][]interface{}{}
 	for {
 		f, err := scanner.Next()
 		if err == io.EOF {
@@ -119,12 +119,12 @@ func (a *Analyzer) distillBundle(variables []v1.Variable, bundleReader bundlerea
 	}
 }
 
-func (a *Analyzer) distillReader(reader io.Reader, result collecttypes.Result, variableNames []string, variablesMap map[string]variable.Interface) (map[string]string, error) {
+func (a *Analyzer) distillReader(reader io.Reader, result collecttypes.Result, variableNames []string, variablesMap map[string]variable.Interface) (map[string]interface{}, error) {
 	if len(variableNames) == 0 {
 		return nil, nil
 	}
 
-	values := map[string]string{}
+	values := map[string]interface{}{}
 	var valueMu sync.Mutex
 	var errGroup util.MultiErrorGroup
 	var pws []*io.PipeWriter

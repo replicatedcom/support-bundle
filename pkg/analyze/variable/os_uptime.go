@@ -34,13 +34,13 @@ func (v *OsUptime) MatchResults(index []collecttypes.Result) (results []collectt
 	return
 }
 
-func (v *OsUptime) DistillReader(r io.Reader, result collecttypes.Result) (string, error) {
+func (v *OsUptime) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
 	d := &distiller.RegexpCapture{
 		Regexp: osUptimeRegexp,
 		Index:  1,
 	}
-	b, err := distiller.Distill(d, r, false)
-	return string(b), errors.Wrap(err, "distill regexpCapture")
+	b, _, err := distiller.Distill(d, r, false)
+	return b, errors.Wrap(err, "distill regexpCapture")
 }
 
 func (v *OsUptime) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {

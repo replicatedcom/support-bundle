@@ -13,7 +13,7 @@ type Interface interface {
 
 type ResultDistiller interface {
 	MatchResults(index []collecttypes.Result) []collecttypes.Result
-	DistillReader(r io.Reader, result collecttypes.Result) (string, error)
+	DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error)
 }
 
 type ValueExtractor interface {

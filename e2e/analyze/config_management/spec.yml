@@ -3,7 +3,8 @@ analyze:
     - name: processes.configmanagement.puppet
       registerVariables:
       - fileMatch:
-          path: default/commands/ps/stdout
+          paths:
+            - default/commands/ps/stdout
         name: ps
       precondition:
         not:
@@ -25,7 +26,8 @@ analyze:
     - name: processes.configmanagement.chef
       registerVariables:
       - fileMatch:
-          path: default/commands/ps/stdout
+          paths:
+            - default/commands/ps/stdout
         name: ps
       precondition:
         not:

@@ -10,9 +10,6 @@ import (
 	"github.com/mholt/archiver"
 )
 
-type blah struct {
-}
-
 func WriteBundle(w io.Writer, bundlePath string) error {
 	_, filename, _, _ := runtime.Caller(0)
 	basePath := filepath.Dir(filename)

@@ -5,38 +5,37 @@ import (
 	"testing"
 )
 
-func TestRegexpCapture_Distill(t *testing.T) {
+func TestRegexpCaptureAll_Distill(t *testing.T) {
 	tests := []struct {
-		name          string
-		regexpCapture RegexpCapture
-		input         string
-		want          interface{}
-		wantOk        bool
-		wantErr       bool
+		name             string
+		regexpCaptureAll RegexpCaptureAll
+		input            string
+		want             interface{}
+		wantOk           bool
+		wantErr          bool
 	}{
 		{
-			name: "os release version",
-			regexpCapture: RegexpCapture{
-				Regexp: `(?m)^VERSION_ID="([^"]+)"`,
+			name: "num proc",
+			regexpCaptureAll: RegexpCaptureAll{
+				Regexp: `processor\s+:\s+(\d+)`,
 				Index:  1,
 			},
-			input: `NAME="Ubuntu"
-VERSION="16.04.5 LTS (Xenial Xerus)"
-ID=ubuntu
-ID_LIKE=debian
-PRETTY_NAME="Ubuntu 16.04.5 LTS"
-VERSION_ID="16.04"
-HOME_URL="http://www.ubuntu.com/"
-SUPPORT_URL="http://help.ubuntu.com/"
-BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
-VERSION_CODENAME=xenial
-UBUNTU_CODENAME=xenial`,
-			want:   "16.04",
+			input: `processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 62
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 62
+`,
+			want:   []string{"0", "1"},
 			wantOk: true,
 		},
 		{
 			name: "no match",
-			regexpCapture: RegexpCapture{
+			regexpCaptureAll: RegexpCaptureAll{
 				Regexp: `NOMATCH`,
 				Index:  1,
 			},
@@ -46,7 +45,7 @@ UBUNTU_CODENAME=xenial`,
 		},
 		{
 			name: "error",
-			regexpCapture: RegexpCapture{
+			regexpCaptureAll: RegexpCaptureAll{
 				Regexp: `(`,
 				Index:  1,
 			},
@@ -57,7 +56,7 @@ UBUNTU_CODENAME=xenial`,
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, ok, err := tt.regexpCapture.Distill(tt.input)
+			got, ok, err := tt.regexpCaptureAll.Distill(tt.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RegexpCapture.Distill() error = %v, wantErr %v", err, tt.wantErr)
 				return

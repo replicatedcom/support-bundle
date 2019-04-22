@@ -37,7 +37,7 @@ func (v *Os) MatchResults(index []collecttypes.Result) (results []collecttypes.R
 	return
 }
 
-func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (string, error) {
+func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
 	parts := strings.Split(result.Spec.CoreReadFile.Filepath, "/")
 	switch parts[len(parts)-1] {
 
@@ -46,7 +46,7 @@ func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (string, err
 			Regexp: osReleaseRegexp,
 			Index:  1,
 		}
-		str, err := distiller.Distill(d, r, false)
+		str, _, err := distiller.Distill(d, r, false)
 		return str, errors.Wrap(err, "distill regexpCapture")
 
 	case "system-release":
@@ -58,10 +58,11 @@ func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (string, err
 			Regexp: systemReleaseRegexp,
 			Index:  1,
 		}
-		str, err := distiller.Distill(d, r, false)
+		i, _, err := distiller.Distill(d, r, false)
 		if err != nil {
-			return str, errors.Wrap(err, "distill regexpCapture")
+			return i, errors.Wrap(err, "distill regexpCapture")
 		}
+		str, _ := i.(string)
 		switch strings.ToLower(str) {
 		case "centos":
 			return "centos", nil
@@ -71,7 +72,7 @@ func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (string, err
 			return "amzn", nil
 		}
 	}
-	return "", nil
+	return nil, nil
 }
 
 func (v *Os) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {

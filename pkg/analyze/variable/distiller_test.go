@@ -13,7 +13,7 @@ func TestDistiller_Distill(t *testing.T) {
 		name      string
 		distiller Distiller
 		input     string
-		want      string
+		want      interface{}
 		wantErr   bool
 	}{
 		{
@@ -67,7 +67,7 @@ UBUNTU_CODENAME=xenial`,
 				},
 			},
 			input: `BLAH BLAH`,
-			want:  "",
+			want:  nil,
 		},
 		{
 			name: "no match scannable",
@@ -78,7 +78,7 @@ UBUNTU_CODENAME=xenial`,
 				Scannable: true,
 			},
 			input: `BLAH BLAH`,
-			want:  "",
+			want:  nil,
 		},
 	}
 	for _, tt := range tests {

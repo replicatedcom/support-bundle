@@ -20,5 +20,16 @@
         "filepath": "/etc/os-release"
       }
     }
+  },
+  {
+    "path": "default/proc/cpuinfo",
+    "format": "",
+    "size": 6088,
+    "spec": {
+      "os.read-file": {
+        "output_dir": "default/proc",
+        "filepath": "/proc/cpuinfo"
+      }
+    }
   }
 ]

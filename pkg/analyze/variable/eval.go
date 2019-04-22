@@ -17,8 +17,8 @@ func (v *Eval) MatchResults(index []collecttypes.Result) []collecttypes.Result {
 	return nil
 }
 
-func (v *Eval) DistillReader(r io.Reader, result collecttypes.Result) (string, error) {
-	return "", nil
+func (v *Eval) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
+	return nil, nil
 }
 
 func (v *Eval) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {

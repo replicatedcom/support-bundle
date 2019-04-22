@@ -26,7 +26,7 @@ func (v *CollectRef) MatchResults(index []collecttypes.Result) (results []collec
 	return
 }
 
-func (v *CollectRef) DistillReader(r io.Reader, result collecttypes.Result) (string, error) {
+func (v *CollectRef) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
 	return v.Distiller.Distill(r)
 }
 
