@@ -83,6 +83,21 @@
   analyzerSpec: 'IGNORED'
   variables:
     version: "1.13.1"
+- name: os.loadavg
+  labels:
+    iconKey: os_loadavg
+    desiredPosition: "8"
+  message:
+    primary: "0 0.01 0.05"
+    detail: CPU load averages over 1, 5, and 15 minutes
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    loadavg: "0.00 0.01 0.05 1/177 17202"
+    loadavg1: 0
+    loadavg5: 0.01
+    loadavg15: 0.05
 - name: os.ubuntu
   labels:
     iconKey: os_ubuntu

@@ -53,5 +53,16 @@
         "filepath": "/proc/cpuinfo"
       }
     }
+  },
+  {
+    "path": "default/commands/loadavg/loadavg",
+    "format": "",
+    "size": 27,
+    "spec": {
+      "os.loadavg": {
+        "output_dir": "default/commands/loadavg",
+        "template": ""
+      }
+    }
   }
 ]
