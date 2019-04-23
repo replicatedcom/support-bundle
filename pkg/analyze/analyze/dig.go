@@ -39,7 +39,7 @@ func Get(v *viper.Viper) (*Analyze, error) {
 	debug := log.With(level.Debug(logger), "component", "injector", "phase", "instance.get")
 
 	debug.Log("event", "injector.build")
-	injector, err := buildInjector()
+	injector, err := buildInjector(v)
 	if err != nil {
 		debug.Log("event", "injector.build.fail")
 		return nil, errors.Wrap(err, "build injector")
@@ -60,9 +60,11 @@ func Get(v *viper.Viper) (*Analyze, error) {
 	return analyze, nil
 }
 
-func buildInjector() (*dig.Container, error) {
+func buildInjector(v *viper.Viper) (*dig.Container, error) {
 	providers := []interface{}{
-		viper.GetViper,
+		func() *viper.Viper {
+			return v
+		},
 
 		logger.FromViper,
 		fs.FromViper,

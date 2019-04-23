@@ -129,9 +129,6 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 		return nil, errors.New("bundle path not specified")
 	}
 
-	debug.Log(
-		"phase", "resolve")
-
 	endpoint := a.Endpoint
 	if endpoint == "" {
 		endpoint = collectcli.DefaultEndpoint
@@ -142,28 +139,25 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 		Inline:     a.Specs,
 		CustomerID: a.CustomerID,
 		ChannelID:  a.ChannelID,
-		Endpoint:   a.Endpoint,
+		Endpoint:   endpoint,
 	}
-
 	spec, err := a.Resolver.ResolveSpec(ctx, input, a.SkipDefault)
+	debug.Log(
+		"phase", "resolve",
+		"files", a.SpecFiles,
+		"inline", a.Specs,
+		"customerID", a.CustomerID,
+		"channelID", a.ChannelID,
+		"endpoint", endpoint,
+		"error", err)
 	if err != nil {
-		debug.Log(
-			"phase", "resolve",
-			"error", err)
 		return nil, errors.Wrap(err, "resolve specs")
 	}
 
 	if len(spec.Analyze.V1) == 0 {
 		err := errors.New("analyze spec empty") // TODO: typed error
-		debug.Log(
-			"phase", "resolve",
-			"error", err)
 		return nil, err
 	}
-
-	debug.Log(
-		"phase", "resolve",
-		"status", "complete")
 
 	resolvedPath, err := a.Getter.Get(bundlePath)
 	debug.Log(
@@ -175,24 +169,20 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 		return nil, errors.Wrap(err, "get bundle")
 	}
 
-	debug.Log(
-		"phase", "analyze")
-
 	results, err := a.Analyzer.AnalyzeBundle(
 		ctx,
 		spec.Analyze,
 		resolvedPath,
 		a.BundleRootSubpath)
-	if err != nil {
-		debug.Log(
-			"phase", "analyze",
-			"error", err)
-		return results, errors.Wrap(err, "analyze")
-	}
 
 	debug.Log(
 		"phase", "analyze",
-		"status", "complete")
+		"resolvedPath", resolvedPath,
+		"bundleRootSubpath", a.BundleRootSubpath,
+		"error", err)
+	if err != nil {
+		return results, errors.Wrap(err, "analyze")
+	}
 
 	if didResultsFailSeverityThreshold(results, common.Severity(a.SeverityThreshold)) {
 		return results, ErrSeverityThreshold

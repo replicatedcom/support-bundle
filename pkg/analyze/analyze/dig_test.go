@@ -10,9 +10,11 @@ import (
 // Make sure we can get an instance of analyze
 func TestDI(t *testing.T) {
 	req := require.New(t)
-	viper.Set("headless", true)
 
-	container, err := buildInjector()
+	v := viper.New()
+	v.Set("headless", true)
+
+	container, err := buildInjector(v)
 	req.NoError(err)
 
 	err = container.Invoke(func(s *Analyze) error {
