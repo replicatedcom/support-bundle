@@ -1,0 +1,40 @@
+analyze:
+  v1:
+    - name: docker.daemon.icc
+      labels:
+        iconKey: no_docker
+        desiredPosition: "3"
+      registerVariables:
+        - name: docker
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"ServerVersion": *"([^"]+)"'
+              index: 1
+        - name: icc
+          fileMatch:
+            pathRegexps:
+              - /daemon\.json
+            regexpCapture:
+              regexp: '"icc": *(false)'
+              index: 1
+      precondition:
+        not:
+          empty: {}
+          variableRef: docker
+      condition:
+        stringCompare:
+          eq: "false"
+        variableRef: icc
+      messages:
+        conditionFalse:
+          primary: Docker ICC enabled
+          detail: Inter-container communication is enabled
+          severity: debug
+          labels:
+            iconKey: docker_whale
+        conditionTrue:
+          primary: No ICC
+          detail: Docker Inter-container communication is disabled, app components will be unable to communicate
+          severity: error

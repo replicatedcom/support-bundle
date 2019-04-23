@@ -9,7 +9,7 @@ analyze:
             pathRegexps:
               - /docker_info\.json
             regexpCapture:
-              regexp: '"Driver": "([^"]+)"'
+              regexp: '"Driver": *"([^"]+)"'
               index: 1
         - name: loopback
           fileMatch:

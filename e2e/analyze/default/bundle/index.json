@@ -20,6 +20,18 @@
     }
   },
   {
+    "path": "default/etc/docker/daemon.json",
+    "format": "",
+    "size": 46,
+    "spec": {
+      "os.read-file": {
+        "description": "Docker daemon.json",
+        "output_dir": "default/etc/docker",
+        "filepath": "/etc/docker/daemon.json"
+      }
+    }
+  },
+  {
     "path": "default/etc/os-release",
     "format": "",
     "size": 373,

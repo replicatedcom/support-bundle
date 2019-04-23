@@ -9,6 +9,8 @@ import (
 )
 
 func TestDistiller_Distill(t *testing.T) {
+	evalDistiller := distiller.Eval(`{{repl jq . ".key" | jqMessagesToString}}`)
+
 	tests := []struct {
 		name      string
 		distiller Distiller
@@ -63,22 +65,31 @@ UBUNTU_CODENAME=xenial`,
 			name: "no match",
 			distiller: Distiller{
 				RegexpCapture: &distiller.RegexpCapture{
-					Regexp: `NOMATCH`,
+					Regexp: "NOMATCH",
 				},
 			},
-			input: `BLAH BLAH`,
+			input: "BLAH BLAH",
 			want:  nil,
 		},
 		{
 			name: "no match scannable",
 			distiller: Distiller{
 				RegexpCapture: &distiller.RegexpCapture{
-					Regexp: `NOMATCH`,
+					Regexp: "NOMATCH",
 				},
 				Scannable: true,
 			},
-			input: `BLAH BLAH`,
+			input: "BLAH BLAH",
 			want:  nil,
+		},
+		{
+			name: "eval",
+			distiller: Distiller{
+				Eval:      &evalDistiller,
+				Scannable: true,
+			},
+			input: `{"key": "val"}`,
+			want:  "val",
 		},
 	}
 	for _, tt := range tests {

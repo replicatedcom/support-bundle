@@ -30,6 +30,18 @@
   variables:
     driver: devicemapper
     loopback: Data loop file
+- name: docker.daemon.icc
+  labels:
+    iconKey: no_docker
+    desiredPosition: "3"
+  message:
+    primary: No ICC
+    detail: Docker Inter-container communication is disabled, app components will be unable to communicate
+    severity: error
+  severity: error
+  variables:
+    docker: "1.13.1"
+    icc: "false"
 - name: os.ubuntu
   labels:
     iconKey: os_ubuntu

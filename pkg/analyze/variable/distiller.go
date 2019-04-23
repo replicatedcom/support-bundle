@@ -14,6 +14,7 @@ var identity = &distiller.Identity{}
 type Distiller struct {
 	Scannable bool `json:"scannable,omitempty" yaml:"scannable,omitempty" hcl:"scannable,omitempty"`
 
+	Eval             *distiller.Eval             `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
 	Identity         *distiller.Identity         `json:"identity,omitempty" yaml:"identity,omitempty" hcl:"identity,omitempty"`
 	RegexpCapture    *distiller.RegexpCapture    `json:"regexpCapture,omitempty" yaml:"regexpCapture,omitempty" hcl:"regexpCapture,omitempty"`
 	RegexpCaptureAll *distiller.RegexpCaptureAll `json:"regexpCaptureAll,omitempty" yaml:"regexpCaptureAll,omitempty" hcl:"regexpCaptureAll,omitempty"`
