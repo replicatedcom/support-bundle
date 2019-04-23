@@ -1,0 +1,31 @@
+analyze:
+  v1:
+    - name: docker.containers.count
+      labels:
+        iconKey: docker_container
+        desiredPosition: "3"
+      registerVariables:
+        - name: runningContainers
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"ContainersRunning": *([^",\n]+)'
+              index: 1
+      precondition:
+        not:
+          empty: {}
+          variableRef: runningContainers
+      condition:
+        eval: "true"
+      messages:
+        preconditionFalse:
+          primary: "?"
+          detail: Could not determine number of running docker containers
+          severity: warn
+          labels:
+            iconKey: no_docker
+        conditionTrue:
+          primary: '{{repl .runningContainers}}'
+          detail: '{{repl .runningContainers}} containers running'
+          severity: info

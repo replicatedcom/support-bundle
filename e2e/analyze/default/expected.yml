@@ -20,6 +20,18 @@
     severity: debug
   severity: debug
   analyzerSpec: 'IGNORED'
+- name: docker.containers.count
+  labels:
+    iconKey: docker_container
+    desiredPosition: "3"
+  message:
+    primary: "1"
+    detail: 1 containers running
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    runningContainers: "1"
 - name: docker.devicemapper.isLoopback
   labels:
     iconKey: docker_whale
@@ -59,6 +71,18 @@
   analyzerSpec: 'IGNORED'
   variables:
     driver: json-file
+- name: docker.version
+  labels:
+    iconKey: docker_whale
+    desiredPosition: "2"
+  message:
+    primary: Docker 1.13.1
+    detail: Docker server version is 1.13.1
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    version: "1.13.1"
 - name: os.ubuntu
   labels:
     iconKey: os_ubuntu
