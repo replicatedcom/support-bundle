@@ -3,6 +3,7 @@ analyze:
     - name: docker.devicemapper.isLoopback
       labels:
         iconKey: docker_whale
+        desiredPosition: "3"
       registerVariables:
         - name: driver
           fileMatch:

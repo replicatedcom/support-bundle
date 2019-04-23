@@ -3,6 +3,7 @@ analyze:
     - name: datacenter.aws
       labels:
         iconKey: datacenter_aws
+        desiredPosition: "7"
       registerVariables:
         - name: publicAddress
           fileMatch:
@@ -32,6 +33,7 @@ analyze:
     - name: datacenter.gce
       labels:
         iconKey: datacenter_gce
+        desiredPosition: "7"
       registerVariables:
         - name: publicAddress
           fileMatch:
@@ -61,6 +63,7 @@ analyze:
     - name: datacenter.azure
       labels:
         iconKey: datacenter_azure
+        desiredPosition: "7"
       registerVariables:
         - name: publicAddress
           fileMatch:
@@ -90,6 +93,7 @@ analyze:
     - name: datacenter.unknown
       labels:
         iconKey: datacenter_unknown
+        desiredPosition: "7"
       registerVariables:
         - name: publicAddress
           fileMatch:

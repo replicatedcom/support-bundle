@@ -3,6 +3,7 @@ analyze:
     - name: processes.configmanagement.puppet
       labels:
         iconKey: puppet_logo
+        desiredPosition: "10"
       registerVariables:
         - name: ps
           fileMatch:
@@ -27,6 +28,7 @@ analyze:
     - name: processes.configmanagement.chef
       labels:
         iconKey: chef_logo
+        desiredPosition: "10"
       registerVariables:
         - name: ps
           fileMatch:

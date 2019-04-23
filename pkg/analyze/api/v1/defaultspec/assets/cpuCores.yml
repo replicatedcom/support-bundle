@@ -3,6 +3,7 @@ analyze:
     - name: cpucores.usage
       labels:
         iconKey: os_cpu
+        desiredPosition: "1"
       registerVariables:
         - name: numproc
           cpuCores: {}

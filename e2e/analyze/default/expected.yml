@@ -1,6 +1,7 @@
 - name: cpucores.usage
   labels:
     iconKey: os_cpu
+    desiredPosition: "1"
   message:
     primary: "8"
     detail: Number of CPU Cores is 8
@@ -12,6 +13,7 @@
 - name: datacenter.unknown
   labels:
     iconKey: datacenter_unknown
+    desiredPosition: "7"
   message:
     primary: Unknown
     detail: Could not determine public IP address.
@@ -21,6 +23,7 @@
 - name: docker.devicemapper.isLoopback
   labels:
     iconKey: docker_whale
+    desiredPosition: "3"
   message:
     primary: Devicemapper with loopback
     detail: Docker devicemapper driver in loopback config
@@ -42,6 +45,20 @@
   variables:
     docker: "1.13.1"
     icc: "false"
+- name: docker.loggingDriver.isJsonFile
+  labels:
+    iconKey: logs
+    desiredPosition: "3"
+  message:
+    primary: json-file/journald
+    detail: Logging driver is json-file or journald
+    severity: debug
+    labels:
+      iconKey: logs
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    driver: json-file
 - name: os.ubuntu
   labels:
     iconKey: os_ubuntu
