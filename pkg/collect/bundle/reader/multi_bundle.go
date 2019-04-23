@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/pkg/errors"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
@@ -70,18 +69,17 @@ func (b *MultiBundle) discoverBundles() error {
 			continue
 		}
 
-		parts := filepath.SplitList(header.Name)
-		if parts[len(parts)-1] != "index.json" {
+		prefix, name := filepath.Split(header.Name)
+		if name != "index.json" {
 			continue
 		}
 
 		var results []collecttypes.Result
-		if err := json.NewDecoder(tr).Decode(&results); err != nil || len(results) == 0 && results[0].Path == "" {
+		if err := json.NewDecoder(tr).Decode(&results); err != nil || len(results) == 0 || results[0].Path == "" {
 			continue
 		}
 
 		// It seems safe to assume this is the root of a bundle
-		prefix := strings.Join(parts[:len(parts)-1], "/")
 		bundle, err := NewBundle(b.Fs, b.Path, prefix)
 		if err != nil {
 			return errors.Wrapf(err, "new bundle at prefix %s", prefix)
