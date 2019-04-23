@@ -17,7 +17,8 @@ type Variable struct {
 	Eval             *variable.Eval             `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
 	FileMatch        *variable.FileMatch        `json:"fileMatch,omitempty" yaml:"fileMatch,omitempty" hcl:"fileMatch,omitempty"`
 	Os               *variable.Os               `json:"os,omitempty" yaml:"os,omitempty" hcl:"os,omitempty"`
-	OsUptime         *variable.OsUptime         `json:"os.uptime,omitempty" yaml:"os.uptime,omitempty" hcl:"os.uptime,omitempty"`
+	OsUptime         *variable.OsUptime         `json:"osUptime,omitempty" yaml:"osUptime,omitempty" hcl:"osUptime,omitempty"`
+	WhichCloud       *variable.WhichCloud       `json:"whichCloud,omitempty" yaml:"whichCloud,omitempty" hcl:"whichCloud,omitempty"`
 }
 
 func (v *Variable) GetName() string {

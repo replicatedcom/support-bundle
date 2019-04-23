@@ -2,8 +2,9 @@ package variable
 
 import (
 	"io"
-	"strings"
+	"regexp"
 
+	"github.com/pkg/errors"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
@@ -12,27 +13,35 @@ var (
 )
 
 type FileMatch struct {
-	Paths []string `json:"paths" yaml:"path" hcl:"paths"`
+	PathRegexps []string `json:"pathRegexps" yaml:"pathRegexps" hcl:"pathRegexps"`
 
 	Distiller `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
-func (v *FileMatch) MatchResults(index []collecttypes.Result) []collecttypes.Result {
+func (v *FileMatch) MatchResults(index []collecttypes.Result) ([]collecttypes.Result, error) {
+	var rePath []*regexp.Regexp
+	for _, path := range v.PathRegexps {
+		re, err := regexp.Compile(path)
+		if err != nil {
+			return nil, errors.Wrapf(err, "compile regexp %q", path)
+		}
+		rePath = append(rePath, re)
+	}
 	var results []collecttypes.Result
 	for _, result := range index {
-		for _, path := range v.Paths {
-			if strings.HasPrefix(strings.TrimPrefix(result.Path, "/"), strings.TrimPrefix(path, "/")) {
+		for _, re := range rePath {
+			if re.MatchString(result.Path) {
 				results = append(results, result)
 			}
 		}
 	}
-	return results
+	return results, nil
 }
 
 func (v *FileMatch) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
 	return v.Distiller.Distill(r)
 }
 
-func (v *FileMatch) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+func (v *FileMatch) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
 	return distilled, nil
 }

@@ -17,7 +17,7 @@ type CoreReadFilePath struct {
 	Distiller `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
-func (v *CoreReadFilePath) MatchResults(index []collecttypes.Result) []collecttypes.Result {
+func (v *CoreReadFilePath) MatchResults(index []collecttypes.Result) ([]collecttypes.Result, error) {
 	var results []collecttypes.Result
 	for _, result := range index {
 		if result.Size == 0 || result.Spec.CoreReadFile == nil {
@@ -29,13 +29,13 @@ func (v *CoreReadFilePath) MatchResults(index []collecttypes.Result) []collectty
 			}
 		}
 	}
-	return results
+	return results, nil
 }
 
 func (v *CoreReadFilePath) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
 	return v.Distiller.Distill(r)
 }
 
-func (v *CoreReadFilePath) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+func (v *CoreReadFilePath) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
 	return distilled, nil
 }

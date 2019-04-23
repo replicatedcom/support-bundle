@@ -2,10 +2,10 @@ analyze:
   v1:
     - name: processes.configmanagement.puppet
       registerVariables:
-      - fileMatch:
-          paths:
-            - default/commands/ps/stdout
-        name: ps
+        - name: ps
+          fileMatch:
+            pathRegexps:
+              - default/commands/ps/stdout
       precondition:
         not:
           empty: {}
@@ -25,10 +25,10 @@ analyze:
           severity: debug
     - name: processes.configmanagement.chef
       registerVariables:
-      - fileMatch:
-          paths:
-            - default/commands/ps/stdout
-        name: ps
+        - name: ps
+          fileMatch:
+            pathRegexps:
+              - default/commands/ps/stdout
       precondition:
         not:
           empty: {}

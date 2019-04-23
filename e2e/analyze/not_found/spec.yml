@@ -25,7 +25,7 @@ analyze:
         iconKey: puppet_logo
       registerVariables:
       - fileMatch:
-          paths:
+          pathRegexps:
             - default/commands/ps/stdout
           regexpCapture:
             regexp: '.+puppet agent .*'

@@ -21,7 +21,7 @@ var (
 type OsUptime struct {
 }
 
-func (v *OsUptime) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
+func (v *OsUptime) MatchResults(index []collecttypes.Result) ([]collecttypes.Result, error) {
 	return matchAny(
 		matchCollector(&collecttypes.CoreUptimeOptions{}),
 		(&CoreReadFilePath{
@@ -41,7 +41,7 @@ func (v *OsUptime) DistillReader(r io.Reader, result collecttypes.Result) (inter
 	return b, errors.Wrap(err, "distill regexpCapture")
 }
 
-func (v *OsUptime) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+func (v *OsUptime) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
 	if distilled == nil {
 		return nil, nil
 	}

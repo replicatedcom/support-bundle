@@ -10,6 +10,16 @@
     }
   },
   {
+    "path": "default/docker/docker_info.json",
+    "format": "",
+    "size": 4323,
+    "spec": {
+      "docker.info": {
+        "output_dir": "default/docker"
+      }
+    }
+  },
+  {
     "path": "default/etc/os-release",
     "format": "",
     "size": 373,

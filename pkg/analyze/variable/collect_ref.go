@@ -17,7 +17,7 @@ type CollectRef struct {
 	Distiller `json:",inline" yaml:",inline" hcl:",inline"`
 }
 
-func (v *CollectRef) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
+func (v *CollectRef) MatchResults(index []collecttypes.Result) (results []collecttypes.Result, err error) {
 	for _, result := range index {
 		if meta.RefMatches(v.Ref, result.Spec.Shared().Meta) {
 			results = append(results, result)
@@ -30,6 +30,6 @@ func (v *CollectRef) DistillReader(r io.Reader, result collecttypes.Result) (int
 	return v.Distiller.Distill(r)
 }
 
-func (v *CollectRef) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+func (v *CollectRef) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
 	return distilled, nil
 }

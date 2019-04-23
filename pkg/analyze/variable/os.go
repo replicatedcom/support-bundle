@@ -23,7 +23,7 @@ var (
 type Os struct {
 }
 
-func (v *Os) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
+func (v *Os) MatchResults(index []collecttypes.Result) ([]collecttypes.Result, error) {
 	m := &CoreReadFilePath{
 		Paths: []string{
 			"/etc/os-release",
@@ -72,6 +72,6 @@ func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (interface{}
 	return nil, nil
 }
 
-func (v *Os) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+func (v *Os) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
 	return distilled, nil
 }

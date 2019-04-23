@@ -6,19 +6,24 @@ import (
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
-type matcher func(index []collecttypes.Result) []collecttypes.Result
+type matcher func(index []collecttypes.Result) ([]collecttypes.Result, error)
 
 func matchAny(m ...matcher) matcher {
-	return func(index []collecttypes.Result) (results []collecttypes.Result) {
+	return func(index []collecttypes.Result) ([]collecttypes.Result, error) {
+		var results []collecttypes.Result
 		for _, matcher := range m {
-			results = append(results, matcher(index)...)
+			matches, err := matcher(index)
+			if err != nil {
+				return results, err
+			}
+			results = append(results, matches...)
 		}
-		return
+		return results, nil
 	}
 }
 
 func matchCollector(field interface{}) matcher {
-	return func(index []collecttypes.Result) (results []collecttypes.Result) {
+	return func(index []collecttypes.Result) (results []collecttypes.Result, err error) {
 		for _, result := range index {
 			if result.Size == 0 {
 				continue

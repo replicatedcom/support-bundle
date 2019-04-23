@@ -4,13 +4,13 @@ analyze:
       labels:
         iconKey: puppet_logo
       registerVariables:
-        - fileMatch:
-            paths:
+        - name: ps
+          fileMatch:
+            pathRegexps:
               - default/commands/ps/stdout
             regexpCapture:
               regexp: '.+puppet agent .*'
               index: 0
-          name: ps
       condition:
         regexpMatch:
           regexp: 'puppet agent '
@@ -28,13 +28,13 @@ analyze:
       labels:
         iconKey: chef_logo
       registerVariables:
-      - fileMatch:
-          paths:
-            - default/commands/ps/stdout
-          regexpCapture:
-            regexp: '.+chef-client.*'
-            index: 0
-        name: ps
+        - name: ps
+          fileMatch:
+            pathRegexps:
+              - default/commands/ps/stdout
+            regexpCapture:
+              regexp: '.+chef-client.*'
+              index: 0
       condition:
         regexpMatch:
           regexp: 'chef-client'

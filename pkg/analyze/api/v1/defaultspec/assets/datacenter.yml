@@ -1,0 +1,123 @@
+analyze:
+  v1:
+    - name: datacenter.aws
+      labels:
+        iconKey: datacenter_aws
+      registerVariables:
+        - name: publicAddress
+          fileMatch:
+            pathRegexps:
+              - /containers/replicated-operator\.json
+              - /inspect/replicated-operator\.json
+              - /replicated-operator-inspect\.json
+            regexpCapture:
+              regexp: '"PUBLIC_ADDRESS=([^"]+)"'
+              index: 1
+        - name: provider
+          whichCloud:
+            variableRef: publicAddress
+      precondition:
+        not:
+          empty: {}
+          variableRef: publicAddress
+      condition:
+        stringCompare:
+          eq: aws
+        variableRef: provider
+      messages:
+        conditionTrue:
+          primary: AWS
+          detail: This is an AWS instance
+          severity: info
+    - name: datacenter.gce
+      labels:
+        iconKey: datacenter_gce
+      registerVariables:
+        - name: publicAddress
+          fileMatch:
+            pathRegexps:
+              - /containers/replicated-operator\.json
+              - /inspect/replicated-operator\.json
+              - /replicated-operator-inspect\.json
+            regexpCapture:
+              regexp: '"PUBLIC_ADDRESS=([^"]+)"'
+              index: 1
+        - name: provider
+          whichCloud:
+            variableRef: publicAddress
+      precondition:
+        not:
+          empty: {}
+          variableRef: publicAddress
+      condition:
+        stringCompare:
+          eq: gce
+        variableRef: provider
+      messages:
+        conditionTrue:
+          primary: GCE
+          detail: This is a GCE instance
+          severity: info
+    - name: datacenter.azure
+      labels:
+        iconKey: datacenter_azure
+      registerVariables:
+        - name: publicAddress
+          fileMatch:
+            pathRegexps:
+              - /containers/replicated-operator\.json
+              - /inspect/replicated-operator\.json
+              - /replicated-operator-inspect\.json
+            regexpCapture:
+              regexp: '"PUBLIC_ADDRESS=([^"]+)"'
+              index: 1
+        - name: provider
+          whichCloud:
+            variableRef: publicAddress
+      precondition:
+        not:
+          empty: {}
+          variableRef: publicAddress
+      condition:
+        stringCompare:
+          eq: azure
+        variableRef: provider
+      messages:
+        conditionTrue:
+          primary: Azure
+          detail: This is an Azure instance
+          severity: info
+    - name: datacenter.unknown
+      labels:
+        iconKey: datacenter_unknown
+      registerVariables:
+        - name: publicAddress
+          fileMatch:
+            pathRegexps:
+              - /containers/replicated-operator\.json
+              - /inspect/replicated-operator\.json
+              - /replicated-operator-inspect\.json
+            regexpCapture:
+              regexp: '"PUBLIC_ADDRESS=([^"]+)"'
+              index: 1
+        - name: provider
+          whichCloud:
+            variableRef: publicAddress
+      precondition:
+        not:
+          empty: {}
+          variableRef: publicAddress
+      condition:
+        not:
+          stringCompare:
+            in: [aws,gce,azure]
+          variableRef: provider
+      messages:
+        preconditionFalse:
+          primary: Unknown
+          detail: Could not determine public IP address.
+          severity: debug
+        conditionTrue:
+          primary: Unknown
+          detail: Could not determine datacenter location of address {{repl .publicAddress}}.
+          severity: debug

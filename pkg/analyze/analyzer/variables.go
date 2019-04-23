@@ -84,7 +84,11 @@ func (a *Analyzer) distillBundle(variables []v1.Variable, bundleReader bundlerea
 			return nil, fmt.Errorf("no variable defined for %s", v.GetName())
 		}
 		variablesMap[name] = variable
-		for _, result := range variable.MatchResults(index) {
+		results, err := variable.MatchResults(index)
+		if err != nil {
+			return nil, fmt.Errorf("variable %s match results", v.GetName())
+		}
+		for _, result := range results {
 			resultsToVariables[result] = append(resultsToVariables[result], name)
 		}
 	}

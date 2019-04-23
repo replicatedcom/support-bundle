@@ -1,0 +1,37 @@
+analyze:
+  v1:
+    - name: docker.devicemapper.isLoopback
+      labels:
+        iconKey: docker_whale
+      registerVariables:
+        - name: driver
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"Driver": "([^"]+)"'
+              index: 1
+        - name: loopback
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: 'Data loop file'
+              index: 0
+      precondition:
+        stringCompare:
+          eq: devicemapper
+        variableRef: driver
+      condition:
+        not:
+          empty: {}
+          variableRef: loopback
+      messages:
+        conditionFalse:
+          primary: Devicemapper not in loopback
+          detail: Docker devicemapper driver NOT in loopback config
+          severity: debug
+        conditionTrue:
+          primary: Devicemapper with loopback
+          detail: Docker devicemapper driver in loopback config
+          severity: warn

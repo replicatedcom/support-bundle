@@ -13,14 +13,14 @@ var (
 
 type Eval string
 
-func (v *Eval) MatchResults(index []collecttypes.Result) []collecttypes.Result {
-	return nil
+func (v *Eval) MatchResults(index []collecttypes.Result) ([]collecttypes.Result, error) {
+	return nil, nil
 }
 
 func (v *Eval) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
 	return nil, nil
 }
 
-func (v *Eval) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+func (v *Eval) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
 	return templates.String(string(*v), data)
 }

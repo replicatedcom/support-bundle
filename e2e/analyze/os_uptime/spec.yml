@@ -3,7 +3,7 @@ analyze:
     - name: os-uptime
       registerVariables:
         - name: osUptime
-          os.uptime: {}
+          osUptime: {}
       condition:
         not:
           empty: {}

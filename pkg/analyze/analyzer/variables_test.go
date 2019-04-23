@@ -39,7 +39,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 						Name: "majorVersion",
 					},
 					FileMatch: &variable.FileMatch{
-						Paths: []string{"/kubernetes/version/server_version.json"},
+						PathRegexps: []string{`kubernetes/version/server_version\.json`},
 						Distiller: variable.Distiller{
 							RegexpCapture: &distiller.RegexpCapture{
 								Regexp: `"major": "([^"]+)"`,
@@ -76,7 +76,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 			variables: []v1.Variable{
 				{
 					FileMatch: &variable.FileMatch{
-						Paths: []string{"/kubernetes/version/server_version.json"},
+						PathRegexps: []string{`kubernetes/version/server_version\.json`},
 						Distiller: variable.Distiller{
 							RegexpCapture: &distiller.RegexpCapture{
 								Regexp: `"gitCommit": "([^"]+)"`,
@@ -109,7 +109,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 						Name: "gitCommit",
 					},
 					FileMatch: &variable.FileMatch{
-						Paths: []string{"/etc/os-release/stdout"},
+						PathRegexps: []string{`etc/os-release/stdout`},
 						Distiller: variable.Distiller{
 							Identity: &distiller.Identity{},
 						},
@@ -127,7 +127,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 						Name: "serverVersionJson",
 					},
 					FileMatch: &variable.FileMatch{
-						Paths: []string{"/kubernetes/version/server_version.json"},
+						PathRegexps: []string{`kubernetes/version/server_version\.json`},
 					},
 				},
 			},
@@ -144,7 +144,7 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 						Name: "gitCommit",
 					},
 					FileMatch: &variable.FileMatch{
-						Paths: []string{"/kubernetes/version/server_version.json"},
+						PathRegexps: []string{`kubernetes/version/server_version\.json`},
 						Distiller: variable.Distiller{
 							RegexpCapture: &distiller.RegexpCapture{
 								Regexp: `(`,

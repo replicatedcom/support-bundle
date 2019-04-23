@@ -20,7 +20,7 @@ var (
 type CPUCores struct {
 }
 
-func (v *CPUCores) MatchResults(index []collecttypes.Result) (results []collecttypes.Result) {
+func (v *CPUCores) MatchResults(index []collecttypes.Result) ([]collecttypes.Result, error) {
 	m := &CoreReadFilePath{
 		Paths: []string{
 			"/proc/cpuinfo",
@@ -38,7 +38,7 @@ func (v *CPUCores) DistillReader(r io.Reader, result collecttypes.Result) (inter
 	return b, errors.Wrap(err, "distill regexpCaptureAll")
 }
 
-func (v *CPUCores) ExtractValue(distilled interface{}, data interface{}) (interface{}, error) {
+func (v *CPUCores) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
 	switch value := distilled.(type) {
 	case []string:
 		numproc := len(value)

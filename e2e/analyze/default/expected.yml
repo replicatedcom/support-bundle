@@ -9,6 +9,27 @@
   analyzerSpec: 'IGNORED'
   variables:
     numproc: 8
+- name: datacenter.unknown
+  labels:
+    iconKey: datacenter_unknown
+  message:
+    primary: Unknown
+    detail: Could not determine public IP address.
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+- name: docker.devicemapper.isLoopback
+  labels:
+    iconKey: docker_whale
+  message:
+    primary: Devicemapper with loopback
+    detail: Docker devicemapper driver in loopback config
+    severity: warn
+  severity: warn
+  analyzerSpec: 'IGNORED'
+  variables:
+    driver: devicemapper
+    loopback: Data loop file
 - name: os.ubuntu
   labels:
     iconKey: os_ubuntu

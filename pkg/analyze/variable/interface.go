@@ -12,10 +12,10 @@ type Interface interface {
 }
 
 type ResultDistiller interface {
-	MatchResults(index []collecttypes.Result) []collecttypes.Result
+	MatchResults(index []collecttypes.Result) ([]collecttypes.Result, error)
 	DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error)
 }
 
 type ValueExtractor interface {
-	ExtractValue(distilled interface{}, data interface{}) (interface{}, error)
+	ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error)
 }

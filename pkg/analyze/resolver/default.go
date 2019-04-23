@@ -15,7 +15,10 @@ import (
 func (r *Resolver) ResolveDefaultSpec(ctx context.Context) (resolved api.Doc, err error) {
 	debug := level.Debug(log.With(r.Logger, "method", "Resolver.ResolveDefaultSpec"))
 
-	for _, name := range sort.StringSlice(defaultspec.AssetNames()) {
+	assetNames := sort.StringSlice(defaultspec.AssetNames())
+	sort.Sort(assetNames)
+
+	for _, name := range assetNames {
 		b, errI := defaultspec.Asset(name)
 		debug.Log(
 			"phase", "asset.load",

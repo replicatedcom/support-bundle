@@ -14,6 +14,7 @@ func Test_matcherCollector(t *testing.T) {
 		field   interface{}
 		results []collecttypes.Result
 		want    []collecttypes.Result
+		wantErr bool
 	}{
 		{
 			name:    "match",
@@ -30,7 +31,11 @@ func Test_matcherCollector(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := matchCollector(tt.field)(tt.results)
+			got, err := matchCollector(tt.field)(tt.results)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("matchCollector() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
 			assert.Equal(t, tt.want, got)
 		})
 	}
