@@ -18,7 +18,7 @@ import (
 )
 
 func InspectE(ctx context.Context, bundlePath string) (map[string][]collecttypes.Result, error) {
-	a, err := Get()
+	a, err := Get(viper.GetViper())
 	if err != nil {
 		return nil, err
 	}
@@ -26,16 +26,16 @@ func InspectE(ctx context.Context, bundlePath string) (map[string][]collecttypes
 }
 
 func RunE(ctx context.Context, bundlePath string) ([]api.Result, error) {
-	a, err := Get()
+	a, err := Get(viper.GetViper())
 	if err != nil {
 		return nil, err
 	}
 	return a.Execute(ctx, bundlePath)
 }
 
-func Get() (*Analyze, error) {
+func Get(v *viper.Viper) (*Analyze, error) {
 	// who injects the injectors?
-	logger := logger.FromViper(viper.GetViper())
+	logger := logger.FromViper(v)
 	debug := log.With(level.Debug(logger), "component", "injector", "phase", "instance.get")
 
 	debug.Log("event", "injector.build")
