@@ -1,0 +1,126 @@
+2019-04-24T21:27:07.161835448Z INFO 2019-04-24T21:27:07+00:00 daemon/daemon.go:54 Starting Replicated version 2.34.1 (git="4122872", date="2019-04-01 23:13:29 +0000 UTC")
+2019-04-24T21:27:07.166332502Z INFO 2019-04-24T21:27:07+00:00 [pkg/docker] client.go:82 Docker client initialized for API version 1.39
+2019-04-24T21:27:07.181973974Z INFO 2019-04-24T21:27:07+00:00 crypto/local_cipher.go:43 Generated new local cipher key+nonce
+2019-04-24T21:27:08.201266698Z INFO 2019-04-24T21:27:08+00:00 crypto/ca.go:79 Creating new certificate authority
+2019-04-24T21:27:08.552854768Z INFO 2019-04-24T21:27:08+00:00 crypto/ca.go:83 New certificate authority created successfully
+2019-04-24T21:27:09.939968997Z INFO 2019-04-24T21:27:09+00:00 crypto/ca.go:121 Creating new default certificate for address=10.128.0.67
+2019-04-24T21:27:10.070550421Z INFO 2019-04-24T21:27:10+00:00 crypto/ca.go:337 Successfully generated new keypair for address=10.128.0.67, cns=[10.128.0.67]
+2019-04-24T21:27:10.070574917Z INFO 2019-04-24T21:27:10+00:00 crypto/ca.go:125 New default certificate created successfully
+2019-04-24T21:27:10.071128105Z INFO 2019-04-24T21:27:10+00:00 crypto/certs/manager.go:71 New key pair for TLS configuration generated
+2019-04-24T21:27:10.071700758Z INFO 2019-04-24T21:27:10+00:00 eventmanager/event_manager.go:30 No event listener registered for event "RELOAD_AGENT_CLIENT_CA"
+2019-04-24T21:27:10.107331293Z INFO 2019-04-24T21:27:10+00:00 scheduler/native/migrate/280.go:68 Replicated native migration 2.8.0 complete
+2019-04-24T21:27:10.107364038Z INFO 2019-04-24T21:27:10+00:00 models/migrate/console_settings_migrate_2100.go:105 Console settings migration 2.10.0 success
+2019-04-24T21:27:10.176807011Z ERRO 2019-04-24T21:27:10+00:00 taskqueue/task.go:159 Task b4cae054e1204431b0a4075c67e4c16b not found
+2019-04-24T21:27:10.177517029Z INFO 2019-04-24T21:27:10+00:00 tasks/replicated.go:175 Automatic snapshots disabled
+2019-04-24T21:27:28.933700592Z INFO 2019-04-24T21:27:28+00:00 premkit/controller.go:71 Premkit started successfully
+2019-04-24T21:27:29.149490594Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-postgres
+2019-04-24T21:27:29.149518095Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-redis
+2019-04-24T21:27:29.149523541Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-display-template-setup
+2019-04-24T21:27:29.149528018Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-api-bootstrapper
+2019-04-24T21:27:29.149532775Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-api
+2019-04-24T21:27:29.149536971Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-pg-migrate
+2019-04-24T21:27:29.149541231Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-nsqd
+2019-04-24T21:27:29.149545465Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-processor
+2019-04-24T21:27:29.149559003Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-cron
+2019-04-24T21:27:29.555591718Z INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:895 Retraced Docker network replicated_retraced (1880f6cca5cd4aabedf5ae6ec8288fd60a7e887766756e2bb3bf8c8a163a3ddd) created.
+2019-04-24T21:27:44.837233872Z INFO 2019-04-24T21:27:44+00:00 [pkg/piper] cmd.go:174 Piper result failed for file /var/lib/replicated/snapshots/files/db.dump: lstat /host/var/lib/replicated/snapshots/files/db.dump: no such file or directory
+2019-04-24T21:27:44.837256066Z INFO 2019-04-24T21:27:44+00:00 snapshots/server/handlers.go:579 Store does not have a database. Resetting local db.
+2019-04-24T21:27:44.895111463Z INFO 2019-04-24T21:27:44+00:00 snapshots/server/server.go:136 Snapshot server started.
+2019-04-24T21:28:15.082410830Z INFO 2019-04-24T21:28:15+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-nsqd.
+2019-04-24T21:28:15.259494027Z INFO 2019-04-24T21:28:15+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-postgres.
+2019-04-24T21:28:18.982687221Z INFO 2019-04-24T21:28:18+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-cron.
+2019-04-24T21:28:26.865241867Z INFO 2019-04-24T21:28:26+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-processor.
+2019-04-24T21:28:27.550777462Z INFO 2019-04-24T21:28:27+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-api.
+2019-04-24T21:28:33.711130437Z INFO 2019-04-24T21:28:33+00:00 pkg/health/await_healthy.go:16 Waiting for service retraced
+2019-04-24T21:28:33.763792440Z INFO 2019-04-24T21:28:33+00:00 pkg/health/await_healthy.go:21 Service retraced is ready
+2019-04-24T21:28:37.085942005Z INFO 2019-04-24T21:28:37+00:00 daemon/handlers/component_config.go:51 TLS console settings changed, type=self-signed, hostname=
+2019-04-24T21:28:50.698233416Z WARN 2019-04-24T21:28:50+00:00 [pkg/libyamlv2] util.go:31 Failed to unmarshal doc: Key: 'Meta.Kind' Error:Field validation for 'Kind' failed on the 'required' tag
+2019-04-24T21:28:50.699377702Z WARN 2019-04-24T21:28:50+00:00 [pkg/libyamlv2] util.go:31 Failed to unmarshal doc: Key: 'Meta.Kind' Error:Field validation for 'Kind' failed on the 'required' tag
+2019-04-24T21:28:50.708074432Z INFO 2019-04-24T21:28:50+00:00 marketlicense/app.go:472 Importing app 6888a4e330a54b6b4a0102c4f1f9c9fc:579 from api model
+2019-04-24T21:28:51.568982234Z INFO 2019-04-24T21:28:51+00:00 registry/registry.go:185 Shutting down registry server
+2019-04-24T21:28:51.569012986Z INFO 2019-04-24T21:28:51+00:00 daemon/daemon.go:748 Registry server is being restarted: start registry server on address 0.0.0.0:9874: http: Server closed
+2019-04-24T21:28:51.569018322Z INFO 2019-04-24T21:28:51+00:00 integration/server.go:123 Shutting down integration server
+2019-04-24T21:28:51.569022457Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-postgres
+2019-04-24T21:28:51.569034788Z INFO 2019-04-24T21:28:51+00:00 daemon/daemon.go:762 Integration server is being restarted: start integration api server on address 0.0.0.0:9877: http: Server closed
+2019-04-24T21:28:51.569052480Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-redis
+2019-04-24T21:28:51.569056911Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-display-template-setup
+2019-04-24T21:28:51.569061174Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-api-bootstrapper
+2019-04-24T21:28:51.569064836Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-api
+2019-04-24T21:28:51.569068550Z INFO 2019-04-24T21:28:51+00:00 [operator] server.go:83 Operator service is waiting for connections on 0.0.0.0:9879
+2019-04-24T21:28:51.569072505Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-processor
+2019-04-24T21:28:51.569076040Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-nsqd
+2019-04-24T21:28:51.569079989Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-pg-migrate
+2019-04-24T21:28:51.569083969Z INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-cron
+2019-04-24T21:28:52.808462592Z INFO 2019-04-24T21:28:52+00:00 [replicated-native] manager.go:445 Premkit container died
+2019-04-24T21:28:53.372118682Z ERRO 2019-04-24T21:28:53+00:00 [replicated-native] manager.go:190 Failed to remove premkit container: API error (409): removal of container bff4a47a050094a49b5c54e11174f2c4c9229bae7e320619538baf3867eb7d6a is already in progress
+2019-04-24T21:28:53.974790705Z INFO 2019-04-24T21:28:53+00:00 [replicated-native] manager.go:445 Premkit container died
+2019-04-24T21:28:54.900213320Z INFO 2019-04-24T21:28:54+00:00 [operator] server.go:127 Operator service accepted connection: 172.17.0.1:40084
+2019-04-24T21:28:54.990990294Z INFO 2019-04-24T21:28:54+00:00 [operator] server.go:411 Operator "068f2189e10c4a72769e8b5126721658" connected
+2019-04-24T21:28:58.201557649Z INFO 2019-04-24T21:28:58+00:00 [operator] session.go:184 Operator "068f2189e10c4a72769e8b5126721658" initialized
+2019-04-24T21:29:27.680109535Z INFO 2019-04-24T21:29:27+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-postgres.
+2019-04-24T21:29:28.053728199Z WARN 2019-04-24T21:29:28+00:00 models/app_version.go:1184 Failed to run config option item secret_v1 commands: 1 error occurred:
+2019-04-24T21:29:28.053755550Z * value command generate_random_secret[0] not found
+2019-04-24T21:29:28.504606924Z INFO 2019-04-24T21:29:28+00:00 models/app_version.go:1126 App 6888a4e330a54b6b4a0102c4f1f9c9fc:579 import from api model complete
+2019-04-24T21:29:28.510448518Z ERRO 2019-04-24T21:29:28+00:00 models/app.go:254 Cannot find app 6888a4e330a54b6b4a0102c4f1f9c9fc
+2019-04-24T21:29:28.510490164Z WARN 2019-04-24T21:29:28+00:00 appstatus/monitor.go:65 Failed to refresh app status: resource not found
+2019-04-24T21:29:28.652982009Z WARN 2019-04-24T21:29:28+00:00 [replicated-native] manager.go:77 `Manager` asked to start premkit a subsequent time
+2019-04-24T21:29:29.306250057Z INFO 2019-04-24T21:29:29+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-nsqd.
+2019-04-24T21:29:29.574204565Z INFO 2019-04-24T21:29:29+00:00 premkit/controller.go:71 Premkit started successfully
+2019-04-24T21:29:33.283796832Z INFO 2019-04-24T21:29:33+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-cron.
+2019-04-24T21:29:33.855120471Z ERRO 2019-04-24T21:29:33+00:00 taskqueue/task.go:159 Task start_version_6888a4e330a54b6b4a0102c4f1f9c9fc_579 not found
+2019-04-24T21:29:33.857625732Z WARN 2019-04-24T21:29:33+00:00 models/audit/audit_event.go:66 retraced auditor failed to report license.install: Post https://10.128.0.67:9873/publisher/v1/project/c29tZSByZWFsbHkgbG9uZyBwcm9qZWN0IGlk/event: dial tcp 10.128.0.67:9873: connect: connection refused
+2019-04-24T21:29:34.471995865Z INFO 2019-04-24T21:29:34+00:00 marketlicense/app.go:472 Importing app 6888a4e330a54b6b4a0102c4f1f9c9fc:579 from api model
+2019-04-24T21:29:34.880645685Z INFO 2019-04-24T21:29:34+00:00 models/app_version.go:1126 App 6888a4e330a54b6b4a0102c4f1f9c9fc:579 import from api model complete
+2019-04-24T21:29:46.686964987Z INFO 2019-04-24T21:29:46+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-processor.
+2019-04-24T21:29:47.526985984Z WARN 2019-04-24T21:29:47+00:00 models/audit/audit_event.go:66 retraced auditor failed to report console.auth.change: Post https://10.128.0.67:9873/publisher/v1/project/c29tZSByZWFsbHkgbG9uZyBwcm9qZWN0IGlk/event: dial tcp 10.128.0.67:9873: connect: connection refused
+2019-04-24T21:29:47.527015145Z WARN 2019-04-24T21:29:47+00:00 models/audit/audit_event.go:66 retraced auditor failed to report console.authenticate: Post https://10.128.0.67:9873/publisher/v1/project/c29tZSByZWFsbHkgbG9uZyBwcm9qZWN0IGlk/event: dial tcp 10.128.0.67:9873: connect: connection refused
+2019-04-24T21:30:17.845984687Z INFO 2019-04-24T21:30:17+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-api.
+2019-04-24T21:30:28.429487760Z ERRO 2019-04-24T21:30:28+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:30:28.429517895Z ERRO 2019-04-24T21:30:28+00:00 [replicated-native] port_available.go:88 Failed to run command on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:30:28.429523481Z INFO 2019-04-24T21:30:28+00:00 [pkg/commands] runner.go:44 Command port-available-80 failed: timeout
+2019-04-24T21:30:29.083645461Z ERRO 2019-04-24T21:30:29+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:30:29.083676307Z INFO 2019-04-24T21:30:29+00:00 [pkg/commands] runner.go:44 Command disk-space-available--var-lib-replicated failed: timeout
+2019-04-24T21:30:30.063814554Z ERRO 2019-04-24T21:30:30+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:30:30.063860466Z INFO 2019-04-24T21:30:30+00:00 [pkg/commands] runner.go:44 Command raw failed: timeout
+2019-04-24T21:30:32.793808398Z WARN 2019-04-24T21:30:32+00:00 [api/common] preflight.go:12 User manually dismissed preflight preinstall checks
+2019-04-24T21:30:33.073544913Z WARN 2019-04-24T21:30:33+00:00 [api/common] preflight.go:20 User manually dismissed preflight postinstall checks (6888a4e330a54b6b4a0102c4f1f9c9fc:579)
+2019-04-24T21:30:33.162846897Z WARN 2019-04-24T21:30:33+00:00 [replicated-native] preflight_handler.go:243 User manually dismissed preflight node checks for node 068f2189e10c4a72769e8b5126721658
+2019-04-24T21:30:33.550137275Z INFO 2019-04-24T21:30:33+00:00 daemon/handlers/app_status.go:67 Unable to transition app state: app version 579 is starting
+2019-04-24T21:30:33.550329561Z ERRO 2019-04-24T21:30:33+00:00 premkit/log/gin.go:97 [GIN] 412 |   1.184131ms |  | PUT     /v0.1/app/status
+2019-04-24T21:31:12.967748541Z INFO 2019-04-24T21:31:12+00:00 registry/registryv2_handlers.go:285 missing signature key
+2019-04-24T21:31:12.968637963Z ERRO 2019-04-24T21:31:12+00:00 premkit/log/gin.go:97 [GIN] 400 |    545.426µs | 10.128.0.67 | PUT     /v2/library/support-bundle/manifests/latest
+2019-04-24T21:31:13.668398682Z INFO 2019-04-24T21:31:13+00:00 daemon/daemon.go:1436 Support bundle push succeeded
+2019-04-24T21:31:14.108362297Z ERRO 2019-04-24T21:31:14+00:00 [replicated-native] scheduler.go:99 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:31:14.108396048Z INFO 2019-04-24T21:31:14+00:00 [pkg/commands] runner.go:44 Command scheduler failed: timeout
+2019-04-24T21:31:14.201399049Z ERRO 2019-04-24T21:31:14+00:00 premkit/log/gin.go:97 [GIN] 400 | 31.89611419s |  | PUT     /v0.1/app/config
+2019-04-24T21:31:25.447400550Z INFO 2019-04-24T21:31:25+00:00 [replicated-native] cluster.go:88 Operator "068f2189e10c4a72769e8b5126721658" tags changed ["db" "lb"]
+2019-04-24T21:31:36.284894362Z INFO 2019-04-24T21:31:36+00:00 pkg/health/await_healthy.go:16 Waiting for service retraced
+2019-04-24T21:31:36.308209058Z INFO 2019-04-24T21:31:36+00:00 pkg/health/await_healthy.go:21 Service retraced is ready
+2019-04-24T21:31:38.177525774Z ERRO 2019-04-24T21:31:38+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:31:38.177576979Z ERRO 2019-04-24T21:31:38+00:00 [replicated-native] port_available.go:88 Failed to run command on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:31:38.177582685Z INFO 2019-04-24T21:31:38+00:00 [pkg/commands] runner.go:44 Command port-available-80 failed: timeout
+2019-04-24T21:31:38.177586712Z INFO 2019-04-24T21:31:38+00:00 [pkg/commands] runner.go:44 Command port-available-80 failed: timeout
+2019-04-24T21:31:41.302146718Z ERRO 2019-04-24T21:31:41+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:31:41.302180953Z INFO 2019-04-24T21:31:41+00:00 [pkg/commands] runner.go:44 Command disk-space-available--var-lib-replicated failed: timeout
+2019-04-24T21:31:41.315805833Z ERRO 2019-04-24T21:31:41+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:31:41.315840570Z INFO 2019-04-24T21:31:41+00:00 [pkg/commands] runner.go:44 Command raw failed: timeout
+2019-04-24T21:31:41.351760377Z ERRO 2019-04-24T21:31:41+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:31:41.351787008Z INFO 2019-04-24T21:31:41+00:00 [pkg/commands] runner.go:44 Command disk-space-available--var-lib-replicated failed: timeout
+2019-04-24T21:31:42.029744355Z ERRO 2019-04-24T21:31:42+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:31:42.029773300Z INFO 2019-04-24T21:31:42+00:00 [pkg/commands] runner.go:44 Command raw failed: timeout
+2019-04-24T21:32:15.750252363Z ERRO 2019-04-24T21:32:15+00:00 [replicated-native] scheduler.go:99 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:32:15.750291936Z INFO 2019-04-24T21:32:15+00:00 [pkg/commands] runner.go:44 Command scheduler failed: timeout
+2019-04-24T21:33:03.312098088Z INFO 2019-04-24T21:33:03+00:00 scheduler/preflight.go:64 Running preflight checks for version 579
+2019-04-24T21:33:19.180922150Z ERRO 2019-04-24T21:33:19+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:33:19.181044163Z INFO 2019-04-24T21:33:19+00:00 [pkg/commands] runner.go:44 Command disk-space-available--var-lib-replicated failed: timeout
+2019-04-24T21:33:19.305675241Z ERRO 2019-04-24T21:33:19+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:33:19.305718656Z ERRO 2019-04-24T21:33:19+00:00 [replicated-native] port_available.go:88 Failed to run command on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:33:19.305724329Z INFO 2019-04-24T21:33:19+00:00 [pkg/commands] runner.go:44 Command port-available-80 failed: timeout
+2019-04-24T21:33:19.658968215Z ERRO 2019-04-24T21:33:19+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:33:19.659000378Z INFO 2019-04-24T21:33:19+00:00 [pkg/commands] runner.go:44 Command raw failed: timeout
+2019-04-24T21:33:36.012539627Z ERRO 2019-04-24T21:33:36+00:00 [replicated-native] scheduler.go:99 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+2019-04-24T21:33:36.012570661Z INFO 2019-04-24T21:33:36+00:00 [pkg/commands] runner.go:44 Command scheduler failed: timeout
+2019-04-24T21:33:36.030790668Z WARN 2019-04-24T21:33:36+00:00 scheduler/preflight.go:89 Node preflight checks have failed for version 579
+2019-04-24T21:34:41.161856931Z ERRO 2019-04-24T21:34:41+00:00 scheduler/native/scheduler.go:290 Native schedule support bundles error: 1 error occurred:
+2019-04-24T21:34:41.161904207Z * 068f2189e10c4a72769e8b5126721658: send external support bundle request: send external support bundle request: context deadline exceeded
+2019-04-24T21:34:41.161914074Z INFO 2019-04-24T21:34:41+00:00 support/external.go:177 Support bundle received late id: master

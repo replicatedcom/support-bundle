@@ -167,3 +167,17 @@
   analyzerSpec: 'IGNORED'
   variables:
     os: centos
+- name: replicated.replicatedd.replicatedConfFormat
+  labels:
+    iconKey: logs
+    desiredPosition: "3"
+  message:
+    primary: replicated.conf ok
+    detail: /etc/replicated.conf is correctly formatted
+    severity: debug
+    labels:
+      iconKey: logs
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    replicatedLogExists: "2"

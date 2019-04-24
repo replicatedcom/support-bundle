@@ -1,0 +1,35 @@
+[
+  {
+    "path": "/VERSION.json",
+    "format": "",
+    "size": 88,
+    "spec": {
+      "description": "Support bundle version information",
+      "output_dir": "/",
+      "version": {}
+    }
+  },
+  {
+    "path": "/replicated/logs/replicated.journald/logs.raw",
+    "format": "",
+    "size": 20782,
+    "spec": {
+      "journald.logs": {
+        "output_dir": "/replicated/logs/replicated.journald/",
+        "unit": "replicated",
+        "since": "-7 days"
+      }
+    }
+  },
+  {
+    "path": "/replicated/logs/replicated.stderr",
+    "format": "",
+    "size": 19684,
+    "spec": {
+      "docker.container-logs": {
+        "output_dir": "/replicated/logs/",
+        "container": "replicated"
+      }
+    }
+  }
+]
