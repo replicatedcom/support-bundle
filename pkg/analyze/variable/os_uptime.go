@@ -45,9 +45,9 @@ func (v *OsUptime) ExtractValue(distilled interface{}, data map[string]interface
 	if distilled == nil {
 		return nil, nil
 	}
-	i, err := strconv.ParseFloat(distilled.(string), 64)
+	f, err := strconv.ParseFloat(distilled.(string), 64)
 	if err != nil {
 		return nil, errors.Wrap(err, "parse float")
 	}
-	return int(i), nil
+	return f, nil
 }

@@ -27,9 +27,9 @@ analyze:
       messages:
         conditionFalse:
           primary: Unknown
-          detail: Could not determine loadavg. Ensure your specs include a command `os.loadavg`
+          detail: Could not determine loadavg. Ensure your specs include the command `os.loadavg`.
           severity: debug
         conditionTrue:
-          primary: '{{repl .loadavg1}} {{repl .loadavg5}} {{repl .loadavg15}}'
+          primary: '{{repl .loadavg1 | printf "%.2f"}} {{repl .loadavg5 | printf "%.2f"}} {{repl .loadavg15 | printf "%.2f"}}'
           detail: CPU load averages over 1, 5, and 15 minutes
           severity: info

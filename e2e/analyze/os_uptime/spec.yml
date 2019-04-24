@@ -10,6 +10,6 @@ analyze:
           variableRef: osUptime
       messages:
         conditionTrue:
-          primary: '{{repl seconds .osUptime}}'
-          detail: Host has been up for {{repl seconds .osUptime}}
+          primary: '{{repl .osUptime | seconds | humanDuration}}'
+          detail: Host has been up for {{repl .osUptime | seconds | humanDuration}}
           severity: info

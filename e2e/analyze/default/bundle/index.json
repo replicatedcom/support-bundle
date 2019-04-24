@@ -55,6 +55,17 @@
     }
   },
   {
+    "path": "default/proc/meminfo",
+    "format": "",
+    "size": 1282,
+    "spec": {
+      "os.read-file": {
+        "output_dir": "default/proc",
+        "filepath": "/proc/meminfo"
+      }
+    }
+  },
+  {
     "path": "default/commands/loadavg/loadavg",
     "format": "",
     "size": 27,

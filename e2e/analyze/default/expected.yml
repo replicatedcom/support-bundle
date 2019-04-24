@@ -88,7 +88,7 @@
     iconKey: os_loadavg
     desiredPosition: "8"
   message:
-    primary: "0 0.01 0.05"
+    primary: "0.00 0.01 0.05"
     detail: CPU load averages over 1, 5, and 15 minutes
     severity: info
   severity: info
@@ -98,6 +98,20 @@
     loadavg1: 0
     loadavg5: 0.01
     loadavg15: 0.05
+- name: memory.usage
+  labels:
+    iconKey: os_memory
+    desiredPosition: "6"
+  message:
+    primary: '7%'
+    detail: '535.8MB memory used of 7.673GB'
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    memoryUsageAvailable: 7.137214464e+09
+    memoryUsageTotal: 7.673032704e+09
+    memoryUsagePercent: "6.983135100162868"
 - name: os.ubuntu
   labels:
     iconKey: os_ubuntu
