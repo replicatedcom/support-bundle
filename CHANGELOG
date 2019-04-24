@@ -192,6 +192,7 @@
 0.23.3 /2019-03-22
     * Fixed error message in errors.json when os.read-file file does not exist
 
-0.24.0 /2019-04-09
+0.24.0 /2019-04-24
     * Added internal "goroutines" and "logs" collectors and included in the default bundle at default/support-bundle/
     * All debug logs now go to stdout
+    * Fixed container image vulnerability CVE-2018-1049 in libssh and CVE-2019-3863 in systemd and udev packages

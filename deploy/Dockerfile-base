@@ -8,6 +8,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-instal
     jq \
     gnupg \
     \
+    systemd \
+    udev \
     \
   && rm -rf /var/lib/apt/lists/* \
   && update-ca-certificates
