@@ -1,4 +1,4 @@
-.PHONY: docker deps fmt vet _vet lint _lint test _test build _build bindata _mockgen mockgen build-deps dep-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
+.PHONY: docs docker deps fmt vet _vet lint _lint test _test build _build bindata _mockgen mockgen build-deps dep-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
 
 SHELL := /bin/bash
 SRC = $(shell find . -name "*.go")
@@ -20,6 +20,9 @@ else
 	BUILD_DIR := $(shell pwd)
 endif
 DOCKER_REPO ?= replicated
+
+docs:
+	make -C hack/docs pipeline-nointegration
 
 docker:
 	docker build -t support-bundle .
