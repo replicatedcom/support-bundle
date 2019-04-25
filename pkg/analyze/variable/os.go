@@ -43,7 +43,7 @@ func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (interface{}
 			Regexp: osReleaseRegexp,
 			Index:  1,
 		}
-		str, _, err := distiller.Distill(d, r, false)
+		str, err := distiller.Distill(d, r, false)
 		return str, errors.Wrap(err, "distill regexpCapture")
 
 	case "system-release":
@@ -55,7 +55,7 @@ func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (interface{}
 			Regexp: systemReleaseRegexp,
 			Index:  1,
 		}
-		i, _, err := distiller.Distill(d, r, false)
+		i, err := distiller.Distill(d, r, false)
 		if err != nil {
 			return i, errors.Wrap(err, "distill regexpCapture")
 		}
@@ -72,6 +72,6 @@ func (v *Os) DistillReader(r io.Reader, result collecttypes.Result) (interface{}
 	return nil, nil
 }
 
-func (v *Os) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *Os) ExtractValue(distilled interface{}) (interface{}, error) {
 	return distilled, nil
 }

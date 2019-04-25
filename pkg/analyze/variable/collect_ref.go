@@ -30,6 +30,6 @@ func (v *CollectRef) DistillReader(r io.Reader, result collecttypes.Result) (int
 	return v.Distiller.Distill(r)
 }
 
-func (v *CollectRef) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *CollectRef) ExtractValue(distilled interface{}) (interface{}, error) {
 	return distilled, nil
 }

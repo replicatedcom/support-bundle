@@ -37,11 +37,11 @@ func (v *OsUptime) DistillReader(r io.Reader, result collecttypes.Result) (inter
 		Regexp: osUptimeRegexp,
 		Index:  1,
 	}
-	b, _, err := distiller.Distill(d, r, false)
+	b, err := distiller.Distill(d, r, false)
 	return b, errors.Wrap(err, "distill regexpCapture")
 }
 
-func (v *OsUptime) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *OsUptime) ExtractValue(distilled interface{}) (interface{}, error) {
 	if distilled == nil {
 		return nil, nil
 	}

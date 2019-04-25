@@ -36,6 +36,6 @@ func (v *CoreReadFilePath) DistillReader(r io.Reader, result collecttypes.Result
 	return v.Distiller.Distill(r)
 }
 
-func (v *CoreReadFilePath) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *CoreReadFilePath) ExtractValue(distilled interface{}) (interface{}, error) {
 	return distilled, nil
 }

@@ -18,7 +18,7 @@ func resolveRef(ref string, data map[string]interface{}) (interface{}, error) {
 		return nil, nil
 	}
 	value, ok := data[ref]
-	if !ok || value == nil {
+	if !ok {
 		return nil, ErrNotFound
 	}
 	return value, nil

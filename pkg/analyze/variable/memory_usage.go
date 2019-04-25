@@ -59,19 +59,19 @@ func distillReaderMemoryUsage(r io.Reader, result collecttypes.Result, re string
 		Regexp: re,
 		Index:  1,
 	}
-	b, _, err := distiller.Distill(d, r, false)
+	b, err := distiller.Distill(d, r, false)
 	return b, errors.Wrap(err, "distill regexpCapture")
 }
 
-func (v *MemoryUsageTotal) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
-	return extractValueMemoryUsage(distilled, data)
+func (v *MemoryUsageTotal) ExtractValue(distilled interface{}) (interface{}, error) {
+	return extractValueMemoryUsage(distilled)
 }
 
-func (v *MemoryUsageAvailable) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
-	return extractValueMemoryUsage(distilled, data)
+func (v *MemoryUsageAvailable) ExtractValue(distilled interface{}) (interface{}, error) {
+	return extractValueMemoryUsage(distilled)
 }
 
-func extractValueMemoryUsage(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func extractValueMemoryUsage(distilled interface{}) (interface{}, error) {
 	if distilled == nil {
 		return nil, nil
 	}

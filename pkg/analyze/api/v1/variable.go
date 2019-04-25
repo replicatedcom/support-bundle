@@ -27,10 +27,6 @@ type Variable struct {
 	WhichCloud           *variable.WhichCloud           `json:"whichCloud,omitempty" yaml:"whichCloud,omitempty" hcl:"whichCloud,omitempty"`
 }
 
-func (v *Variable) GetName() string {
-	return v.Name
-}
-
 func (v *Variable) GetVariable() (variable.Interface, string, bool) {
 	val := reflect.Indirect(reflect.ValueOf(v))
 	for i := 0; i < val.NumField(); i++ {

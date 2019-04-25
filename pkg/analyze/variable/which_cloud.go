@@ -22,7 +22,11 @@ func (v *WhichCloud) DistillReader(r io.Reader, result collecttypes.Result) (int
 	return nil, nil
 }
 
-func (v *WhichCloud) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *WhichCloud) ExtractValue(distilled interface{}) (interface{}, error) {
+	return nil, nil
+}
+
+func (v *WhichCloud) Evaluate(data map[string]interface{}) (interface{}, error) {
 	address, ok := data[v.VariableRef]
 	if !ok || address == "" {
 		return nil, nil

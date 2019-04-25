@@ -34,11 +34,11 @@ func (v *CPUCores) DistillReader(r io.Reader, result collecttypes.Result) (inter
 		Regexp: cpuCoresRegexp,
 		Index:  1,
 	}
-	b, _, err := distiller.Distill(d, r, false)
+	b, err := distiller.Distill(d, r, false)
 	return b, errors.Wrap(err, "distill regexpCaptureAll")
 }
 
-func (v *CPUCores) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *CPUCores) ExtractValue(distilled interface{}) (interface{}, error) {
 	switch value := distilled.(type) {
 	case []string:
 		numproc := len(value)

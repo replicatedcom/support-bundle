@@ -1,0 +1,349 @@
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         2  0.0  0.0      0     0 ?        S    21:21   0:00 [kthreadd]
+root         3  0.1  0.0      0     0 ?        S    21:21   0:00  \_ [ksoftirqd/0]
+root         5  0.2  0.0      0     0 ?        S<   21:21   0:02  \_ [kworker/0:0H]
+root         6  0.7  0.0      0     0 ?        R    21:21   0:05  \_ [kworker/u8:0]
+root         7  0.1  0.0      0     0 ?        S    21:21   0:00  \_ [migration/0]
+root         8  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [rcu_bh]
+root         9  0.3  0.0      0     0 ?        S    21:21   0:02  \_ [rcu_sched]
+root        10  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [lru-add-drain]
+root        11  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [watchdog/0]
+root        12  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [watchdog/1]
+root        13  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [migration/1]
+root        14  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [ksoftirqd/1]
+root        15  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/1:0]
+root        16  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kworker/1:0H]
+root        17  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [watchdog/2]
+root        18  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [migration/2]
+root        19  0.0  0.0      0     0 ?        R    21:21   0:00  \_ [ksoftirqd/2]
+root        21  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kworker/2:0H]
+root        22  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [watchdog/3]
+root        23  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [migration/3]
+root        24  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [ksoftirqd/3]
+root        26  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kworker/3:0H]
+root        28  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kdevtmpfs]
+root        29  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [netns]
+root        30  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [khungtaskd]
+root        31  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [writeback]
+root        32  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kintegrityd]
+root        33  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [bioset]
+root        34  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [bioset]
+root        35  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [bioset]
+root        36  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kblockd]
+root        37  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [md]
+root        38  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [edac-poller]
+root        39  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [watchdogd]
+root        40  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/2:1]
+root        41  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/0:1]
+root        46  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kswapd0]
+root        47  0.0  0.0      0     0 ?        SN   21:21   0:00  \_ [ksmd]
+root        48  0.0  0.0      0     0 ?        SN   21:21   0:00  \_ [khugepaged]
+root        49  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [crypto]
+root        57  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kthrotld]
+root        59  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kmpath_rdacd]
+root        60  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kaluad]
+root        61  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kpsmoused]
+root        63  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [ipv6_addrconf]
+root        76  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [deferwq]
+root       102  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/1:1]
+root       109  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/3:1]
+root       111  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kauditd]
+root      1223  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [virtscsi-scan]
+root      1225  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [scsi_eh_0]
+root      1226  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [scsi_tmf_0]
+root      1229  0.1  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/u8:2]
+root      1266  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/0:3]
+root      1295  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [bioset]
+root      1297  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfsalloc]
+root      1298  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfs_mru_cache]
+root      1305  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfs-buf/sda1]
+root      1312  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfs-data/sda1]
+root      1314  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfs-conv/sda1]
+root      1315  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfs-cil/sda1]
+root      1316  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfs-reclaim/sda]
+root      1317  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfs-log/sda1]
+root      1318  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [xfs-eofblocks/s]
+root      1319  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [xfsaild/sda1]
+root      1320  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kworker/0:1H]
+root      1362  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kworker/2:1H]
+root      1382  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/2:2]
+root      1971  0.0  0.0      0     0 ?        S    21:21   0:00  \_ [kworker/3:2]
+root      3788  0.0  0.0      0     0 ?        S<   21:21   0:00  \_ [kworker/1:1H]
+root      3991  0.0  0.0      0     0 ?        S<   21:22   0:00  \_ [kworker/3:1H]
+root      4416  3.9  0.0      0     0 ?        S<   21:26   0:20  \_ [loop0]
+root      4418  0.6  0.0      0     0 ?        D<   21:26   0:03  \_ [loop1]
+root      4421  0.0  0.0      0     0 ?        S<   21:26   0:00  \_ [kdmflush]
+root      4433  0.0  0.0      0     0 ?        S<   21:26   0:00  \_ [dm_bufio_cache]
+root      4441  0.0  0.0      0     0 ?        S<   21:26   0:00  \_ [bioset]
+root      4443  0.0  0.0      0     0 ?        S<   21:26   0:00  \_ [kcopyd]
+root      4444  0.0  0.0      0     0 ?        S<   21:26   0:00  \_ [bioset]
+root      4445  0.0  0.0      0     0 ?        S<   21:26   0:00  \_ [dm-thin]
+root      4446  0.0  0.0      0     0 ?        S<   21:26   0:00  \_ [bioset]
+root      4746  3.2  0.0      0     0 ?        S    21:26   0:16  \_ [kworker/u8:1]
+root      5227  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/3:0]
+root      5236  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/0:0]
+root      5410  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [kdmflush]
+root      5415  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [bioset]
+root      5418  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-buf/dm-1]
+root      5419  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-data/dm-1]
+root      5420  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-conv/dm-1]
+root      5421  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-cil/dm-1]
+root      5422  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-reclaim/dm-]
+root      5423  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-log/dm-1]
+root      5424  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-eofblocks/d]
+root      5425  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [xfsaild/dm-1]
+root      5441  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/1:2]
+root      5443  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/1:3]
+root      5493  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [kdmflush]
+root      5503  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [bioset]
+root      5507  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-buf/dm-2]
+root      5508  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-data/dm-2]
+root      5509  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-conv/dm-2]
+root      5510  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-cil/dm-2]
+root      5511  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-reclaim/dm-]
+root      5512  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-log/dm-2]
+root      5513  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-eofblocks/d]
+root      5515  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [xfsaild/dm-2]
+root      5793  0.1  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/3:3]
+root      6023  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/0:2]
+root      6037  0.4  0.0      0     0 ?        S    21:27   0:02  \_ [kworker/u8:3]
+root      6038  3.2  0.0      0     0 ?        S    21:27   0:15  \_ [kworker/u8:4]
+root      6039  2.0  0.0      0     0 ?        S    21:27   0:09  \_ [kworker/u8:5]
+root      6147  0.2  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/2:0]
+root      6577  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/2:3]
+root      7152  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [kdmflush]
+root      7160  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [bioset]
+root      7173  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-buf/dm-6]
+root      7174  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-data/dm-6]
+root      7175  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-conv/dm-6]
+root      7176  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-cil/dm-6]
+root      7177  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-reclaim/dm-]
+root      7178  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-log/dm-6]
+root      7179  0.0  0.0      0     0 ?        S<   21:27   0:00  \_ [xfs-eofblocks/d]
+root      7180  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [xfsaild/dm-6]
+root      7223  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/3:4]
+root      7224  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/3:5]
+root      7225  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/3:6]
+root      7226  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/3:7]
+root      7275  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/2:4]
+root      7361  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/1:4]
+root      7463  0.0  0.0      0     0 ?        S    21:27   0:00  \_ [kworker/3:8]
+root      8744  0.1  0.0      0     0 ?        S    21:28   0:00  \_ [kworker/2:5]
+root      9158  0.0  0.0      0     0 ?        S    21:28   0:00  \_ [kworker/0:4]
+root     10912  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [kdmflush]
+root     10917  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [bioset]
+root     10920  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [xfs-buf/dm-3]
+root     10921  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [xfs-data/dm-3]
+root     10922  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [xfs-conv/dm-3]
+root     10923  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [xfs-cil/dm-3]
+root     10924  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [xfs-reclaim/dm-]
+root     10925  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [xfs-log/dm-3]
+root     10926  0.0  0.0      0     0 ?        S<   21:28   0:00  \_ [xfs-eofblocks/d]
+root     10927  0.0  0.0      0     0 ?        S    21:28   0:00  \_ [xfsaild/dm-3]
+root     11282  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [kworker/3:9]
+root     11283  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [kworker/1:5]
+root     11287  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [kworker/1:6]
+root     11301  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [kworker/3:10]
+root     11302  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [kworker/3:11]
+root     11761  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [kdmflush]
+root     11763  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [bioset]
+root     11766  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-buf/dm-4]
+root     11767  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-data/dm-4]
+root     11768  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-conv/dm-4]
+root     11769  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-cil/dm-4]
+root     11770  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-reclaim/dm-]
+root     11771  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-log/dm-4]
+root     11772  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-eofblocks/d]
+root     11773  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [xfsaild/dm-4]
+root     11933  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [kdmflush]
+root     11936  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [bioset]
+root     11939  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-buf/dm-5]
+root     11940  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-data/dm-5]
+root     11941  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-conv/dm-5]
+root     11942  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-cil/dm-5]
+root     11943  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-reclaim/dm-]
+root     11944  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-log/dm-5]
+root     11945  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-eofblocks/d]
+root     11946  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [xfsaild/dm-5]
+root     12364  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [kdmflush]
+root     12368  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [bioset]
+root     12371  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-buf/dm-11]
+root     12372  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-data/dm-11]
+root     12373  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-conv/dm-11]
+root     12374  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-cil/dm-11]
+root     12375  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-reclaim/dm-]
+root     12376  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-log/dm-11]
+root     12377  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-eofblocks/d]
+root     12378  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [xfsaild/dm-11]
+root     13158  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [kdmflush]
+root     13163  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [bioset]
+root     13166  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-buf/dm-14]
+root     13167  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-data/dm-14]
+root     13168  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-conv/dm-14]
+root     13169  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-cil/dm-14]
+root     13170  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-reclaim/dm-]
+root     13171  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-log/dm-14]
+root     13172  0.0  0.0      0     0 ?        S<   21:29   0:00  \_ [xfs-eofblocks/d]
+root     13173  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [xfsaild/dm-14]
+root     13389  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [kworker/0:5]
+root     13390  0.0  0.0      0     0 ?        S    21:29   0:00  \_ [kworker/2:6]
+root     13449  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/1:7]
+root     13653  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [kdmflush]
+root     13655  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [bioset]
+root     13665  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [xfs-buf/dm-8]
+root     13666  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [xfs-data/dm-8]
+root     13668  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [xfs-conv/dm-8]
+root     13670  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [xfs-cil/dm-8]
+root     13672  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [xfs-reclaim/dm-]
+root     13673  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [xfs-log/dm-8]
+root     13674  0.0  0.0      0     0 ?        S<   21:30   0:00  \_ [xfs-eofblocks/d]
+root     13675  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [xfsaild/dm-8]
+root     13933  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:6]
+root     13934  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:7]
+root     13935  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:8]
+root     13936  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:9]
+root     13937  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:10]
+root     13938  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:11]
+root     13939  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:12]
+root     13940  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:13]
+root     13941  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:14]
+root     13942  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:15]
+root     13943  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:16]
+root     13944  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:17]
+root     13945  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:18]
+root     13946  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:19]
+root     13947  0.1  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:20]
+root     13948  0.1  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/0:21]
+root     14195  0.0  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/1:8]
+root     14872  0.1  0.0      0     0 ?        S    21:30   0:00  \_ [kworker/3:12]
+root     15280  0.5  0.0      0     0 ?        S    21:30   0:01  \_ [kworker/0:22]
+root     15889  0.0  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/1:9]
+root     15946  0.0  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/2:7]
+root     15953  0.4  0.0      0     0 ?        S    21:31   0:01  \_ [kworker/2:8]
+root     16493  0.0  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/1:10]
+root     16494  0.0  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/1:11]
+root     16495  0.0  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/1:12]
+root     16496  0.1  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/1:13]
+root     16497  0.2  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/1:14]
+root     16498  0.0  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/1:15]
+root     16499  0.4  0.0      0     0 ?        S    21:31   0:01  \_ [kworker/1:16]
+root     17025  0.1  0.0      0     0 ?        S    21:31   0:00  \_ [kworker/3:13]
+root     19515  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [kdmflush]
+root     19520  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [bioset]
+root     19523  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [xfs-buf/dm-10]
+root     19524  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [xfs-data/dm-10]
+root     19525  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [xfs-conv/dm-10]
+root     19526  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [xfs-cil/dm-10]
+root     19527  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [xfs-reclaim/dm-]
+root     19528  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [xfs-log/dm-10]
+root     19529  0.0  0.0      0     0 ?        S<   21:31   0:00  \_ [xfs-eofblocks/d]
+root     19530  0.0  0.0      0     0 ?        S    21:31   0:00  \_ [xfsaild/dm-10]
+root     10566  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [kdmflush]
+root     10571  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [bioset]
+root     10576  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-buf/dm-7]
+root     10578  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-data/dm-7]
+root     10579  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-conv/dm-7]
+root     10580  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-cil/dm-7]
+root     10581  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-reclaim/dm-]
+root     10582  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-log/dm-7]
+root     10583  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-eofblocks/d]
+root     10584  0.0  0.0      0     0 ?        S    21:35   0:00  \_ [xfsaild/dm-7]
+root     11748  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [kdmflush]
+root     11753  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [bioset]
+root     11757  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-buf/dm-9]
+root     11758  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-data/dm-9]
+root     11759  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-conv/dm-9]
+root     11760  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-cil/dm-9]
+root     11762  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-reclaim/dm-]
+root     11764  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-log/dm-9]
+root     11765  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [xfs-eofblocks/d]
+root     11774  0.0  0.0      0     0 ?        S    21:35   0:00  \_ [xfsaild/dm-9]
+root     11923  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [kdmflush]
+root     11947  0.0  0.0      0     0 ?        S<   21:35   0:00  \_ [bioset]
+root         1  1.6  0.0 193696  6888 ?        Ss   21:21   0:13 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+root      1373  0.3  0.0  56620 14484 ?        Ss   21:21   0:02 /usr/lib/systemd/systemd-journald
+root      1409  0.3  0.0  47548  5096 ?        Ss   21:21   0:02 /usr/lib/systemd/systemd-udevd
+root     16507  4.9  0.0  49544  5292 ?        S    21:31   0:11  \_ /usr/lib/systemd/systemd-udevd
+root     16509  1.8  0.0  48064  3768 ?        S    21:31   0:04  \_ /usr/lib/systemd/systemd-udevd
+root     16531  0.3  0.0  48064  3768 ?        S    21:31   0:00  \_ /usr/lib/systemd/systemd-udevd
+root     16536  0.1  0.0  48064  3768 ?        S    21:31   0:00  \_ /usr/lib/systemd/systemd-udevd
+root     17020  0.0  0.0  48064  3688 ?        S    21:31   0:00  \_ /usr/lib/systemd/systemd-udevd
+root      1421  0.0  0.0  55520   900 ?        S<sl 21:21   0:00 /sbin/auditd
+999       1520  0.0  0.0 613000 11984 ?        Ssl  21:21   0:00 /usr/lib/polkit-1/polkitd --no-debug
+root      1522  0.2  0.0  26376  1724 ?        Ss   21:21   0:01 /usr/lib/systemd/systemd-logind
+81        1525  0.8  0.0  66588  2660 ?        Ssl  21:21   0:06 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
+root      1566  0.0  0.0   4384   536 ?        Ss   21:21   0:00 /usr/sbin/acpid
+998       1825  0.0  0.0 117784  1712 ?        S    21:21   0:00 /usr/sbin/chronyd
+root      1926  0.0  0.0 126288  1680 ?        Ss   21:21   0:00 /usr/sbin/crond -n
+root      1983  0.1  0.1 358408 29180 ?        Ssl  21:21   0:01 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid
+root      2010  0.0  0.0 110104   864 ?        Ss+  21:21   0:00 /sbin/agetty --noclear tty1 linux
+root      2116  0.0  0.0 110104   876 ?        Ss+  21:21   0:00 /sbin/agetty --keep-baud 115200,38400,9600 ttyS0 vt220
+root      2821  1.2  0.0 548064  9096 ?        Ssl  21:21   0:09 /usr/sbin/NetworkManager --no-daemon
+root      3118  0.0  0.0 107464  5488 ?        S    21:21   0:00  \_ /sbin/dhclient -d -q -sf /usr/libexec/nm-dhcp-helper -pf /var/run/dhclient-eth0.pid -lf /var/lib/NetworkManager/dhclient-7307fbe8-43b4-4fb4-86c8-8a131368914e-eth0.lease -cf /var/lib/NetworkManager/dhclient-eth0.conf eth0
+root      3411  0.4  0.1 573924 17232 ?        Ssl  21:21   0:03 /usr/bin/python2 -Es /usr/sbin/tuned -l -P
+root      3412  1.0  0.0 234924 11520 ?        Ssl  21:21   0:08 /usr/sbin/rsyslogd -n
+root      3703  0.0  0.0 214784 12572 ?        Ss   21:21   0:00 /usr/bin/python /usr/bin/google_network_daemon
+root      3705  0.0  0.0 217700 13332 ?        Ss   21:21   0:00 /usr/bin/python /usr/bin/google_accounts_daemon
+root      3706  0.0  0.0 214780 12528 ?        Ss   21:21   0:00 /usr/bin/python /usr/bin/google_clock_skew_daemon
+root      3708  0.0  0.0 112864  4284 ?        Ss   21:21   0:00 /usr/sbin/sshd -D
+root      3993  0.0  0.0 156724  5660 ?        Ss   21:23   0:00  \_ sshd: ethan [priv]
+1014      3996  0.0  0.0 156724  2400 ?        S    21:23   0:00      \_ sshd: ethan@pts/0
+1014      3997  0.0  0.0 115440  2080 ?        Ss   21:23   0:00          \_ -bash
+1014     32756  0.3  0.0 158340  3256 ?        S+   21:33   0:00              \_ watch sudo docker ps 
+root      3710  0.0  0.0  89652  2076 ?        Ss   21:21   0:00 /usr/libexec/postfix/master -w
+89        3712  0.0  0.0  89756  4060 ?        S    21:21   0:00  \_ pickup -l -t unix -u
+89        3713  0.0  0.0  89824  4080 ?        S    21:21   0:00  \_ qmgr -l -t unix -u
+root      4351  0.2  0.2 426156 33412 ?        Ssl  21:26   0:01 /usr/bin/containerd
+root      4358 45.9  0.9 2739200 140168 ?      Ssl  21:26   4:00 /usr/bin/dockerd -H fd://
+root      4370  1.0  0.2 1078864 41152 ?       Ssl  21:26   0:05  \_ containerd --config /var/run/docker/containerd/containerd.toml --log-level info
+root      5595  0.0  0.0  10720  3760 ?        Sl   21:27   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/a4965f4d96c3ae26dfce3ba8f0cc36ef3454f263e0392ce9477a186b95d739b8 -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+1015      5613  1.3  0.3 114176 54744 ?        Ssl  21:27   0:06  |   |   \_ /usr/bin/replicated-ui -d
+root      5620  0.0  0.0  10720  5584 ?        Sl   21:27   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084 -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+1015      5643  0.0  0.0   1576   472 ?        Ss   21:27   0:00  |   |   \_ /bin/sh /usr/bin/entrypoint.sh -d
+1015      5715  4.4  0.8 244220 125204 ?       Sl   21:27   0:21  |   |       \_ /usr/bin/replicatedd
+root      7227  0.0  0.0  10720  3428 ?        Sl   21:27   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/033460b2f6bdae0ce169f54687429c6cde7b2378b5c8fa53d2f746faad233eea -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+1015      7261  1.0  0.1 122476 29764 ?        Ssl  21:27   0:04  |   |   \_ /usr/bin/replicated-operator
+root     10983  0.0  0.0   9312  3760 ?        Sl   21:28   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/67a4bf7a721461c260423df407cd1e043ff324828512decbdaae7e11da4ff6dd -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+1015     11012  0.1  0.1 111832 15412 ?        Ssl  21:28   0:00  |   |   \_ /usr/bin/premkit daemon
+root     11812  0.0  0.0  11776  3432 ?        Sl   21:29   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/71962eaf7703b1522faeb451d0c6a459dfcd2a840e89dba026fbced0d1059355 -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+999      11829  0.0  0.1 288240 18012 ?        Ss   21:29   0:00  |   |   \_ postgres
+999      11962  0.0  0.0 288392  4884 ?        Ss   21:29   0:00  |   |       \_ postgres: checkpointer process  
+999      11963  0.0  0.0 288240  3348 ?        Ss   21:29   0:00  |   |       \_ postgres: writer process  
+999      11964  0.0  0.0 288240  6252 ?        Ss   21:29   0:00  |   |       \_ postgres: wal writer process  
+999      11965  0.0  0.0 288676  2768 ?        Ss   21:29   0:00  |   |       \_ postgres: autovacuum launcher process  
+999      11966  0.0  0.0 143296  2012 ?        Ss   21:29   0:00  |   |       \_ postgres: stats collector process  
+999      11967  0.0  0.0 288532  2536 ?        Ss   21:29   0:00  |   |       \_ postgres: bgworker: logical replication launcher  
+999      14242  0.0  0.0 292652 10164 ?        Ss   21:30   0:00  |   |       \_ postgres: retraced retraced 172.18.0.4(54942) idle
+999      16357  0.0  0.0 292536  9676 ?        Ss   21:31   0:00  |   |       \_ postgres: retraced retraced 172.18.0.4(55256) idle
+root     11968  0.0  0.0  10720  3560 ?        Sl   21:29   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/de7f2ba9196381f450746bdfd05a25791353c78cfcc48b84e650db1860b875ca -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+1015     11988  1.0  0.0  17336  6764 ?        Ssl  21:29   0:03  |   |   \_ nsqd
+root     12431  0.0  0.0   9376  3436 ?        Sl   21:29   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/fbf9a7946d9984eb19c3334023965c1396dd3e5e3547d76c76c2c9feeb71b363 -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+1015     12464  0.0  0.0   4268   604 ?        Ss   21:29   0:00  |   |   \_ /bin/sh -c /usr/local/bin/replicated-auditlog-cron /crontab 2>&1 | grep ERRO
+1015     12583  0.3  0.0  11468  6896 ?        Sl   21:29   0:01  |   |       \_ /usr/local/bin/replicated-auditlog-cron /crontab
+1015     12584  0.0  0.0  11100   692 ?        S    21:29   0:00  |   |       \_ grep ERRO
+root     13193  0.0  0.0  10720  3720 ?        Sl   21:29   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/774fa64413dab60a8367523e695abd501141cbf391451693614472f2e5a4b2ec -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+1015     13218  0.8  0.5 1264720 87424 ?       Ssl  21:29   0:02  |   |   \_ /src/replicated-auditlog-processor
+root     13742  0.0  0.0  10720  3544 ?        Sl   21:30   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/33d541452131d3387d69f25bb3a2146db8bd5b9c38859aa675247c5766f42bde -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+1015     13773  0.7  0.5 1270912 85692 ?       Ssl  21:30   0:02  |   |   \_ /src/replicated-auditlog-api
+root     19565  0.0  0.0  11840  4260 ?        Sl   21:31   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/ec9382a64197555a35b8baa164a861461bde9e3eb7b7bd9fe5fa5edbc667b372 -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+root     19585  0.0  0.0   1524   220 ?        Ss   21:31   0:00  |   |   \_ cat
+root     10618  0.1  0.0  11648  4188 ?        Sl   21:35   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/59fe668fcc65e8897d0c8b5fb66b92d592a346df5cd5fbc8cb8de5cada7b728d -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+root     10635  0.6  0.0   1524   224 ?        Ss   21:35   0:00  |   |   \_ cat
+root     11794  1.0  0.0  11648  4408 ?        Sl   21:35   0:00  |   \_ containerd-shim -namespace moby -workdir /var/lib/docker/containerd/daemon/io.containerd.runtime.v1.linux/moby/19a8eb9c5ad3a435d4903bc9a21fe096361b3886b12c8ad3cfa50c8cf03de827 -address /var/run/docker/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+root     11826 28.0  0.1 754068 24756 ?        Ssl  21:35   0:00  |       \_ support-bundle generate --out=/tmp/bundle.tar.gz --spec={"collect":{"v1":[{"docker.container-inspect":{"output_dir":"/app/containers","container_list_options":{"Quiet":false,"Size":false,"All":true,"Latest":false,"Since":"","Before":"","Limit":0,"Filters":{"label":["com.replicated.app.id=6888a4e330a54b6b4a0102c4f1f9c9fc","com.replicated.app.version=579"]}}}},{"docker.container-logs":{"output_dir":"/app/logs","container_list_options":{"Quiet":false,"Size":false,"All":true,"Latest":false,"Since":"","Before":"","Limit":0,"Filters":{"label":["com.replicated.app.id=6888a4e330a54b6b4a0102c4f1f9c9fc","com.replicated.app.version=579","com.replicated.excludelogs=false"]}}}},{"docker.container-inspect":{"output_dir":"/replicated/containers/","container":"replicated-operator"}},{"docker.container-logs":{"output_dir":"/replicated/logs/","container":"replicated-operator"}},{"journald.logs":{"output_dir":"/replicated/logs/replicated-operator.journald/","unit":"replicated-operator","since":"-7 days"}},{"os.read-file":{"output_dir":"/replicated/var/log/upstart/","filepath":"/var/log/upstart/replicated-operator.log"}},{"os.read-file":{"output_dir":"/replicated/var/lib/replicated-operator/","filepath":"/var/lib/replicated-operator/replicated-operator.conf"}},{"os.read-file":{"output_dir":"/app/container-logs","filepath":"/var/lib/replicated-operator/logs"}},{"os.read-file":{"output_dir":"/replicated/etc/default/","filepath":"/etc/default/replicated-operator"}},{"os.read-file":{"output_dir":"/replicated/etc/sysconfig/","filepath":"/etc/sysconfig/replicated-operator"}},{"docker.container-inspect":{"output_dir":"/replicated/containers/","container":"replicated"}},{"docker.container-logs":{"output_dir":"/replicated/logs/","container":"replicated"}},{"journald.logs":{"output_dir":"/replicated/logs/replicated.journald/","unit":"replicated","since":"-7 days"}},{"docker.container-inspect":{"output_dir":"/replicated/containers/","container":"replicated-ui"}},{"docker.container-logs":{"output_dir":"/replicated/logs/","container":"replicated-ui"}},{"journald.logs":{"output_dir":"/replicated/logs/replicated-ui.journald/","unit":"replicated-ui","since":"-7 days"}},{"os.read-file":{"output_dir":"/replicated/var/log/upstart","filepath":"/var/log/upstart/replicated.log"}},{"os.read-file":{"output_dir":"/replicated/var/log/upstart","filepath":"/var/log/upstart/replicated-ui.log"}},{"os.read-file":{"output_dir":"/replicated/etc/default","filepath":"/etc/default/replicated"}},{"os.read-file":{"output_dir":"/replicated/etc/sysconfig","filepath":"/etc/sysconfig/replicated"}},{"os.read-file":{"output_dir":"/replicated/etc","filepath":"/etc/replicated.conf"}},{"docker.container-inspect":{"output_dir":"/retraced/containers","scrub":{"regex":"(?m)(\"(?:POSTGRES_PASSWORD|ELASTICSEARCH_NODES|HMAC_SECRET_ADMIN|HMAC_SECRET_VIEWER|BOOTSTRAP_API_TOKEN)=)([^\"]*)(\",?)","replace":"${1}***HIDDEN***${3}"},"container_list_options":{"Quiet":false,"Size":false,"All":false,"Latest":false,"Since":"","Before":"","Limit":0,"Filters":{"label":["owner=replicated"],"name":["retraced"]}}}},{"docker.container-logs":{"output_dir":"/retraced/logs","container_list_options":{"Quiet":false,"Size":false,"All":false,"Latest":false,"Since":"","Before":"","Limit":0,"Filters":{"label":["owner=replicated"],"name":["retraced"]}}}},{"docker.info":{"output_dir":"/docker/info"}},{"docker.ps":{"output_dir":"/docker/ps","Quiet":false,"Size":false,"All":false,"Latest":false,"Since":"","Before":"","Limit":0,"Filters":null}},{"docker.container-inspect":{"output_dir":"/docker/my-container","container_list_options":{"Quiet":false,"Size":false,"All":true,"Latest":false,"Since":"","Before":"","Limit":0,"Filters":{"name":["my-sweet-container"]}}}},{"os.read-file":{"output_dir":"/files/some/path/","filepath":"/etc/application.conf"}},{"os.loadavg":{"output_dir":"/os/loadavg","template":""}},{"os.hostname":{"output_dir":"/os/hostname"}},{"os.uptime":{"output_dir":"/os/uptime","template":""}},{"os.run-command":{"output_dir":"/os/df","name":"df","args":["-h","--total"]}},{"os.run-command":{"output_dir":"/os/proc/meminfo","name":"cat","args":["/proc/meminfo"]}},{"os.run-command":{"output_dir":"/os/proc/cpuinfo","name":"cat","args":["/proc/cpuinfo"]}},{"os.run-command":{"output_dir":"/os/ps","name":"ps","args":["auwwf"]}},{"os.read-file":{"output_dir":"/os/etc/os-release","filepath":"/etc/os-release"}},{"os.read-file":{"output_dir":"/os/usr/lib/os-release","filepath":"/usr/lib/os-release"}},{"os.read-file":{"output_dir":"/os/etc/centos-release","filepath":"/etc/centos-release"}},{"os.run-command":{"output_dir":"/commands/df/","name":"df","args":["-h","--total"]}},{"docker.container-inspect":{"output_dir":"/replicated/replicated/inspect","container_list_options":{"Quiet":false,"Size":false,"All":true,"Latest":false,"Since":"","Before":"","Limit":0,"Filters":{"name":["replicated","retraced","premkit"]}}}},{"docker.logs":{"output_dir":"/replicated/replicated/logs","container_list_options":{"Quiet":false,"Size":false,"All":true,"Latest":false,"Since":"","Before":"","Limit":0,"Filters":{"name":["replicated","retraced","premkit"]}}}},{"kubernetes.version":{"output_dir":"/k8s/version"}},{"kubernetes.cluster-info":{"output_dir":"/k8s/cluster"}}]}} --spec={"collect":{"v1":[{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/nodes.txt"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/goroutines.txt"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/daemon.json"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/config-commands.txt"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/replicated-versions.txt"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/params.json"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/ledis-scheduler.dump"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/ledis-registry.dump"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/ledis-snapshots.dump"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/tasks.txt"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/license.txt"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/app-config.json"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/host-info.json"}},{"docker.container-cp":{"output_dir":"/replicated/internal","container":"4db17e68b2cea48a3f5b2bb43f8ae6fd2fa14e7526661ed62fba603137305084","src_path":"/var/lib/replicated/tmp/replicated-support-internal043878965/ledis-app.dump"}},{"retraced.events":{"output_dir":"/replicated/internal","api_endpoint":"https://10.128.0.67:9873","project_id":"c29tZSByZWFsbHkgbG9uZyBwcm9qZWN0IGlk","api_token":"c29tZSByZWFsbHkgbG9uZyBhcGkgdG9rZW4=","insecure":true,"mask":{"ID":false,"Action":true,"CRUD":false,"Description":true,"IsFailure":false,"IsAnonymous":false,"SourceIP":false,"Country":false,"LocSubdiv1":false,"LocSubdiv2":false,"Received":false,"Created":false,"CanonicalTime":true,"Component":false,"Version":false,"Fields":false,"Raw":false,"GroupID":false,"GroupName":false,"ActorID":false,"ActorName":false,"ActorHref":false,"ActorFields":false,"TargetID":false,"TargetName":false,"TargetHref":false,"TargetType":false,"TargetFields":false,"DisplayMarkdown":false},"query":{"Action":"","CRUD":"c,u,d","ReceivedStart":"0001-01-01T00:00:00Z","ReceivedEnd":"0001-01-01T00:00:00Z","CreatedStart":"0001-01-01T00:00:00Z","CreatedEnd":"0001-01-01T00:00:00Z","ActorName":"","ActorID":"","Description":"","Location":""}}}]}} --timeout=129
+root     11952  0.0  0.0  36624  1572 ?        D    21:35   0:00  |           \_ ps auwwf
+root     11978  0.0  0.0  37024  1960 ?        R    21:35   0:00  |           \_ ps fauxwww
+root     11979  0.0  0.0  11708  1024 ?        R    21:35   0:00  |           \_ dmesg
+root     11980  0.0  0.0   4248   352 ?        D    21:35   0:00  |           \_ date
+root      5475  0.0  0.0 265680  2652 ?        Sl   21:27   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9879 -container-ip 172.17.0.2 -container-port 9879
+root      5492  0.0  0.0 117160  4936 ?        Sl   21:27   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9878 -container-ip 172.17.0.2 -container-port 9878
+root      5534  0.0  0.0 117160  2652 ?        Sl   21:27   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9877 -container-ip 172.17.0.2 -container-port 9877
+root      5546  0.0  0.0 264624  4696 ?        Sl   21:27   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9876 -container-ip 172.17.0.2 -container-port 9876
+root      5560  0.0  0.0 264624  4696 ?        Sl   21:27   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9875 -container-ip 172.17.0.2 -container-port 9875
+root      5574  0.0  0.0 192300  4696 ?        Sl   21:27   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8800 -container-ip 172.17.0.3 -container-port 8800
+root      5587  0.0  0.0 267600  2876 ?        Sl   21:27   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9874 -container-ip 172.17.0.2 -container-port 9874
+root     10970  0.0  0.0 200656  2640 ?        Sl   21:28   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9880 -container-ip 172.17.0.4 -container-port 2443
+root     13712  0.0  0.0 204176  5168 ?        Sl   21:30   0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 9873 -container-ip 172.18.0.7 -container-port 3000
+1015      5238  0.0  0.2 422068 39252 ?        Ssl  21:27   0:00 /usr/bin/docker run --name=replicated -p 9874-9879:9874-9879/tcp -u 1015:994 -v /var/lib/replicated:/var/lib/replicated -v /var/run/docker.sock:/host/var/run/docker.sock -v /proc:/host/proc:ro -v /etc:/host/etc:ro -v /etc/os-release:/host/etc/os-release:ro -v /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem:/etc/ssl/certs/ca-certificates.crt -v /var/run/replicated:/var/run/replicated --security-opt label=type:spc_t -e LOCAL_ADDRESS=10.128.0.67 -e RELEASE_CHANNEL=stable -e DAEMON_TOKEN=QwkcLj04tU4QSeYC7Y0K7VpwiyIsrQz2 -e LOG_LEVEL=info -e NODENAME=ethan-3.c.replicated-qa.internal quay.io/replicated/replicated:current
+1015      5265  0.0  0.2 422068 39300 ?        Ssl  21:27   0:00 /usr/bin/docker run --name=replicated-ui -p 8800:8800/tcp -u 1015:994 -v /var/run/replicated:/var/run/replicated --security-opt label=type:spc_t quay.io/replicated/replicated-ui:current
+1015      6958  0.0  0.2 487604 36944 ?        Ssl  21:27   0:00 /usr/bin/docker run --name=replicated-operator -u 1015:994 -v /var/lib/replicated-operator:/var/lib/replicated-operator -v /var/run/replicated-operator:/var/run/replicated-operator -v /var/run/docker.sock:/host/var/run/docker.sock -v /proc:/host/proc:ro -v /etc:/host/etc:ro -v /etc/os-release:/host/etc/os-release:ro --security-opt label=type:spc_t -e DAEMON_ENDPOINT=10.128.0.67:9879 -e DAEMON_TOKEN=QwkcLj04tU4QSeYC7Y0K7VpwiyIsrQz2 -e NO_PROXY=10.128.0.67 -e PRIVATE_ADDRESS=10.128.0.67 -e PUBLIC_ADDRESS=35.222.194.181 -e TAGS=local -e LOG_LEVEL=info -e NODENAME=ethan-3.c.replicated-qa.internal quay.io/replicated/replicated-operator:current

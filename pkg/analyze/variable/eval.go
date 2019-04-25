@@ -21,6 +21,10 @@ func (v *Eval) DistillReader(r io.Reader, result collecttypes.Result) (interface
 	return nil, nil
 }
 
-func (v *Eval) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *Eval) ExtractValue(distilled interface{}) (interface{}, error) {
+	return nil, nil
+}
+
+func (v *Eval) Evaluate(data map[string]interface{}) (interface{}, error) {
 	return templates.String(string(*v), data)
 }

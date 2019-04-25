@@ -59,7 +59,7 @@ func matchResultsLoadavg(index []collecttypes.Result) ([]collecttypes.Result, er
 
 func (v *Loadavg) DistillReader(r io.Reader, result collecttypes.Result) (interface{}, error) {
 	d := &distiller.Identity{}
-	b, _, err := distiller.Distill(d, r, false)
+	b, err := distiller.Distill(d, r, false)
 	return b, errors.Wrap(err, "distill identity")
 }
 
@@ -80,27 +80,27 @@ func distillReaderLoadavg(r io.Reader, result collecttypes.Result, index int) (i
 		Regexp: loadavgRegexp,
 		Index:  index,
 	}
-	b, _, err := distiller.Distill(d, r, false)
+	b, err := distiller.Distill(d, r, false)
 	return b, errors.Wrap(err, "distill regexpCapture")
 }
 
-func (v *Loadavg) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *Loadavg) ExtractValue(distilled interface{}) (interface{}, error) {
 	return distilled, nil
 }
 
-func (v *Loadavg1) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
-	return extractValueLoadavg(distilled, data)
+func (v *Loadavg1) ExtractValue(distilled interface{}) (interface{}, error) {
+	return extractValueLoadavg(distilled)
 }
 
-func (v *Loadavg5) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
-	return extractValueLoadavg(distilled, data)
+func (v *Loadavg5) ExtractValue(distilled interface{}) (interface{}, error) {
+	return extractValueLoadavg(distilled)
 }
 
-func (v *Loadavg15) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
-	return extractValueLoadavg(distilled, data)
+func (v *Loadavg15) ExtractValue(distilled interface{}) (interface{}, error) {
+	return extractValueLoadavg(distilled)
 }
 
-func extractValueLoadavg(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func extractValueLoadavg(distilled interface{}) (interface{}, error) {
 	if distilled == nil {
 		return nil, nil
 	}

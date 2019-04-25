@@ -88,6 +88,20 @@
     }
   },
   {
+    "path": "default/commands/ps/stdout",
+    "format": "",
+    "size": 45811,
+    "spec": {
+      "os.run-command": {
+        "output_dir": "default/commands/ps",
+        "name": "ps",
+        "args": [
+          "fauxwww"
+        ]
+      }
+    }
+  },
+  {
     "path": "/default/commands/uptime/uptime",
     "format": "",
     "size": 15,

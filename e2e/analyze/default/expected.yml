@@ -1,3 +1,27 @@
+- name: processes.configmanagement.puppet
+  labels:
+    iconKey: puppet_logo
+    desiredPosition: "10"
+  message:
+    primary: No Puppet
+    detail: This server is not running a puppet agent
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    ps: ~
+- name: processes.configmanagement.chef
+  labels:
+    iconKey: chef_logo
+    desiredPosition: "10"
+  message:
+    primary: No Chef
+    detail: This server is not running a Chef client
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    ps: ~
 - name: cpucores.usage
   labels:
     iconKey: os_cpu
@@ -193,6 +217,7 @@
   analyzerSpec: 'IGNORED'
   variables:
     replicatedLogExists: "-"
+    replicatedConfError: ~
 - name: os.diskPressure.replicated
   labels:
     iconKey: disk
@@ -207,6 +232,7 @@
   analyzerSpec: 'IGNORED'
   variables:
     replicatedLogExists: "-"
+    replicatedDiskPressure: ~
 - name: os.diskPressure.replicated-operator
   labels:
     iconKey: disk_full

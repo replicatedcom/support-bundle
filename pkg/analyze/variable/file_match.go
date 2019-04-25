@@ -42,6 +42,6 @@ func (v *FileMatch) DistillReader(r io.Reader, result collecttypes.Result) (inte
 	return v.Distiller.Distill(r)
 }
 
-func (v *FileMatch) ExtractValue(distilled interface{}, data map[string]interface{}) (interface{}, error) {
+func (v *FileMatch) ExtractValue(distilled interface{}) (interface{}, error) {
 	return distilled, nil
 }

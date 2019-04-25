@@ -36,38 +36,6 @@ func (a *Analyzer) registerVariables(variables []v1.Variable, bundleReader bundl
 	return data, errors.Wrap(err, "extract values")
 }
 
-func (a *Analyzer) extractValues(variables []v1.Variable, variableNamesToDistilled map[string][]interface{}) (map[string]interface{}, error) {
-	data := map[string]interface{}{}
-
-	for _, v := range variables {
-		name := v.GetName()
-		i, _, _ := v.GetVariable()
-		if distilled, ok := variableNamesToDistilled[name]; ok {
-			for _, d := range distilled {
-				value, err := i.ExtractValue(d, data)
-				if err != nil {
-					return data, errors.Wrapf(err, "variable %s", name)
-				} else if value != nil {
-					// use the first value we find that is not empty
-					data[name] = value
-					break
-				}
-			}
-		} else {
-			value, err := i.ExtractValue(nil, data)
-			if err != nil {
-				return data, errors.Wrapf(err, "variable %s", name)
-			} else if value != nil {
-				// use the first value we find that is not empty
-				data[name] = value
-				break
-			}
-		}
-	}
-
-	return data, nil
-}
-
 func (a *Analyzer) distillBundle(variables []v1.Variable, bundleReader bundlereader.BundleReader) (map[string][]interface{}, error) {
 	variablesMap := map[string]variable.Interface{}
 	resultsToVariables := map[collecttypes.Result][]string{}
@@ -75,18 +43,18 @@ func (a *Analyzer) distillBundle(variables []v1.Variable, bundleReader bundlerea
 	index := bundleReader.GetIndex()
 
 	for i, v := range variables {
-		name := v.GetName()
+		name := v.Name
 		if name == "" {
 			return nil, fmt.Errorf("variable at index %d name empty", i)
 		}
 		variable, _, ok := v.GetVariable()
 		if !ok {
-			return nil, fmt.Errorf("no variable defined for %s", v.GetName())
+			return nil, fmt.Errorf("no variable defined for %s", name)
 		}
 		variablesMap[name] = variable
 		results, err := variable.MatchResults(index)
 		if err != nil {
-			return nil, fmt.Errorf("variable %s match results", v.GetName())
+			return nil, fmt.Errorf("variable %s match results", name)
 		}
 		for _, result := range results {
 			resultsToVariables[result] = append(resultsToVariables[result], name)
@@ -156,4 +124,38 @@ func (a *Analyzer) distillReader(reader io.Reader, result collecttypes.Result, v
 	}
 
 	return values, errGroup.Wait()
+}
+
+func (a *Analyzer) extractValues(variables []v1.Variable, variableNamesToDistilled map[string][]interface{}) (map[string]interface{}, error) {
+	data := map[string]interface{}{}
+
+	for _, v := range variables {
+		name := v.Name
+		i, _, _ := v.GetVariable()
+		if distilled, ok := variableNamesToDistilled[name]; ok {
+			data[name] = nil // initialize it since a result was matched
+			for _, d := range distilled {
+				value, err := i.ExtractValue(d)
+				if err != nil {
+					return data, errors.Wrapf(err, "variable %s extract value", name)
+				} else if value != nil {
+					// use the first value we find that is not empty
+					data[name] = value
+					break
+				}
+			}
+		}
+		if evaluator, ok := i.(variable.Evaluator); ok {
+			value, err := evaluator.Evaluate(data)
+			if err != nil {
+				return data, errors.Wrapf(err, "variable %s evaluate", name)
+			} else if value != nil {
+				// use the first value we find that is not empty
+				data[name] = value
+				break
+			}
+		}
+	}
+
+	return data, nil
 }
