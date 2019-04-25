@@ -1,0 +1,58 @@
+-- Logs begin at Wed 2019-04-24 21:21:45 UTC, end at Wed 2019-04-24 21:36:25 UTC. --
+Apr 24 21:27:23 ethan-3 systemd[1]: Starting Replicated Operator Service...
+Apr 24 21:27:23 ethan-3 systemd[1]: Started Replicated Operator Service.
+Apr 24 21:27:29 ethan-3 docker[6958]: 2019/04/24 21:27:29 Autodetected docker host ip 172.17.0.1
+Apr 24 21:27:29 ethan-3 docker[6958]: 2019/04/24 21:27:29 Environment variable 'DAEMON_REGISTRY_ENDPOINT' is not set, using implicit ip address from 'DAEMON_ENDPOINT'
+Apr 24 21:27:29 ethan-3 docker[6958]: 2019/04/24 21:27:29 No autoconfig file found. This is a new operator.
+Apr 24 21:27:29 ethan-3 docker[6958]: INFO 2019-04-24T21:27:29+00:00 [replicated-operator] app.go:84 Starting Replicated Operator version 2.34.1 (git="126db9a", date="2019-04-01 18:08:00 +0000 UTC")
+Apr 24 21:27:29 ethan-3 docker[6958]: INFO 2019-04-24T21:27:29+00:00 [pkg/docker] client.go:82 Docker client initialized for API version 1.39
+Apr 24 21:27:30 ethan-3 docker[6958]: INFO 2019-04-24T21:27:29+00:00 [replicated-operator] docker.go:84 Docker client initialized for API version 1.39
+Apr 24 21:27:34 ethan-3 docker[6958]: INFO 2019-04-24T21:27:34+00:00 [replicated-operator] scheduler.go:29 Initialized scheduler node 068f2189e10c4a72769e8b5126721658
+Apr 24 21:27:34 ethan-3 docker[6958]: WARN 2019-04-24T21:27:34+00:00 [replicated-operator] net.go:69 No acceptable ipv4 address found on interface "lo"
+Apr 24 21:27:34 ethan-3 docker[6958]: INFO 2019-04-24T21:27:34+00:00 [replicated-operator] operator.go:81 Attempting to connect to replicated service at "10.128.0.67:9879"...
+Apr 24 21:27:34 ethan-3 docker[6958]: INFO 2019-04-24T21:27:34+00:00 [replicated-operator] eventstream.go:24 Connecting to docker stream...
+Apr 24 21:27:37 ethan-3 docker[6958]: INFO 2019-04-24T21:27:37+00:00 [replicated-operator] eventstream.go:31 Successful connection to docker stream
+Apr 24 21:27:39 ethan-3 docker[6958]: ERRO 2019-04-24T21:27:39+00:00 [replicated-operator] operator.go:94 read tcp 172.17.0.5:37656->10.128.0.67:9879: read: connection reset by peer
+Apr 24 21:27:39 ethan-3 docker[6958]: INFO 2019-04-24T21:27:39+00:00 [replicated-operator] operator.go:95 Retrying connection to replicated service...
+Apr 24 21:28:58 ethan-3 docker[6958]: INFO 2019-04-24T21:28:58+00:00 [replicated-operator] operator.go:165 Connected to replicated
+Apr 24 21:30:35 ethan-3 docker[6958]: ERRO 2019-04-24T21:30:35+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:30:49 ethan-3 docker[6958]: ERRO 2019-04-24T21:30:49+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:30:55 ethan-3 docker[6958]: INFO 2019-04-24T21:30:55+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib with host filesystem successful
+Apr 24 21:31:16 ethan-3 docker[6958]: INFO 2019-04-24T21:31:16+00:00 [replicated-operator] host_volumes.go:84 Created resource /etc/ with host filesystem successful
+Apr 24 21:31:32 ethan-3 docker[6958]: ERRO 2019-04-24T21:31:32+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:31:35 ethan-3 docker[6958]: INFO 2019-04-24T21:31:35+00:00 [replicated-operator] requests.go:1256 Preparing external support bundle...
+Apr 24 21:31:41 ethan-3 docker[6958]: ERRO 2019-04-24T21:31:41+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:31:47 ethan-3 docker[6958]: ERRO 2019-04-24T21:31:47+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:31:52 ethan-3 docker[6958]: INFO 2019-04-24T21:31:52+00:00 [replicated-operator] host_volumes.go:84 Created resource /usr/lib with host filesystem successful
+Apr 24 21:31:53 ethan-3 docker[6958]: ERRO 2019-04-24T21:31:53+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:31:53 ethan-3 docker[6958]: INFO 2019-04-24T21:31:53+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib with host filesystem successful
+Apr 24 21:31:54 ethan-3 docker[6958]: INFO 2019-04-24T21:31:54+00:00 [replicated-operator] host_volumes.go:84 Created resource /etc/ with host filesystem successful
+Apr 24 21:31:56 ethan-3 docker[6958]: INFO 2019-04-24T21:31:56+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib with host filesystem successful
+Apr 24 21:31:56 ethan-3 docker[6958]: INFO 2019-04-24T21:31:56+00:00 [replicated-operator] host_volumes.go:84 Created resource /etc/ with host filesystem successful
+Apr 24 21:32:49 ethan-3 docker[6958]: ERRO 2019-04-24T21:32:49+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:32:51 ethan-3 docker[6958]: ERRO 2019-04-24T21:32:51+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:33:30 ethan-3 docker[6958]: ERRO 2019-04-24T21:33:30+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:33:48 ethan-3 docker[6958]: ERRO 2019-04-24T21:33:48+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:33:50 ethan-3 docker[6958]: ERRO 2019-04-24T21:33:50+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:33:59 ethan-3 docker[6958]: ERRO 2019-04-24T21:33:59+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:34:07 ethan-3 docker[6958]: INFO 2019-04-24T21:34:07+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib/replicated-operator/3dede884766842c05bbce0d6cf733ab8/password-strength.sh with host filesystem successful
+Apr 24 21:34:08 ethan-3 docker[6958]: INFO 2019-04-24T21:34:08+00:00 [replicated-operator] host_volumes.go:84 Created resource /usr/lib with host filesystem successful
+Apr 24 21:34:09 ethan-3 docker[6958]: INFO 2019-04-24T21:34:09+00:00 [replicated-operator] host_volumes.go:84 Created resource /usr/lib with host filesystem successful
+Apr 24 21:34:10 ethan-3 docker[6958]: ERRO 2019-04-24T21:34:10+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:34:41 ethan-3 docker[6958]: INFO 2019-04-24T21:34:41+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib with host filesystem successful
+Apr 24 21:34:41 ethan-3 docker[6958]: INFO 2019-04-24T21:34:41+00:00 [replicated-operator] host_volumes.go:84 Created resource /etc/ with host filesystem successful
+Apr 24 21:34:42 ethan-3 docker[6958]: ERRO 2019-04-24T21:34:42+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:35:03 ethan-3 docker[6958]: INFO 2019-04-24T21:35:03+00:00 [replicated-operator] requests.go:1316 External support bundle sent
+Apr 24 21:35:05 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:05+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:35:07 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:07+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:35:07 ethan-3 docker[6958]: INFO 2019-04-24T21:35:07+00:00 [replicated-operator] host_volumes.go:84 Created resource /data with host filesystem successful
+Apr 24 21:35:08 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:08+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:35:10 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:10+00:00 [pkg/docker] run.go:115 context canceled
+Apr 24 21:35:10 ethan-3 docker[6958]: INFO 2019-04-24T21:35:10+00:00 [replicated-operator] requests.go:1256 Preparing external support bundle...
+Apr 24 21:35:10 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:10+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:35:11 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:11+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:35:13 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:13+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:35:16 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:16+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+Apr 24 21:35:17 ethan-3 docker[6958]: INFO 2019-04-24T21:35:17+00:00 [replicated-operator] host_volumes.go:84 Created resource /usr/lib with host filesystem successful
+Apr 24 21:35:17 ethan-3 docker[6958]: INFO 2019-04-24T21:35:17+00:00 [replicated-operator] host_volumes.go:84 Created resource /data with host filesystem successful
+Apr 24 21:35:54 ethan-3 docker[6958]: ERRO 2019-04-24T21:35:54+00:00 [pkg/docker] run.go:115 context canceled

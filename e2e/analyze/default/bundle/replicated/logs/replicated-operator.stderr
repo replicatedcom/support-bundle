@@ -1,0 +1,53 @@
+2019-04-24T21:27:29.647093656Z 2019/04/24 21:27:29 Autodetected docker host ip 172.17.0.1
+2019-04-24T21:27:29.647163665Z 2019/04/24 21:27:29 Environment variable 'DAEMON_REGISTRY_ENDPOINT' is not set, using implicit ip address from 'DAEMON_ENDPOINT'
+2019-04-24T21:27:29.647170739Z 2019/04/24 21:27:29 No autoconfig file found. This is a new operator.
+2019-04-24T21:27:29.647410554Z INFO 2019-04-24T21:27:29+00:00 [replicated-operator] app.go:84 Starting Replicated Operator version 2.34.1 (git="126db9a", date="2019-04-01 18:08:00 +0000 UTC")
+2019-04-24T21:27:29.833688077Z INFO 2019-04-24T21:27:29+00:00 [pkg/docker] client.go:82 Docker client initialized for API version 1.39
+2019-04-24T21:27:30.080441955Z INFO 2019-04-24T21:27:29+00:00 [replicated-operator] docker.go:84 Docker client initialized for API version 1.39
+2019-04-24T21:27:34.200716624Z INFO 2019-04-24T21:27:34+00:00 [replicated-operator] scheduler.go:29 Initialized scheduler node 068f2189e10c4a72769e8b5126721658
+2019-04-24T21:27:34.225995909Z WARN 2019-04-24T21:27:34+00:00 [replicated-operator] net.go:69 No acceptable ipv4 address found on interface "lo"
+2019-04-24T21:27:34.862977650Z INFO 2019-04-24T21:27:34+00:00 [replicated-operator] operator.go:81 Attempting to connect to replicated service at "10.128.0.67:9879"...
+2019-04-24T21:27:34.863006364Z INFO 2019-04-24T21:27:34+00:00 [replicated-operator] eventstream.go:24 Connecting to docker stream...
+2019-04-24T21:27:37.420332313Z INFO 2019-04-24T21:27:37+00:00 [replicated-operator] eventstream.go:31 Successful connection to docker stream
+2019-04-24T21:27:39.878639459Z ERRO 2019-04-24T21:27:39+00:00 [replicated-operator] operator.go:94 read tcp 172.17.0.5:37656->10.128.0.67:9879: read: connection reset by peer
+2019-04-24T21:27:39.878675183Z INFO 2019-04-24T21:27:39+00:00 [replicated-operator] operator.go:95 Retrying connection to replicated service...
+2019-04-24T21:28:58.191075115Z INFO 2019-04-24T21:28:58+00:00 [replicated-operator] operator.go:165 Connected to replicated
+2019-04-24T21:30:35.618183076Z ERRO 2019-04-24T21:30:35+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:30:49.496602665Z ERRO 2019-04-24T21:30:49+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:30:55.188279384Z INFO 2019-04-24T21:30:55+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib with host filesystem successful
+2019-04-24T21:31:16.268537243Z INFO 2019-04-24T21:31:16+00:00 [replicated-operator] host_volumes.go:84 Created resource /etc/ with host filesystem successful
+2019-04-24T21:31:32.141809961Z ERRO 2019-04-24T21:31:32+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:31:35.987102200Z INFO 2019-04-24T21:31:35+00:00 [replicated-operator] requests.go:1256 Preparing external support bundle...
+2019-04-24T21:31:41.886017025Z ERRO 2019-04-24T21:31:41+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:31:47.859038935Z ERRO 2019-04-24T21:31:47+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:31:52.480112456Z INFO 2019-04-24T21:31:52+00:00 [replicated-operator] host_volumes.go:84 Created resource /usr/lib with host filesystem successful
+2019-04-24T21:31:53.201264189Z ERRO 2019-04-24T21:31:53+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:31:53.723152396Z INFO 2019-04-24T21:31:53+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib with host filesystem successful
+2019-04-24T21:31:54.735284290Z INFO 2019-04-24T21:31:54+00:00 [replicated-operator] host_volumes.go:84 Created resource /etc/ with host filesystem successful
+2019-04-24T21:31:56.109683714Z INFO 2019-04-24T21:31:56+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib with host filesystem successful
+2019-04-24T21:31:56.618362703Z INFO 2019-04-24T21:31:56+00:00 [replicated-operator] host_volumes.go:84 Created resource /etc/ with host filesystem successful
+2019-04-24T21:32:49.428459430Z ERRO 2019-04-24T21:32:49+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:32:51.375200820Z ERRO 2019-04-24T21:32:51+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:33:30.975197816Z ERRO 2019-04-24T21:33:30+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:33:48.936017922Z ERRO 2019-04-24T21:33:48+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:33:50.099058728Z ERRO 2019-04-24T21:33:50+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:33:59.687522010Z ERRO 2019-04-24T21:33:59+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:34:07.962338865Z INFO 2019-04-24T21:34:07+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib/replicated-operator/3dede884766842c05bbce0d6cf733ab8/password-strength.sh with host filesystem successful
+2019-04-24T21:34:08.343119739Z INFO 2019-04-24T21:34:08+00:00 [replicated-operator] host_volumes.go:84 Created resource /usr/lib with host filesystem successful
+2019-04-24T21:34:09.577318151Z INFO 2019-04-24T21:34:09+00:00 [replicated-operator] host_volumes.go:84 Created resource /usr/lib with host filesystem successful
+2019-04-24T21:34:10.688925045Z ERRO 2019-04-24T21:34:10+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:34:41.512094992Z INFO 2019-04-24T21:34:41+00:00 [replicated-operator] host_volumes.go:84 Created resource /var/lib with host filesystem successful
+2019-04-24T21:34:41.826468743Z INFO 2019-04-24T21:34:41+00:00 [replicated-operator] host_volumes.go:84 Created resource /etc/ with host filesystem successful
+2019-04-24T21:34:42.158997161Z ERRO 2019-04-24T21:34:42+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:35:03.597956327Z INFO 2019-04-24T21:35:03+00:00 [replicated-operator] requests.go:1316 External support bundle sent
+2019-04-24T21:35:05.937812924Z ERRO 2019-04-24T21:35:05+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:35:07.012921814Z ERRO 2019-04-24T21:35:07+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:35:07.989803241Z INFO 2019-04-24T21:35:07+00:00 [replicated-operator] host_volumes.go:84 Created resource /data with host filesystem successful
+2019-04-24T21:35:08.084714171Z ERRO 2019-04-24T21:35:08+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:35:10.610150737Z ERRO 2019-04-24T21:35:10+00:00 [pkg/docker] run.go:115 context canceled
+2019-04-24T21:35:10.748122405Z INFO 2019-04-24T21:35:10+00:00 [replicated-operator] requests.go:1256 Preparing external support bundle...
+2019-04-24T21:35:10.977183782Z ERRO 2019-04-24T21:35:10+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:35:11.728080805Z ERRO 2019-04-24T21:35:11+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:35:13.129967293Z ERRO 2019-04-24T21:35:13+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+2019-04-24T21:35:16.528101337Z ERRO 2019-04-24T21:35:16+00:00 [replicated-operator] requests.go:1003 Failed to run container: context canceled
+ERRO 2019-03-06T00:44:01+00:00 [replicated-native] scheduler_container.go:307 write /var/lib/replicated/db/goleveldb_data/000034.log: no space left on device

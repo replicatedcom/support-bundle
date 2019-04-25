@@ -8,6 +8,7 @@ analyze:
         - name: replicatedLogExists
           fileMatch:
             pathRegexps:
+              - /replicated\.journald/logs\.raw
               - /replicated\.log
               - /replicated\.stderr
             regexpCapture:

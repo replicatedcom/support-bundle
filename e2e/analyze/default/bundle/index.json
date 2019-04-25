@@ -89,6 +89,18 @@
     }
   },
   {
+    "path": "/replicated/logs/replicated-operator.journald/logs.raw",
+    "format": "",
+    "size": 8317,
+    "spec": {
+      "journald.logs": {
+        "output_dir": "/replicated/logs/replicated-operator.journald/",
+        "unit": "replicated-operator",
+        "since": "-7 days"
+      }
+    }
+  },
+  {
     "path": "/replicated/logs/replicated.stderr",
     "format": "",
     "size": 19684,
@@ -96,6 +108,17 @@
       "docker.container-logs": {
         "output_dir": "/replicated/logs/",
         "container": "replicated"
+      }
+    }
+  },
+  {
+    "path": "/replicated/logs/replicated-operator.stderr",
+    "format": "",
+    "size": 7276,
+    "spec": {
+      "docker.container-logs": {
+        "output_dir": "/replicated/logs/",
+        "container": "replicated-operator"
       }
     }
   }

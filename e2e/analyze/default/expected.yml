@@ -180,4 +180,31 @@
   severity: debug
   analyzerSpec: 'IGNORED'
   variables:
-    replicatedLogExists: "2"
+    replicatedLogExists: "-"
+- name: os.diskPressure.replicated
+  labels:
+    iconKey: disk
+    desiredPosition: "3"
+  message:
+    primary: No Disk Pressure
+    detail: All replicated containers have enough disk space
+    severity: debug
+    labels:
+      iconKey: disk
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    replicatedLogExists: "-"
+- name: os.diskPressure.replicated-operator
+  labels:
+    iconKey: disk_full
+    desiredPosition: "3"
+  message:
+    primary: No Space on Device
+    detail: One or more replicated containers is reporting that it is out of disk space
+    severity: error
+  severity: error
+  analyzerSpec: 'IGNORED'
+  variables:
+    replicatedLogExists: "-"
+    replicatedDiskPressure: no space left on device
