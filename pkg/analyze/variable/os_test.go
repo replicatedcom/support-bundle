@@ -53,11 +53,11 @@ UBUNTU_CODENAME=xenial`,
 				Size: 1,
 			})
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Os.ExtractValue() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Os.DistillReader() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Os.ExtractValue() = %v, want %v", got, tt.want)
+				t.Errorf("Os.DistillReader() = %v, want %v", got, tt.want)
 			}
 		})
 	}

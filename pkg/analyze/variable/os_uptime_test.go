@@ -47,20 +47,20 @@ func TestOsUptime_Distill(t *testing.T) {
 func TestOsUptime_ExtractValue(t *testing.T) {
 	tests := []struct {
 		name    string
-		input   string
+		input   interface{}
 		want    interface{}
 		wantErr bool
 	}{
 		{
 			name:  "basic",
 			input: "54332.07",
-			want:  54332,
+			want:  54332.07,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			v := &OsUptime{}
-			got, err := v.ExtractValue(tt.input, nil)
+			got, err := v.ExtractValue(tt.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("OsUptime.ExtractValue() error = %v, wantErr %v", err, tt.wantErr)
 				return

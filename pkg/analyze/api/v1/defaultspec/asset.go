@@ -413,20 +413,20 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"assets/configManagement.yml": assetsConfigmanagementYml,
-	"assets/cpuCores.yml": assetsCpucoresYml,
-	"assets/datacenter.yml": assetsDatacenterYml,
-	"assets/dockerContainers.yml": assetsDockercontainersYml,
+	"assets/configManagement.yml":           assetsConfigmanagementYml,
+	"assets/cpuCores.yml":                   assetsCpucoresYml,
+	"assets/datacenter.yml":                 assetsDatacenterYml,
+	"assets/dockerContainers.yml":           assetsDockercontainersYml,
 	"assets/dockerDevicemapperLoopback.yml": assetsDockerdevicemapperloopbackYml,
-	"assets/dockerIccFalse.yml": assetsDockericcfalseYml,
-	"assets/dockerLoggingDriver.yml": assetsDockerloggingdriverYml,
-	"assets/dockerVersion.yml": assetsDockerversionYml,
-	"assets/loadavg.yml": assetsLoadavgYml,
-	"assets/memoryUsage.yml": assetsMemoryusageYml,
-	"assets/os.yml": assetsOsYml,
-	"assets/osUptime.yml": assetsOsuptimeYml,
-	"assets/replicatedConfFormat.yml": assetsReplicatedconfformatYml,
-	"assets/replicatedDiskPressure.yml": assetsReplicateddiskpressureYml,
+	"assets/dockerIccFalse.yml":             assetsDockericcfalseYml,
+	"assets/dockerLoggingDriver.yml":        assetsDockerloggingdriverYml,
+	"assets/dockerVersion.yml":              assetsDockerversionYml,
+	"assets/loadavg.yml":                    assetsLoadavgYml,
+	"assets/memoryUsage.yml":                assetsMemoryusageYml,
+	"assets/os.yml":                         assetsOsYml,
+	"assets/osUptime.yml":                   assetsOsuptimeYml,
+	"assets/replicatedConfFormat.yml":       assetsReplicatedconfformatYml,
+	"assets/replicatedDiskPressure.yml":     assetsReplicateddiskpressureYml,
 }
 
 // AssetDir returns the file names below a certain
@@ -468,22 +468,23 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"assets": &bintree{nil, map[string]*bintree{
-		"configManagement.yml": &bintree{assetsConfigmanagementYml, map[string]*bintree{}},
-		"cpuCores.yml": &bintree{assetsCpucoresYml, map[string]*bintree{}},
-		"datacenter.yml": &bintree{assetsDatacenterYml, map[string]*bintree{}},
-		"dockerContainers.yml": &bintree{assetsDockercontainersYml, map[string]*bintree{}},
+		"configManagement.yml":           &bintree{assetsConfigmanagementYml, map[string]*bintree{}},
+		"cpuCores.yml":                   &bintree{assetsCpucoresYml, map[string]*bintree{}},
+		"datacenter.yml":                 &bintree{assetsDatacenterYml, map[string]*bintree{}},
+		"dockerContainers.yml":           &bintree{assetsDockercontainersYml, map[string]*bintree{}},
 		"dockerDevicemapperLoopback.yml": &bintree{assetsDockerdevicemapperloopbackYml, map[string]*bintree{}},
-		"dockerIccFalse.yml": &bintree{assetsDockericcfalseYml, map[string]*bintree{}},
-		"dockerLoggingDriver.yml": &bintree{assetsDockerloggingdriverYml, map[string]*bintree{}},
-		"dockerVersion.yml": &bintree{assetsDockerversionYml, map[string]*bintree{}},
-		"loadavg.yml": &bintree{assetsLoadavgYml, map[string]*bintree{}},
-		"memoryUsage.yml": &bintree{assetsMemoryusageYml, map[string]*bintree{}},
-		"os.yml": &bintree{assetsOsYml, map[string]*bintree{}},
-		"osUptime.yml": &bintree{assetsOsuptimeYml, map[string]*bintree{}},
-		"replicatedConfFormat.yml": &bintree{assetsReplicatedconfformatYml, map[string]*bintree{}},
-		"replicatedDiskPressure.yml": &bintree{assetsReplicateddiskpressureYml, map[string]*bintree{}},
+		"dockerIccFalse.yml":             &bintree{assetsDockericcfalseYml, map[string]*bintree{}},
+		"dockerLoggingDriver.yml":        &bintree{assetsDockerloggingdriverYml, map[string]*bintree{}},
+		"dockerVersion.yml":              &bintree{assetsDockerversionYml, map[string]*bintree{}},
+		"loadavg.yml":                    &bintree{assetsLoadavgYml, map[string]*bintree{}},
+		"memoryUsage.yml":                &bintree{assetsMemoryusageYml, map[string]*bintree{}},
+		"os.yml":                         &bintree{assetsOsYml, map[string]*bintree{}},
+		"osUptime.yml":                   &bintree{assetsOsuptimeYml, map[string]*bintree{}},
+		"replicatedConfFormat.yml":       &bintree{assetsReplicatedconfformatYml, map[string]*bintree{}},
+		"replicatedDiskPressure.yml":     &bintree{assetsReplicateddiskpressureYml, map[string]*bintree{}},
 	}},
 }}
 
@@ -533,4 +534,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-
