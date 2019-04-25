@@ -167,6 +167,18 @@
   analyzerSpec: 'IGNORED'
   variables:
     os: centos
+- name: os.uptime
+  labels:
+    iconKey: os_uptime
+    desiredPosition: "7"
+  message:
+    primary: 13 minutes
+    detail: 13 minutes total uptime since last boot
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    osUptime: 812.4
 - name: replicated.replicatedd.replicatedConfFormat
   labels:
     iconKey: logs

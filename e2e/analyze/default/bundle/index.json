@@ -66,12 +66,34 @@
     }
   },
   {
+    "path": "default/proc/uptime",
+    "format": "",
+    "size": 15,
+    "spec": {
+      "os.read-file": {
+        "output_dir": "default/proc",
+        "filepath": "/proc/uptime"
+      }
+    }
+  },
+  {
     "path": "default/commands/loadavg/loadavg",
     "format": "",
     "size": 27,
     "spec": {
       "os.loadavg": {
         "output_dir": "default/commands/loadavg",
+        "template": ""
+      }
+    }
+  },
+  {
+    "path": "/default/commands/uptime/uptime",
+    "format": "",
+    "size": 15,
+    "spec": {
+      "os.uptime": {
+        "output_dir": "/default/commands/uptime",
         "template": ""
       }
     }
