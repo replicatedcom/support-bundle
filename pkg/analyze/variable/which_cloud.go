@@ -31,5 +31,5 @@ func (v *WhichCloud) Evaluate(data map[string]interface{}) (interface{}, error) 
 	if !ok || address == "" {
 		return nil, nil
 	}
-	return "aws", nil // TODO
+	return nil, nil // TODO
 }
