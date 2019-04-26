@@ -23,7 +23,7 @@ export const handler = (argv) => {
     // HACK: set a really high max depth so it never validates
     validate(schema.properties.lifecycle, "properties.lifecycle", 100, schema, true);
     validate(schema.properties.collect, "properties.collect", 4, schema, true);
-    validate(schema.properties.analyze, "properties.analyze", 4, schema, false);
+    // validate(schema.properties.analyze, "properties.analyze", 4, schema, false);
   } catch (err) {
     console.log(`\n\nFAILED ${err.message}`);
     process.exit(1);

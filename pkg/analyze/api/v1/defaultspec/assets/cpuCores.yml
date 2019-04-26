@@ -1,0 +1,24 @@
+analyze:
+  v1:
+    - name: cpucores.usage
+      labels:
+        iconKey: os_cpu
+        desiredPosition: "1"
+      registerVariables:
+        - name: numproc
+          cpuCores: {}
+      precondition:
+        not:
+          empty: {}
+          variableRef: numproc
+      condition:
+        eval: "true"
+      messages:
+        preconditionFalse:
+          primary: Unknown
+          detail: Could not determine number of CPU Cores. Ensure your specs include a command os.read-file["/proc/cpuinfo"].
+          severity: debug
+        conditionTrue:
+          primary: '{{repl .numproc}}'
+          detail: Number of CPU Cores is {{repl .numproc}}
+          severity: info

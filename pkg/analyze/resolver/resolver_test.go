@@ -5,16 +5,25 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/variable"
+	"github.com/replicatedcom/support-bundle/pkg/meta"
+
 	"github.com/go-kit/kit/log"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	. "github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
-	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/require"
 )
 
 func TestResolverResolveSpec(t *testing.T) {
+	eqOsCentosEval := condition.EvalCondition(`{{repl eq .os "centos"}}`)
+	eqRefCentosEval := condition.EvalCondition(`{{repl eq .Ref "centos"}}`)
+	osVersionGte1604Eval := condition.EvalCondition(`{{repl lt .osVersion "16.04" | not}}`)
+
 	tests := []struct {
 		name   string
 		files  map[string]string
@@ -27,45 +36,167 @@ func TestResolverResolveSpec(t *testing.T) {
 				"/spec/1.yml": `
 analyze:
   v1:
-    - kubernetes.total-memory:
-        minimum: 10Gi
-      collect_refs:
-        - selector:
-            analyze: resource-list-nodes`},
+  - condition:
+      eval: '{{repl lt .osVersion "16.04" | not}}'
+    messages:
+      conditionError:
+        detail: CentOS version must be at least 7.5
+        primary: Failed to detect CentOS version
+        severity: debug
+      conditionFalse:
+        detail: CentOS version must be at least 7.5
+        primary: CentOS version {{repl .osVersion}}
+        severity: warn
+      conditionTrue:
+        detail: CentOS version must be at least 7.5
+        primary: CentOS version {{repl .osVersion}}
+        severity: info
+      preconditionError:
+        detail: CentOS version must be at least 7.5
+        primary: Failed to detect OS
+        severity: debug
+      preconditionFalse:
+        detail: CentOS version must be at least 7.5
+        primary: OS is not CentOS
+        severity: debug
+    name: centos-min-version
+    precondition:
+      or:
+      - eval: '{{repl eq .os "centos"}}'
+      - eval: '{{repl eq .Ref "centos"}}'
+        variableRef: os
+      - stringCompare:
+          eq: centos
+        variableRef: os
+    registerVariables:
+    - name: os
+      os: {}`},
 			inline: []string{`
 analyze:
   v1:
-    - kubernetes.version:
-        semver_minimum: 1.10.0
-      collect_refs:
-        - selector:
-            analyze: kubernetes-version`},
+  - condition:
+      regexpMatch:
+        regexp: /chef-client
+      variableRef: ps
+    messages:
+      conditionTrue:
+        detail: The server must not be running the Chef Client
+        primary: Chef Client detected
+        severity: warn
+    name: chef-client
+    precondition:
+      not:
+        empty: {}
+        variableRef: ps
+    registerVariables:
+    - collectRef:
+        selector:
+          analyze: ps-aux
+      name: ps`},
 
 			expect: api.Doc{
 				Analyze: api.Analyze{
-					V1: []v1.AnalyzerSpec{
+					V1: []v1.Analyzer{
 						{
-							KubernetesTotalMemory: &v1.KubernetesTotalMemoryRequirement{
-								Min: "10Gi",
+							Meta: meta.Meta{
+								Name: "centos-min-version",
 							},
-							AnalyzerShared: v1.AnalyzerShared{
-								CollectRefs: []meta.Ref{{
-									Selector: map[string]string{
-										"analyze": "resource-list-nodes",
+							RegisterVariables: []v1.Variable{
+								{
+									Meta: meta.Meta{
+										Name: "os",
 									},
-								}},
+									Os: &variable.Os{},
+								},
+							},
+							Precondition: &v1.Condition{
+								Or: &v1.OrPredicate{
+									{
+										EvalCondition: &eqOsCentosEval,
+									},
+									{
+										EvalCondition: &eqRefCentosEval,
+										VariableRef:   "os",
+									},
+									{
+										StringCompare: &condition.StringCompare{
+											Compare: condition.Compare{
+												Eq: "centos",
+											},
+										},
+										VariableRef: "os",
+									},
+								},
+							},
+							Condition: v1.Condition{
+								EvalCondition: &osVersionGte1604Eval,
+							},
+							Messages: v1.Messages{
+								PreconditionError: &message.Message{
+									Primary:  "Failed to detect OS",
+									Detail:   "CentOS version must be at least 7.5",
+									Severity: common.SeverityDebug,
+								},
+								PreconditionFalse: &message.Message{
+									Primary:  "OS is not CentOS",
+									Detail:   "CentOS version must be at least 7.5",
+									Severity: common.SeverityDebug,
+								},
+								ConditionError: &message.Message{
+									Primary:  "Failed to detect CentOS version",
+									Detail:   "CentOS version must be at least 7.5",
+									Severity: common.SeverityDebug,
+								},
+								ConditionFalse: &message.Message{
+									Primary:  "CentOS version {{repl .osVersion}}",
+									Detail:   "CentOS version must be at least 7.5",
+									Severity: common.SeverityWarn,
+								},
+								ConditionTrue: &message.Message{
+									Primary:  "CentOS version {{repl .osVersion}}",
+									Detail:   "CentOS version must be at least 7.5",
+									Severity: common.SeverityInfo,
+								},
 							},
 						},
 						{
-							KubernetesVersion: &v1.KubernetesVersionRequirement{
-								SemverMin: "1.10.0",
+							Meta: meta.Meta{
+								Name: "chef-client",
 							},
-							AnalyzerShared: v1.AnalyzerShared{
-								CollectRefs: []meta.Ref{{
-									Selector: map[string]string{
-										"analyze": "kubernetes-version",
+							RegisterVariables: []v1.Variable{
+								{
+									Meta: meta.Meta{
+										Name: "ps",
 									},
-								}},
+									CollectRef: &variable.CollectRef{
+										Ref: meta.Ref{
+											Selector: meta.Selector{
+												"analyze": "ps-aux",
+											},
+										},
+									},
+								},
+							},
+							Precondition: &v1.Condition{
+								Not: &v1.NotPredicate{
+									Condition: v1.Condition{
+										Empty:       &condition.Empty{},
+										VariableRef: "ps",
+									},
+								},
+							},
+							Condition: v1.Condition{
+								RegexpMatch: &condition.RegexpMatch{
+									Regexp: "/chef-client",
+								},
+								VariableRef: "ps",
+							},
+							Messages: v1.Messages{
+								ConditionTrue: &message.Message{
+									Primary:  "Chef Client detected",
+									Detail:   "The server must not be running the Chef Client",
+									Severity: common.SeverityWarn,
+								},
 							},
 						},
 					},
@@ -95,7 +226,7 @@ analyze:
 				Files:  files,
 				Inline: test.inline,
 			}
-			spec, err := resolver.ResolveSpec(context.Background(), input)
+			spec, err := resolver.ResolveSpec(context.Background(), input, true)
 			req.NoError(err)
 			req.Equal(test.expect, spec)
 		})

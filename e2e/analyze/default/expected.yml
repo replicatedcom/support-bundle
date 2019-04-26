@@ -1,0 +1,248 @@
+- name: processes.configmanagement.puppet
+  labels:
+    iconKey: puppet_logo
+    desiredPosition: "10"
+  message:
+    primary: No Puppet
+    detail: This server is not running a puppet agent
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    ps: ~
+- name: processes.configmanagement.chef
+  labels:
+    iconKey: chef_logo
+    desiredPosition: "10"
+  message:
+    primary: No Chef
+    detail: This server is not running a Chef client
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    ps: ~
+- name: cpucores.usage
+  labels:
+    iconKey: os_cpu
+    desiredPosition: "1"
+  message:
+    primary: "8"
+    detail: Number of CPU Cores is 8
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    numproc: 8
+- name: datacenter.unknown
+  labels:
+    iconKey: datacenter_unknown
+    desiredPosition: "7"
+  message:
+    primary: Unknown
+    detail: Could not determine public IP address.
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+- name: docker.containers.count
+  labels:
+    iconKey: docker_container
+    desiredPosition: "3"
+  message:
+    primary: "1"
+    detail: 1 containers running
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    runningContainers: "1"
+- name: docker.devicemapper.isLoopback
+  labels:
+    iconKey: docker_whale
+    desiredPosition: "3"
+  message:
+    primary: Devicemapper with loopback
+    detail: Docker devicemapper driver in loopback config
+    severity: warn
+  severity: warn
+  analyzerSpec: 'IGNORED'
+  variables:
+    driver: devicemapper
+    loopback: Data loop file
+- name: docker.daemon.icc
+  labels:
+    iconKey: no_docker
+    desiredPosition: "3"
+  message:
+    primary: No ICC
+    detail: Docker Inter-container communication is disabled, app components will be unable to communicate
+    severity: error
+  severity: error
+  variables:
+    docker: "1.13.1"
+    icc: "false"
+- name: docker.loggingDriver.isJsonFile
+  labels:
+    iconKey: logs
+    desiredPosition: "3"
+  message:
+    primary: json-file/journald
+    detail: Logging driver is json-file or journald
+    severity: debug
+    labels:
+      iconKey: logs
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    driver: json-file
+- name: docker.version
+  labels:
+    iconKey: docker_whale
+    desiredPosition: "2"
+  message:
+    primary: Docker 1.13.1
+    detail: Docker server version is 1.13.1
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    version: "1.13.1"
+- name: os.loadavg
+  labels:
+    iconKey: os_loadavg
+    desiredPosition: "8"
+  message:
+    primary: "0.00 0.01 0.05"
+    detail: CPU load averages over 1, 5, and 15 minutes
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    loadavg: "0.00 0.01 0.05 1/177 17202"
+    loadavg1: 0
+    loadavg5: 0.01
+    loadavg15: 0.05
+- name: memory.usage
+  labels:
+    iconKey: os_memory
+    desiredPosition: "6"
+  message:
+    primary: '7%'
+    detail: '535.8MB memory used of 7.673GB'
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    memoryUsageAvailable: 7.137214464e+09
+    memoryUsageTotal: 7.673032704e+09
+    memoryUsagePercent: "6.983135100162868"
+- name: os.ubuntu
+  labels:
+    iconKey: os_ubuntu
+  message:
+    primary: OS is not Ubuntu
+    detail: Operating System is not Ubuntu
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.alpine
+  labels:
+    iconKey: os_alpine
+  message:
+    primary: OS is not Alpine
+    detail: Operating System is not Alpine
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.centos
+  labels:
+    iconKey: os_centos
+  message:
+    primary: OS is CentOS
+    detail: Operating System is CentOS
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.rhel
+  labels:
+    iconKey: os_rhel
+  message:
+    primary: OS is not RHEL
+    detail: Operating System is not RHEL
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.debian
+  labels:
+    iconKey: os_debian
+  message:
+    primary: OS is not Debian
+    detail: Operating System is not Debian
+    severity: debug
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    os: centos
+- name: os.uptime
+  labels:
+    iconKey: os_uptime
+    desiredPosition: "7"
+  message:
+    primary: 13 minutes
+    detail: 13 minutes total uptime since last boot
+    severity: info
+  severity: info
+  analyzerSpec: 'IGNORED'
+  variables:
+    osUptime: 812.4
+- name: replicated.replicatedd.replicatedConfFormat
+  labels:
+    iconKey: logs
+    desiredPosition: "3"
+  message:
+    primary: replicated.conf ok
+    detail: /etc/replicated.conf is correctly formatted
+    severity: debug
+    labels:
+      iconKey: logs
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    replicatedLogExists: "-"
+    replicatedConfError: ~
+- name: os.diskPressure.replicated
+  labels:
+    iconKey: disk
+    desiredPosition: "3"
+  message:
+    primary: No Disk Pressure
+    detail: All replicated containers have enough disk space
+    severity: debug
+    labels:
+      iconKey: disk
+  severity: debug
+  analyzerSpec: 'IGNORED'
+  variables:
+    replicatedLogExists: "-"
+    replicatedDiskPressure: ~
+- name: os.diskPressure.replicated-operator
+  labels:
+    iconKey: disk_full
+    desiredPosition: "3"
+  message:
+    primary: No Space on Device
+    detail: One or more replicated containers is reporting that it is out of disk space
+    severity: error
+  severity: error
+  analyzerSpec: 'IGNORED'
+  variables:
+    replicatedLogExists: "-"
+    replicatedDiskPressure: no space left on device

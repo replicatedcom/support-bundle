@@ -4,6 +4,7 @@ const (
 	SeverityError Severity = "error"
 	SeverityWarn  Severity = "warn"
 	SeverityInfo  Severity = "info"
+	SeverityDebug Severity = "debug"
 )
 
 type Severity string
@@ -42,9 +43,18 @@ func SeverityCompare(severity, threshold Severity) int {
 		default:
 			return -1
 		}
-	default:
+	case SeverityDebug:
 		switch severity {
 		case SeverityError, SeverityWarn, SeverityInfo:
+			return 1
+		case SeverityDebug:
+			return 0
+		default:
+			return -1
+		}
+	default:
+		switch severity {
+		case SeverityError, SeverityWarn, SeverityInfo, SeverityDebug:
 			return 1
 		default:
 			return 0

@@ -1,0 +1,40 @@
+[
+  {
+    "path": "/VERSION.json",
+    "format": "",
+    "size": 88,
+    "spec": {
+      "description": "Support bundle version information",
+      "output_dir": "/",
+      "version": {}
+    }
+  },
+  {
+    "path": "default/commands/ps/stderr",
+    "format": "",
+    "size": 0,
+    "spec": {
+      "os.run-command": {
+        "output_dir": "default/commands/ps",
+        "name": "ps",
+        "args": [
+          "fauxwww"
+        ]
+      }
+    }
+  },
+  {
+    "path": "default/commands/ps/stdout",
+    "format": "",
+    "size": 66333,
+    "spec": {
+      "os.run-command": {
+        "output_dir": "default/commands/ps",
+        "name": "ps",
+        "args": [
+          "fauxwww"
+        ]
+      }
+    }
+  }
+]

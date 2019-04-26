@@ -1,0 +1,72 @@
+defaults: &defaults
+  labels:
+    iconKey: disk_full
+    desiredPosition: "3"
+  precondition:
+    not:
+      empty: {}
+      variableRef: replicatedLogExists
+  condition:
+    not:
+      empty: {}
+      variableRef: replicatedDiskPressure
+  messages:
+    conditionFalse:
+      primary: No Disk Pressure
+      detail: All replicated containers have enough disk space
+      severity: debug
+      labels:
+        iconKey: disk
+    conditionTrue:
+      primary: No Space on Device
+      detail: One or more replicated containers is reporting that it is out of disk space
+      severity: error
+
+analyze:
+  v1:
+    - <<: *defaults
+      name: os.diskPressure.replicated
+      registerVariables:
+        - name: replicatedLogExists
+          fileMatch:
+            pathRegexps:
+              - /replicated\.journald/logs\.raw
+              - /replicated\.log
+              - /replicated\.stderr
+            regexpCapture:
+              regexp: '.'
+              index: 0
+            scannable: true
+        - name: replicatedDiskPressure
+          fileMatch:
+            pathRegexps:
+              - /replicated\.journald/logs\.raw
+              - /replicated\.log
+              - /replicated\.stderr
+            regexpCapture:
+              regexp: 'no space left on device'
+              index: 0
+            scannable: true
+    - <<: *defaults
+      name: os.diskPressure.replicated-operator
+      registerVariables:
+        - name: replicatedLogExists
+          fileMatch:
+            pathRegexps:
+              - /replicated-operator\.journald/logs\.raw
+              - /replicated-operator\.log
+              - /replicated-operator\.stderr
+            regexpCapture:
+              regexp: '.'
+              index: 0
+            scannable: true
+        - name: replicatedDiskPressure
+          fileMatch:
+            pathRegexps:
+              - /replicated-operator\.journald/logs\.raw
+              - /replicated-operator\.log
+              - /replicated-operator\.stderr
+            regexpCapture:
+              regexp: 'no space left on device'
+              index: 0
+            scannable: true

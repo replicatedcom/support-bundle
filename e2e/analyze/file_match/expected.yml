@@ -1,0 +1,13 @@
+- name: replicated.replicatedd.replicatedConfFormat
+  labels:
+    iconKey: gray_checkmark
+    desiredPosition: "3"
+  message:
+    primary: Incorrect replicated.conf
+    detail: The file at /etc/replicated.conf is formatted incorrectly
+    severity: warn
+  severity: warn
+  analyzerSpec: 'IGNORED'
+  variables:
+    replicatedLogExists: "2"
+    replicatedConfError: "Failed to read config:"

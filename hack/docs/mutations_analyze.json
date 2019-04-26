@@ -1,0 +1,249 @@
+[
+  {
+    "path": "properties.analyze",
+    "merge": {
+      "description": "A list of analyzers to run on the collect spec"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1",
+    "merge": {
+      "description": "The v1 analyze definition"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items",
+    "merge": {
+      "description": "A list of analyzers to run on the collect spec"
+    },
+    "replace": {
+      "required": []
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.message",
+    "merge": {
+      "description": "Optionally override the default analyzer message"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.severity",
+    "merge": {
+      "description": "Optionally override the default severity"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.collect_refs",
+    "merge": {
+      "description": "Reference to a collect spec"
+    },
+    "examples": [
+      [{
+        "ref": "k8sResourceNodes",
+        "selector": {"analyze": "kubernetes-resource-list-nodes"}
+      }],
+      [{
+        "ref": "k8sVersion",
+        "name": "kubernetes-version"
+      }]
+    ]
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.ref",
+    "merge": {
+      "description": "Used internally"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.name",
+    "merge": {
+      "description": "Selector to reference the meta.name of a collect spec"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.selector",
+    "delete": [
+      "properties"
+    ],
+    "merge": {
+      "description": "Selector to reference the meta.labels of a collect spec",
+      "patternProperties": {
+        ".*": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.meta",
+    "merge": {
+      "description": "Can be used to organize and identify analyze elements"
+    },
+    "examples": [
+      {
+        "name": "kubernetes-version",
+        "labels": {
+          "source": "kubernetes"
+        }
+      }
+    ]
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.meta.properties.labels",
+    "delete": [
+      "properties"
+    ],
+    "merge": {
+      "description": "Key,value pairs used to organize and identify analyze elements",
+      "patternProperties": {
+        ".*": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.meta.properties.name",
+    "delete": [
+      "properties"
+    ],
+    "merge": {
+      "description": "Name used to organize and identify analyze elements"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"docker.version\"]",
+    "merge": {
+      "description": "Check that the Docker version meets the required minimum",
+      "examples": [
+        {
+          "server_version_minimum": "17.12.1"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"docker.version\"].properties.server_version_minimum",
+    "merge": {
+      "description": "The minimum Docker version"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.total-memory\"]",
+    "replace": {
+      "required": [
+        "minimum"
+      ]
+    },
+    "merge": {
+      "description": "Check that the total memory for a cluster meets the required minimum",
+      "examples": [
+        {
+          "minimum": "20Gi"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.total-memory\"].properties.minimum",
+    "merge": {
+      "description": "The minimum total memory requirement"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.version\"]",
+    "merge": {
+      "description": "Check that the Kubernetes version meets the required minimum",
+      "examples": [
+        {
+          "semver_minimum": "1.10.0"
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.version\"].properties.semver_minimum",
+    "merge": {
+      "description": "The minimum Kubernetes version"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"selinux.notenforcing\"]",
+    "merge": {
+      "description": "Check that SELinux is not in enforcing mode",
+      "properties": {},
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"raw\"]",
+    "merge": {
+      "description": "A fully customizable analyzer (advanced).",
+      "examples": [
+        {
+          "conditions": [
+            {
+              "eval": {
+                "operator": "or",
+                "statements": [
+                  "{{repl .Empty}}",
+                  "{{repl .Fail}}"
+                ],
+                "variables": [
+                  {
+                    "Out": "{{repl .Ref | trimSuffix \"\\n\"}}",
+                    "Empty": "{{repl not .Ref}}"
+                  },
+                  {
+                    "Fail": "{{repl ne .Out \"1\"}}"
+                  }
+                ]
+              },
+              "severity": "error",
+              "message": "Failed to connect to postgres: \"{{repl .Out}}\""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions",
+    "merge": {
+      "description": "An array of conditions, evaluated in order, that when met will produce a severity and message."
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions.items.properties.eval.properties.operator",
+    "merge": {
+      "description": "The operator used to evaluate the statements. One of and, or.",
+      "enum": ["and", "or"]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions.items.properties.eval.properties.variables.items",
+    "delete": [
+      "properties"
+    ],
+    "merge": {
+      "description": "Key,value pairs used to define variables",
+      "patternProperties": {
+        ".*": {
+          "type": "string"
+        }
+      }
+    }
+  },
+
+
+  { "comment": "last step -- delete internal spec types"},
+  {
+    "path": "properties.collect.properties.v1.items.properties",
+    "delete": [
+      "meta.customer",
+      "version"
+    ]
+  }
+]

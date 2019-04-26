@@ -1,27 +1,48 @@
 package v1
 
-import "github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
+import (
+	"reflect"
+
+	"github.com/pkg/errors"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
+	"github.com/replicatedcom/support-bundle/pkg/meta"
+)
 
 type Condition struct {
-	ConditionShared `json:",inline" yaml:",inline" hcl:",inline"`
+	meta.Meta   `json:",inline" yaml:",inline" hcl:",inline"`
+	VariableRef string `json:"variableRef,omitempty" yaml:"variableRef,omitempty" hcl:"variableRef,omitempty"` // Should we use a meta.Ref here?
 
-	Eval *EvalCondition `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
+	// built-in
+	Empty         *condition.Empty         `json:"empty,omitempty" yaml:"empty,omitempty" hcl:"empty,omitempty"`
+	EvalCondition *condition.EvalCondition `json:"eval,omitempty" yaml:"eval,omitempty" hcl:"eval,omitempty"`
+	NumberCompare *condition.NumberCompare `json:"numberCompare,omitempty" yaml:"numberCompare,omitempty" hcl:"numberCompare,omitempty"`
+	RegexpMatch   *condition.RegexpMatch   `json:"regexpMatch,omitempty" yaml:"regexpMatch,omitempty" hcl:"regexpMatch,omitempty"`
+	StringCompare *condition.StringCompare `json:"stringCompare,omitempty" yaml:"stringCompare,omitempty" hcl:"stringCompare,omitempty"`
+
+	// predicates
+	And *AndPredicate `json:"and,omitempty" yaml:"and,omitempty" hcl:"and,omitempty"`
+	Or  *OrPredicate  `json:"or,omitempty" yaml:"or,omitempty" hcl:"or,omitempty"`
+	Not *NotPredicate `json:"not,omitempty" yaml:"not,omitempty" hcl:"not,omitempty"`
 }
 
-type ConditionShared struct {
-	Severity common.Severity `json:"severity" yaml:"severity" hcl:"severity"`
-	Message  string          `json:"message,omitempty" yaml:"message,omitempty" hcl:"message,omitempty"`
+func (c *Condition) Eval(data map[string]interface{}) (bool, error) {
+	e, tagName, ok := c.GetCondition()
+	if !ok {
+		return false, errors.New("condition not defined")
+	}
+	b, err := condition.Eval(e, c.VariableRef, data)
+	if err != nil {
+		return false, errors.Wrapf(err, "condition %q", tagName)
+	}
+	return b, nil
 }
 
-type EvalCondition struct {
-	Operator   EvalOperator        `json:"operator,omitempty" yaml:"operator,omitempty" hcl:"operator,omitempty"`
-	Statements []string            `json:"statements" yaml:"statements" hcl:"statements"`
-	Variables  []map[string]string `json:"variables,omitempty" yaml:"variables,omitempty" hcl:"variables,omitempty"`
+func (c *Condition) GetCondition() (condition.Interface, string, bool) {
+	val := reflect.Indirect(reflect.ValueOf(c))
+	for i := 0; i < val.NumField(); i++ {
+		if e, ok := val.Field(i).Interface().(condition.Interface); ok && !reflect.ValueOf(e).IsNil() {
+			return e, getTagName(val, i, "yaml"), true
+		}
+	}
+	return nil, "", false
 }
-
-type EvalOperator string
-
-const (
-	AndOperator EvalOperator = "and"
-	OrOperator  EvalOperator = "or"
-)

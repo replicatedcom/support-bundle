@@ -1,0 +1,48 @@
+analyze:
+  v1:
+    - name: processes.configmanagement.puppet
+      registerVariables:
+        - name: ps
+          fileMatch:
+            pathRegexps:
+              - default/commands/ps/stdout
+      precondition:
+        not:
+          empty: {}
+          variableRef: ps
+      condition:
+        regexpMatch:
+          regexp: 'puppet agent '
+        variableRef: ps
+      messages:
+        conditionTrue:
+          primary: Managed By Puppet
+          detail: This server is running a Puppet agent
+          severity: info
+        conditionFalse:
+          primary: No Puppet
+          detail: This server is not running a puppet agent
+          severity: debug
+    - name: processes.configmanagement.chef
+      registerVariables:
+        - name: ps
+          fileMatch:
+            pathRegexps:
+              - default/commands/ps/stdout
+      precondition:
+        not:
+          empty: {}
+          variableRef: ps
+      condition:
+        regexpMatch:
+          regexp: 'chef-client'
+        variableRef: ps
+      messages:
+        conditionTrue:
+          primary: Managed By Chef
+          detail: This server is running a Chef client
+          severity: info
+        conditionFalse:
+          primary: No Chef
+          detail: This server is not running a Chef client
+          severity: debug

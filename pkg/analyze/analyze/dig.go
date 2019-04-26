@@ -8,29 +8,38 @@ import (
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/analyzer"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/collector"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/resolver"
+	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/fs"
+	"github.com/replicatedcom/support-bundle/pkg/getter"
 	"github.com/replicatedcom/support-bundle/pkg/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/dig"
 )
 
-func RunE(ctx context.Context) ([]api.Result, error) {
-	a, err := Get()
+func InspectE(ctx context.Context, bundlePath string) (map[string][]collecttypes.Result, error) {
+	a, err := Get(viper.GetViper())
 	if err != nil {
 		return nil, err
 	}
-	return a.Execute(ctx)
+	return a.Inspect(ctx, bundlePath)
 }
 
-func Get() (*Analyze, error) {
+func RunE(ctx context.Context, bundlePath string) ([]api.Result, error) {
+	a, err := Get(viper.GetViper())
+	if err != nil {
+		return nil, err
+	}
+	return a.Execute(ctx, bundlePath)
+}
+
+func Get(v *viper.Viper) (*Analyze, error) {
 	// who injects the injectors?
-	logLevel := viper.GetViper().GetString("log-level")
-	debug := log.With(level.Debug(logger.New(logLevel)), "component", "injector", "phase", "instance.get")
+	logger := logger.FromViper(v)
+	debug := log.With(level.Debug(logger), "component", "injector", "phase", "instance.get")
 
 	debug.Log("event", "injector.build")
-	injector, err := buildInjector()
+	injector, err := buildInjector(v)
 	if err != nil {
 		debug.Log("event", "injector.build.fail")
 		return nil, errors.Wrap(err, "build injector")
@@ -51,15 +60,17 @@ func Get() (*Analyze, error) {
 	return analyze, nil
 }
 
-func buildInjector() (*dig.Container, error) {
+func buildInjector(v *viper.Viper) (*dig.Container, error) {
 	providers := []interface{}{
-		viper.GetViper,
+		func() *viper.Viper {
+			return v
+		},
 
 		logger.FromViper,
 		fs.FromViper,
 
 		resolver.New,
-		collector.New,
+		getter.NewWithDefaults,
 		analyzer.New,
 
 		New,

@@ -7,36 +7,55 @@ import (
 	"github.com/mitchellh/cli"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
+	"github.com/replicatedcom/support-bundle/pkg/ui"
 )
 
 type HumanEncoder struct {
-	W  io.Writer
 	UI cli.Ui
 }
 
-func NewHumanEncoder(w io.Writer, ui cli.Ui) *HumanEncoder {
-	return &HumanEncoder{w, ui}
+func NewHumanEncoder(w io.Writer, colored, force bool) *HumanEncoder {
+	wUI := ui.New(nil, w, w)
+	if colored {
+		wUI = ui.Colored(wUI, force)
+	}
+	return &HumanEncoder{wUI}
 }
 
 func (e *HumanEncoder) Encode(v interface{}) error {
-	results, ok := v.([]api.Result)
-	if !ok {
+	switch typed := v.(type) {
+	case []api.Result:
+		return e.encodeResults(typed)
+	default:
 		return fmt.Errorf("unexpected type %T", v)
 	}
-	return e.encodeResults(results)
 }
 
 func (e *HumanEncoder) encodeResults(results []api.Result) error {
+	if len(results) == 0 {
+		symbol := e.severitySymbol(common.SeverityWarn)
+		e.UI.Warn(fmt.Sprintf("%s Results empty\n", symbol))
+		return nil
+	}
+
 	for _, result := range results {
-		msg := fmt.Sprintf(
-			"%s %s\n",
-			e.severitySymbol(result.Severity),
-			result.Requirement)
-		if result.Message != "" {
-			msg += fmt.Sprintf(
-				"%s\n",
-				result.Message)
+		if result.Message == nil {
+			continue
 		}
+		var msg string
+		symbol := e.severitySymbol(result.Severity)
+		if result.Error != "" {
+			msg += fmt.Sprintf(
+				"%s %s\n",
+				symbol, result.Error)
+		} else {
+			msg += fmt.Sprintf(
+				"%s %s\n",
+				symbol, result.Message.Primary)
+		}
+		msg += fmt.Sprintf(
+			"%s\n",
+			result.Message.Detail)
 		e.severityOut(result.Severity)(msg)
 	}
 	return nil
@@ -61,8 +80,10 @@ func (e *HumanEncoder) severitySymbol(severity common.Severity) string {
 		return "✗"
 	case common.SeverityWarn:
 		return "!"
-	case common.SeverityInfo:
+	case common.SeverityDebug:
 		return "ℹ"
+	case common.SeverityInfo:
+		return "✓"
 	default:
 		return "✓"
 	}

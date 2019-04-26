@@ -1,0 +1,34 @@
+analyze:
+  v1:
+    - name: docker.loggingDriver.isJsonFile
+      labels:
+        iconKey: no_logs
+        desiredPosition: "3"
+      registerVariables:
+        - name: driver
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"LoggingDriver": *"([^"]+)"'
+              index: 1
+      precondition:
+        not:
+          empty: {}
+          variableRef: driver
+      condition:
+        not:
+          stringCompare:
+            in: [json-file,journald]
+          variableRef: driver
+      messages:
+        conditionFalse:
+          primary: json-file/journald
+          detail: Logging driver is json-file or journald
+          severity: debug
+          labels:
+            iconKey: logs
+        conditionTrue:
+          primary: Non json-file log driver
+          detail: Logging driver is not json-file or journald, cannot collect container logs
+          severity: warn

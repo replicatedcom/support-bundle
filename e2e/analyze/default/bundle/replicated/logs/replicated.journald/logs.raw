@@ -1,0 +1,129 @@
+-- Logs begin at Wed 2019-04-24 21:21:45 UTC, end at Wed 2019-04-24 21:36:25 UTC. --
+Apr 24 21:27:04 ethan-3 systemd[1]: Starting Replicated Service...
+Apr 24 21:27:04 ethan-3 systemd[1]: Started Replicated Service.
+Apr 24 21:27:07 ethan-3 docker[5238]: INFO 2019-04-24T21:27:07+00:00 daemon/daemon.go:54 Starting Replicated version 2.34.1 (git="4122872", date="2019-04-01 23:13:29 +0000 UTC")
+Apr 24 21:27:07 ethan-3 docker[5238]: INFO 2019-04-24T21:27:07+00:00 [pkg/docker] client.go:82 Docker client initialized for API version 1.39
+Apr 24 21:27:07 ethan-3 docker[5238]: INFO 2019-04-24T21:27:07+00:00 crypto/local_cipher.go:43 Generated new local cipher key+nonce
+Apr 24 21:27:08 ethan-3 docker[5238]: INFO 2019-04-24T21:27:08+00:00 crypto/ca.go:79 Creating new certificate authority
+Apr 24 21:27:08 ethan-3 docker[5238]: INFO 2019-04-24T21:27:08+00:00 crypto/ca.go:83 New certificate authority created successfully
+Apr 24 21:27:09 ethan-3 docker[5238]: INFO 2019-04-24T21:27:09+00:00 crypto/ca.go:121 Creating new default certificate for address=10.128.0.67
+Apr 24 21:27:10 ethan-3 docker[5238]: INFO 2019-04-24T21:27:10+00:00 crypto/ca.go:337 Successfully generated new keypair for address=10.128.0.67, cns=[10.128.0.67]
+Apr 24 21:27:10 ethan-3 docker[5238]: INFO 2019-04-24T21:27:10+00:00 crypto/ca.go:125 New default certificate created successfully
+Apr 24 21:27:10 ethan-3 docker[5238]: INFO 2019-04-24T21:27:10+00:00 crypto/certs/manager.go:71 New key pair for TLS configuration generated
+Apr 24 21:27:10 ethan-3 docker[5238]: INFO 2019-04-24T21:27:10+00:00 eventmanager/event_manager.go:30 No event listener registered for event "RELOAD_AGENT_CLIENT_CA"
+Apr 24 21:27:10 ethan-3 docker[5238]: INFO 2019-04-24T21:27:10+00:00 scheduler/native/migrate/280.go:68 Replicated native migration 2.8.0 complete
+Apr 24 21:27:10 ethan-3 docker[5238]: INFO 2019-04-24T21:27:10+00:00 models/migrate/console_settings_migrate_2100.go:105 Console settings migration 2.10.0 success
+Apr 24 21:27:10 ethan-3 docker[5238]: ERRO 2019-04-24T21:27:10+00:00 taskqueue/task.go:159 Task b4cae054e1204431b0a4075c67e4c16b not found
+Apr 24 21:27:10 ethan-3 docker[5238]: INFO 2019-04-24T21:27:10+00:00 tasks/replicated.go:175 Automatic snapshots disabled
+Apr 24 21:27:28 ethan-3 docker[5238]: INFO 2019-04-24T21:27:28+00:00 premkit/controller.go:71 Premkit started successfully
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-postgres
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-redis
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-display-template-setup
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-api-bootstrapper
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-api
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-pg-migrate
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-nsqd
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-processor
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-cron
+Apr 24 21:27:29 ethan-3 docker[5238]: INFO 2019-04-24T21:27:29+00:00 [replicated-native] retraced.go:895 Retraced Docker network replicated_retraced (1880f6cca5cd4aabedf5ae6ec8288fd60a7e887766756e2bb3bf8c8a163a3ddd) created.
+Apr 24 21:27:44 ethan-3 docker[5238]: INFO 2019-04-24T21:27:44+00:00 [pkg/piper] cmd.go:174 Piper result failed for file /var/lib/replicated/snapshots/files/db.dump: lstat /host/var/lib/replicated/snapshots/files/db.dump: no such file or directory
+Apr 24 21:27:44 ethan-3 docker[5238]: INFO 2019-04-24T21:27:44+00:00 snapshots/server/handlers.go:579 Store does not have a database. Resetting local db.
+Apr 24 21:27:44 ethan-3 docker[5238]: INFO 2019-04-24T21:27:44+00:00 snapshots/server/server.go:136 Snapshot server started.
+Apr 24 21:28:15 ethan-3 docker[5238]: INFO 2019-04-24T21:28:15+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-nsqd.
+Apr 24 21:28:15 ethan-3 docker[5238]: INFO 2019-04-24T21:28:15+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-postgres.
+Apr 24 21:28:18 ethan-3 docker[5238]: INFO 2019-04-24T21:28:18+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-cron.
+Apr 24 21:28:26 ethan-3 docker[5238]: INFO 2019-04-24T21:28:26+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-processor.
+Apr 24 21:28:27 ethan-3 docker[5238]: INFO 2019-04-24T21:28:27+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-api.
+Apr 24 21:28:33 ethan-3 docker[5238]: INFO 2019-04-24T21:28:33+00:00 pkg/health/await_healthy.go:16 Waiting for service retraced
+Apr 24 21:28:33 ethan-3 docker[5238]: INFO 2019-04-24T21:28:33+00:00 pkg/health/await_healthy.go:21 Service retraced is ready
+Apr 24 21:28:37 ethan-3 docker[5238]: INFO 2019-04-24T21:28:37+00:00 daemon/handlers/component_config.go:51 TLS console settings changed, type=self-signed, hostname=
+Apr 24 21:28:50 ethan-3 docker[5238]: WARN 2019-04-24T21:28:50+00:00 [pkg/libyamlv2] util.go:31 Failed to unmarshal doc: Key: 'Meta.Kind' Error:Field validation for 'Kind' failed on the 'required' tag
+Apr 24 21:28:50 ethan-3 docker[5238]: WARN 2019-04-24T21:28:50+00:00 [pkg/libyamlv2] util.go:31 Failed to unmarshal doc: Key: 'Meta.Kind' Error:Field validation for 'Kind' failed on the 'required' tag
+Apr 24 21:28:50 ethan-3 docker[5238]: INFO 2019-04-24T21:28:50+00:00 marketlicense/app.go:472 Importing app 6888a4e330a54b6b4a0102c4f1f9c9fc:579 from api model
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 registry/registry.go:185 Shutting down registry server
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 daemon/daemon.go:748 Registry server is being restarted: start registry server on address 0.0.0.0:9874: http: Server closed
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 integration/server.go:123 Shutting down integration server
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-postgres
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 daemon/daemon.go:762 Integration server is being restarted: start integration api server on address 0.0.0.0:9877: http: Server closed
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-redis
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-display-template-setup
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-api-bootstrapper
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-api
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [operator] server.go:83 Operator service is waiting for connections on 0.0.0.0:9879
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-processor
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-nsqd
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-pg-migrate
+Apr 24 21:28:51 ethan-3 docker[5238]: INFO 2019-04-24T21:28:51+00:00 [replicated-native] retraced.go:448 Stopping and removing Retraced component retraced-cron
+Apr 24 21:28:52 ethan-3 docker[5238]: INFO 2019-04-24T21:28:52+00:00 [replicated-native] manager.go:445 Premkit container died
+Apr 24 21:28:53 ethan-3 docker[5238]: ERRO 2019-04-24T21:28:53+00:00 [replicated-native] manager.go:190 Failed to remove premkit container: API error (409): removal of container bff4a47a050094a49b5c54e11174f2c4c9229bae7e320619538baf3867eb7d6a is already in progress
+Apr 24 21:28:53 ethan-3 docker[5238]: INFO 2019-04-24T21:28:53+00:00 [replicated-native] manager.go:445 Premkit container died
+Apr 24 21:28:54 ethan-3 docker[5238]: INFO 2019-04-24T21:28:54+00:00 [operator] server.go:127 Operator service accepted connection: 172.17.0.1:40084
+Apr 24 21:28:54 ethan-3 docker[5238]: INFO 2019-04-24T21:28:54+00:00 [operator] server.go:411 Operator "068f2189e10c4a72769e8b5126721658" connected
+Apr 24 21:28:58 ethan-3 docker[5238]: INFO 2019-04-24T21:28:58+00:00 [operator] session.go:184 Operator "068f2189e10c4a72769e8b5126721658" initialized
+Apr 24 21:29:27 ethan-3 docker[5238]: INFO 2019-04-24T21:29:27+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-postgres.
+Apr 24 21:29:28 ethan-3 docker[5238]: WARN 2019-04-24T21:29:28+00:00 models/app_version.go:1184 Failed to run config option item secret_v1 commands: 1 error occurred:
+Apr 24 21:29:28 ethan-3 docker[5238]: * value command generate_random_secret[0] not found
+Apr 24 21:29:28 ethan-3 docker[5238]: INFO 2019-04-24T21:29:28+00:00 models/app_version.go:1126 App 6888a4e330a54b6b4a0102c4f1f9c9fc:579 import from api model complete
+Apr 24 21:29:28 ethan-3 docker[5238]: ERRO 2019-04-24T21:29:28+00:00 models/app.go:254 Cannot find app 6888a4e330a54b6b4a0102c4f1f9c9fc
+Apr 24 21:29:28 ethan-3 docker[5238]: WARN 2019-04-24T21:29:28+00:00 appstatus/monitor.go:65 Failed to refresh app status: resource not found
+Apr 24 21:29:28 ethan-3 docker[5238]: WARN 2019-04-24T21:29:28+00:00 [replicated-native] manager.go:77 `Manager` asked to start premkit a subsequent time
+Apr 24 21:29:29 ethan-3 docker[5238]: INFO 2019-04-24T21:29:29+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-nsqd.
+Apr 24 21:29:29 ethan-3 docker[5238]: INFO 2019-04-24T21:29:29+00:00 premkit/controller.go:71 Premkit started successfully
+Apr 24 21:29:33 ethan-3 docker[5238]: INFO 2019-04-24T21:29:33+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-cron.
+Apr 24 21:29:33 ethan-3 docker[5238]: ERRO 2019-04-24T21:29:33+00:00 taskqueue/task.go:159 Task start_version_6888a4e330a54b6b4a0102c4f1f9c9fc_579 not found
+Apr 24 21:29:33 ethan-3 docker[5238]: WARN 2019-04-24T21:29:33+00:00 models/audit/audit_event.go:66 retraced auditor failed to report license.install: Post https://10.128.0.67:9873/publisher/v1/project/c29tZSByZWFsbHkgbG9uZyBwcm9qZWN0IGlk/event: dial tcp 10.128.0.67:9873: connect: connection refused
+Apr 24 21:29:34 ethan-3 docker[5238]: INFO 2019-04-24T21:29:34+00:00 marketlicense/app.go:472 Importing app 6888a4e330a54b6b4a0102c4f1f9c9fc:579 from api model
+Apr 24 21:29:34 ethan-3 docker[5238]: INFO 2019-04-24T21:29:34+00:00 models/app_version.go:1126 App 6888a4e330a54b6b4a0102c4f1f9c9fc:579 import from api model complete
+Apr 24 21:29:46 ethan-3 docker[5238]: INFO 2019-04-24T21:29:46+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-processor.
+Apr 24 21:29:47 ethan-3 docker[5238]: WARN 2019-04-24T21:29:47+00:00 models/audit/audit_event.go:66 retraced auditor failed to report console.auth.change: Post https://10.128.0.67:9873/publisher/v1/project/c29tZSByZWFsbHkgbG9uZyBwcm9qZWN0IGlk/event: dial tcp 10.128.0.67:9873: connect: connection refused
+Apr 24 21:29:47 ethan-3 docker[5238]: WARN 2019-04-24T21:29:47+00:00 models/audit/audit_event.go:66 retraced auditor failed to report console.authenticate: Post https://10.128.0.67:9873/publisher/v1/project/c29tZSByZWFsbHkgbG9uZyBwcm9qZWN0IGlk/event: dial tcp 10.128.0.67:9873: connect: connection refused
+Apr 24 21:30:17 ethan-3 docker[5238]: INFO 2019-04-24T21:30:17+00:00 [replicated-native] retraced.go:598 Started Retraced component retraced-api.
+Apr 24 21:30:28 ethan-3 docker[5238]: ERRO 2019-04-24T21:30:28+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:30:28 ethan-3 docker[5238]: ERRO 2019-04-24T21:30:28+00:00 [replicated-native] port_available.go:88 Failed to run command on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:30:28 ethan-3 docker[5238]: INFO 2019-04-24T21:30:28+00:00 [pkg/commands] runner.go:44 Command port-available-80 failed: timeout
+Apr 24 21:30:29 ethan-3 docker[5238]: ERRO 2019-04-24T21:30:29+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:30:29 ethan-3 docker[5238]: INFO 2019-04-24T21:30:29+00:00 [pkg/commands] runner.go:44 Command disk-space-available--var-lib-replicated failed: timeout
+Apr 24 21:30:30 ethan-3 docker[5238]: ERRO 2019-04-24T21:30:30+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:30:30 ethan-3 docker[5238]: INFO 2019-04-24T21:30:30+00:00 [pkg/commands] runner.go:44 Command raw failed: timeout
+Apr 24 21:30:32 ethan-3 docker[5238]: WARN 2019-04-24T21:30:32+00:00 [api/common] preflight.go:12 User manually dismissed preflight preinstall checks
+Apr 24 21:30:33 ethan-3 docker[5238]: WARN 2019-04-24T21:30:33+00:00 [api/common] preflight.go:20 User manually dismissed preflight postinstall checks (6888a4e330a54b6b4a0102c4f1f9c9fc:579)
+Apr 24 21:30:33 ethan-3 docker[5238]: WARN 2019-04-24T21:30:33+00:00 [replicated-native] preflight_handler.go:243 User manually dismissed preflight node checks for node 068f2189e10c4a72769e8b5126721658
+Apr 24 21:30:33 ethan-3 docker[5238]: INFO 2019-04-24T21:30:33+00:00 daemon/handlers/app_status.go:67 Unable to transition app state: app version 579 is starting
+Apr 24 21:30:33 ethan-3 docker[5238]: ERRO 2019-04-24T21:30:33+00:00 premkit/log/gin.go:97 [GIN] 412 |   1.184131ms |  | PUT     /v0.1/app/status
+Apr 24 21:31:12 ethan-3 docker[5238]: INFO 2019-04-24T21:31:12+00:00 registry/registryv2_handlers.go:285 missing signature key
+Apr 24 21:31:12 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:12+00:00 premkit/log/gin.go:97 [GIN] 400 |    545.426µs | 10.128.0.67 | PUT     /v2/library/support-bundle/manifests/latest
+Apr 24 21:31:13 ethan-3 docker[5238]: INFO 2019-04-24T21:31:13+00:00 daemon/daemon.go:1436 Support bundle push succeeded
+Apr 24 21:31:14 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:14+00:00 [replicated-native] scheduler.go:99 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:31:14 ethan-3 docker[5238]: INFO 2019-04-24T21:31:14+00:00 [pkg/commands] runner.go:44 Command scheduler failed: timeout
+Apr 24 21:31:14 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:14+00:00 premkit/log/gin.go:97 [GIN] 400 | 31.89611419s |  | PUT     /v0.1/app/config
+Apr 24 21:31:25 ethan-3 docker[5238]: INFO 2019-04-24T21:31:25+00:00 [replicated-native] cluster.go:88 Operator "068f2189e10c4a72769e8b5126721658" tags changed ["db" "lb"]
+Apr 24 21:31:36 ethan-3 docker[5238]: INFO 2019-04-24T21:31:36+00:00 pkg/health/await_healthy.go:16 Waiting for service retraced
+Apr 24 21:31:36 ethan-3 docker[5238]: INFO 2019-04-24T21:31:36+00:00 pkg/health/await_healthy.go:21 Service retraced is ready
+Apr 24 21:31:38 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:38+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:31:38 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:38+00:00 [replicated-native] port_available.go:88 Failed to run command on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:31:38 ethan-3 docker[5238]: INFO 2019-04-24T21:31:38+00:00 [pkg/commands] runner.go:44 Command port-available-80 failed: timeout
+Apr 24 21:31:38 ethan-3 docker[5238]: INFO 2019-04-24T21:31:38+00:00 [pkg/commands] runner.go:44 Command port-available-80 failed: timeout
+Apr 24 21:31:41 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:41+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:31:41 ethan-3 docker[5238]: INFO 2019-04-24T21:31:41+00:00 [pkg/commands] runner.go:44 Command disk-space-available--var-lib-replicated failed: timeout
+Apr 24 21:31:41 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:41+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:31:41 ethan-3 docker[5238]: INFO 2019-04-24T21:31:41+00:00 [pkg/commands] runner.go:44 Command raw failed: timeout
+Apr 24 21:31:41 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:41+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:31:41 ethan-3 docker[5238]: INFO 2019-04-24T21:31:41+00:00 [pkg/commands] runner.go:44 Command disk-space-available--var-lib-replicated failed: timeout
+Apr 24 21:31:42 ethan-3 docker[5238]: ERRO 2019-04-24T21:31:42+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:31:42 ethan-3 docker[5238]: INFO 2019-04-24T21:31:42+00:00 [pkg/commands] runner.go:44 Command raw failed: timeout
+Apr 24 21:32:15 ethan-3 docker[5238]: ERRO 2019-04-24T21:32:15+00:00 [replicated-native] scheduler.go:99 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:32:15 ethan-3 docker[5238]: INFO 2019-04-24T21:32:15+00:00 [pkg/commands] runner.go:44 Command scheduler failed: timeout
+Apr 24 21:33:03 ethan-3 docker[5238]: INFO 2019-04-24T21:33:03+00:00 scheduler/preflight.go:64 Running preflight checks for version 579
+Apr 24 21:33:19 ethan-3 docker[5238]: ERRO 2019-04-24T21:33:19+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:33:19 ethan-3 docker[5238]: INFO 2019-04-24T21:33:19+00:00 [pkg/commands] runner.go:44 Command disk-space-available--var-lib-replicated failed: timeout
+Apr 24 21:33:19 ethan-3 docker[5238]: ERRO 2019-04-24T21:33:19+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:33:19 ethan-3 docker[5238]: ERRO 2019-04-24T21:33:19+00:00 [replicated-native] port_available.go:88 Failed to run command on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:33:19 ethan-3 docker[5238]: INFO 2019-04-24T21:33:19+00:00 [pkg/commands] runner.go:44 Command port-available-80 failed: timeout
+Apr 24 21:33:19 ethan-3 docker[5238]: ERRO 2019-04-24T21:33:19+00:00 [replicated-native] raw.go:84 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:33:19 ethan-3 docker[5238]: INFO 2019-04-24T21:33:19+00:00 [pkg/commands] runner.go:44 Command raw failed: timeout
+Apr 24 21:33:36 ethan-3 docker[5238]: ERRO 2019-04-24T21:33:36+00:00 [replicated-native] scheduler.go:99 Failed to run container attach request on remote operator 068f2189e10c4a72769e8b5126721658: timeout
+Apr 24 21:33:36 ethan-3 docker[5238]: INFO 2019-04-24T21:33:36+00:00 [pkg/commands] runner.go:44 Command scheduler failed: timeout
+Apr 24 21:33:36 ethan-3 docker[5238]: WARN 2019-04-24T21:33:36+00:00 scheduler/preflight.go:89 Node preflight checks have failed for version 579
+Apr 24 21:34:41 ethan-3 docker[5238]: ERRO 2019-04-24T21:34:41+00:00 scheduler/native/scheduler.go:290 Native schedule support bundles error: 1 error occurred:
+Apr 24 21:34:41 ethan-3 docker[5238]: * 068f2189e10c4a72769e8b5126721658: send external support bundle request: send external support bundle request: context deadline exceeded
+Apr 24 21:34:41 ethan-3 docker[5238]: INFO 2019-04-24T21:34:41+00:00 support/external.go:177 Support bundle received late id: master

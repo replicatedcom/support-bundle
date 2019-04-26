@@ -157,14 +157,14 @@ export const handler = (argv) => {
   fs.writeFileSync(`${output}/shared.md`, SHARED_DOC);
 
   const specTypes = schema.properties.collect.properties.v1.items.properties;
-  const analyzeTypes = schema.properties.analyze.properties.v1.items.properties;
+  // const analyzeTypes = schema.properties.analyze.properties.v1.items.properties;
   const lifecycleSpecTypes = schema.properties.lifecycle.items.properties;
 
   const generateDocSpecTypes = generateDoc(`${output}/collect`, specTypes, "support-bundle-yaml-specs");
-  const generateDocAnalyzeTypes = generateDoc(`${output}/analyze`, analyzeTypes, "analyze-yaml-specs");
+  // const generateDocAnalyzeTypes = generateDoc(`${output}/analyze`, analyzeTypes, "analyze-yaml-specs");
   const generateDocLifecycleSpecTypes = generateDoc(`${output}/lifecycle`, lifecycleSpecTypes, "support-bundle-yaml-lifecycle");
 
   Object.keys(specTypes).forEach(generateDocSpecTypes);
-  Object.keys(analyzeTypes).forEach(generateDocAnalyzeTypes);
+  // Object.keys(analyzeTypes).forEach(generateDocAnalyzeTypes);
   Object.keys(lifecycleSpecTypes).forEach(generateDocLifecycleSpecTypes);
 };

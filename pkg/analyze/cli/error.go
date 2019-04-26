@@ -13,9 +13,9 @@ func outputCmdError(err error, ui cli.Ui, logLevel string) {
 	} else {
 		ui.Error(fmt.Sprintf("There was an unexpected error! %v", err))
 	}
-	ui.Output("")
+	ui.Error("")
 
 	if logLevel != "debug" {
-		ui.Info("An unexpected error occured. Please re-run with --log-level=debug and include the output in any support inquiries.")
+		ui.Error("An unexpected error occured. Please re-run with --log-level=debug and include the output in any support inquiries.")
 	}
 }

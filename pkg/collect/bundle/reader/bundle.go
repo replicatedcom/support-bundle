@@ -5,99 +5,41 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"io"
-	"strings"
+	"os"
 
-	multierror "github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
-	"github.com/replicatedcom/support-bundle/pkg/meta"
 	"github.com/spf13/afero"
 )
 
 type BundleReader interface {
-	ReaderFromRef(ref meta.Ref) (io.ReadCloser, error)
-	Open(name string) (io.ReadCloser, error)
 	GetIndex() []collecttypes.Result
 	GetErrorIndex() []collecttypes.Result
+	NewScanner() (Scanner, error)
+}
+
+type Piper struct {
+	Name string
+	W    *io.PipeWriter
 }
 
 type Bundle struct {
 	Fs     afero.Fs
 	Path   string
+	Prefix string
 	index  []collecttypes.Result
 	errors []collecttypes.Result
 }
 
-func NewBundle(fs afero.Fs, path string) (BundleReader, error) {
+func NewBundle(fs afero.Fs, path, prefix string) (*Bundle, error) {
 	b := &Bundle{
-		Fs:   fs,
-		Path: path,
+		Fs:     fs,
+		Path:   path,
+		Prefix: prefix,
 	}
 	var err error
-	b.index, err = b.getResultsFromIndex("index.json")
-	if err != nil {
-		return b, errors.Wrap(err, "get results from index.json")
-	}
-	b.errors, err = b.getResultsFromIndex("error.json")
-	if err != nil {
-		return b, errors.Wrap(err, "get results from error.json")
-	}
-	return b, nil
-}
-
-func (b *Bundle) ReaderFromRef(ref meta.Ref) (io.ReadCloser, error) {
-	results := b.resultsFromRef(ref)
-	for _, result := range results {
-		// TODO: sometimes we have stdout and stderr, how do we choose one?
-		if result.Size > 0 {
-			return b.Open(strings.TrimLeft(result.Path, "/"))
-		}
-	}
-	// TODO: what should we return here?
-	return nil, nil
-}
-
-func (b *Bundle) Open(name string) (io.ReadCloser, error) {
-	var closeFns []func() error
-	defer func() {
-		for _, closeFn := range closeFns {
-			closeFn()
-		}
-	}()
-
-	file, err := b.Fs.Open(b.Path)
-	if err != nil {
-		return nil, err
-	}
-	closeFns = append(closeFns, file.Close)
-
-	gzr, err := gzip.NewReader(file)
-	if err != nil {
-		return nil, err
-	}
-	closeFns = append(closeFns, gzr.Close)
-
-	tr := tar.NewReader(gzr)
-	for {
-		header, err := tr.Next()
-		if err == io.EOF {
-			return nil, io.ErrUnexpectedEOF
-		} else if err != nil {
-			return nil, err
-		}
-		if header == nil {
-			continue
-		}
-
-		if header.Name == name && header.Typeflag == tar.TypeReg {
-			af := &archiveFile{
-				tr:       tr,
-				closeFns: closeFns,
-			}
-			closeFns = nil
-			return af, nil
-		}
-	}
+	b.index, b.errors, err = b.scanIndexes()
+	return b, err
 }
 
 func (b *Bundle) GetIndex() []collecttypes.Result {
@@ -108,40 +50,82 @@ func (b *Bundle) GetErrorIndex() []collecttypes.Result {
 	return b.errors
 }
 
-func (b *Bundle) getResultsFromIndex(indexPath string) ([]collecttypes.Result, error) {
-	reader, err := b.Open(indexPath)
+func (b *Bundle) NewScanner() (Scanner, error) {
+	if _, err := b.Fs.Stat(b.Path); os.IsNotExist(err) {
+		return nil, err
+	}
+
+	s := &BundleScanner{Prefix: b.Prefix}
+
+	file, err := b.Fs.Open(b.Path)
 	if err != nil {
 		return nil, err
 	}
-	defer reader.Close()
+	s.closers = append(s.closers, file)
+
+	gzr, err := gzip.NewReader(file)
+	if err != nil {
+		s.Close()
+		return nil, err
+	}
+	s.closers = append(s.closers, gzr)
+
+	s.tr = tar.NewReader(gzr)
+
+	return s, nil
+}
+
+func (b *Bundle) scanIndexes() (indexR []collecttypes.Result, errorR []collecttypes.Result, returnErr error) {
+	scanner, err := b.NewScanner()
+	if err != nil {
+		returnErr = errors.Wrap(err, "new scanner")
+		return
+	}
+	defer scanner.Close()
+
+	var foundIndex, foundError bool
+	for {
+		f, err := scanner.Next()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			returnErr = errors.Wrap(err, "scan next")
+			return
+		}
+
+		switch {
+		case PathsMatch(f.Name, "index.json"):
+			foundIndex = true
+			indexR, err = b.getResultsFromIndex(f.Reader)
+			if err != nil {
+				returnErr = errors.Wrap(err, "get results from index.json")
+				return
+			}
+
+		case PathsMatch(f.Name, "error.json"):
+			foundError = true
+			errorR, err = b.getResultsFromIndex(f.Reader)
+			if err != nil {
+				returnErr = errors.Wrap(err, "get results from error.json")
+				return
+			}
+		}
+
+		if foundIndex && foundError {
+			break
+		}
+	}
+
+	if !foundIndex {
+		returnErr = &os.PathError{Op: "open", Path: "index.json", Err: os.ErrNotExist}
+	} else if !foundError {
+		returnErr = &os.PathError{Op: "open", Path: "error.json", Err: os.ErrNotExist}
+	}
+
+	return
+}
+
+func (b *Bundle) getResultsFromIndex(reader io.Reader) ([]collecttypes.Result, error) {
 	var results []collecttypes.Result
 	return results, json.NewDecoder(reader).Decode(&results)
-}
-
-func (b *Bundle) resultsFromRef(ref meta.Ref) (results []collecttypes.Result) {
-	for _, result := range b.index {
-		if meta.RefMatches(ref, result.Spec.Shared().Meta) {
-			results = append(results, result)
-		}
-	}
-	return
-}
-
-type archiveFile struct {
-	tr       *tar.Reader
-	closeFns []func() error
-}
-
-func (f *archiveFile) Close() (err error) {
-	for _, closeFn := range f.closeFns {
-		errI := closeFn()
-		if errI != nil {
-			err = multierror.Append(err, errI)
-		}
-	}
-	return
-}
-
-func (f *archiveFile) Read(p []byte) (int, error) {
-	return f.tr.Read(p)
 }

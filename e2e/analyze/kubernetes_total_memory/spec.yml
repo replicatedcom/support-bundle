@@ -1,7 +1,0 @@
-analyze:
-  v1:
-    - kubernetes.total-memory:
-        minimum: 10Gi
-      collect_refs:
-        - selector:
-            analyze: kubernetes-resource-list-nodes

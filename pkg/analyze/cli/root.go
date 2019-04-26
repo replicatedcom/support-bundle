@@ -15,6 +15,7 @@ var cfgFile string
 // RootCmd represents the base command when called without any subcommands
 func RootCmd() *cobra.Command {
 	version.Init()
+
 	cmd := &cobra.Command{
 		Use:           "analyze",
 		Short:         "troubleshoot analysis tool",
@@ -25,9 +26,11 @@ func RootCmd() *cobra.Command {
 	cobra.OnInitialize(initConfig)
 
 	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is /etc/replicated/analyze.yaml)")
+	cmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose mode (log-level=debug)")
 	cmd.PersistentFlags().String("log-level", "off", "Log level")
 
 	// sub-commands
+	cmd.AddCommand(InspectCmd())
 	cmd.AddCommand(RunCmd())
 
 	viper.BindPFlags(cmd.Flags())
@@ -60,6 +63,6 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		// fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 }

@@ -1,0 +1,46 @@
+analyze:
+  v1:
+    - name: replicated.replicatedd.replicatedConfFormat
+      labels:
+        iconKey: gray_checkmark
+        desiredPosition: "3"
+      registerVariables:
+        - name: replicatedLogExists
+          fileMatch:
+            pathRegexps:
+              - /replicated\.journald/logs\.raw
+              - /replicated\.log
+              - /replicated\.stderr
+            regexpCapture:
+              regexp: '.'
+              index: 0
+            scannable: true
+        - name: replicatedConfError
+          fileMatch:
+            pathRegexps:
+              - /replicated\.journald/logs\.raw
+              - /replicated\.log
+              - /replicated\.stderr
+            regexpCapture:
+              regexp: 'Failed to read config:'
+              index: 0
+            scannable: true
+      precondition:
+        not:
+          empty: {}
+          variableRef: replicatedLogExists
+      condition:
+        not:
+          empty: {}
+          variableRef: replicatedConfError
+      messages:
+        conditionFalse:
+          primary: replicated.conf ok
+          detail: /etc/replicated.conf is correctly formatted
+          severity: debug
+          labels:
+            iconKey: logs
+        conditionTrue:
+          primary: Incorrect replicated.conf
+          detail: The file at /etc/replicated.conf is formatted incorrectly
+          severity: warn

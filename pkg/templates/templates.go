@@ -54,6 +54,8 @@ func errRecover(errp *error) {
 		switch err := e.(type) {
 		case FuncError:
 			*errp = err // Keep the wrapper.
+		case error:
+			*errp = err // Catch panics from template functions
 		default:
 			panic(e)
 		}

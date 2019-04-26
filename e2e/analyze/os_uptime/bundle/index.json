@@ -1,0 +1,23 @@
+[
+  {
+    "path": "/VERSION.json",
+    "format": "",
+    "size": 88,
+    "spec": {
+      "description": "Support bundle version information",
+      "output_dir": "/",
+      "version": {}
+    }
+  },
+  {
+    "path": "default/commands/uptime/uptime",
+    "format": "",
+    "size": 19,
+    "spec": {
+      "os.uptime": {
+        "description": "OS uptime",
+        "output_dir": "default/commands/uptime"
+      }
+    }
+  }
+]

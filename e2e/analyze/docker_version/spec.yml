@@ -1,7 +1,0 @@
-analyze:
-  v1:
-    - docker.version:
-        server_version_minimum: 18.09.0
-      collect_refs:
-        - selector:
-            analyze: docker-version

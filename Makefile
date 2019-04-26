@@ -1,4 +1,4 @@
-.PHONY: docker deps fmt vet _vet lint _lint test _test build _build bindata _mockgen mockgen build-deps dep-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
+.PHONY: docs docker deps fmt vet _vet lint _lint test _test build _build bindata _mockgen mockgen build-deps dep-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
 
 SHELL := /bin/bash
 SRC = $(shell find . -name "*.go")
@@ -20,6 +20,9 @@ else
 	BUILD_DIR := $(shell pwd)
 endif
 DOCKER_REPO ?= replicated
+
+docs:
+	make -C hack/docs pipeline-nointegration
 
 docker:
 	docker build -t support-bundle .
@@ -49,7 +52,6 @@ _lint:
 	golint ./pkg/... \
 		| grep -v "should have comment" \
 		| grep -v "comment on exported" \
-		| grep -v "pkg/analyze/api/v1/requirements.go" \
 		|| :
 	golint ./cmd/... \
 		| grep -v "should have comment" \
@@ -65,14 +67,14 @@ build: test _build
 
 _build: bin/analyze bin/support-bundle
 
-bindata: pkg/analyze/api/v1/requirements.go
+bindata: pkg/analyze/api/v1/defaultspec/asset.go pkg/collect/bundle/defaultspec/asset.go
 
-pkg/analyze/api/v1/requirements.go: pkg/analyze/api/v1/requirements/*
+pkg/analyze/api/v1/defaultspec/asset.go: pkg/analyze/api/v1/defaultspec/assets/*
 	go-bindata \
-		-pkg v1 \
-		-prefix pkg/analyze/api/v1/ \
-		-o pkg/analyze/api/v1/requirements.go \
-		pkg/analyze/api/v1/requirements/
+		-pkg defaultspec \
+		-prefix pkg/analyze/api/v1/defaultspec/ \
+		-o pkg/analyze/api/v1/defaultspec/asset.go \
+		pkg/analyze/api/v1/defaultspec/assets/
 
 pkg/collect/bundle/defaultspec/asset.go: pkg/collect/bundle/defaultspec/assets/*
 	go-bindata \
@@ -83,16 +85,20 @@ pkg/collect/bundle/defaultspec/asset.go: pkg/collect/bundle/defaultspec/assets/*
 
 _mockgen:
 	rm -rf pkg/test-mocks
-	mkdir -p pkg/test-mocks/collect
 	mockgen \
-		-destination pkg/test-mocks/collect/bundle/bundlereader.go \
-		-package bundle \
+		-destination pkg/test-mocks/collect/bundle/reader/bundlereader.go \
+		-package reader \
 		github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader \
 		BundleReader
+	mockgen \
+		-destination pkg/test-mocks/collect/bundle/reader/scanner.go \
+		-package reader \
+		github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader \
+		Scanner
 
 mockgen: _mockgen fmt
 
-bin/analyze: $(SRC) pkg/analyze/api/v1/requirements.go
+bin/analyze: $(SRC) pkg/analyze/api/v1/defaultspec/asset.go
 	go build \
 		-ldflags " \
 		-X $(PKG)/pkg/version.version=$(VERSION) \
@@ -143,7 +149,7 @@ ci-upload-coverage: .state/coverage.out .state/cc-test-reporter
 
 e2e: e2e-analyze e2e-supportbundle
 
-e2e-analyze: pkg/analyze/api/v1/requirements.go
+e2e-analyze:
 	ginkgo -v -r -p e2e/analyze
 
 e2e-supportbundle: e2e-supportbundle-core e2e-supportbundle-docker
