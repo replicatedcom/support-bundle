@@ -4,6 +4,10 @@ analyze:
       labels:
         iconKey: puppet_logo
         desiredPosition: "10"
+      insight:
+        primary: Managed By Puppet
+        detail: This server is running a Puppet agent
+        severity: info
       registerVariables:
         - name: ps
           fileMatch:
@@ -12,25 +16,25 @@ analyze:
             regexpCapture:
               regexp: '.+puppet agent .*'
               index: 0
-      condition:
-        regexpMatch:
-          regexp: 'puppet agent '
-        variableRef: ps
-      messages:
-        conditionTrue:
-          primary: Managed By Puppet
-          detail: This server is running a Puppet agent
-          severity: info
-        conditionFalse:
-          primary: No Puppet
-          detail: This server is not running a puppet agent
-          severity: debug
-          labels:
-            iconKey: gray_checkmark
+      evaluateConditions:
+        - condition:
+            regexpMatch:
+              regexp: 'puppet agent '
+            variableRef: ps
+          insightOnFalse:
+            primary: No Puppet
+            detail: This server is not running a puppet agent
+            severity: debug
+            labels:
+              iconKey: gray_checkmark
     - name: processes.configmanagement.chef
       labels:
         iconKey: chef_logo
         desiredPosition: "10"
+      insight:
+        primary: Managed By Chef
+        detail: This server is running a Chef client
+        severity: info
       registerVariables:
         - name: ps
           fileMatch:
@@ -39,18 +43,14 @@ analyze:
             regexpCapture:
               regexp: '.+chef-client.*'
               index: 0
-      condition:
-        regexpMatch:
-          regexp: 'chef-client'
-        variableRef: ps
-      messages:
-        conditionTrue:
-          primary: Managed By Chef
-          detail: This server is running a Chef client
-          severity: info
-        conditionFalse:
-          primary: No Chef
-          detail: This server is not running a Chef client
-          severity: debug
-          labels:
-            iconKey: gray_checkmark
+      evaluateConditions:
+        - condition:
+            regexpMatch:
+              regexp: 'chef-client'
+            variableRef: ps
+          insightOnFalse:
+            primary: No Chef
+            detail: This server is not running a Chef client
+            severity: debug
+            labels:
+              iconKey: gray_checkmark

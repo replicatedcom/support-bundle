@@ -4,19 +4,19 @@ analyze:
       labels:
         iconKey: os_uptime
         desiredPosition: "7"
+      insight:
+        primary: '{{repl .osUptime | seconds | humanDuration}}'
+        detail: '{{repl .osUptime | seconds | humanDuration}} total uptime since last boot'
+        severity: info
       registerVariables:
         - name: osUptime
           osUptime: {}
-      condition:
-        not:
-          empty: {}
-          variableRef: osUptime
-      messages:
-        conditionFalse:
-          primary: Unknown
-          detail: Could not determine uptime. Ensure your specs include a command `os.uptime`.
-          severity: debug
-        conditionTrue:
-          primary: '{{repl .osUptime | seconds | humanDuration}}'
-          detail: '{{repl .osUptime | seconds | humanDuration}} total uptime since last boot'
-          severity: info
+      evaluateConditions:
+        - condition:
+            not:
+              empty: {}
+              variableRef: osUptime
+          insightOnFalse:
+            primary: Unknown
+            detail: Could not determine uptime. Ensure your specs include a command `os.uptime`.
+            severity: debug

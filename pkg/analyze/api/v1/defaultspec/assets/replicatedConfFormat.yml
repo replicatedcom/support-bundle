@@ -4,6 +4,10 @@ analyze:
       labels:
         iconKey: gray_checkmark
         desiredPosition: "3"
+      insight:
+        primary: Incorrect replicated.conf
+        detail: The file at /etc/replicated.conf is formatted incorrectly
+        severity: warn
       registerVariables:
         - name: replicatedLogExists
           fileMatch:
@@ -25,22 +29,18 @@ analyze:
               regexp: 'Failed to read config:'
               index: 0
             scannable: true
-      precondition:
-        not:
-          empty: {}
-          variableRef: replicatedLogExists
-      condition:
-        not:
-          empty: {}
-          variableRef: replicatedConfError
-      messages:
-        conditionFalse:
-          primary: replicated.conf ok
-          detail: /etc/replicated.conf is correctly formatted
-          severity: debug
-          labels:
-            iconKey: logs
-        conditionTrue:
-          primary: Incorrect replicated.conf
-          detail: The file at /etc/replicated.conf is formatted incorrectly
-          severity: warn
+      evaluateConditions:
+        - condition:
+            not:
+              empty: {}
+              variableRef: replicatedLogExists
+        - condition:
+            not:
+              empty: {}
+              variableRef: replicatedConfError
+          insightOnFalse:
+            primary: replicated.conf ok
+            detail: /etc/replicated.conf is correctly formatted
+            severity: debug
+            labels:
+              iconKey: logs

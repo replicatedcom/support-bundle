@@ -4,6 +4,10 @@ analyze:
       labels:
         iconKey: docker_whale
         desiredPosition: "3"
+      insight:
+        primary: Devicemapper with loopback
+        detail: Docker devicemapper driver in loopback config
+        severity: warn
       registerVariables:
         - name: driver
           fileMatch:
@@ -19,20 +23,16 @@ analyze:
             regexpCapture:
               regexp: 'Data loop file'
               index: 0
-      precondition:
-        stringCompare:
-          eq: devicemapper
-        variableRef: driver
-      condition:
-        not:
-          empty: {}
-          variableRef: loopback
-      messages:
-        conditionFalse:
-          primary: Devicemapper not in loopback
-          detail: Docker devicemapper driver NOT in loopback config
-          severity: debug
-        conditionTrue:
-          primary: Devicemapper with loopback
-          detail: Docker devicemapper driver in loopback config
-          severity: warn
+      evaluateConditions:
+        - condition:
+            stringCompare:
+              eq: devicemapper
+            variableRef: driver
+        - condition:
+            not:
+              empty: {}
+              variableRef: loopback
+          insightOnFalse:
+            primary: Devicemapper not in loopback
+            detail: Docker devicemapper driver NOT in loopback config
+            severity: debug

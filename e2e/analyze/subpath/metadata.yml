@@ -1,2 +1,3 @@
 expect_err: false
 bundle_root_subpath: master
+ignore_analyze_result_spec: true

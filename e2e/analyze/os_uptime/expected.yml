@@ -1,9 +1,9 @@
 - name: os-uptime
-  message:
+  insight:
     primary: 15 hours
     detail: Host has been up for 15 hours
     severity: info
   severity: info
-  analyzerSpec: '{"v1":[{"name":"os-uptime","registerVariables":[{"name":"osUptime","osUptime":{}}],"condition":{"not":{"variableRef":"osUptime","empty":{}}},"messages":{"conditionTrue":{"primary":"{{repl .osUptime | seconds | humanDuration}}","detail":"Host has been up for {{repl .osUptime | seconds | humanDuration}}","severity":"info"}}}]}'
+  analyzerSpec: 'IGNORED'
   variables:
     osUptime: 54332.07

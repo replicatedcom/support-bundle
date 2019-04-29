@@ -4,6 +4,10 @@ analyze:
       labels:
         iconKey: docker_container
         desiredPosition: "3"
+      insight:
+        primary: '{{repl .runningContainers}}'
+        detail: '{{repl .runningContainers}} containers running'
+        severity: info
       registerVariables:
         - name: runningContainers
           fileMatch:
@@ -12,20 +16,14 @@ analyze:
             regexpCapture:
               regexp: '"ContainersRunning": *([^",\n]+)'
               index: 1
-      precondition:
-        not:
-          empty: {}
-          variableRef: runningContainers
-      condition:
-        eval: "true"
-      messages:
-        preconditionFalse:
-          primary: "?"
-          detail: Could not determine number of running docker containers
-          severity: warn
-          labels:
-            iconKey: no_docker
-        conditionTrue:
-          primary: '{{repl .runningContainers}}'
-          detail: '{{repl .runningContainers}} containers running'
-          severity: info
+      evaluateConditions:
+        - condition:
+            not:
+              empty: {}
+              variableRef: runningContainers
+          insightOnFalse:
+            primary: "?"
+            detail: Could not determine number of running docker containers
+            severity: warn
+            labels:
+              iconKey: no_docker

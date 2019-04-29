@@ -4,6 +4,10 @@ analyze:
       labels:
         iconKey: os_memory
         desiredPosition: "6"
+      insight:
+        primary: '{{repl round .memoryUsagePercent 0 | printf "%.0f"}}%'
+        detail: '{{repl sub .memoryUsageTotal .memoryUsageAvailable | float64 | humanSize}} memory used of {{repl .memoryUsageTotal | humanSize}}'
+        severity: warn
       registerVariables:
         - name: memoryUsageAvailable
           memoryUsageAvailable: {}
@@ -11,28 +15,24 @@ analyze:
           memoryUsageTotal: {}
         - name: memoryUsagePercent
           eval: '{{repl if and .memoryUsageAvailable .memoryUsageTotal}}{{repl divFloat (subFloat .memoryUsageTotal .memoryUsageAvailable) .memoryUsageTotal | mulFloat 100}}{{repl end}}'
-      precondition:
-        and:
-          - not:
-              empty: {}
-              variableRef: memoryUsageAvailable
-          - not:
-              empty: {}
-              variableRef: memoryUsageTotal
-      condition:
-        numberCompare:
-          gt: 90
-        variableRef: memoryUsagePercent
-      messages:
-        preconditionFalse:
-          primary: Unknown
-          detail: Could not determine memory usage. Ensure your specs include a command os.read-file["/proc/meminfo"].
-          severity: debug
-        conditionFalse:
-          primary: '{{repl round .memoryUsagePercent 0 | printf "%.0f"}}%'
-          detail: '{{repl sub .memoryUsageTotal .memoryUsageAvailable | float64 | humanSize}} memory used of {{repl .memoryUsageTotal | humanSize}}'
-          severity: info
-        conditionTrue:
-          primary: '{{repl round .memoryUsagePercent 0 | printf "%.0f"}}%'
-          detail: '{{repl sub .memoryUsageTotal .memoryUsageAvailable | float64 | humanSize}} memory used of {{repl .memoryUsageTotal | humanSize}}'
-          severity: warn
+      evaluateConditions:
+        - condition:
+            and:
+              - not:
+                  empty: {}
+                  variableRef: memoryUsageAvailable
+              - not:
+                  empty: {}
+                  variableRef: memoryUsageTotal
+          insightOnFalse:
+            primary: Unknown
+            detail: Could not determine memory usage. Ensure your specs include a command os.read-file["/proc/meminfo"].
+            severity: debug
+        - condition:
+            numberCompare:
+              gt: 90
+            variableRef: memoryUsagePercent
+          insightOnFalse:
+            primary: '{{repl round .memoryUsagePercent 0 | printf "%.0f"}}%'
+            detail: '{{repl sub .memoryUsageTotal .memoryUsageAvailable | float64 | humanSize}} memory used of {{repl .memoryUsageTotal | humanSize}}'
+            severity: info

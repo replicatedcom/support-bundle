@@ -5,8 +5,17 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/insight"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 )
+
+type EvaluateCondition struct {
+	meta.Meta `json:",inline" yaml:",inline" hcl:",inline"`
+
+	Condition      Condition        `json:"condition" yaml:"condition" hcl:"condition"`
+	InsightOnError *insight.Insight `json:"insightOnError,omitempty" yaml:"insightOnError,omitempty" hcl:"insightOnError,omitempty"`
+	InsightOnFalse *insight.Insight `json:"insightOnFalse,omitempty" yaml:"insightOnFalse,omitempty" hcl:"insightOnFalse,omitempty"`
+}
 
 type Condition struct {
 	meta.Meta   `json:",inline" yaml:",inline" hcl:",inline"`

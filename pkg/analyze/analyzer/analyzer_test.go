@@ -14,7 +14,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/insight"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable/distiller"
 	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
@@ -112,42 +112,46 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 				},
 			},
 		},
-		Precondition: &v1.Condition{
-			StringCompare: &condition.StringCompare{
-				Compare: condition.Compare{Eq: "ubuntu"},
+		EvaluateConditions: []v1.EvaluateCondition{
+			{
+				Condition: v1.Condition{
+					StringCompare: &condition.StringCompare{
+						Compare: condition.Compare{Eq: "ubuntu"},
+					},
+					VariableRef: "os",
+				},
+				InsightOnError: &insight.Insight{
+					Primary:  "Failed to detect OS",
+					Detail:   "Ubuntu version must be at least 16.04",
+					Severity: common.SeverityError,
+				},
+				InsightOnFalse: &insight.Insight{
+					Primary:  "OS is not Ubuntu",
+					Detail:   "Ubuntu version must be at least 16.04",
+					Severity: common.SeverityDebug,
+				},
 			},
-			VariableRef: "os",
+			{
+				Condition: v1.Condition{
+					EvalCondition: &osVersionGte1604Eval,
+					VariableRef:   "osVersion",
+				},
+				InsightOnError: &insight.Insight{
+					Primary:  "Failed to detect Ubuntu version",
+					Detail:   "Ubuntu version must be at least 16.04",
+					Severity: common.SeverityError,
+				},
+				InsightOnFalse: &insight.Insight{
+					Primary:  "Ubuntu version is {{repl .osVersion}}",
+					Detail:   "Ubuntu version must be at least 16.04",
+					Severity: common.SeverityWarn,
+				},
+			},
 		},
-		Condition: v1.Condition{
-			EvalCondition: &osVersionGte1604Eval,
-			VariableRef:   "osVersion",
-		},
-		Messages: v1.Messages{
-			ConditionTrue: &message.Message{
-				Primary:  "Ubuntu version is {{repl .osVersion}}",
-				Detail:   "Ubuntu version must be at least 16.04",
-				Severity: common.SeverityInfo,
-			},
-			ConditionFalse: &message.Message{
-				Primary:  "Ubuntu version is {{repl .osVersion}}",
-				Detail:   "Ubuntu version must be at least 16.04",
-				Severity: common.SeverityWarn,
-			},
-			PreconditionFalse: &message.Message{
-				Primary:  "OS is not Ubuntu",
-				Detail:   "Ubuntu version must be at least 16.04",
-				Severity: common.SeverityDebug,
-			},
-			ConditionError: &message.Message{
-				Primary:  "Failed to detect Ubuntu version",
-				Detail:   "Ubuntu version must be at least 16.04",
-				Severity: common.SeverityError,
-			},
-			PreconditionError: &message.Message{
-				Primary:  "Failed to detect OS",
-				Detail:   "Ubuntu version must be at least 16.04",
-				Severity: common.SeverityError,
-			},
+		Insight: &insight.Insight{
+			Primary:  "Ubuntu version is {{repl .osVersion}}",
+			Detail:   "Ubuntu version must be at least 16.04",
+			Severity: common.SeverityInfo,
 		},
 	}
 
@@ -209,7 +213,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 					Return(nil)
 			},
 			want: &api.Result{
-				Message: &message.Message{
+				Insight: &insight.Insight{
 					Primary:  "Ubuntu version is 18.04",
 					Detail:   "Ubuntu version must be at least 16.04",
 					Severity: common.SeverityInfo,
@@ -257,7 +261,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 					Return(nil)
 			},
 			want: &api.Result{
-				Message: &message.Message{
+				Insight: &insight.Insight{
 					Primary:  "Ubuntu version is 14.04",
 					Detail:   "Ubuntu version must be at least 16.04",
 					Severity: common.SeverityWarn,
@@ -305,7 +309,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 					Return(nil)
 			},
 			want: &api.Result{
-				Message: &message.Message{
+				Insight: &insight.Insight{
 					Primary:  "OS is not Ubuntu",
 					Detail:   "Ubuntu version must be at least 16.04",
 					Severity: common.SeverityDebug,
@@ -347,7 +351,7 @@ REDHAT_SUPPORT_PRODUCT_VERSION="7"
 
 func Test_resultFromAnalysis(t *testing.T) {
 	type args struct {
-		msg          *message.Message
+		insight      *insight.Insight
 		analysisErr  error
 		analyzerSpec v1.Analyzer
 		data         map[string]interface{}
@@ -359,11 +363,11 @@ func Test_resultFromAnalysis(t *testing.T) {
 		wantErr    bool
 	}{
 		{
-			name: "message with label override",
+			name: "insight with label override",
 			args: args{
-				msg: &message.Message{
+				insight: &insight.Insight{
 					Meta: meta.Meta{
-						Name: "the warning message",
+						Name: "the warning insight",
 						Labels: map[string]string{
 							"iconKey": "oh_no",
 						},
@@ -394,9 +398,9 @@ func Test_resultFromAnalysis(t *testing.T) {
 						"iconKey":         "oh_no",
 					},
 				},
-				Message: &message.Message{
+				Insight: &insight.Insight{
 					Meta: meta.Meta{
-						Name: "the warning message",
+						Name: "the warning insight",
 						Labels: map[string]string{
 							"iconKey": "oh_no",
 						},
@@ -415,7 +419,7 @@ func Test_resultFromAnalysis(t *testing.T) {
 		{
 			name: "error",
 			args: args{
-				msg:         nil,
+				insight:     nil,
 				analysisErr: errors.New("THIS IS THE ERROR"),
 				analyzerSpec: v1.Analyzer{
 					Meta: meta.Meta{
@@ -438,7 +442,7 @@ func Test_resultFromAnalysis(t *testing.T) {
 						"iconKey":         "oh_yes",
 					},
 				},
-				Message:  nil,
+				Insight:  nil,
 				Severity: common.SeverityError,
 				Variables: map[string]interface{}{
 					"someVar": "THE VALUE",
@@ -448,11 +452,11 @@ func Test_resultFromAnalysis(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "message and error",
+			name: "insight and error",
 			args: args{
-				msg: &message.Message{
+				insight: &insight.Insight{
 					Meta: meta.Meta{
-						Name: "the warning message",
+						Name: "the warning insight",
 						Labels: map[string]string{
 							"iconKey": "oh_no",
 						},
@@ -483,9 +487,9 @@ func Test_resultFromAnalysis(t *testing.T) {
 						"iconKey":         "oh_no",
 					},
 				},
-				Message: &message.Message{
+				Insight: &insight.Insight{
 					Meta: meta.Meta{
-						Name: "the warning message",
+						Name: "the warning insight",
 						Labels: map[string]string{
 							"iconKey": "oh_no",
 						},
@@ -505,7 +509,7 @@ func Test_resultFromAnalysis(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotResult, err := resultFromAnalysis(tt.args.msg, tt.args.analysisErr, tt.args.analyzerSpec, tt.args.data)
+			gotResult, err := resultFromAnalysis(tt.args.insight, tt.args.analysisErr, tt.args.analyzerSpec, tt.args.data)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("resultFromAnalysis() error = %v, wantErr %v", err, tt.wantErr)
 				return

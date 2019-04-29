@@ -1,1 +1,2 @@
 expect_err: false
+ignore_analyze_result_spec: true

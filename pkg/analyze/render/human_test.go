@@ -8,7 +8,7 @@ import (
 
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/insight"
 	"github.com/replicatedcom/support-bundle/pkg/ui"
 )
 
@@ -23,7 +23,7 @@ func TestHumanEncoder_Encode(t *testing.T) {
 			name: "basic",
 			results: []api.Result{
 				{
-					Message: &message.Message{
+					Insight: &insight.Insight{
 						Primary:  "Ubuntu version is 14.04",
 						Detail:   "Ubuntu version must be at least 16.04",
 						Severity: common.SeverityWarn,
@@ -31,7 +31,7 @@ func TestHumanEncoder_Encode(t *testing.T) {
 					Severity: common.SeverityWarn,
 				},
 				{
-					Message: &message.Message{
+					Insight: &insight.Insight{
 						Primary:  "Ubuntu version is 18.04",
 						Detail:   "Ubuntu version must be at least 16.04",
 						Severity: common.SeverityInfo,
@@ -39,7 +39,7 @@ func TestHumanEncoder_Encode(t *testing.T) {
 					Severity: common.SeverityInfo,
 				},
 				{
-					Message: &message.Message{
+					Insight: &insight.Insight{
 						Primary:  "Ubuntu version is ",
 						Detail:   "Ubuntu version must be at least 16.04",
 						Severity: common.SeverityInfo,

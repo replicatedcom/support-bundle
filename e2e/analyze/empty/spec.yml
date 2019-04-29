@@ -1,42 +1,42 @@
 analyze:
   v1:
     - name: os.empty
+      insight:
+        primary: OS empty is true
+        detail: Detect OS
+        severity: info
       registerVariables:
         - name: os
           os: {}
-      condition:
-        empty: {}
-        variableRef: os
-      messages:
-        conditionError:
-          primary: OS empty is error
-          detail: Detect OS
-          severity: error
-        conditionFalse:
-          primary: OS empty is false
-          detail: Detect OS
-          severity: error
-        conditionTrue:
-          primary: OS empty is true
-          detail: Detect OS
-          severity: info
+      evaluateConditions:
+        - condition:
+            empty: {}
+            variableRef: os
+          insightOnError:
+            primary: OS empty is error
+            detail: Detect OS
+            severity: error
+          insightOnFalse:
+            primary: OS empty is false
+            detail: Detect OS
+            severity: error
     - name: os.empty.eval
+      insight:
+        primary: OS empty is true
+        detail: Detect OS
+        severity: info
       registerVariables:
         - name: os
           os: {}
-      condition:
-        eval: '{{repl not .os }}'
-        variableRef: os
-      messages:
-        conditionError:
-          primary: OS empty is error
-          detail: Detect OS
-          severity: error
-        conditionFalse:
-          primary: OS empty is false
-          detail: Detect OS
-          severity: error
-        conditionTrue:
-          primary: OS empty is true
-          detail: Detect OS
-          severity: info
+      evaluateConditions:
+        - condition:
+            eval: '{{repl not .os }}'
+            variableRef: os
+          insightOnError:
+            primary: OS empty is error
+            detail: Detect OS
+            severity: error
+          insightOnFalse:
+            primary: OS empty is false
+            detail: Detect OS
+            severity: error

@@ -4,6 +4,10 @@ analyze:
       labels:
         iconKey: docker_whale
         desiredPosition: "2"
+      insight:
+        primary: Docker {{repl .version}}
+        detail: Docker server version is {{repl .version}}
+        severity: info
       registerVariables:
         - name: version
           fileMatch:
@@ -12,20 +16,14 @@ analyze:
             regexpCapture:
               regexp: '"ServerVersion": *"([^"]+)"'
               index: 1
-      precondition:
-        not:
-          empty: {}
-          variableRef: version
-      condition:
-        eval: "true"
-      messages:
-        preconditionFalse:
-          primary: "?"
-          detail: Could not determine docker version
-          severity: warn
-          labels:
-            iconKey: no_docker
-        conditionTrue:
-          primary: Docker {{repl .version}}
-          detail: Docker server version is {{repl .version}}
-          severity: info
+      evaluateConditions:
+        - condition:
+            not:
+              empty: {}
+              variableRef: version
+          insightOnFalse:
+            primary: "?"
+            detail: Could not determine docker version
+            severity: warn
+            labels:
+              iconKey: no_docker

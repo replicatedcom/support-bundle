@@ -39,24 +39,24 @@ func (e *HumanEncoder) encodeResults(results []api.Result) error {
 	}
 
 	for _, result := range results {
-		if result.Message == nil {
+		if result.Insight == nil {
 			continue
 		}
-		var msg string
+		var insight string
 		symbol := e.severitySymbol(result.Severity)
 		if result.Error != "" {
-			msg += fmt.Sprintf(
+			insight += fmt.Sprintf(
 				"%s %s\n",
 				symbol, result.Error)
 		} else {
-			msg += fmt.Sprintf(
+			insight += fmt.Sprintf(
 				"%s %s\n",
-				symbol, result.Message.Primary)
+				symbol, result.Insight.Primary)
 		}
-		msg += fmt.Sprintf(
+		insight += fmt.Sprintf(
 			"%s\n",
-			result.Message.Detail)
-		e.severityOut(result.Severity)(msg)
+			result.Insight.Detail)
+		e.severityOut(result.Severity)(insight)
 	}
 	return nil
 }
