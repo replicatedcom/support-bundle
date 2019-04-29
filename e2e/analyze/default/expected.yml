@@ -1,23 +1,27 @@
 - name: processes.configmanagement.puppet
   labels:
-    iconKey: puppet_logo
+    iconKey: gray_checkmark
     desiredPosition: "10"
   message:
     primary: No Puppet
     detail: This server is not running a puppet agent
     severity: debug
+    labels:
+      iconKey: gray_checkmark
   severity: debug
   analyzerSpec: 'IGNORED'
   variables:
     ps: ~
 - name: processes.configmanagement.chef
   labels:
-    iconKey: chef_logo
+    iconKey: gray_checkmark
     desiredPosition: "10"
   message:
     primary: No Chef
     detail: This server is not running a Chef client
     severity: debug
+    labels:
+      iconKey: gray_checkmark
   severity: debug
   analyzerSpec: 'IGNORED'
   variables:
