@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"html/template"
 	"io"
 	"os"
 	"path/filepath"
+	"text/template"
 
 	"github.com/ghodss/yaml"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
