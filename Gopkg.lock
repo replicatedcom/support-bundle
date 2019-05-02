@@ -1407,6 +1407,7 @@
     "github.com/docker/docker/client",
     "github.com/docker/docker/pkg/stdcopy",
     "github.com/docker/go-connections/sockets",
+    "github.com/docker/go-units",
     "github.com/ghodss/yaml",
     "github.com/go-kit/kit/log",
     "github.com/go-kit/kit/log/level",
