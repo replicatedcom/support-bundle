@@ -4,25 +4,29 @@ analyze:
       labels:
         desiredPosition: "0"
         iconKey: os_centos
+      insight:
+        primary: OS is CentOS
+        detail: Is the os CentOS?
+        severity: info
       registerVariables:
         - name: os
           os: {}
-      condition:
-        stringCompare:
-          eq: centos
-        variableRef: os
-      messages:
-        conditionTrue:
-          primary: OS is CentOS
-          detail: Is the os CentOS?
-          severity: info
-        conditionFalse:
-          primary: OS is not CentOS
-          detail: Is the os CentOS?
-          severity: warn
+      evaluateConditions:
+        - condition:
+            stringCompare:
+              eq: centos
+            variableRef: os
+          insightOnFalse:
+            primary: OS is not CentOS
+            detail: Is the os CentOS?
+            severity: warn
     - name: processes.configmanagement.puppet
       labels:
         iconKey: puppet_logo
+      insight:
+        primary: Managed By Puppet
+        detail: This server is running a Puppet agent
+        severity: info
       registerVariables:
       - fileMatch:
           pathRegexps:
@@ -31,16 +35,12 @@ analyze:
             regexp: '.+puppet agent .*'
             index: 0
         name: ps
-      condition:
-        regexpMatch:
-          regexp: 'puppet agent '
-        variableRef: ps
-      messages:
-        conditionTrue:
-          primary: Managed By Puppet
-          detail: This server is running a Puppet agent
-          severity: info
-        conditionFalse:
-          primary: No Puppet
-          detail: This server is not running a puppet agent
-          severity: debug
+      evaluateConditions:
+        - condition:
+            regexpMatch:
+              regexp: 'puppet agent '
+            variableRef: ps
+          insightOnFalse:
+            primary: No Puppet
+            detail: This server is not running a puppet agent
+            severity: debug

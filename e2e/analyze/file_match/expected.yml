@@ -2,7 +2,7 @@
   labels:
     iconKey: gray_checkmark
     desiredPosition: "3"
-  message:
+  insight:
     primary: Incorrect replicated.conf
     detail: The file at /etc/replicated.conf is formatted incorrectly
     severity: warn

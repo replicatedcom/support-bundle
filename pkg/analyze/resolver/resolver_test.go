@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/insight"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/variable"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 
@@ -36,58 +36,58 @@ func TestResolverResolveSpec(t *testing.T) {
 				"/spec/1.yml": `
 analyze:
   v1:
-  - condition:
-      eval: '{{repl lt .osVersion "16.04" | not}}'
-    messages:
-      conditionError:
-        detail: CentOS version must be at least 7.5
-        primary: Failed to detect CentOS version
-        severity: debug
-      conditionFalse:
-        detail: CentOS version must be at least 7.5
-        primary: CentOS version {{repl .osVersion}}
-        severity: warn
-      conditionTrue:
-        detail: CentOS version must be at least 7.5
-        primary: CentOS version {{repl .osVersion}}
-        severity: info
-      preconditionError:
+  - evaluateConditions:
+    - condition:
+        or:
+        - eval: '{{repl eq .os "centos"}}'
+        - eval: '{{repl eq .Ref "centos"}}'
+          variableRef: os
+        - stringCompare:
+            eq: centos
+          variableRef: os
+      insightOnError:
         detail: CentOS version must be at least 7.5
         primary: Failed to detect OS
         severity: debug
-      preconditionFalse:
+      insightOnFalse:
         detail: CentOS version must be at least 7.5
         primary: OS is not CentOS
         severity: debug
+    - condition:
+        eval: '{{repl lt .osVersion "16.04" | not}}'
+      insightOnError:
+        detail: CentOS version must be at least 7.5
+        primary: Failed to detect CentOS version
+        severity: debug
+      insightOnFalse:
+        detail: CentOS version must be at least 7.5
+        primary: CentOS version {{repl .osVersion}}
+        severity: warn
+    insight:
+      detail: CentOS version must be at least 7.5
+      primary: CentOS version {{repl .osVersion}}
+      severity: info
     name: centos-min-version
-    precondition:
-      or:
-      - eval: '{{repl eq .os "centos"}}'
-      - eval: '{{repl eq .Ref "centos"}}'
-        variableRef: os
-      - stringCompare:
-          eq: centos
-        variableRef: os
     registerVariables:
     - name: os
       os: {}`},
 			inline: []string{`
 analyze:
   v1:
-  - condition:
-      regexpMatch:
-        regexp: /chef-client
-      variableRef: ps
-    messages:
-      conditionTrue:
-        detail: The server must not be running the Chef Client
-        primary: Chef Client detected
-        severity: warn
-    name: chef-client
-    precondition:
-      not:
-        empty: {}
+  - evaluateConditions:
+    - condition:
+        not:
+          empty: {}
+          variableRef: ps
+    - condition:
+        regexpMatch:
+          regexp: /chef-client
         variableRef: ps
+    insight:
+      detail: The server must not be running the Chef Client
+      primary: Chef Client detected
+      severity: warn
+    name: chef-client
     registerVariables:
     - collectRef:
         selector:
@@ -109,54 +109,58 @@ analyze:
 									Os: &variable.Os{},
 								},
 							},
-							Precondition: &v1.Condition{
-								Or: &v1.OrPredicate{
-									{
-										EvalCondition: &eqOsCentosEval,
-									},
-									{
-										EvalCondition: &eqRefCentosEval,
-										VariableRef:   "os",
-									},
-									{
-										StringCompare: &condition.StringCompare{
-											Compare: condition.Compare{
-												Eq: "centos",
+							EvaluateConditions: []v1.EvaluateCondition{
+								{
+									Condition: v1.Condition{
+										Or: &v1.OrPredicate{
+											{
+												EvalCondition: &eqOsCentosEval,
+											},
+											{
+												EvalCondition: &eqRefCentosEval,
+												VariableRef:   "os",
+											},
+											{
+												StringCompare: &condition.StringCompare{
+													Compare: condition.Compare{
+														Eq: "centos",
+													},
+												},
+												VariableRef: "os",
 											},
 										},
-										VariableRef: "os",
+									},
+									InsightOnError: &insight.Insight{
+										Primary:  "Failed to detect OS",
+										Detail:   "CentOS version must be at least 7.5",
+										Severity: common.SeverityDebug,
+									},
+									InsightOnFalse: &insight.Insight{
+										Primary:  "OS is not CentOS",
+										Detail:   "CentOS version must be at least 7.5",
+										Severity: common.SeverityDebug,
+									},
+								},
+								{
+									Condition: v1.Condition{
+										EvalCondition: &osVersionGte1604Eval,
+									},
+									InsightOnError: &insight.Insight{
+										Primary:  "Failed to detect CentOS version",
+										Detail:   "CentOS version must be at least 7.5",
+										Severity: common.SeverityDebug,
+									},
+									InsightOnFalse: &insight.Insight{
+										Primary:  "CentOS version {{repl .osVersion}}",
+										Detail:   "CentOS version must be at least 7.5",
+										Severity: common.SeverityWarn,
 									},
 								},
 							},
-							Condition: v1.Condition{
-								EvalCondition: &osVersionGte1604Eval,
-							},
-							Messages: v1.Messages{
-								PreconditionError: &message.Message{
-									Primary:  "Failed to detect OS",
-									Detail:   "CentOS version must be at least 7.5",
-									Severity: common.SeverityDebug,
-								},
-								PreconditionFalse: &message.Message{
-									Primary:  "OS is not CentOS",
-									Detail:   "CentOS version must be at least 7.5",
-									Severity: common.SeverityDebug,
-								},
-								ConditionError: &message.Message{
-									Primary:  "Failed to detect CentOS version",
-									Detail:   "CentOS version must be at least 7.5",
-									Severity: common.SeverityDebug,
-								},
-								ConditionFalse: &message.Message{
-									Primary:  "CentOS version {{repl .osVersion}}",
-									Detail:   "CentOS version must be at least 7.5",
-									Severity: common.SeverityWarn,
-								},
-								ConditionTrue: &message.Message{
-									Primary:  "CentOS version {{repl .osVersion}}",
-									Detail:   "CentOS version must be at least 7.5",
-									Severity: common.SeverityInfo,
-								},
+							Insight: &insight.Insight{
+								Primary:  "CentOS version {{repl .osVersion}}",
+								Detail:   "CentOS version must be at least 7.5",
+								Severity: common.SeverityInfo,
 							},
 						},
 						{
@@ -177,26 +181,30 @@ analyze:
 									},
 								},
 							},
-							Precondition: &v1.Condition{
-								Not: &v1.NotPredicate{
+							EvaluateConditions: []v1.EvaluateCondition{
+								{
 									Condition: v1.Condition{
-										Empty:       &condition.Empty{},
+										Not: &v1.NotPredicate{
+											Condition: v1.Condition{
+												Empty:       &condition.Empty{},
+												VariableRef: "ps",
+											},
+										},
+									},
+								},
+								{
+									Condition: v1.Condition{
+										RegexpMatch: &condition.RegexpMatch{
+											Regexp: "/chef-client",
+										},
 										VariableRef: "ps",
 									},
 								},
 							},
-							Condition: v1.Condition{
-								RegexpMatch: &condition.RegexpMatch{
-									Regexp: "/chef-client",
-								},
-								VariableRef: "ps",
-							},
-							Messages: v1.Messages{
-								ConditionTrue: &message.Message{
-									Primary:  "Chef Client detected",
-									Detail:   "The server must not be running the Chef Client",
-									Severity: common.SeverityWarn,
-								},
+							Insight: &insight.Insight{
+								Primary:  "Chef Client detected",
+								Detail:   "The server must not be running the Chef Client",
+								Severity: common.SeverityWarn,
 							},
 						},
 					},

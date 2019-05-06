@@ -1,14 +1,14 @@
 - name: os.empty
-  message:
+  insight:
     primary: OS empty is true
     detail: Detect OS
     severity: info
   severity: info
-  analyzerSpec: '{"v1":[{"name":"os.empty","registerVariables":[{"name":"os","os":{}}],"condition":{"variableRef":"os","empty":{}},"messages":{"conditionError":{"primary":"OS empty is error","detail":"Detect OS","severity":"error"},"conditionFalse":{"primary":"OS empty is false","detail":"Detect OS","severity":"error"},"conditionTrue":{"primary":"OS empty is true","detail":"Detect OS","severity":"info"}}}]}'
+  analyzerSpec: 'IGNORED'
 - name: os.empty.eval
-  message:
+  insight:
     primary: OS empty is true
     detail: Detect OS
     severity: info
   severity: info
-  analyzerSpec: '{"v1":[{"name":"os.empty.eval","registerVariables":[{"name":"os","os":{}}],"condition":{"variableRef":"os","eval":"{{repl not .os }}"},"messages":{"conditionError":{"primary":"OS empty is error","detail":"Detect OS","severity":"error"},"conditionFalse":{"primary":"OS empty is false","detail":"Detect OS","severity":"error"},"conditionTrue":{"primary":"OS empty is true","detail":"Detect OS","severity":"info"}}}]}'
+  analyzerSpec: 'IGNORED'

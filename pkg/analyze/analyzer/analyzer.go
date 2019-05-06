@@ -12,7 +12,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api/common"
 	v1 "github.com/replicatedcom/support-bundle/pkg/analyze/api/v1"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/condition"
-	"github.com/replicatedcom/support-bundle/pkg/analyze/message"
+	"github.com/replicatedcom/support-bundle/pkg/analyze/insight"
 	bundlereader "github.com/replicatedcom/support-bundle/pkg/collect/bundle/reader"
 	collecttypes "github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/util"
@@ -99,55 +99,40 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		return resultFromAnalysis(nil, err, analyzerSpec, data)
 	}
 
-	message, err := a.evalConditions(analyzerSpec, data)
+	insight, err := a.evalConditions(analyzerSpec, data)
 
 	debug.Log(
 		"phase", "analyzer.analyze",
 		"status", "complete")
 
-	return resultFromAnalysis(message, err, analyzerSpec, data)
+	return resultFromAnalysis(insight, err, analyzerSpec, data)
 }
 
-func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]interface{}) (*message.Message, error) {
+func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]interface{}) (*insight.Insight, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.evalConditions"))
 
-	if analyzerSpec.Precondition != nil {
-		preconditionsOk, err := analyzerSpec.Precondition.Eval(data)
+	for _, evaluateCondition := range analyzerSpec.EvaluateConditions {
+		ok, err := evaluateCondition.Condition.Eval(data)
 		debug.Log(
-			"phase", "analyzer.analyze.preconditions-eval",
-			"preconditions", util.SpewJSON(analyzerSpec.Precondition),
+			"phase", "analyzer.analyze.conditions-eval",
+			"conditions", util.SpewJSON(evaluateCondition.Condition),
 			"variables", util.SpewJSON(data),
-			"ok", preconditionsOk,
+			"ok", ok,
 			"error", err)
 		if errors.Cause(err) == condition.ErrNotFound {
-			return analyzerSpec.Messages.PreconditionError, nil
+			return evaluateCondition.InsightOnError, nil
 		} else if err != nil {
-			return analyzerSpec.Messages.PreconditionError, errors.Wrap(err, "eval preconditions")
-		} else if !preconditionsOk {
-			return analyzerSpec.Messages.PreconditionFalse, nil
+			return evaluateCondition.InsightOnError, errors.Wrap(err, "eval conditions")
+		} else if !ok {
+			return evaluateCondition.InsightOnFalse, nil
 		}
 	}
 
-	conditionsOk, err := analyzerSpec.Condition.Eval(data)
-	debug.Log(
-		"phase", "analyzer.analyze.conditions-eval",
-		"conditions", util.SpewJSON(analyzerSpec.Condition),
-		"variables", util.SpewJSON(data),
-		"ok", conditionsOk,
-		"error", err)
-	if errors.Cause(err) == condition.ErrNotFound {
-		return analyzerSpec.Messages.ConditionError, nil
-	} else if err != nil {
-		return analyzerSpec.Messages.ConditionError, errors.Wrap(err, "eval conditions")
-	} else if !conditionsOk {
-		return analyzerSpec.Messages.ConditionFalse, nil
-	}
-
-	return analyzerSpec.Messages.ConditionTrue, nil
+	return analyzerSpec.Insight, nil
 }
 
-func resultFromAnalysis(msg *message.Message, analysisErr error, analyzerSpec v1.Analyzer, data map[string]interface{}) (result *api.Result, err error) {
-	if msg == nil && analysisErr == nil {
+func resultFromAnalysis(insight *insight.Insight, analysisErr error, analyzerSpec v1.Analyzer, data map[string]interface{}) (result *api.Result, err error) {
+	if insight == nil && analysisErr == nil {
 		return // off
 	}
 
@@ -169,26 +154,26 @@ func resultFromAnalysis(msg *message.Message, analysisErr error, analyzerSpec v1
 	if analysisErr != nil {
 		result.Error = analysisErr.Error()
 
-		if msg == nil {
+		if insight == nil {
 			result.Severity = common.SeverityError
 			err = analysisErr
 			return
 		}
 	}
 
-	if msg == nil {
+	if insight == nil {
 		return
 	}
 
-	result.Message, err = msg.Render(data)
+	result.Insight, err = insight.Render(data)
 	if err != nil {
 		result.Severity = common.SeverityError
-		err = errors.Wrap(err, "render message")
+		err = errors.Wrap(err, "render insight")
 		return
 	}
-	result.Severity = result.Message.Severity
-	// override labels with message labels
-	result.Meta.Labels = mergeLabels(result.Meta.Labels, result.Message.Meta.Labels)
+	result.Severity = result.Insight.Severity
+	// override labels with insight labels
+	result.Meta.Labels = mergeLabels(result.Meta.Labels, result.Insight.Meta.Labels)
 
 	return
 }

@@ -1,4 +1,4 @@
-package message
+package insight
 
 import (
 	multierror "github.com/hashicorp/go-multierror"
@@ -8,7 +8,7 @@ import (
 	"github.com/replicatedcom/support-bundle/pkg/templates"
 )
 
-type Message struct {
+type Insight struct {
 	meta.Meta `json:",inline" yaml:",inline" hcl:",inline"`
 
 	Primary  string          `json:"primary" yaml:"primary" hcl:"primary"`
@@ -16,10 +16,10 @@ type Message struct {
 	Severity common.Severity `json:"severity,omitempty" yaml:"severity,omitempty" hcl:"severity,omitempty"`
 }
 
-func (m *Message) Render(data interface{}) (*Message, error) {
+func (m *Insight) Render(data interface{}) (*Insight, error) {
 	var multiErr *multierror.Error
 	var err error
-	built := &Message{
+	built := &Insight{
 		Meta:     m.Meta,
 		Severity: m.Severity,
 	}

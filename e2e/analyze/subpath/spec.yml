@@ -1,36 +1,36 @@
 analyze:
   v1:
     - name: os-is-centos
+      insight:
+        primary: OS is CentOS
+        detail: Is the os CentOS?
+        severity: info
       registerVariables:
         - name: os
           os: {}
-      condition:
-        stringCompare:
-          eq: centos
-        variableRef: os
-      messages:
-        conditionTrue:
-          primary: OS is CentOS
-          detail: Is the os CentOS?
-          severity: info
-        conditionFalse:
-          primary: OS is not CentOS
-          detail: Is the os CentOS?
-          severity: warn
+      evaluateConditions:
+        - condition:
+            stringCompare:
+              eq: centos
+            variableRef: os
+          insightOnFalse:
+            primary: OS is not CentOS
+            detail: Is the os CentOS?
+            severity: warn
     - name: os-is-ubuntu
+      insight:
+        primary: OS is Ubuntu
+        detail: Is the os Ubuntu?
+        severity: info
       registerVariables:
         - name: os
           os: {}
-      condition:
-        stringCompare:
-          eq: ubuntu
-        variableRef: os
-      messages:
-        conditionTrue:
-          primary: OS is Ubuntu
-          detail: Is the os Ubuntu?
-          severity: info
-        conditionFalse:
-          primary: OS is not Ubuntu
-          detail: Is the os Ubuntu?
-          severity: warn
+      evaluateConditions:
+        - condition:
+            stringCompare:
+              eq: ubuntu
+            variableRef: os
+          insightOnFalse:
+            primary: OS is not Ubuntu
+            detail: Is the os Ubuntu?
+            severity: warn

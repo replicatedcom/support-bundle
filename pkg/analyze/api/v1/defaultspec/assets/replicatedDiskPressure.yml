@@ -2,25 +2,25 @@ defaults: &defaults
   labels:
     iconKey: disk_full
     desiredPosition: "3"
-  precondition:
-    not:
-      empty: {}
-      variableRef: replicatedLogExists
-  condition:
-    not:
-      empty: {}
-      variableRef: replicatedDiskPressure
-  messages:
-    conditionFalse:
-      primary: No Disk Pressure
-      detail: All replicated containers have enough disk space
-      severity: debug
-      labels:
-        iconKey: disk
-    conditionTrue:
-      primary: No Space on Device
-      detail: One or more replicated containers is reporting that it is out of disk space
-      severity: error
+  insight:
+    primary: No Space on Device
+    detail: One or more replicated containers is reporting that it is out of disk space
+    severity: error
+  evaluateConditions:
+    - condition:
+        not:
+          empty: {}
+          variableRef: replicatedLogExists
+    - condition:
+        not:
+          empty: {}
+          variableRef: replicatedDiskPressure
+      insightOnFalse:
+        primary: No Disk Pressure
+        detail: All replicated containers have enough disk space
+        severity: debug
+        labels:
+          iconKey: disk
 
 analyze:
   v1:
@@ -31,8 +31,8 @@ analyze:
           fileMatch:
             pathRegexps:
               - /replicated\.journald/logs\.raw
-              - /replicated\.log
               - /replicated\.stderr
+              - /replicated\.log
             regexpCapture:
               regexp: '.'
               index: 0
@@ -41,8 +41,8 @@ analyze:
           fileMatch:
             pathRegexps:
               - /replicated\.journald/logs\.raw
-              - /replicated\.log
               - /replicated\.stderr
+              - /replicated\.log
             regexpCapture:
               regexp: 'no space left on device'
               index: 0
@@ -54,8 +54,8 @@ analyze:
           fileMatch:
             pathRegexps:
               - /replicated-operator\.journald/logs\.raw
-              - /replicated-operator\.log
               - /replicated-operator\.stderr
+              - /replicated-operator\.log
             regexpCapture:
               regexp: '.'
               index: 0
@@ -64,8 +64,8 @@ analyze:
           fileMatch:
             pathRegexps:
               - /replicated-operator\.journald/logs\.raw
-              - /replicated-operator\.log
               - /replicated-operator\.stderr
+              - /replicated-operator\.log
             regexpCapture:
               regexp: 'no space left on device'
               index: 0
