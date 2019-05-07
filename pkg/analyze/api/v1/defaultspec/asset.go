@@ -7,8 +7,8 @@
 // pkg/analyze/api/v1/defaultspec/assets/dockerDevicemapperLoopback.yml
 // pkg/analyze/api/v1/defaultspec/assets/dockerIccFalse.yml
 // pkg/analyze/api/v1/defaultspec/assets/dockerLoggingDriver.yml
-// pkg/analyze/api/v1/defaultspec/assets/dockerProxy.yml
 // pkg/analyze/api/v1/defaultspec/assets/dockerNoProxy.yml
+// pkg/analyze/api/v1/defaultspec/assets/dockerProxy.yml
 // pkg/analyze/api/v1/defaultspec/assets/dockerVersion.yml
 // pkg/analyze/api/v1/defaultspec/assets/loadavg.yml
 // pkg/analyze/api/v1/defaultspec/assets/memoryUsage.yml
@@ -223,26 +223,6 @@ func assetsDockerloggingdriverYml() (*asset, error) {
 	return a, nil
 }
 
-var _assetsDockerproxyYml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xcc\x53\x4f\x6b\xfb\x30\x0c\xbd\xf7\x53\x88\x5c\xfa\x07\xda\x1f\x3d\xfe\x7c\xed\x18\x83\xb1\xad\xf4\xb0\xcb\xfe\xa1\x26\x6a\xe2\xcd\xb5\x8d\xad\x66\xcd\x4a\xbf\xfb\x48\x96\xa4\x75\x5a\x06\x83\x1d\x76\x31\x58\xef\x49\xb2\xe4\xf7\x50\xa3\x2a\x3e\x48\xf4\x00\xf2\x69\x79\x02\x8c\x41\xe3\x9a\x04\x24\x26\x7e\x23\x37\xb1\xce\x6c\x8b\x0a\x00\x50\xb8\x24\xe5\x45\x7d\x03\x90\xb1\xd1\xd7\x54\x34\xdc\x97\xf7\x0c\x15\xb5\x68\x42\x5e\x3a\x4a\xe6\xc6\x4b\x96\x46\x0b\x88\xfe\x47\x35\x28\xb5\x97\x69\xc6\x87\x4a\xd6\xc9\x35\xba\x42\xc0\xbc\x6c\x07\x9e\x18\x90\x61\xb7\x73\x64\x15\x4c\x32\x66\x5b\xbd\x63\xbf\x3f\xaa\xce\x28\x95\x80\x8b\xaa\x35\x94\x94\x81\x1f\x82\x6d\xf2\x5b\xa2\xa7\x9c\x9c\xe4\x42\x80\xd4\x2b\x53\x87\x1d\xa5\xd2\x33\xb9\x7b\x74\x12\x97\x8a\x8e\x86\x6a\xe6\x6f\x9b\xb6\x08\xc0\x4a\x2a\xba\x41\x8e\x33\x71\x14\x04\xb0\xc8\xd9\x82\x52\xda\x5a\x1f\x02\x65\xb5\x7f\xf5\x72\xca\xee\x8f\x93\x57\x6f\x74\x40\x71\x55\xde\x0c\x2d\x6f\x1c\x75\xb3\xbf\x40\x01\xfd\xe8\x8a\xd9\x56\xbb\x89\x04\x8c\xa2\xc1\xc3\x73\xf4\x34\x1a\x46\xfd\x0e\x5f\xea\x84\xb6\x02\xa6\x67\x87\xf1\x7f\x6b\x1a\xff\xe3\x71\x28\x47\xb5\x41\xa6\x99\xd1\x49\x25\xa9\xe0\xd7\xe2\x26\x1a\xb6\x35\x2e\xbc\x8f\x41\x1b\xee\xbe\x0c\x80\xd6\xb6\x94\xc8\x6e\x7f\x82\xe4\xb5\x44\x16\xb4\x3a\x2f\x8a\xdf\xa8\x79\xf2\x37\xb5\x43\xee\xf4\x25\x2a\xdf\xd9\x64\x6b\x96\x5b\x73\xd0\x3b\x4b\x9d\xfa\x80\xf6\xad\x43\xb4\xe1\xc0\x25\x10\x38\x25\xa1\xe5\x26\xed\x7d\x06\x00\x00\xff\xff\x82\x67\x5b\x0f\x1d\x04\x00\x00")
-
-func assetsDockerproxyYmlBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsDockerproxyYml,
-		"assets/dockerProxy.yml",
-	)
-}
-
-func assetsDockerproxyYml() (*asset, error) {
-	bytes, err := assetsDockerproxyYmlBytes()
-	if err != nil {
-		return nil, err
-	}
-
-	info := bindataFileInfo{name: "assets/dockerProxy.yml", size: 1053, mode: os.FileMode(420), modTime: time.Unix(1557254029, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
-}
-
 var _assetsDockernoproxyYml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xcc\x54\x4d\x6f\xd3\x40\x10\xbd\xf7\x57\x8c\xf6\x52\xa8\x44\x21\xd7\xbd\x70\x08\x42\x48\x88\x52\xf5\xc0\x85\x2f\x4d\xed\x89\x3d\xb0\xde\x5d\xed\x4e\xdc\x98\x28\xff\x1d\xad\xb1\x53\xaf\xe3\x1c\x10\x48\x90\x43\xa4\xcc\x9b\x99\x37\x2f\x7e\x7e\x68\xd1\x74\x3f\x48\x5f\x00\xb4\xab\xf4\x0d\xf0\x0c\x2c\x36\xa4\xa1\x74\xc5\x77\x0a\xd7\xd6\xf9\xe0\x76\x5d\x0f\x01\x18\xbc\x27\x13\xf5\xf0\x0b\x80\x0b\x67\xdf\x52\x37\x76\x7f\x7d\xa8\xd1\xd0\x11\x2d\x29\x72\xa0\xf2\xd6\x45\x16\x76\x56\x83\x5a\xbd\x50\x03\xca\x36\x72\x55\xcb\xe3\x2a\x1f\xb8\xc1\xd0\x69\xb8\x71\xd0\x53\x42\x24\x01\x14\xd8\xef\x03\x79\x03\xe3\x25\x87\xc3\x64\xbf\x20\x1b\x0d\xaf\x7a\x72\xb0\x93\xc1\x63\x4f\xa4\x96\x02\x4b\xa7\x81\xed\xc6\x0d\xe5\x40\x15\x47\xa1\xf0\x01\x03\xe3\xbd\xa1\x89\xa2\x51\x7e\x2d\xe2\xa7\xca\xd3\x67\xc3\x86\xde\xa1\x14\xb5\x9e\x14\x01\x3c\x4a\x7d\x47\x15\xed\x7c\xcc\x81\xb4\xed\xf9\xf0\xcf\x24\xf6\x4f\xd7\xdf\xa2\xb3\x59\x4b\xe8\xe7\xd6\xe8\x65\x1b\x68\x3e\xfd\x0b\xd4\x70\xa9\xde\x88\xf8\xdb\x74\x8d\xd2\x70\xa5\x9e\x7c\xfc\xa2\x3e\x5f\x3d\x55\x97\xb3\x7e\xb6\x25\xed\x34\xac\x16\xc5\xc4\xff\x4b\x4d\xfc\x03\x39\xb9\x27\xff\xad\x96\x1b\xf7\xdb\x42\xa8\x45\xb3\x45\xa1\xb5\xb3\x65\xff\x62\x64\xf6\x2b\xc6\x6a\xce\xe9\xc2\xa9\x02\xeb\x64\x5e\xec\xf7\x37\x3e\xf9\x7d\x7f\x58\xc0\xda\xc1\xf1\x77\xb4\x59\xf6\xf8\xdf\xdb\x3c\x33\xdc\x59\x65\x0b\x5c\xe7\x78\x32\x8e\x53\x17\x0c\x99\xf2\xde\xbe\x46\x13\x67\xcf\xec\x18\x2f\xea\xa5\xca\x80\x31\x44\xd6\x6e\x6b\xca\x74\x4c\xaa\x50\x68\xd8\x52\x96\x28\xc2\xb6\xca\x06\x1f\x93\xe5\x01\x43\xee\x9d\x79\x4c\x0e\xe7\x2d\x86\xe5\xc5\xcf\x00\x00\x00\xff\xff\xa7\xb8\xd1\xb9\x84\x05\x00\x00")
 
 func assetsDockernoproxyYmlBytes() ([]byte, error) {
@@ -259,6 +239,26 @@ func assetsDockernoproxyYml() (*asset, error) {
 	}
 
 	info := bindataFileInfo{name: "assets/dockerNoProxy.yml", size: 1412, mode: os.FileMode(420), modTime: time.Unix(1557255496, 0)}
+	a := &asset{bytes: bytes, info: info}
+	return a, nil
+}
+
+var _assetsDockerproxyYml = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xcc\x53\x4d\x8b\xdb\x30\x10\xbd\xef\xaf\x78\xf8\xb2\x1f\xb0\x29\x7b\xac\xae\x5b\x4a\xa1\xb4\x5d\xf6\xd0\x4b\xbf\x50\xe2\x89\x3d\xad\x22\x09\xcd\x24\x8d\x1b\xfc\xdf\x8b\x5d\xdb\x1b\x39\xa1\x50\xe8\x61\x2f\x02\xcd\x7b\x9a\x79\x33\x9a\x67\xbd\x75\xcd\x2f\x32\x17\xc0\xee\xae\x3b\x81\x5b\x78\xbb\x21\x83\x32\xac\x7e\x50\x5a\xc4\x14\xf6\x4d\x0f\x00\xce\x2e\xc9\x89\x19\x6e\x00\xaf\x82\x7f\x4b\xcd\xc8\xfd\xf6\xb3\xb6\x8e\x26\xb4\x24\xe1\x44\xe5\x43\x10\x56\x0e\xde\xa0\x78\x59\x0c\x20\x7b\xe1\xaa\xd6\xa7\x4c\x31\xf1\xc6\xa6\xc6\xe0\xa1\x2b\x07\x21\x85\x55\x1c\x0e\x89\xa2\x03\xaf\xb1\xa8\x55\x63\x2f\xa5\x6d\x87\xe8\x99\x10\x39\xa1\x1c\x97\x19\xc1\x97\x6d\x7b\x24\x50\x2d\x3b\x83\x57\xbd\x7a\x74\xfc\x2b\xb9\x46\x1c\x25\x4c\x44\xa1\x1d\x25\xd6\xc6\x80\xfd\x3a\x0c\xe1\x44\x15\x8b\x52\xfa\x68\x13\xdb\xa5\xa3\xa3\xb9\x8c\x23\x9c\x14\x4e\x08\xb0\x66\x47\xef\xac\xae\x6a\x73\x14\x04\xa2\xd5\xfa\x91\x2a\xda\x47\xc9\x81\x2e\xdb\x8b\x61\xbe\x5d\xf5\xcf\x8b\xef\x12\x7c\x46\x49\xfd\xbb\x7b\x1b\x75\x9b\x68\xfe\xfa\x0f\x68\x70\x59\xbc\x51\x8d\xfd\x78\x0b\x83\x9b\xe2\xea\xd3\xd7\xe2\xcb\xcd\x75\x71\x39\xe3\xb3\x2f\x69\x6f\x70\x77\xb6\x19\x79\x5e\xdd\xc8\x3f\xb7\x43\x3b\xeb\xb6\x56\xe9\x3e\xf8\xb2\xdf\xca\xec\xd7\x56\x63\x34\x2f\x1b\x52\x7e\xbf\x85\x0f\x3a\x57\x06\xd0\x26\x76\x2b\x72\x68\x4f\x90\xdd\xb0\x22\x8f\xb4\x3e\xbf\x14\xff\x23\xe7\xc9\xdf\x0c\x26\xfb\xe0\x5f\x5b\x27\xb3\x49\x4e\x7e\x7b\x1f\x9e\xf6\x5d\xd9\x57\x92\xd1\xfe\xea\x10\x1f\x34\x73\x09\x32\xa7\x94\xb4\xdc\x56\x17\xbf\x03\x00\x00\xff\xff\x51\x64\xe5\xdd\x60\x04\x00\x00")
+
+func assetsDockerproxyYmlBytes() ([]byte, error) {
+	return bindataRead(
+		_assetsDockerproxyYml,
+		"assets/dockerProxy.yml",
+	)
+}
+
+func assetsDockerproxyYml() (*asset, error) {
+	bytes, err := assetsDockerproxyYmlBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "assets/dockerProxy.yml", size: 1120, mode: os.FileMode(420), modTime: time.Unix(1557258293, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -455,22 +455,22 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"assets/configManagement.yml":           assetsConfigmanagementYml,
-	"assets/cpuCores.yml":                   assetsCpucoresYml,
-	"assets/datacenter.yml":                 assetsDatacenterYml,
-	"assets/dockerContainers.yml":           assetsDockercontainersYml,
+	"assets/configManagement.yml": assetsConfigmanagementYml,
+	"assets/cpuCores.yml": assetsCpucoresYml,
+	"assets/datacenter.yml": assetsDatacenterYml,
+	"assets/dockerContainers.yml": assetsDockercontainersYml,
 	"assets/dockerDevicemapperLoopback.yml": assetsDockerdevicemapperloopbackYml,
-	"assets/dockerIccFalse.yml":             assetsDockericcfalseYml,
-	"assets/dockerLoggingDriver.yml":        assetsDockerloggingdriverYml,
-	"assets/dockerNoProxy.yml":              assetsDockernoproxyYml,
-	"assets/dockerProxy.yml":                assetsDockerproxyYml,
-	"assets/dockerVersion.yml":              assetsDockerversionYml,
-	"assets/loadavg.yml":                    assetsLoadavgYml,
-	"assets/memoryUsage.yml":                assetsMemoryusageYml,
-	"assets/os.yml":                         assetsOsYml,
-	"assets/osUptime.yml":                   assetsOsuptimeYml,
-	"assets/replicatedConfFormat.yml":       assetsReplicatedconfformatYml,
-	"assets/replicatedDiskPressure.yml":     assetsReplicateddiskpressureYml,
+	"assets/dockerIccFalse.yml": assetsDockericcfalseYml,
+	"assets/dockerLoggingDriver.yml": assetsDockerloggingdriverYml,
+	"assets/dockerNoProxy.yml": assetsDockernoproxyYml,
+	"assets/dockerProxy.yml": assetsDockerproxyYml,
+	"assets/dockerVersion.yml": assetsDockerversionYml,
+	"assets/loadavg.yml": assetsLoadavgYml,
+	"assets/memoryUsage.yml": assetsMemoryusageYml,
+	"assets/os.yml": assetsOsYml,
+	"assets/osUptime.yml": assetsOsuptimeYml,
+	"assets/replicatedConfFormat.yml": assetsReplicatedconfformatYml,
+	"assets/replicatedDiskPressure.yml": assetsReplicateddiskpressureYml,
 }
 
 // AssetDir returns the file names below a certain
@@ -512,25 +512,24 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
-
 var _bintree = &bintree{nil, map[string]*bintree{
 	"assets": &bintree{nil, map[string]*bintree{
-		"configManagement.yml":           &bintree{assetsConfigmanagementYml, map[string]*bintree{}},
-		"cpuCores.yml":                   &bintree{assetsCpucoresYml, map[string]*bintree{}},
-		"datacenter.yml":                 &bintree{assetsDatacenterYml, map[string]*bintree{}},
-		"dockerContainers.yml":           &bintree{assetsDockercontainersYml, map[string]*bintree{}},
+		"configManagement.yml": &bintree{assetsConfigmanagementYml, map[string]*bintree{}},
+		"cpuCores.yml": &bintree{assetsCpucoresYml, map[string]*bintree{}},
+		"datacenter.yml": &bintree{assetsDatacenterYml, map[string]*bintree{}},
+		"dockerContainers.yml": &bintree{assetsDockercontainersYml, map[string]*bintree{}},
 		"dockerDevicemapperLoopback.yml": &bintree{assetsDockerdevicemapperloopbackYml, map[string]*bintree{}},
-		"dockerIccFalse.yml":             &bintree{assetsDockericcfalseYml, map[string]*bintree{}},
-		"dockerLoggingDriver.yml":        &bintree{assetsDockerloggingdriverYml, map[string]*bintree{}},
-		"dockerNoProxy.yml":              &bintree{assetsDockernoproxyYml, map[string]*bintree{}},
-		"dockerProxy.yml":                &bintree{assetsDockerproxyYml, map[string]*bintree{}},
-		"dockerVersion.yml":              &bintree{assetsDockerversionYml, map[string]*bintree{}},
-		"loadavg.yml":                    &bintree{assetsLoadavgYml, map[string]*bintree{}},
-		"memoryUsage.yml":                &bintree{assetsMemoryusageYml, map[string]*bintree{}},
-		"os.yml":                         &bintree{assetsOsYml, map[string]*bintree{}},
-		"osUptime.yml":                   &bintree{assetsOsuptimeYml, map[string]*bintree{}},
-		"replicatedConfFormat.yml":       &bintree{assetsReplicatedconfformatYml, map[string]*bintree{}},
-		"replicatedDiskPressure.yml":     &bintree{assetsReplicateddiskpressureYml, map[string]*bintree{}},
+		"dockerIccFalse.yml": &bintree{assetsDockericcfalseYml, map[string]*bintree{}},
+		"dockerLoggingDriver.yml": &bintree{assetsDockerloggingdriverYml, map[string]*bintree{}},
+		"dockerNoProxy.yml": &bintree{assetsDockernoproxyYml, map[string]*bintree{}},
+		"dockerProxy.yml": &bintree{assetsDockerproxyYml, map[string]*bintree{}},
+		"dockerVersion.yml": &bintree{assetsDockerversionYml, map[string]*bintree{}},
+		"loadavg.yml": &bintree{assetsLoadavgYml, map[string]*bintree{}},
+		"memoryUsage.yml": &bintree{assetsMemoryusageYml, map[string]*bintree{}},
+		"os.yml": &bintree{assetsOsYml, map[string]*bintree{}},
+		"osUptime.yml": &bintree{assetsOsuptimeYml, map[string]*bintree{}},
+		"replicatedConfFormat.yml": &bintree{assetsReplicatedconfformatYml, map[string]*bintree{}},
+		"replicatedDiskPressure.yml": &bintree{assetsReplicateddiskpressureYml, map[string]*bintree{}},
 	}},
 }}
 
@@ -580,3 +579,4 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
+
