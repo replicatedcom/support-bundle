@@ -119,7 +119,7 @@ gradient: "purpleToPink"
 
 ## ${specType}
 
-**type ${specTypes[specType].type}**
+**type ${specTypes[specType].type || "object"}**
 
 ${specTypes[specType].description || ""}
 

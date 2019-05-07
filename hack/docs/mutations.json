@@ -4702,13 +4702,13 @@
   {
     "path": "properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.labels",
     "merge": {
-      "description": "Key,value pairs used to organize and identify the condition (unused)"
+      "description": "Key,value pairs used to organize and identify the condition"
     }
   },
   {
     "path": "properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.name",
     "merge": {
-      "description": "The name of the condition (unused)"
+      "description": "The name of the condition"
     }
   },
 
@@ -4736,7 +4736,7 @@
   {
     "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.labels",
     "merge": {
-      "description": "Key,value pairs used to organize and identify the variable (unused)"
+      "description": "Key,value pairs used to organize and identify the variable"
     }
   },
 
@@ -5188,13 +5188,13 @@
   {
     "path": "definitions.analyzeCondition.properties.labels",
     "merge": {
-      "description": "Key,value pairs used to organize and identify the condition (unused)"
+      "description": "Key,value pairs used to organize and identify the condition"
     }
   },
   {
     "path": "definitions.analyzeCondition.properties.name",
     "merge": {
-      "description": "Name of the condition (unused)"
+      "description": "Name of the condition"
     }
   },
   {
@@ -5367,13 +5367,13 @@
   {
     "path": "definitions.analyzeInsight.properties.name",
     "merge": {
-      "description": "The name of the insight (unused)"
+      "description": "The name of the insight"
     }
   },
   {
     "path": "definitions.analyzeInsight.properties.labels",
     "merge": {
-      "description": "Key,value pairs used to organize and identify the insight (unused)"
+      "description": "Key,value pairs used to organize and identify the insight"
     }
   },
   {
