@@ -5,7 +5,7 @@ analyze:
         iconKey: docker_whale
         desiredPosition: "10"
       insight:
-        primary: No proxy set at {{repl .noproxy}}
+        primary: '{{repl .noproxy}}'
         detail: Docker no proxy set
         severity: info
       registerVariables:
@@ -45,7 +45,7 @@ analyze:
               variableRef: noproxy
           insightOnFalse:
             primary: "?"
-            detail: Could not determine no proxy setting
+            detail: No proxy not set
             severity: warn
             labels:
               iconKey: docker_whale

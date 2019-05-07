@@ -5,7 +5,7 @@ analyze:
         iconKey: docker_whale
         desiredPosition: "9"
       insight:
-        primary: Proxy set at {{repl if .httpproxy}}{{repl .httpproxy}}{{repl else}}{{repl .httpsproxy}}{{repl end}}
+        primary: '{{repl if .httpproxy}}{{repl .httpproxy}}{{repl else}}{{repl .httpsproxy}}{{repl end}}'
         detail: Docker http(s) proxy set
         severity: info
       registerVariables:

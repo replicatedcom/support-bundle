@@ -104,7 +104,7 @@
     iconKey: docker_whale
     desiredPosition: "10"
   insight:
-    primary: No proxy set at 10.128.15.208,127.0.0.1,172.17.0.1,localhost
+    primary: 10.128.15.208,127.0.0.1,172.17.0.1,localhost
     detail: Docker no proxy set
     severity: info
   severity: info
@@ -118,7 +118,7 @@
     iconKey: docker_whale
     desiredPosition: "9"
   insight:
-    primary: Proxy set at http://10.128.0.3:3128
+    primary: http://10.128.0.3:3128
     detail: Docker http(s) proxy set
     severity: info
   severity: info
