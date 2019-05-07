@@ -1,0 +1,38 @@
+analyze:
+  v1:
+    - name: docker.proxy
+      labels:
+        iconKey: docker_whale
+        desiredPosition: "9"
+      insight:
+        primary: Proxy set at {{repl .httpproxy}}
+        detail: Docker http(s) proxy set
+        severity: info
+      registerVariables:
+        - name: httpproxy
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"HttpProxy": *"([^"]*)"'
+              index: 1
+        - name: httpsproxy
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"HttpsProxy": *"([^"]*)"'
+              index: 1
+      evaluateConditions:
+        - condition:
+            or:
+            - not:
+                empty: {}
+                variableRef: httpproxy
+            - not:
+                empty: {}
+                variableRef: httpsproxy
+          insightOnFalse:
+            primary: No proxy settings
+            detail: Docker http(s) proxy not set
+            severity: debug
