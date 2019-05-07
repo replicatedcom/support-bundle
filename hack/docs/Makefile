@@ -16,7 +16,8 @@ test: deps
 prebuild:
 	rm -rf build
 	mkdir -p build/collect
-	mkdir -p build/analyze
+	mkdir -p build/analyze-variables
+	mkdir -p build/analyze-conditions
 	mkdir -p build/lifecycle
 
 build: prebuild
@@ -88,7 +89,8 @@ copy-to-help-center:
 	@echo "    make pipeline"
 	@echo "    /bin/cp build/shared.md $(HELP_CENTER_PATH)/content/api/support-bundle-yaml-specs/"
 	@echo "    /bin/cp build/collect/* $(HELP_CENTER_PATH)/content/api/support-bundle-yaml-specs/"
-	@echo "    /bin/cp build/analyze/* $(HELP_CENTER_PATH)/content/api/analyze-yaml-specs/"
+	@echo "    /bin/cp build/analyze-variables/* $(HELP_CENTER_PATH)/content/api/analyze-yaml-variable-specs/"
+	@echo "    /bin/cp build/analyze-conditions/* $(HELP_CENTER_PATH)/content/api/analyze-yaml-condition-specs/"
 	@echo "    /bin/cp build/lifecycle/* $(HELP_CENTER_PATH)/content/api/support-bundle-yaml-lifecycle/"
 
 copy-replicated-lint:

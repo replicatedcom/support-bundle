@@ -47,3 +47,8 @@
 [[override]]
   name = "github.com/Azure/go-autorest"
   revision = "ea233b6412b0421a65dc6160e16c893364664a95"
+
+[[constraint]]
+  name = "github.com/alecthomas/jsonschema"
+  branch = "master"
+  source = "github.com/emosbaugh/jsonschema"

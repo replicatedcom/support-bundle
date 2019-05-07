@@ -34,7 +34,7 @@ shell:
 		bash
 
 deps:
-	dep ensure -v; dep prune -v
+	dep ensure -v
 
 fmt:
 	goimports -w pkg

@@ -65,6 +65,15 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:f50043fca61aa9fc490e3ba4d42ef83305cf3b016eed3895c032d8cfe30b1736"
+  name = "github.com/alecthomas/jsonschema"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "1e910bfd040766b4cfe185c57f95836a2fe93d24"
+  source = "github.com/emosbaugh/jsonschema"
+
+[[projects]]
+  branch = "master"
   digest = "1:162676d05be1e5c37c71d63f942d7acd9e87a7c6adc49f545586d30401aa6501"
   name = "github.com/andrewchambers/go-jqpipe"
   packages = ["."]
@@ -594,14 +603,6 @@
   pruneopts = "UT"
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
-
-[[projects]]
-  branch = "master"
-  digest = "1:4b4d0bb982669a9b117899a7be38d6cae42e2bbcdcffe65a0db01cd9681375c5"
-  name = "github.com/mcuadros/go-jsonschema-generator"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "821f57ef6082dacf56d3354643f2ef36e06ebf29"
 
 [[projects]]
   digest = "1:54810f1da274687d725732a273e250c59ac0374cdbf6288ac206ef24c53c5478"
@@ -1394,6 +1395,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/Masterminds/sprig",
+    "github.com/alecthomas/jsonschema",
     "github.com/andrewchambers/go-jqpipe",
     "github.com/blang/semver",
     "github.com/davecgh/go-spew/spew",
@@ -1416,7 +1418,6 @@
     "github.com/hashicorp/go-getter",
     "github.com/hashicorp/go-multierror",
     "github.com/kylelemons/godebug/pretty",
-    "github.com/mcuadros/go-jsonschema-generator",
     "github.com/mholt/archiver",
     "github.com/mitchellh/cli",
     "github.com/mitchellh/go-homedir",
