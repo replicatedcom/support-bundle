@@ -1,0 +1,52 @@
+analyze:
+  v1:
+    - name: docker.noproxy
+      labels:
+        iconKey: docker_whale
+        desiredPosition: "10"
+      insight:
+        primary: '{{repl .noproxy}}'
+        detail: Docker no proxy set
+        severity: info
+      registerVariables:
+        - name: httpproxy
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"HttpProxy": *"([^"]*)"'
+              index: 1
+        - name: httpsproxy
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"HttpsProxy": *"([^"]*)"'
+              index: 1
+        - name: noproxy
+          fileMatch:
+            pathRegexps:
+              - /docker_info\.json
+            regexpCapture:
+              regexp: '"NoProxy": *"([^"]*)"'
+              index: 1
+      evaluateConditions:
+        - condition:
+            or:
+              - not:
+                  empty: {}
+                  variableRef: httpproxy
+              - not:
+                  empty: {}
+                  variableRef: httpsproxy
+        - condition:
+            not:
+              empty: {}
+              variableRef: noproxy
+          insightOnFalse:
+            primary: "?"
+            detail: No proxy not set
+            severity: warn
+            labels:
+              iconKey: docker_whale
+
