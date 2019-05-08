@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	"context"
+	"os"
 	"strings"
 
 	"github.com/mitchellh/cli"
@@ -17,6 +18,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+var runExample = `
+$ analyze run ~/Downloads/supportbundle.tar.gz
+
+$ cat ~/Downloads/supportbundle.tar.gz | analyze run -`
+
 type RunOptions struct {
 	Output string
 	Quiet  bool
@@ -29,9 +35,11 @@ func RunCmd() *cobra.Command {
 	var opts RunOptions
 
 	cmd := &cobra.Command{
-		Use:   "run [BUNDLE]",
-		Short: "analyze a troubleshoot bundle archive",
-		Args:  cobra.ExactArgs(1),
+		Use:     "run [BUNDLE]",
+		Short:   "Analyze a troubleshoot bundle archive",
+		Long:    "Analyze a troubleshoot bundle archive. Arg \"-\" denotes read bundle from stdin.",
+		Example: runExample,
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			v := viper.GetViper()
 			logLevel := logger.GetLevel(v)
@@ -72,6 +80,16 @@ func RunCmd() *cobra.Command {
 }
 
 func analyzeRun(ctx context.Context, ui cli.Ui, bundlePath string, opts RunOptions, logLevel string) error {
+	// "-" denotes stdin
+	if bundlePath == "-" {
+		var err error
+		bundlePath, err = bundleFromStdin()
+		defer os.Remove(bundlePath)
+		if err != nil {
+			return err
+		}
+	}
+
 	results, err := analyze.RunE(ctx, bundlePath)
 
 	if !opts.Quiet && (len(results) > 0 || err == nil) {
