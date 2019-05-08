@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	"context"
+	"os"
 	"strings"
 
 	"github.com/mitchellh/cli"
@@ -26,7 +27,7 @@ func InspectCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "inspect [BUNDLE]",
-		Short: "inspect a troubleshoot bundle archive",
+		Short: "Inspect a troubleshoot bundle archive",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cli := ui.New(nil, cmd.OutOrStdout(), cmd.OutOrStderr())
@@ -47,6 +48,16 @@ func InspectCmd() *cobra.Command {
 }
 
 func inspectRun(ctx context.Context, ui cli.Ui, bundlePath string, opts InspectOptions) error {
+	// "-" denotes stdin
+	if bundlePath == "-" {
+		var err error
+		bundlePath, err = bundleFromStdin()
+		defer os.Remove(bundlePath)
+		if err != nil {
+			return err
+		}
+	}
+
 	bundles, err := analyze.InspectE(ctx, bundlePath)
 
 	if len(bundles) > 0 {
