@@ -15,7 +15,7 @@ var (
 
 	_ = regexp.MustCompile(loadavgRegexp)
 
-	_, _, _ Interface = new(Loadavg1), new(Loadavg5), new(Loadavg15)
+	_, _, _, _ Interface = new(Loadavg), new(Loadavg1), new(Loadavg5), new(Loadavg15)
 )
 
 type Loadavg struct {

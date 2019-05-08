@@ -3,7 +3,7 @@ import * as yaml from "js-yaml";
 import { SHARED_DOC, SHARED_SPEC_TEMPLATE } from "./template";
 import { genObjectFromPathAndExample } from "./common";
 
-type SCHEMA_TYPE = "support-bundle-yaml-lifecycle" | "support-bundle-yaml-specs" | "analyze-yaml-specs";
+type SCHEMA_TYPE = "support-bundle-yaml-lifecycle" | "support-bundle-yaml-specs" | "analyze-yaml-variable-specs"| "analyze-yaml-condition-specs";
 
 export const name = "markdown";
 export const describe = "Build markdown for examples in top-level elements";
@@ -62,18 +62,20 @@ function maybeRenderParameters(required: any[], typeOf) {
 function parseParameters(specTypes: any, specType) {
   const required = [] as any[];
   const optional = [] as any[];
-  for (const field of Object.keys(specTypes[specType].properties)) {
-    const description = specTypes[specType].properties[field].description;
-    if (description) {
-      console.log(`${field}: ${specType}.required: ${specTypes[specType].required}`);
-      const { required: requiredArray = [] } = specTypes[specType];
-      const isRequired = requiredArray.indexOf(field) !== -1;
-      if (isRequired) {
-        console.log(`\tREQUIRED ${field}`);
-        required.push({field, description});
-      } else {
-        console.log(`\tOPTIONAL ${field}`);
-        optional.push({field, description});
+  if (specTypes[specType].properties) {
+    for (const field of Object.keys(specTypes[specType].properties)) {
+      const description = specTypes[specType].properties[field].description;
+      if (description) {
+        console.log(`\t${field}: ${specType}.required: ${specTypes[specType].required}`);
+        const { required: requiredArray = [] } = specTypes[specType];
+        const isRequired = requiredArray.indexOf(field) !== -1;
+        if (isRequired) {
+          console.log(`\t\tREQUIRED ${field}`);
+          required.push({field, description});
+        } else {
+          console.log(`\t\tOPTIONAL ${field}`);
+          optional.push({field, description});
+        }
       }
     }
   }
@@ -83,13 +85,14 @@ function parseParameters(specTypes: any, specType) {
 function maybeRenderExamples(specTypes: any, specType: string, schemaType: SCHEMA_TYPE) {
   const schemaTypeMap: { [K in SCHEMA_TYPE]: string} = {
     "support-bundle-yaml-specs": "properties.collect.properties.v1.items",
-    "analyze-yaml-specs": "properties.analyze.properties.v1.items",
+    "analyze-yaml-variable-specs": "properties.analyze.properties.v1.items.properties.registerVariables.items",
+    "analyze-yaml-condition-specs": "definitions.analyzeCondition",
     "support-bundle-yaml-lifecycle": "properties.lifecycle.items",
   };
 
   let doc = "";
   if (specTypes[specType].examples) {
-    console.log("specType", specType);
+    console.log(`\tEXAMPLES ${specType}`);
     for (const example of specTypes[specType].examples) {
       const path = schemaTypeMap[schemaType] + ".properties[\"" + specType + "\"]";
       const obj = genObjectFromPathAndExample(path, example);
@@ -106,7 +109,7 @@ function writeHeader(specTypes: any, specType: string, schemaType: SCHEMA_TYPE) 
   return `---
 categories:
 - ${schemaType}
-date: 2018-01-17T23:51:55Z
+date: 2019-05-07T12:00:00Z
 description: ${specTypes[specType].description || ""}
 index: docs
 title: ${specType}
@@ -115,6 +118,8 @@ gradient: "purpleToPink"
 ---
 
 ## ${specType}
+
+**type ${specTypes[specType].type || "object"}**
 
 ${specTypes[specType].description || ""}
 
@@ -131,8 +136,8 @@ const renderEnd = (schemaType: SCHEMA_TYPE) => {
 const generateDoc: (outputLocation: string, specTypes: any, schemaType: SCHEMA_TYPE) => (specType: string) => void = (outputLocation, specTypes, schemaType) => (specType) => {
   console.log(`PROPERTY ${specType}`);
   // all specs follow the pattern "<plugin>.<spec_name>", if it doesnt follow the pattern its probably a shared property
-  if ((schemaType === "support-bundle-yaml-specs" || schemaType === "analyze-yaml-specs") && specType.indexOf(".") === -1) {
-    console.log(`SKIPPING ${specType}`);
+  if (schemaType === "support-bundle-yaml-specs" && specType.indexOf(".") === -1) {
+    console.log(`\tSKIPPING ${specType}`);
     return;
   }
   const cleanProperty = specType.replace(/\./g, "-");
@@ -157,14 +162,17 @@ export const handler = (argv) => {
   fs.writeFileSync(`${output}/shared.md`, SHARED_DOC);
 
   const specTypes = schema.properties.collect.properties.v1.items.properties;
-  // const analyzeTypes = schema.properties.analyze.properties.v1.items.properties;
+  const analyzeVariableTypes = schema.properties.analyze.properties.v1.items.properties.registerVariables.items.properties;
+  const analyzeConditionTypes = schema.definitions.analyzeCondition.properties;
   const lifecycleSpecTypes = schema.properties.lifecycle.items.properties;
 
   const generateDocSpecTypes = generateDoc(`${output}/collect`, specTypes, "support-bundle-yaml-specs");
-  // const generateDocAnalyzeTypes = generateDoc(`${output}/analyze`, analyzeTypes, "analyze-yaml-specs");
+  const generateDocAnalyzeVariableTypes = generateDoc(`${output}/analyze-variables`, analyzeVariableTypes, "analyze-yaml-variable-specs");
+  const generateDocAnalyzeConditionTypes = generateDoc(`${output}/analyze-conditions`, analyzeConditionTypes, "analyze-yaml-condition-specs");
   const generateDocLifecycleSpecTypes = generateDoc(`${output}/lifecycle`, lifecycleSpecTypes, "support-bundle-yaml-lifecycle");
 
   Object.keys(specTypes).forEach(generateDocSpecTypes);
-  // Object.keys(analyzeTypes).forEach(generateDocAnalyzeTypes);
+  Object.keys(analyzeVariableTypes).forEach(generateDocAnalyzeVariableTypes);
+  Object.keys(analyzeConditionTypes).forEach(generateDocAnalyzeConditionTypes);
   Object.keys(lifecycleSpecTypes).forEach(generateDocLifecycleSpecTypes);
 };

@@ -15,7 +15,7 @@ type Ref struct {
 	// Name is a way to reference a collected file by name
 	Name string `json:"name,omitempty" yaml:"name,omitempty" hcl:"name,omitempty"`
 	// Selector is a way to reference a collected file by labels
-	Selector Selector `json:"selector" yaml:"selector" hcl:"selector"`
+	Selector Selector `json:"selector,omitempty" yaml:"selector,omitempty" hcl:"selector,omitempty"`
 }
 
 func RefMatches(ref Ref, meta *Meta) bool {

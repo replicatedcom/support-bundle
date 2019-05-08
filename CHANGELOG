@@ -196,3 +196,6 @@
     * Added internal "goroutines" and "logs" collectors and included in the default bundle at default/support-bundle/
     * All debug logs now go to stdout
     * Fixed container image vulnerability CVE-2018-1049 in libssh and CVE-2019-3863 in systemd and udev packages
+
+0.25.0 /2019-05-07
+    * The analyze v1 spec has gone through major revisions and is now final
