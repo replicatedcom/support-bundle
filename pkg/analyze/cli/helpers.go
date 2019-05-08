@@ -9,7 +9,7 @@ import (
 )
 
 func bundleFromStdin() (string, error) {
-	f, err := ioutil.TempFile("", "support-bundle")
+	f, err := ioutil.TempFile(os.Getenv("TMP_DIR"), "support-bundle")
 	if err != nil {
 		return "", errors.Wrap(err, "create temp file")
 	}
