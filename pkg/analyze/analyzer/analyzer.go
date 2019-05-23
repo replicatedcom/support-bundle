@@ -99,16 +99,14 @@ func (a *Analyzer) analyze(ctx context.Context, bundleReader bundlereader.Bundle
 		return resultFromAnalysis(nil, err, analyzerSpec, data)
 	}
 
-	insight, err := a.evalConditions(analyzerSpec, data)
-
+	result, err := a.evalConditions(analyzerSpec, data)
 	debug.Log(
 		"phase", "analyzer.analyze",
 		"status", "complete")
-
-	return resultFromAnalysis(insight, err, analyzerSpec, data)
+	return result, err
 }
 
-func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]interface{}) (*insight.Insight, error) {
+func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]interface{}) (*api.Result, error) {
 	debug := level.Debug(log.With(a.Logger, "method", "Analyzer.evalConditions"))
 
 	for _, evaluateCondition := range analyzerSpec.EvaluateConditions {
@@ -120,15 +118,20 @@ func (a *Analyzer) evalConditions(analyzerSpec v1.Analyzer, data map[string]inte
 			"ok", ok,
 			"error", err)
 		if errors.Cause(err) == condition.ErrNotFound {
-			return evaluateCondition.InsightOnError, nil
+			// If the file was not found and there is no insight on error no insight will be produced
+			return resultFromAnalysis(evaluateCondition.InsightOnError, nil, analyzerSpec, data)
 		} else if err != nil {
-			return evaluateCondition.InsightOnError, errors.Wrap(err, "eval conditions")
+			// Otherwise if there is an error then either the insight on error will be produced and no error returned,
+			// otherwise an insight will be produced from the error with severity error and an error will be returned.
+			return resultFromAnalysis(evaluateCondition.InsightOnError, errors.Wrap(err, "eval conditions"), analyzerSpec, data)
 		} else if !ok {
-			return evaluateCondition.InsightOnFalse, nil
+			// This will stop the evaluate conditions execution at the first false
+			return resultFromAnalysis(evaluateCondition.InsightOnFalse, nil, analyzerSpec, data)
 		}
 	}
 
-	return analyzerSpec.Insight, nil
+	// If all conditions evaluate to true then return the insight
+	return resultFromAnalysis(analyzerSpec.Insight, nil, analyzerSpec, data)
 }
 
 func resultFromAnalysis(insight *insight.Insight, analysisErr error, analyzerSpec v1.Analyzer, data map[string]interface{}) (result *api.Result, err error) {
@@ -151,6 +154,8 @@ func resultFromAnalysis(insight *insight.Insight, analysisErr error, analyzerSpe
 	}
 	result.AnalyzerSpec = string(marshalledSpec)
 
+	// If there is an analysis error check if there is an insight on error to override the
+	// severity. Otherwise the severity is level error.
 	if analysisErr != nil {
 		result.Error = analysisErr.Error()
 
