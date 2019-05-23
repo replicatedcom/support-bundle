@@ -199,3 +199,6 @@
 
 0.25.0 /2019-05-07
     * The analyze v1 spec has gone through major revisions and is now final
+
+0.25.1 /2019-05-08
+    * Allow analyze command to stream bundle from stdin
