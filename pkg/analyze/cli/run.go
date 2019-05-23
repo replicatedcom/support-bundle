@@ -56,8 +56,8 @@ func RunCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringArrayP("spec-file", "f", nil, "spec file")
-	cmd.Flags().StringArrayP("spec", "s", nil, "spec doc")
+	cmd.Flags().StringSliceP("spec-file", "f", nil, "spec file")
+	cmd.Flags().StringSliceP("spec", "s", nil, "spec doc")
 	cmd.Flags().Bool("skip-default", false, "Skip the default analyze spec")
 	cmd.Flags().String("bundle-root-subpath", "", "The subpath within the archive at which the bundle root resides")
 

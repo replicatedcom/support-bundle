@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
 	"github.com/go-kit/kit/log"
@@ -19,7 +18,6 @@ import (
 	pkgerrors "github.com/replicatedcom/support-bundle/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/getter"
 	"github.com/replicatedcom/support-bundle/pkg/version"
-	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 )
 
@@ -58,8 +56,8 @@ func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, getter 
 		Getter:   getter,
 		Analyzer: analyzer,
 
-		SpecFiles:         cast.ToStringSlice(strings.Trim(v.GetString("spec-file"), "[]")),
-		Specs:             cast.ToStringSlice(strings.Trim(v.GetString("spec"), "[]")),
+		SpecFiles:         v.GetStringSlice("spec-file"),
+		Specs:             v.GetStringSlice("spec"),
 		SkipDefault:       v.GetBool("skip-default"),
 		BundleRootSubpath: v.GetString("bundle-root-subpath"),
 		CustomerID:        v.GetString("customer-id"),
