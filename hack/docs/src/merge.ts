@@ -33,18 +33,20 @@ export const handler = (argv) => {
       schema.definitions = {};
 
       // condition is a circular reference
-      const condition = schema.properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.condition;
-      condition.properties.and.items = {$ref: "#/definitions/analyzeCondition"};
-      condition.properties.or.items = {$ref: "#/definitions/analyzeCondition"};
-      condition.properties.not = {$ref: "#/definitions/analyzeCondition"};
-      schema.definitions.analyzeCondition = condition;
-      schema.properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.condition = {$ref: "#/definitions/analyzeCondition"};
+      if (schema.properties.analyze) {
+        const condition = schema.properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.condition;
+        condition.properties.and.items = {$ref: "#/definitions/analyzeCondition"};
+        condition.properties.or.items = {$ref: "#/definitions/analyzeCondition"};
+        condition.properties.not = {$ref: "#/definitions/analyzeCondition"};
+        schema.definitions.analyzeCondition = condition;
+        schema.properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.condition = {$ref: "#/definitions/analyzeCondition"};
 
-      const insight = schema.properties.analyze.properties.v1.items.properties.insight;
-      schema.definitions.analyzeInsight = insight;
-      schema.properties.analyze.properties.v1.items.properties.insight = {$ref: "#/definitions/analyzeInsight"};
-      schema.properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.insightOnError = {$ref: "#/definitions/analyzeInsight"};
-      schema.properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.insightOnFalse = {$ref: "#/definitions/analyzeInsight"};
+        const insight = schema.properties.analyze.properties.v1.items.properties.insight;
+        schema.definitions.analyzeInsight = insight;
+        schema.properties.analyze.properties.v1.items.properties.insight = {$ref: "#/definitions/analyzeInsight"};
+        schema.properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.insightOnError = {$ref: "#/definitions/analyzeInsight"};
+        schema.properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.insightOnFalse = {$ref: "#/definitions/analyzeInsight"};
+      }
 
       const mutations: Mutation[] = JSON.parse(fs.readFileSync(argv.mutations).toString());
 

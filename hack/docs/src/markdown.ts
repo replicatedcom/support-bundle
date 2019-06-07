@@ -161,18 +161,24 @@ export const handler = (argv) => {
 
   fs.writeFileSync(`${output}/shared.md`, SHARED_DOC);
 
-  const specTypes = schema.properties.collect.properties.v1.items.properties;
-  const analyzeVariableTypes = schema.properties.analyze.properties.v1.items.properties.registerVariables.items.properties;
-  const analyzeConditionTypes = schema.definitions.analyzeCondition.properties;
-  const lifecycleSpecTypes = schema.properties.lifecycle.items.properties;
+  if (schema.properties.collect) {
+    const specTypes = schema.properties.collect.properties.v1.items.properties;
+    const lifecycleSpecTypes = schema.properties.lifecycle.items.properties;
 
-  const generateDocSpecTypes = generateDoc(`${output}/collect`, specTypes, "support-bundle-yaml-specs");
-  const generateDocAnalyzeVariableTypes = generateDoc(`${output}/analyze-variables`, analyzeVariableTypes, "analyze-yaml-variable-specs");
-  const generateDocAnalyzeConditionTypes = generateDoc(`${output}/analyze-conditions`, analyzeConditionTypes, "analyze-yaml-condition-specs");
-  const generateDocLifecycleSpecTypes = generateDoc(`${output}/lifecycle`, lifecycleSpecTypes, "support-bundle-yaml-lifecycle");
+    const generateDocSpecTypes = generateDoc(`${output}/collect`, specTypes, "support-bundle-yaml-specs");
+    const generateDocLifecycleSpecTypes = generateDoc(`${output}/lifecycle`, lifecycleSpecTypes, "support-bundle-yaml-lifecycle");
 
-  Object.keys(specTypes).forEach(generateDocSpecTypes);
-  Object.keys(analyzeVariableTypes).forEach(generateDocAnalyzeVariableTypes);
-  Object.keys(analyzeConditionTypes).forEach(generateDocAnalyzeConditionTypes);
-  Object.keys(lifecycleSpecTypes).forEach(generateDocLifecycleSpecTypes);
+    Object.keys(specTypes).forEach(generateDocSpecTypes);
+    Object.keys(lifecycleSpecTypes).forEach(generateDocLifecycleSpecTypes);
+  }
+  if (schema.properties.analyze) {
+    const analyzeVariableTypes = schema.properties.analyze.properties.v1.items.properties.registerVariables.items.properties;
+    const analyzeConditionTypes = schema.definitions.analyzeCondition.properties;
+
+    const generateDocAnalyzeVariableTypes = generateDoc(`${output}/analyze-variables`, analyzeVariableTypes, "analyze-yaml-variable-specs");
+    const generateDocAnalyzeConditionTypes = generateDoc(`${output}/analyze-conditions`, analyzeConditionTypes, "analyze-yaml-condition-specs");
+
+    Object.keys(analyzeVariableTypes).forEach(generateDocAnalyzeVariableTypes);
+    Object.keys(analyzeConditionTypes).forEach(generateDocAnalyzeConditionTypes);
+  }
 };
