@@ -20,11 +20,15 @@ export const handler = (argv) => {
   process.stderr.write("merge-mutations called\n");
   const schema = JSON.parse(fs.readFileSync(argv.infile).toString());
   try {
-    validate(schema.properties.lifecycle, "properties.lifecycle", 100, schema, true, false);
-    validate(schema.properties.collect, "properties.collect", 4, schema, true, false);
-    validate(schema.properties.analyze, "properties.analyze", 7, schema, false, false);
-    validate(schema.definitions.analyzeCondition, "definitions.analyzeCondition", 4, schema, false, false);
-    validate(schema.definitions.analyzeInsight, "definitions.analyzeInsight", 100, schema, false, false);
+    if (schema.properties.lifecycle) {
+      validate(schema.properties.lifecycle, "properties.lifecycle", 100, schema, true, false);
+      validate(schema.properties.collect, "properties.collect", 4, schema, true, false);
+    }
+    if (schema.properties.analyze) {
+      validate(schema.properties.analyze, "properties.analyze", 7, schema, false, false);
+      validate(schema.definitions.analyzeCondition, "definitions.analyzeCondition", 4, schema, false, false);
+      validate(schema.definitions.analyzeInsight, "definitions.analyzeInsight", 100, schema, false, false);
+    }
   } catch (err) {
     console.log(`\n\nFAILED ${err.message}`);
     process.exit(1);

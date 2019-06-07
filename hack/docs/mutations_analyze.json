@@ -2,7 +2,7 @@
   {
     "path": "properties.analyze",
     "merge": {
-      "description": "A list of analyzers to run on the collect spec"
+      "description": "The analyze definition"
     }
   },
   {
@@ -21,229 +21,755 @@
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties.message",
+    "path": "properties.analyze.properties.v1.items.properties.name",
     "merge": {
-      "description": "Optionally override the default analyzer message"
+      "description": "The name of the analyzer"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties.severity",
+    "path": "properties.analyze.properties.v1.items.properties.labels",
     "merge": {
-      "description": "Optionally override the default severity"
+      "description": "Key,value pairs used to organize and identify analyze elements"
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.insight",
+    "merge": {
+      "description": "The insight to display when all conditions evaluate to true",
+      "examples": [
+        {
+          "primary": "Docker {{repl .version}}",
+          "detail": "Docker server version is {{repl .version}}",
+          "severity": "info"
+        }
+      ]
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.evaluateConditions",
+    "merge": {
+      "description": "A list of conditions to evaluate in order. The evaluation will end on the first failure."
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties.collect_refs",
+    "path": "properties.analyze.properties.v1.items.properties.evaluateConditions.items",
     "merge": {
-      "description": "Reference to a collect spec"
-    },
-    "examples": [
-      [{
-        "ref": "k8sResourceNodes",
-        "selector": {"analyze": "kubernetes-resource-list-nodes"}
-      }],
-      [{
-        "ref": "k8sVersion",
-        "name": "kubernetes-version"
-      }]
-    ]
-  },
-  {
-    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.ref",
-    "merge": {
-      "description": "Used internally"
+      "description": "A list of conditions to evaluate in order. The evaluation will end on the first failure."
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.name",
+    "path": "properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.condition",
+    "merge": {
+      "description": "The condition to evaluate"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.insightOnError",
+    "merge": {
+      "description": "The insight to display when this condition results in an error"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.insightOnFalse",
+    "merge": {
+      "description": "The insight to display when this condition evaluates to false"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.labels",
+    "merge": {
+      "description": "Key,value pairs used to organize and identify the condition"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.evaluateConditions.items.properties.name",
+    "merge": {
+      "description": "The name of the condition"
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables",
+    "merge": {
+      "description": "A list of variables to register. These can be used in evaluateConditions expressions."
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items",
+    "merge": {
+      "description": "A list of variables to register. These can be used in evaluateConditions expressions.",
+      "required": [
+        "name"
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.name",
+    "merge": {
+      "description": "The name of the variable. Can be referenced later as variableRef in a condition."
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.labels",
+    "merge": {
+      "description": "Key,value pairs used to organize and identify the variable"
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef",
+    "merge": {
+      "description": "Reference to a collect spec",
+      "examples": [
+        {
+          "selector": {"analyze": "docker-info"},
+          "regexpCapture": {"regexp": "\"ServerVersion\": *\"([^\"]+)\"", "index": 1}
+        }
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.name",
     "merge": {
       "description": "Selector to reference the meta.name of a collect spec"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties.collect_refs.items.properties.selector",
-    "delete": [
-      "properties"
-    ],
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.selector",
     "merge": {
-      "description": "Selector to reference the meta.labels of a collect spec",
-      "patternProperties": {
-        ".*": {
-          "type": "string"
-        }
-      }
+      "description": "Selector to reference the meta.labels of a collect spec"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties.meta",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.scannable",
     "merge": {
-      "description": "Can be used to organize and identify analyze elements"
-    },
-    "examples": [
-      {
-        "name": "kubernetes-version",
-        "labels": {
-          "source": "kubernetes"
-        }
-      }
-    ]
-  },
-  {
-    "path": "properties.analyze.properties.v1.items.properties.meta.properties.labels",
-    "delete": [
-      "properties"
-    ],
-    "merge": {
-      "description": "Key,value pairs used to organize and identify analyze elements",
-      "patternProperties": {
-        ".*": {
-          "type": "string"
-        }
-      }
+      "description": "Will read the file one line at a time and apply the variable expressions"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties.meta.properties.name",
-    "delete": [
-      "properties"
-    ],
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.eval",
     "merge": {
-      "description": "Name used to organize and identify analyze elements"
+      "description": "Evaluates a templated string"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"docker.version\"]",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.identity",
     "merge": {
-      "description": "Check that the Docker version meets the required minimum",
+      "description": "The file"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.regexpCapture",
+    "merge": {
+      "description": "Evaluates a regular expression on the file. Returns the first match"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.regexpCapture.properties.regexp",
+    "merge": {
+      "description": "The regular expression"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.regexpCapture.properties.index",
+    "merge": {
+      "description": "The index of the capturing group"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.regexpCaptureAll",
+    "merge": {
+      "description": "Evaluates a regular expression on the file. Returns all matches"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.regexpCaptureAll.properties.regexp",
+    "merge": {
+      "description": "The regular expression"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.collectRef.properties.regexpCaptureAll.properties.index",
+    "merge": {
+      "description": "The index of the capturing group"
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath",
+    "merge": {
+      "description": "Reference to an \"os.read-file\" collect spec by path",
       "examples": [
         {
-          "server_version_minimum": "17.12.1"
+          "paths": ["/proc/cpuinfo"],
+          "regexpCaptureAll": {"regexp": "processor\\s+:\\s+(\\d+)", "index": 1}
         }
       ]
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"docker.version\"].properties.server_version_minimum",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.paths",
     "merge": {
-      "description": "The minimum Docker version"
+      "description": "A list of paths as a reference to the \"os.read-file\" collect spec"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.total-memory\"]",
-    "replace": {
-      "required": [
-        "minimum"
-      ]
-    },
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.paths.items",
     "merge": {
-      "description": "Check that the total memory for a cluster meets the required minimum",
+      "description": "A list of paths as a reference to the \"os.read-file\" collect spec"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.scannable",
+    "merge": {
+      "description": "Will read the file one line at a time and apply the variable expressions"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.eval",
+    "merge": {
+      "description": "Evaluates a templated string"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.identity",
+    "merge": {
+      "description": "The file"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.regexpCapture",
+    "merge": {
+      "description": "Evaluates a regular expression on the file. Returns the first match"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.regexpCapture.properties.regexp",
+    "merge": {
+      "description": "The regular expression"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.regexpCapture.properties.index",
+    "merge": {
+      "description": "The index of the capturing group"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.regexpCaptureAll",
+    "merge": {
+      "description": "Evaluates a regular expression on the file. Returns all matches"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.regexpCaptureAll.properties.regexp",
+    "merge": {
+      "description": "The regular expression"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.coreReadFilePath.properties.regexpCaptureAll.properties.index",
+    "merge": {
+      "description": "The index of the capturing group"
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.cpuCores",
+    "merge": {
+      "description": "Extracts cpu cores as a variable",
+      "examples": [
+        {}
+      ]
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.eval",
+    "merge": {
+      "description": "Evaluates a templated string",
+      "examples": [
+        "{{repl .processors | len}}"
+      ]
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch",
+    "merge": {
+      "description": "Reference to a file by the path in the collect bundle",
       "examples": [
         {
-          "minimum": "20Gi"
+          "pathRegexps": ["/containers/replicated-operator\\.json", "/inspect/replicated-operator\\.json", "/replicated-operator-inspect\\.json"],
+          "regexpCapture": {"regexp": "\"PUBLIC_ADDRESS=([^\"]+)\"", "index": 1}
         }
       ]
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.total-memory\"].properties.minimum",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.pathRegexps",
     "merge": {
-      "description": "The minimum total memory requirement"
+      "description": "A list of path regular expressions as a reference to a file in a collect bundle"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.version\"]",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.pathRegexps.items",
     "merge": {
-      "description": "Check that the Kubernetes version meets the required minimum",
-      "examples": [
-        {
-          "semver_minimum": "1.10.0"
-        }
-      ]
+      "description": "A list of path regular expressions as a reference to a file in a collect bundle"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"kubernetes.version\"].properties.semver_minimum",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.scannable",
     "merge": {
-      "description": "The minimum Kubernetes version"
+      "description": "Will read the file one line at a time and apply the variable expressions"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"selinux.notenforcing\"]",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.eval",
     "merge": {
-      "description": "Check that SELinux is not in enforcing mode",
-      "properties": {},
+      "description": "Evaluates a templated string"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.identity",
+    "merge": {
+      "description": "The file"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.regexpCapture",
+    "merge": {
+      "description": "Evaluates a regular expression on the file. Returns the first match"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.regexpCapture.properties.regexp",
+    "merge": {
+      "description": "The regular expression"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.regexpCapture.properties.index",
+    "merge": {
+      "description": "The index of the capturing group"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.regexpCaptureAll",
+    "merge": {
+      "description": "Evaluates a regular expression on the file. Returns all matches"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.regexpCaptureAll.properties.regexp",
+    "merge": {
+      "description": "The regular expression"
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.fileMatch.properties.regexpCaptureAll.properties.index",
+    "merge": {
+      "description": "The index of the capturing group"
+    }
+  },
+
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.loadavg",
+    "merge": {
+      "description": "The raw contents of the /proc/loadavg file",
       "examples": [
         {}
       ]
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"raw\"]",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.loadavg1",
     "merge": {
-      "description": "A fully customizable analyzer (advanced).",
+      "description": "The loadavg averaged over 1 minute",
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.loadavg5",
+    "merge": {
+      "description": "The loadavg averaged over 5 minutes",
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.loadavg15",
+    "merge": {
+      "description": "The loadavg averaged over 15 minutes",
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.memoryUsageAvailable",
+    "merge": {
+      "description": "The available memory in bytes",
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.memoryUsageTotal",
+    "merge": {
+      "description": "The total memory in bytes",
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.os",
+    "merge": {
+      "description": "The ID of the operating system",
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.osUptime",
+    "merge": {
+      "description": "The os uptime in seconds",
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.whichCloud",
+    "merge": {
+      "description": "Identifies the cloud provider given an ip address",
       "examples": [
         {
-          "conditions": [
-            {
-              "eval": {
-                "operator": "or",
-                "statements": [
-                  "{{repl .Empty}}",
-                  "{{repl .Fail}}"
-                ],
-                "variables": [
-                  {
-                    "Out": "{{repl .Ref | trimSuffix \"\\n\"}}",
-                    "Empty": "{{repl not .Ref}}"
-                  },
-                  {
-                    "Fail": "{{repl ne .Out \"1\"}}"
-                  }
-                ]
-              },
-              "severity": "error",
-              "message": "Failed to connect to postgres: \"{{repl .Out}}\""
-            }
-          ]
+          "variableRef": "publicAddress"
         }
       ]
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions",
+    "path": "properties.analyze.properties.v1.items.properties.registerVariables.items.properties.whichCloud.properties.variableRef",
     "merge": {
-      "description": "An array of conditions, evaluated in order, that when met will produce a severity and message."
+      "description": "Variable reference to the ip address"
+    }
+  },
+
+  {
+    "path": "definitions.analyzeCondition",
+    "merge": {
+      "description": "A statement to be validated. Uses variables as input and results in insights."
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions.items.properties.eval.properties.operator",
+    "path": "definitions.analyzeCondition.properties.variableRef",
     "merge": {
-      "description": "The operator used to evaluate the statements. One of and, or.",
-      "enum": ["and", "or"]
+      "description": "The input variable"
     }
   },
   {
-    "path": "properties.analyze.properties.v1.items.properties[\"raw\"].properties.conditions.items.properties.eval.properties.variables.items",
-    "delete": [
-      "properties"
-    ],
+    "path": "definitions.analyzeCondition.properties.and",
     "merge": {
-      "description": "Key,value pairs used to define variables",
-      "patternProperties": {
-        ".*": {
-          "type": "string"
+      "description": "A list of conditions evaluated with the and operator",
+      "examples": [
+        [
+          {
+            "not": {
+              "empty": {},
+              "variableRef": "memoryUsageAvailable"
+            }
+          },
+          {
+            "not": {
+              "empty": {},
+              "variableRef": "memoryUsageTotal"
+            }
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.and.items",
+    "merge": {
+      "description": "A list of conditions evaluated with the and operator"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.or",
+    "merge": {
+      "description": "A list of conditions evaluated with the or operator",
+      "examples": [
+        [
+          {
+            "stringCompare": {
+              "eq": "centos"
+            },
+            "variableRef": "os"
+          },
+          {
+            "stringCompare": {
+              "eq": "rhel"
+            },
+            "variableRef": "os"
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.or.items",
+    "merge": {
+      "description": "A list of conditions evaluated with the or operator"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.not",
+    "merge": {
+      "description": "Negates a condition",
+      "examples": [
+        {
+          "empty": {},
+          "variableRef": "os"
         }
-      }
+      ]
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.empty",
+    "merge": {
+      "description": "Checks that a variable is empty",
+      "examples": [
+        {}
+      ]
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.eval",
+    "merge": {
+      "description": "Evaluates a templated string. \"{{repl .Ref}}\" can be used to refer to a variableRef.",
+      "examples": [
+        "{{repl eq .Ref \"centos\"}}"
+      ]
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.labels",
+    "merge": {
+      "description": "Key,value pairs used to organize and identify the condition"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.name",
+    "merge": {
+      "description": "Name of the condition"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.numberCompare",
+    "merge": {
+      "description": "Compares a numeric variable",
+      "examples": [
+        {
+          "gte": 7.5
+        }
+      ]
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.numberCompare.properties.eq",
+    "merge": {
+      "description": "Equal to comparison"
+    },
+    "replace": {
+      "type": "number"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.numberCompare.properties.gt",
+    "merge": {
+      "description": "Greater than comparison"
+    },
+    "replace": {
+      "type": "number"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.numberCompare.properties.gte",
+    "merge": {
+      "description": "Greater than or equal to comparison"
+    },
+    "replace": {
+      "type": "number"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.numberCompare.properties.in",
+    "merge": {
+      "description": "List of equal to comparison"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.numberCompare.properties.in.items",
+    "merge": {
+      "description": "List of equal to comparison"
+    },
+    "replace": {
+      "type": "number"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.numberCompare.properties.lt",
+    "merge": {
+      "description": "Less than comparison"
+    },
+    "replace": {
+      "type": "number"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.numberCompare.properties.lte",
+    "merge": {
+      "description": "Less than or equal to comparison"
+    },
+    "replace": {
+      "type": "number"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.regexpMatch",
+    "merge": {
+      "description": "Matches a variable against a regular expression",
+      "examples": [
+        {
+          "regexp": ".+chef-client"
+        }
+      ]
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.regexpMatch.properties.regexp",
+    "merge": {
+      "description": "The regular expression"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.stringCompare",
+    "merge": {
+      "description": "Compares a string variable",
+      "examples": [
+        {
+          "in": ["centos", "rhel"]
+        }
+      ]
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.stringCompare.properties.eq",
+    "merge": {
+      "description": "Equal to comparison"
+    },
+    "replace": {
+      "type": "string"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.stringCompare.properties.gt",
+    "merge": {
+      "description": "Greater than comparison"
+    },
+    "replace": {
+      "type": "string"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.stringCompare.properties.gte",
+    "merge": {
+      "description": "Greater than or equal to comparison"
+    },
+    "replace": {
+      "type": "string"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.stringCompare.properties.in",
+    "merge": {
+      "description": "List of equal to comparison"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.stringCompare.properties.in.items",
+    "merge": {
+      "description": "List of equal to comparison"
+    },
+    "replace": {
+      "type": "string"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.stringCompare.properties.lt",
+    "merge": {
+      "description": "Less than comparison"
+    },
+    "replace": {
+      "type": "string"
+    }
+  },
+  {
+    "path": "definitions.analyzeCondition.properties.stringCompare.properties.lte",
+    "merge": {
+      "description": "Less than or equal to comparison"
+    },
+    "replace": {
+      "type": "string"
     }
   },
 
 
-  { "comment": "last step -- delete internal spec types"},
   {
-    "path": "properties.collect.properties.v1.items.properties",
-    "delete": [
-      "meta.customer",
-      "version"
-    ]
+    "path": "definitions.analyzeInsight",
+    "merge": {
+      "description": "An insight represents a message with severity to be surfaced to the end-user"
+    }
+  },
+  {
+    "path": "definitions.analyzeInsight.properties.name",
+    "merge": {
+      "description": "The name of the insight"
+    }
+  },
+  {
+    "path": "definitions.analyzeInsight.properties.labels",
+    "merge": {
+      "description": "Key,value pairs used to organize and identify the insight"
+    }
+  },
+  {
+    "path": "definitions.analyzeInsight.properties.primary",
+    "merge": {
+      "description": "A short message to display to the user"
+    }
+  },
+  {
+    "path": "definitions.analyzeInsight.properties.detail",
+    "merge": {
+      "description": "A detailed message to display to the user"
+    }
+  },
+  {
+    "path": "definitions.analyzeInsight.properties.severity",
+    "merge": {
+      "description": "The insight severity (default info level)"
+    }
   }
 ]
