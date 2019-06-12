@@ -123,6 +123,10 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 }
 
 func (task *StreamsSource) execTarStream(ctx context.Context, rootDir string, filePath string, reader io.Reader) []*types.Result {
+	if closer, ok := reader.(io.Closer); ok {
+		defer closeLogErr(closer)
+	}
+
 	results := []*types.Result{}
 
 	tarReader := tar.NewReader(reader)
@@ -153,10 +157,6 @@ func (task *StreamsSource) execTarStream(ctx context.Context, rootDir string, fi
 }
 
 func (task *StreamsSource) execStream(ctx context.Context, rootDir string, filePath string, reader io.Reader) []*types.Result {
-	if closer, ok := reader.(io.Closer); ok {
-		defer closeLogErr(closer)
-	}
-
 	parser := task.Parser != nil
 	templated := task.Template != ""
 
@@ -176,6 +176,9 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 	if task.RawScrubber != nil {
 		scrubbedReader, scrubbedWriter := io.Pipe()
 		go func(reader io.Reader) {
+			if closer, ok := reader.(io.Closer); ok {
+				defer closeLogErr(closer)
+			}
 			err := filterStreams(reader, scrubbedWriter, task.RawScrubber)
 			scrubbedWriter.CloseWithError(err)
 		}(reader)
@@ -186,11 +189,18 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 		if scrubber != nil {
 			scrubbedReader, scrubbedWriter := io.Pipe()
 			go func(reader io.Reader, scrubber types.BytesScrubber) {
+				if closer, ok := reader.(io.Closer); ok {
+					defer closeLogErr(closer)
+				}
 				err := filterStreams(reader, scrubbedWriter, scrubber)
 				scrubbedWriter.CloseWithError(err)
 			}(reader, scrubber)
 			reader = scrubbedReader
 		}
+	}
+
+	if closer, ok := reader.(io.Closer); ok {
+		defer closeLogErr(closer)
 	}
 
 	rawResult := &types.Result{Spec: task.Spec}

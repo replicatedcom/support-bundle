@@ -3,6 +3,7 @@ package util
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -33,9 +34,12 @@ func FileCount(ctx context.Context, client docker.CommonAPIClient, image string,
 		return 0, errors.Wrap(err, "container run")
 	}
 	cmdErr := <-cmdErrCh
+	go func() {
+		io.Copy(ioutil.Discard, stderrR)
+		stderrR.Close()
+	}()
 	b, err := ioutil.ReadAll(stdoutR)
 	stdoutR.Close()
-	stderrR.Close()
 	if err != nil {
 		return 0, errors.Wrap(err, "read stdout")
 	}

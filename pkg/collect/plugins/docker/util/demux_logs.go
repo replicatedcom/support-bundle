@@ -9,22 +9,18 @@ import (
 )
 
 // Given a docker logs stream, return a map of the stdout and stderr components
-func DemuxLogs(ctx context.Context, source io.Reader, prefix string) (map[string]io.Reader, error) {
+func DemuxLogs(ctx context.Context, source io.ReadCloser, prefix string) (map[string]io.Reader, error) {
 	stdoutR, stdoutW := io.Pipe()
 	stderrR, stderrW := io.Pipe()
 
 	go func() {
 		// TODO context interruptable
 		_, err := stdcopy.StdCopy(stdoutW, stderrW, source)
-		if err != nil {
-			stdoutW.CloseWithError(err)
-			stderrW.CloseWithError(err)
-			return
-		}
-		if err := stdoutW.Close(); err != nil {
+		source.Close()
+		if err := stdoutW.CloseWithError(err); err != nil {
 			jww.ERROR.Print(err)
 		}
-		if err := stderrW.Close(); err != nil {
+		if err := stderrW.CloseWithError(err); err != nil {
 			jww.ERROR.Print(err)
 		}
 	}()

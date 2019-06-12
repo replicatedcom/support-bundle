@@ -20,10 +20,14 @@ func (d *Docker) ServiceLogs(serviceID string, basename string, opts *dockertype
 			opts.ShowStderr = true
 		}
 		opts.Timestamps = true
+		opts.Follow = false
+
 		reader, err := d.client.ServiceLogs(ctx, serviceID, *opts)
 		if err != nil {
 			return nil, err
 		}
+		reader = logsReaderWithTimeout(reader, LogsReaderIdleTimeout)
+
 		return util.DemuxLogs(ctx, reader, basename)
 	}
 }

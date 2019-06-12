@@ -3,6 +3,8 @@ package util
 import (
 	"context"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"path/filepath"
 
 	dockertypes "github.com/docker/docker/api/types"
@@ -33,8 +35,14 @@ func FileExists(ctx context.Context, client docker.CommonAPIClient, image string
 		return false, errors.Wrap(err, "container run")
 	}
 	cmdErr := <-cmdErrCh
-	stdoutR.Close()
-	stderrR.Close()
+	go func() {
+		io.Copy(ioutil.Discard, stdoutR)
+		stdoutR.Close()
+	}()
+	go func() {
+		io.Copy(ioutil.Discard, stderrR)
+		stderrR.Close()
+	}()
 	if cmdErr.Error != nil {
 		return false, cmdErr.Error
 	} else if cmdErr.StatusCode == 1 {

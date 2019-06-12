@@ -19,6 +19,7 @@ func (d *Docker) ContainerLogs(container string, basename string, opts *dockerty
 			opts.ShowStderr = true
 		}
 		opts.Timestamps = true
+		opts.Follow = false
 		reader, err := d.client.ContainerLogs(ctx, container, *opts)
 		if err != nil {
 			return nil, err

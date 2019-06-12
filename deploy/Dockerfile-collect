@@ -2,6 +2,8 @@ FROM replicated/support-bundle:base
 
 COPY support-bundle /usr/local/bin/support-bundle
 
+EXPOSE 6060
+
 ENV IN_CONTAINER 1
 LABEL "com.replicated.support-bundle"="true"
 ENTRYPOINT [ "support-bundle" ]

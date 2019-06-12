@@ -3,6 +3,7 @@ package cli
 import (
 	"io/ioutil"
 	"net/http"
+	_ "net/http/pprof" // pprof server
 	"os"
 
 	"github.com/pkg/errors"
@@ -38,6 +39,10 @@ type GenerateOptions struct {
 }
 
 func (cli *Cli) Generate(opts GenerateOptions) error {
+	go func() {
+		http.ListenAndServe("0.0.0.0:6060", nil)
+	}()
+
 	logOutput := &util.Buffer{}
 	jww.SetLogOutput(logOutput)
 	jww.SetLogThreshold(jww.LevelDebug)

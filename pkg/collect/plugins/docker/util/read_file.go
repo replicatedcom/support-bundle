@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"path/filepath"
 	"time"
 
@@ -48,7 +49,10 @@ func ReadFile(ctx context.Context, client docker.CommonAPIClient, image, filenam
 	case <-time.After(time.Second):
 	}
 
-	stderrR.Close()
+	go func() {
+		io.Copy(ioutil.Discard, stderrR)
+		stderrR.Close()
+	}()
 	if cmdErr.Error != nil {
 		return stdoutR, cmdErr.Error
 	} else if cmdErr.StatusCode == 2 {
