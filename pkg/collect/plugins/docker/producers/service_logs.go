@@ -26,8 +26,7 @@ func (d *Docker) ServiceLogs(serviceID string, basename string, opts *dockertype
 		if err != nil {
 			return nil, err
 		}
-		reader = logsReaderWithTimeout(reader, LogsReaderIdleTimeout)
-
-		return util.DemuxLogs(ctx, reader, basename)
+		readerWithTimeout := logsReaderWithTimeout(reader, LogsReaderIdleTimeout)
+		return util.DemuxLogs(ctx, readerWithTimeout, basename)
 	}
 }

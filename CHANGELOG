@@ -206,3 +206,4 @@
 0.25.2 /2019-06-12
     * Fix issue where Docker service and task logs can hang causing support bundle to hang (https://github.com/moby/moby/issues/38640)
     * Expose debug pprof server on port 6060
+    * Tasks will now execute with a concurrency equal to the number of cores with a max concurrency of 4

@@ -16,10 +16,16 @@ import (
 	"github.com/divolgin/archiver/compressor"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 // Generate a new support bundle and write the results as an archive at pathname
 func Generate(tasks []types.Task, timeout time.Duration, pathname string) (os.FileInfo, string, error) {
+	start := time.Now()
+	defer func() {
+		jww.DEBUG.Printf("Generation completed in %s", time.Now().Sub(start))
+	}()
+
 	var isURL bool
 	var isStdout bool
 

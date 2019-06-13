@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	LogsReaderIdleTimeout = 5 * time.Second
+	LogsReaderIdleTimeout = 20 * time.Second
 )
 
 func (d *Docker) TaskLogs(taskID string, opts *dockertypes.ContainerLogsOptions) types.StreamsProducer {
@@ -32,15 +32,16 @@ func (d *Docker) TaskLogs(taskID string, opts *dockertypes.ContainerLogsOptions)
 		if err != nil {
 			return nil, err
 		}
-		reader = logsReaderWithTimeout(reader, LogsReaderIdleTimeout)
-
-		return util.DemuxLogs(ctx, reader, taskID)
+		readerWithTimeout := logsReaderWithTimeout(reader, LogsReaderIdleTimeout)
+		return util.DemuxLogs(ctx, readerWithTimeout, taskID)
 	}
 }
 
-func logsReaderWithTimeout(r io.ReadCloser, timeout time.Duration) io.ReadCloser {
+func logsReaderWithTimeout(r io.ReadCloser, timeout time.Duration) io.Reader {
 	pr, pw := io.Pipe()
 	go func() {
+		defer r.Close()
+
 		size := 32 * 1024
 		buf := make([]byte, size)
 
