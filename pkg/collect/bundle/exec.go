@@ -3,7 +3,6 @@ package bundle
 import (
 	"context"
 	"encoding/json"
-	"math"
 	"runtime"
 	"time"
 
@@ -13,7 +12,6 @@ import (
 )
 
 const (
-	TaskConcurrencyMax     = 4
 	DeferredTimeoutDefault = 5 * time.Second
 )
 
@@ -34,7 +32,7 @@ func Exec(ctx context.Context, rootDir string, tasks []types.Task, opts ...Optio
 		}
 	}
 
-	concurrency := int(math.Min(float64(runtime.NumCPU()), float64(TaskConcurrencyMax)))
+	concurrency := runtime.NumCPU()
 
 	jww.DEBUG.Printf("Running tasks with a concurrency of %d", concurrency)
 
