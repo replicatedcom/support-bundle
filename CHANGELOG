@@ -202,3 +202,8 @@
 
 0.25.1 /2019-05-08
     * Allow analyze command to stream bundle from stdin
+
+0.25.2 /2019-06-12
+    * Tasks will now execute with a concurrency equal to the number of cores
+    * Fix issue where Docker service and task logs can hang causing support bundle to hang (https://github.com/moby/moby/issues/38640)
+    * Expose debug pprof server on port 6060

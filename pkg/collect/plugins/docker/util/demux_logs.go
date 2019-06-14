@@ -8,7 +8,7 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-// Given a docker logs stream, return a map of the stdout and stderr components
+// DemuxLogs will return a map of the stdout and stderr components given a docker logs stream.
 func DemuxLogs(ctx context.Context, source io.Reader, prefix string) (map[string]io.Reader, error) {
 	stdoutR, stdoutW := io.Pipe()
 	stderrR, stderrW := io.Pipe()
@@ -16,15 +16,13 @@ func DemuxLogs(ctx context.Context, source io.Reader, prefix string) (map[string
 	go func() {
 		// TODO context interruptable
 		_, err := stdcopy.StdCopy(stdoutW, stderrW, source)
-		if err != nil {
-			stdoutW.CloseWithError(err)
-			stderrW.CloseWithError(err)
-			return
+		if closer, ok := source.(io.Closer); ok {
+			closer.Close()
 		}
-		if err := stdoutW.Close(); err != nil {
+		if err := stdoutW.CloseWithError(err); err != nil {
 			jww.ERROR.Print(err)
 		}
-		if err := stderrW.Close(); err != nil {
+		if err := stderrW.CloseWithError(err); err != nil {
 			jww.ERROR.Print(err)
 		}
 	}()
