@@ -61,14 +61,22 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		}
 	}
 
-	if l.UploadCustomerID == "" && l.UploadChannelID == "" {
-		return false, errors.New("upload with no channel id or customer id")
+	if l.UploadToken == "" && l.UploadCustomerID == "" && l.UploadChannelID == "" {
+		return false, errors.New("upload with no token, channel id, or customer id")
 	}
 
 	var bundleID string
 	var url *url.URL
 
-	if l.UploadChannelID != "" {
+	if l.UploadToken != "" {
+		tokenBundleID, tokenURL, err := l.GraphQLClient.GetSupportBundleTokenUploadURI(l.UploadToken, l.FileInfo.Size(), l.Notes)
+		if err != nil {
+			return false, errors.Wrap(err, "get presigned URL for token upload")
+		}
+
+		bundleID = tokenBundleID
+		url = tokenURL
+	} else if l.UploadChannelID != "" {
 		channelBundleID, channelURL, err := l.GraphQLClient.GetSupportBundleChannelUploadURI(l.UploadChannelID, l.FileInfo.Size(), l.Notes)
 		if err != nil {
 			return false, errors.Wrap(err, "get presigned URL for channel upload")

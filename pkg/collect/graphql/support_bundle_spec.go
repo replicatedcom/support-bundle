@@ -41,6 +41,17 @@ mutation GetPresignedURI($size: Int, $notes: String) {
 }
 `
 
+const startTokenUploadMutation = `
+mutation GetTokenPresignedURI($token: String!, $size: Int, $notes: String) {
+  uploadTokenSupportBundle(token: $token, size: $size, notes: $notes) {
+    uploadUri,
+    supportBundle {
+      id
+    }
+  }
+}
+`
+
 const startChannelUploadMutation = `
 mutation GetChannelPresignedURI($channelId: String!, $size: Int, $notes: String) {
   uploadChannelSupportBundle(channelId: $channelId, size: $size, notes: $notes) {
@@ -149,6 +160,41 @@ func (c *Client) GetSupportBundleCustomerUploadURI(customerID string, size int64
 
 	decoder := json.NewDecoder(resp.Body)
 	uploadBody := SupportBundleUploadResponse{}
+
+	if err := decoder.Decode(&uploadBody); err != nil {
+		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
+	}
+
+	if uploadBody.Errors != nil && len(uploadBody.Errors) > 0 {
+		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
+	}
+
+	uri, err := url.Parse(uploadBody.Data.UploadURI)
+	if err != nil {
+		return "", nil, errors.Wrap(err, "parsing upload URI")
+	}
+
+	return uploadBody.Data.ID, uri, nil
+}
+
+// GetSupportBundleTokenUploadURI queries the Endpoint in Client to retrieve a URI that can be used to upload
+// a support bundle with a token
+func (c *Client) GetSupportBundleTokenUploadURI(token string, size int64, notes string) (string, *url.URL, error) {
+	resp, err := c.executeGraphQLQuery("", Request{
+		Query: startTokenUploadMutation,
+		Variables: map[string]interface{}{
+			"token": token,
+			"size":  size,
+			"notes": notes,
+		},
+	})
+
+	if err != nil {
+		return "", nil, errors.Wrap(err, "executing graphql request")
+	}
+
+	decoder := json.NewDecoder(resp.Body)
+	uploadBody := SupportBundleTokenUploadResponse{}
 
 	if err := decoder.Decode(&uploadBody); err != nil {
 		return "", nil, errors.Wrap(err, "unmarshalling graphql response")

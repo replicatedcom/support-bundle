@@ -37,6 +37,15 @@ type SupportBundle struct {
 	Hydrated string `json:"hydrated,omitempty"`
 }
 
+type SupportBundleTokenUploadResponse struct {
+	Data   *SupportBundleTokenRequestResult `json:"data,omitempty"`
+	Errors []Error                          `json:"errors,omitempty"`
+}
+
+type SupportBundleTokenRequestResult struct {
+	UploadSupportBundle `json:"uploadTokenSupportBundle,omitempty"`
+}
+
 type SupportBundleChannelUploadResponse struct {
 	Data   *SupportBundleChannelRequestResult `json:"data,omitempty"`
 	Errors []Error                            `json:"errors,omitempty"`

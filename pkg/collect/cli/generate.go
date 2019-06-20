@@ -31,6 +31,7 @@ type GenerateOptions struct {
 	DenyUploadPrompt    bool
 	Quiet               bool
 	Endpoint            string
+	UploadToken         string
 	ChannelID           string
 
 	CustomerID string // Deprecated
@@ -121,6 +122,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		GenerateTimeout:     timeoutSeconds,
 		GenerateBundlePath:  opts.BundlePath,
 		GraphQLClient:       graphQLClient,
+		UploadToken:         opts.UploadToken,
 		UploadCustomerID:    opts.CustomerID,
 		UploadChannelID:     opts.ChannelID,
 		ConfirmUploadPrompt: opts.ConfirmUploadPrompt,
