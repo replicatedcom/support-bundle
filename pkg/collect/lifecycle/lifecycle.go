@@ -17,6 +17,7 @@ type Lifecycle struct {
 	UploadToken         string
 	UploadCustomerID    string // deprecated
 	UploadChannelID     string
+	UploadWatchID       string
 	GraphQLClient       *graphql.Client
 	FileInfo            os.FileInfo
 	// RealGeneratedBundlePath is the actual path the bundle was written to.

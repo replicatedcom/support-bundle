@@ -32,7 +32,6 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().BoolVar(&opts.SkipDefault, "skip-default", false, "If present, skip the default support bundle files")
 	cmd.Flags().BoolVarP(&opts.ConfirmUploadPrompt, "yes-upload", "u", false, "If present, auto-confirm any upload prompts")
 	cmd.Flags().BoolVar(&opts.DenyUploadPrompt, "no-upload", false, "If present, auto-deny any upload prompts")
-	cmd.Flags().StringVar(&opts.UploadToken, "upload-token", "", "Token used to generate a pre-signed url for uploading a bundle")
 
 	cmd.Flags().StringVar(&opts.CustomerID, "customer-id", "", "Replicated Customer ID")
 	cmd.Flags().StringVar(&opts.Endpoint, "endpoint", cli.DefaultEndpoint, "Customer API Endpoint")

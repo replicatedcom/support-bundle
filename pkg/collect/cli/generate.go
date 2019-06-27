@@ -31,8 +31,8 @@ type GenerateOptions struct {
 	DenyUploadPrompt    bool
 	Quiet               bool
 	Endpoint            string
-	UploadToken         string
 	ChannelID           string
+	WatchID             string
 
 	CustomerID string // Deprecated
 
@@ -107,6 +107,25 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		expectedDefaultTasks++
 	}
 
+	if opts.WatchID != "" {
+		watchDoc, err := getWatchDoc(graphQLClient, opts.WatchID)
+		if err != nil {
+			return errors.Wrap(err, "get watch spec")
+		}
+		specs = append(specs, watchDoc.Collect.V1...)
+		specs = append(specs, bundle.WatchJSONSpec(opts.WatchID))
+
+		if types.GetUseDefaults(watchDoc.Lifecycle) {
+			defaultSpecs, err := bundle.DefaultSpecs()
+			if err != nil {
+				return errors.Wrap(err, "get default spec")
+			}
+			specs = append(specs, defaultSpecs...)
+		}
+
+		expectedDefaultTasks++
+	}
+
 	var tasks = planner.Plan(specs)
 	if len(tasks) < expectedDefaultTasks {
 		return errors.New("No tasks defined")
@@ -122,9 +141,9 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		GenerateTimeout:     timeoutSeconds,
 		GenerateBundlePath:  opts.BundlePath,
 		GraphQLClient:       graphQLClient,
-		UploadToken:         opts.UploadToken,
 		UploadCustomerID:    opts.CustomerID,
 		UploadChannelID:     opts.ChannelID,
+		UploadWAtchID:       opts.WatchID,
 		ConfirmUploadPrompt: opts.ConfirmUploadPrompt,
 		DenyUploadPrompt:    opts.DenyUploadPrompt,
 		Quiet:               opts.Quiet,
@@ -216,4 +235,18 @@ func getChannelDoc(gqlClient *graphql.Client, channelID string) (*types.Doc, err
 	}
 
 	return channelDoc, nil
+}
+
+func getWatchDoc(gqlClient *graphql.Client, watchID string) (*types.Doc, error) {
+	remoteSpecBody, err := gqlClient.GetWatchSpec(watchID)
+	if err != nil {
+		return nil, errors.Wrap(err, "get remote spec")
+	}
+
+	watchDoc, err := spec.Unmarshal(remoteSpecBody)
+	if err != nil {
+		return nil, errors.Wrap(err, "parse watch spec")
+	}
+
+	return watchDoc, nil
 }
