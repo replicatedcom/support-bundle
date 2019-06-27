@@ -143,7 +143,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		GraphQLClient:       graphQLClient,
 		UploadCustomerID:    opts.CustomerID,
 		UploadChannelID:     opts.ChannelID,
-		UploadWAtchID:       opts.WatchID,
+		UploadWatchID:       opts.WatchID,
 		ConfirmUploadPrompt: opts.ConfirmUploadPrompt,
 		DenyUploadPrompt:    opts.DenyUploadPrompt,
 		Quiet:               opts.Quiet,
