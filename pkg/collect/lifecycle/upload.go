@@ -94,7 +94,6 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		url = customerURL
 	}
 
-	fmt.Printf("url = %s\n", url)
 	err = putObject(l.FileInfo, l.RealGeneratedBundlePath, url)
 	if err != nil {
 		return false, errors.Wrap(err, "uploading to presigned URL")

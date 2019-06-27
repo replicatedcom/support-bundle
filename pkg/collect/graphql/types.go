@@ -47,8 +47,8 @@ type SupportBundle struct {
 }
 
 type SupportBundleChannelUploadResponse struct {
-	Data   *SupportBundleChannelRequestResult `json:"data,omitempty"`
-	Errors []Error                            `json:"errors,omitempty"`
+	Data   SupportBundleChannelRequestResult `json:"data,omitempty"`
+	Errors []Error                           `json:"errors,omitempty"`
 }
 
 type SupportBundleChannelRequestResult struct {
@@ -56,8 +56,8 @@ type SupportBundleChannelRequestResult struct {
 }
 
 type SupportBundleWatchUploadResponse struct {
-	Data   *SupportBundleWatchRequestResult `json:"data,omitempty"`
-	Errors []Error                          `json:"errors,omitempty"`
+	Data   SupportBundleWatchRequestResult `json:"data,omitempty"`
+	Errors []Error                         `json:"errors,omitempty"`
 }
 
 type SupportBundleWatchRequestResult struct {
@@ -65,8 +65,8 @@ type SupportBundleWatchRequestResult struct {
 }
 
 type SupportBundleUploadResponse struct {
-	Data   *SupportBundleRequestResult `json:"data,omitempty"`
-	Errors []Error                     `json:"errors,omitempty"`
+	Data   SupportBundleRequestResult `json:"data,omitempty"`
+	Errors []Error                    `json:"errors,omitempty"`
 }
 
 type SupportBundleRequestResult struct {
