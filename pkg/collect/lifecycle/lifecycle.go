@@ -14,7 +14,6 @@ type Lifecycle struct {
 	DenyUploadPrompt    bool
 	Quiet               bool
 	GenerateBundlePath  string
-	UploadToken         string
 	UploadCustomerID    string // deprecated
 	UploadChannelID     string
 	UploadWatchID       string

@@ -6177,6 +6177,69 @@
                   "output_dir"
                 ]
               },
+              "meta.watch": {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "properties": {
+                  "defer": {
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "include_empty": {
+                    "type": "boolean"
+                  },
+                  "meta": {
+                    "$schema": "http://json-schema.org/draft-04/schema#",
+                    "properties": {
+                      "labels": {
+                        "patternProperties": {
+                          ".*": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object"
+                  },
+                  "output_dir": {
+                    "type": "string"
+                  },
+                  "scrub": {
+                    "$schema": "http://json-schema.org/draft-04/schema#",
+                    "required": [
+                      "regex",
+                      "replace"
+                    ],
+                    "properties": {
+                      "regex": {
+                        "type": "string"
+                      },
+                      "replace": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object"
+                  },
+                  "timeout_seconds": {
+                    "type": "integer"
+                  },
+                  "watch_id": {
+                    "type": "string"
+                  },
+                  "watch_name": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false,
+                "type": "object"
+              },
               "os.hostname": {
                 "description": "Get the hostname",
                 "examples": [

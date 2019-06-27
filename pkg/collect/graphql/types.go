@@ -24,7 +24,7 @@ type SupportBundleResult struct {
 }
 
 type ChannelCollectorsResponse struct {
-	Data   *ChannelCollectorsResult `json:"data,omitempty"`
+	Data   ChannelCollectorsResult `json:"data,omitempty"`
 	Errors []Error                  `json:"errors,omitempty"`
 }
 
@@ -33,7 +33,7 @@ type ChannelCollectorsResult struct {
 }
 
 type WatchCollectorsResponse struct {
-	Data   *WatchCollectorsResult `json:"data,omitempty"`
+	Data   WatchCollectorsResult `json:"data,omitempty"`
 	Errors []Error                `json:"errors,omitempty"`
 }
 

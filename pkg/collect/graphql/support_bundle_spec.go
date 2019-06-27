@@ -104,6 +104,7 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 	resp, err := c.executeGraphQLQuery(id, Request{
 		Query: customerSpecQuery,
 	})
+	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
@@ -115,7 +116,7 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 		return nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if specBody.Errors != nil && len(specBody.Errors) > 0 {
+	if len(specBody.Errors) > 0 {
 		return nil, Errors{Errors: specBody.Errors}
 	}
 
@@ -131,6 +132,7 @@ func (c *Client) GetChannelSpec(channelID string) ([]byte, error) {
 			"channelId": channelID,
 		},
 	})
+	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
@@ -143,7 +145,7 @@ func (c *Client) GetChannelSpec(channelID string) ([]byte, error) {
 		return nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if specBody.Errors != nil && len(specBody.Errors) > 0 {
+	if len(specBody.Errors) > 0 {
 		return nil, Errors{Errors: specBody.Errors}
 	}
 
@@ -159,6 +161,7 @@ func (c *Client) GetWatchSpec(watchID string) ([]byte, error) {
 			"watchId": watchID,
 		},
 	})
+	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
@@ -171,7 +174,7 @@ func (c *Client) GetWatchSpec(watchID string) ([]byte, error) {
 		return nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if specBody.Errors != nil && len(specBody.Errors) > 0 {
+	if len(specBody.Errors) > 0 {
 		return nil, Errors{Errors: specBody.Errors}
 	}
 
@@ -189,6 +192,7 @@ func (c *Client) GetSupportBundleCustomerUploadURI(customerID string, size int64
 			"notes": notes,
 		},
 	})
+	defer resp.Body.Close()
 
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
@@ -201,7 +205,7 @@ func (c *Client) GetSupportBundleCustomerUploadURI(customerID string, size int64
 		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if uploadBody.Errors != nil && len(uploadBody.Errors) > 0 {
+	if len(uploadBody.Errors) > 0 {
 		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
 	}
 
@@ -224,6 +228,7 @@ func (c *Client) GetSupportBundleChannelUploadURI(channelID string, size int64, 
 			"notes":     notes,
 		},
 	})
+	defer resp.Body.Close()
 
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
@@ -236,7 +241,7 @@ func (c *Client) GetSupportBundleChannelUploadURI(channelID string, size int64, 
 		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if uploadBody.Errors != nil && len(uploadBody.Errors) > 0 {
+	if len(uploadBody.Errors) > 0 {
 		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
 	}
 
@@ -259,6 +264,7 @@ func (c *Client) GetSupportBundleWatchUploadURI(watchID string, size int64, note
 			"notes":   notes,
 		},
 	})
+	defer resp.Body.Close()
 
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
@@ -271,7 +277,7 @@ func (c *Client) GetSupportBundleWatchUploadURI(watchID string, size int64, note
 		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if uploadBody.Errors != nil && len(uploadBody.Errors) > 0 {
+	if len(uploadBody.Errors) > 0 {
 		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
 	}
 

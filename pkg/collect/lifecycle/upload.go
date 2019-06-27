@@ -62,7 +62,7 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 	}
 
 	if l.UploadCustomerID == "" && l.UploadChannelID == "" && l.UploadWatchID == "" {
-		return false, errors.New("upload with no token, channel id, or customer id")
+		return false, errors.New("upload with no watch id, channel id, or customer id")
 	}
 
 	var bundleID string
@@ -79,7 +79,7 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 	} else if l.UploadWatchID != "" {
 		watchBundleID, watchURL, err := l.GraphQLClient.GetSupportBundleWatchUploadURI(l.UploadWatchID, l.FileInfo.Size(), l.Notes)
 		if err != nil {
-			return false, errors.Wrap(err, "get presigned URL for channel upload")
+			return false, errors.Wrap(err, "get presigned URL for watch upload")
 		}
 
 		bundleID = watchBundleID

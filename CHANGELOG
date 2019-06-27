@@ -209,4 +209,4 @@
     * Expose debug pprof server on port 6060
 
 0.26.0 /2019-06-20
-    * Added "upload-token" flag used to generate a pre-signed url for uploading a bundle
+    * Added "watch-id" flag used to use a spec from ship

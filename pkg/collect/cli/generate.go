@@ -86,9 +86,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		}
 
 		expectedDefaultTasks++
-	}
-
-	if opts.ChannelID != "" {
+	} else if opts.ChannelID != "" {
 		channelDoc, err = getChannelDoc(graphQLClient, opts.ChannelID)
 		if err != nil {
 			return errors.Wrap(err, "get channel spec")
@@ -105,9 +103,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		}
 
 		expectedDefaultTasks++
-	}
-
-	if opts.WatchID != "" {
+	} else if opts.WatchID != "" {
 		watchDoc, err := getWatchDoc(graphQLClient, opts.WatchID)
 		if err != nil {
 			return errors.Wrap(err, "get watch spec")
