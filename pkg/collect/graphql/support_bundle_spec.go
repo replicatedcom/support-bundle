@@ -34,6 +34,7 @@ const watchSpecQuery = `
 query watchCollectors($watchId: String!) {
   watchCollectors(watchId: $watchId) {
     spec
+    hydrated
   }
 }
 `
@@ -61,8 +62,8 @@ mutation GetChannelPresignedURI($channelId: String!, $size: Int, $notes: String)
 `
 
 const startWatchUploadMutation = `
-mutation GetWatchPresignedURI($watchId: String!, $size: Int, $notes: String) {
-  uploadWatchSupportBundle(watchId: $watchId, size: $size, notes: $notes) {
+mutation GetWatchPresignedURI($watchId: String!, $size: Int) {
+  uploadSupportBundle(watchId: $watchId, size: $size) {
     uploadUri,
     supportBundle {
       id
@@ -104,11 +105,12 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 	resp, err := c.executeGraphQLQuery(id, Request{
 		Query: customerSpecQuery,
 	})
-	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
 	}
+	defer resp.Body.Close()
+
 	decoder := json.NewDecoder(resp.Body)
 	specBody := SupportBundleResponse{}
 
@@ -161,11 +163,11 @@ func (c *Client) GetWatchSpec(watchID string) ([]byte, error) {
 			"watchId": watchID,
 		},
 	})
-	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
 	}
+	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
 	specBody := WatchCollectorsResponse{}
@@ -192,11 +194,11 @@ func (c *Client) GetSupportBundleCustomerUploadURI(customerID string, size int64
 			"notes": notes,
 		},
 	})
-	defer resp.Body.Close()
 
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
 	}
+	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
 	uploadBody := SupportBundleUploadResponse{}
@@ -228,11 +230,11 @@ func (c *Client) GetSupportBundleChannelUploadURI(channelID string, size int64, 
 			"notes":     notes,
 		},
 	})
-	defer resp.Body.Close()
 
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
 	}
+	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
 	uploadBody := SupportBundleChannelUploadResponse{}
@@ -255,20 +257,19 @@ func (c *Client) GetSupportBundleChannelUploadURI(channelID string, size int64, 
 
 // GetSupportBundleWatchUploadURI queries the Endpoint in Client to retrieve a URI that can be used to upload
 // a support bundle for a specific watch
-func (c *Client) GetSupportBundleWatchUploadURI(watchID string, size int64, notes string) (string, *url.URL, error) {
+func (c *Client) GetSupportBundleWatchUploadURI(watchID string, size int64) (string, *url.URL, error) {
 	resp, err := c.executeGraphQLQuery("", Request{
 		Query: startWatchUploadMutation,
 		Variables: map[string]interface{}{
 			"watchId": watchID,
 			"size":    size,
-			"notes":   notes,
 		},
 	})
-	defer resp.Body.Close()
 
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
 	}
+	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
 	uploadBody := SupportBundleWatchUploadResponse{}

@@ -54,7 +54,7 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 
 	}
 
-	if task.Options.Prompt.AcceptMessage != "" {
+	if task.Options.Prompt != nil && task.Options.Prompt.AcceptMessage != "" {
 		err = runTemplate(outputWriter, "accept", task.Options.Prompt.AcceptMessage+"\n", tplOpts)
 		if err != nil {
 			return false, errors.Wrap(err, "run accept template")
@@ -77,7 +77,7 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		bundleID = channelBundleID
 		url = channelURL
 	} else if l.UploadWatchID != "" {
-		watchBundleID, watchURL, err := l.GraphQLClient.GetSupportBundleWatchUploadURI(l.UploadWatchID, l.FileInfo.Size(), l.Notes)
+		watchBundleID, watchURL, err := l.GraphQLClient.GetSupportBundleWatchUploadURI(l.UploadWatchID, l.FileInfo.Size())
 		if err != nil {
 			return false, errors.Wrap(err, "get presigned URL for watch upload")
 		}
@@ -94,6 +94,7 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		url = customerURL
 	}
 
+	fmt.Printf("url = %s\n", url)
 	err = putObject(l.FileInfo, l.RealGeneratedBundlePath, url)
 	if err != nil {
 		return false, errors.Wrap(err, "uploading to presigned URL")

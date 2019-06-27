@@ -66,6 +66,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	var customerDoc *types.Doc
 	var channelDoc *types.Doc
+	var watchDoc *types.Doc
 	expectedDefaultTasks := 1 // there is always at least 1 for the version
 
 	// this next if statement and included scope is deprecated
@@ -104,10 +105,11 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 		expectedDefaultTasks++
 	} else if opts.WatchID != "" {
-		watchDoc, err := getWatchDoc(graphQLClient, opts.WatchID)
+		watchDoc, err = getWatchDoc(graphQLClient, opts.WatchID)
 		if err != nil {
 			return errors.Wrap(err, "get watch spec")
 		}
+
 		specs = append(specs, watchDoc.Collect.V1...)
 		specs = append(specs, bundle.WatchJSONSpec(opts.WatchID))
 
@@ -146,13 +148,20 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 	}
 
 	lifecycleTasks := types.DefaultLifecycleTasks
+
+	if opts.WatchID != "" {
+		lifecycleTasks = types.DefaultWatchLifecycleTasks
+	}
+
 	if channelDoc != nil && channelDoc.Lifecycle != nil {
 		lifecycleTasks = channelDoc.Lifecycle
 	} else if customerDoc != nil && customerDoc.Lifecycle != nil {
 		lifecycleTasks = customerDoc.Lifecycle
+	} else if watchDoc != nil && watchDoc.Lifecycle != nil {
+		lifecycleTasks = watchDoc.Lifecycle
 	}
 
-	if opts.CustomerID == "" && opts.ChannelID == "" {
+	if opts.CustomerID == "" && opts.ChannelID == "" && opts.WatchID == "" {
 		lifecycleTasks = types.GenerateOnlyLifecycleTasks
 	}
 
