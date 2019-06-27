@@ -30,6 +30,15 @@ query channelCollectors($channelId: String) {
 }
 `
 
+const watchSpecQuery = `
+query watchCollectors($watchId: String!) {
+  watchCollectors(watchId: $watchId) {
+    spec
+    hydrated
+  }
+}
+`
+
 const startCustomerUploadMutation = `
 mutation GetPresignedURI($size: Int, $notes: String) {
   uploadSupportBundle(size: $size, notes: $notes) {
@@ -44,6 +53,17 @@ mutation GetPresignedURI($size: Int, $notes: String) {
 const startChannelUploadMutation = `
 mutation GetChannelPresignedURI($channelId: String!, $size: Int, $notes: String) {
   uploadChannelSupportBundle(channelId: $channelId, size: $size, notes: $notes) {
+    uploadUri,
+    supportBundle {
+      id
+    }
+  }
+}
+`
+
+const startWatchUploadMutation = `
+mutation GetWatchPresignedURI($watchId: String!, $size: Int) {
+  uploadSupportBundle(watchId: $watchId, size: $size) {
     uploadUri,
     supportBundle {
       id
@@ -89,6 +109,8 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
 	}
+	defer resp.Body.Close()
+
 	decoder := json.NewDecoder(resp.Body)
 	specBody := SupportBundleResponse{}
 
@@ -96,7 +118,7 @@ func (c *Client) GetCustomerSpec(id string) ([]byte, error) {
 		return nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if specBody.Errors != nil && len(specBody.Errors) > 0 {
+	if len(specBody.Errors) > 0 {
 		return nil, Errors{Errors: specBody.Errors}
 	}
 
@@ -112,6 +134,7 @@ func (c *Client) GetChannelSpec(channelID string) ([]byte, error) {
 			"channelId": channelID,
 		},
 	})
+	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "executing graphql request")
@@ -124,7 +147,36 @@ func (c *Client) GetChannelSpec(channelID string) ([]byte, error) {
 		return nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if specBody.Errors != nil && len(specBody.Errors) > 0 {
+	if len(specBody.Errors) > 0 {
+		return nil, Errors{Errors: specBody.Errors}
+	}
+
+	return []byte(specBody.Data.Hydrated), nil
+}
+
+// GetWatchSpec will query the endpoint set in the client with a Replicated WatchID
+// and will return a fully rendered spec, containing collect and lifecycle keys
+func (c *Client) GetWatchSpec(watchID string) ([]byte, error) {
+	resp, err := c.executeGraphQLQuery("", Request{
+		Query: watchSpecQuery,
+		Variables: map[string]interface{}{
+			"watchId": watchID,
+		},
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "executing graphql request")
+	}
+	defer resp.Body.Close()
+
+	decoder := json.NewDecoder(resp.Body)
+	specBody := WatchCollectorsResponse{}
+
+	if err := decoder.Decode(&specBody); err != nil {
+		return nil, errors.Wrap(err, "unmarshalling graphql response")
+	}
+
+	if len(specBody.Errors) > 0 {
 		return nil, Errors{Errors: specBody.Errors}
 	}
 
@@ -146,6 +198,7 @@ func (c *Client) GetSupportBundleCustomerUploadURI(customerID string, size int64
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
 	}
+	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
 	uploadBody := SupportBundleUploadResponse{}
@@ -154,7 +207,7 @@ func (c *Client) GetSupportBundleCustomerUploadURI(customerID string, size int64
 		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if uploadBody.Errors != nil && len(uploadBody.Errors) > 0 {
+	if len(uploadBody.Errors) > 0 {
 		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
 	}
 
@@ -181,6 +234,7 @@ func (c *Client) GetSupportBundleChannelUploadURI(channelID string, size int64, 
 	if err != nil {
 		return "", nil, errors.Wrap(err, "executing graphql request")
 	}
+	defer resp.Body.Close()
 
 	decoder := json.NewDecoder(resp.Body)
 	uploadBody := SupportBundleChannelUploadResponse{}
@@ -189,7 +243,42 @@ func (c *Client) GetSupportBundleChannelUploadURI(channelID string, size int64, 
 		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
 	}
 
-	if uploadBody.Errors != nil && len(uploadBody.Errors) > 0 {
+	if len(uploadBody.Errors) > 0 {
+		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
+	}
+
+	uri, err := url.Parse(uploadBody.Data.UploadURI)
+	if err != nil {
+		return "", nil, errors.Wrap(err, "parsing upload URI")
+	}
+
+	return uploadBody.Data.ID, uri, nil
+}
+
+// GetSupportBundleWatchUploadURI queries the Endpoint in Client to retrieve a URI that can be used to upload
+// a support bundle for a specific watch
+func (c *Client) GetSupportBundleWatchUploadURI(watchID string, size int64) (string, *url.URL, error) {
+	resp, err := c.executeGraphQLQuery("", Request{
+		Query: startWatchUploadMutation,
+		Variables: map[string]interface{}{
+			"watchId": watchID,
+			"size":    size,
+		},
+	})
+
+	if err != nil {
+		return "", nil, errors.Wrap(err, "executing graphql request")
+	}
+	defer resp.Body.Close()
+
+	decoder := json.NewDecoder(resp.Body)
+	uploadBody := SupportBundleWatchUploadResponse{}
+
+	if err := decoder.Decode(&uploadBody); err != nil {
+		return "", nil, errors.Wrap(err, "unmarshalling graphql response")
+	}
+
+	if len(uploadBody.Errors) > 0 {
 		return "", nil, fmt.Errorf("%v", uploadBody.Errors)
 	}
 

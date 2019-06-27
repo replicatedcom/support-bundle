@@ -54,15 +54,15 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 
 	}
 
-	if task.Options.Prompt.AcceptMessage != "" {
+	if task.Options.Prompt != nil && task.Options.Prompt.AcceptMessage != "" {
 		err = runTemplate(outputWriter, "accept", task.Options.Prompt.AcceptMessage+"\n", tplOpts)
 		if err != nil {
 			return false, errors.Wrap(err, "run accept template")
 		}
 	}
 
-	if l.UploadCustomerID == "" && l.UploadChannelID == "" {
-		return false, errors.New("upload with no channel id or customer id")
+	if l.UploadCustomerID == "" && l.UploadChannelID == "" && l.UploadWatchID == "" {
+		return false, errors.New("upload with no watch id, channel id, or customer id")
 	}
 
 	var bundleID string
@@ -76,6 +76,14 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 
 		bundleID = channelBundleID
 		url = channelURL
+	} else if l.UploadWatchID != "" {
+		watchBundleID, watchURL, err := l.GraphQLClient.GetSupportBundleWatchUploadURI(l.UploadWatchID, l.FileInfo.Size())
+		if err != nil {
+			return false, errors.Wrap(err, "get presigned URL for watch upload")
+		}
+
+		bundleID = watchBundleID
+		url = watchURL
 	} else if l.UploadCustomerID != "" {
 		customerBundleID, customerURL, err := l.GraphQLClient.GetSupportBundleCustomerUploadURI(l.UploadCustomerID, l.FileInfo.Size(), l.Notes)
 		if err != nil {

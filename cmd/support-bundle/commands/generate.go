@@ -37,6 +37,7 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().StringVar(&opts.Endpoint, "endpoint", cli.DefaultEndpoint, "Customer API Endpoint")
 
 	cmd.Flags().StringVar(&opts.ChannelID, "channel-id", "", "Replicated ChannelID to attempt to get a collector definition from")
+	cmd.Flags().StringVar(&opts.WatchID, "watch-id", "", "Replicated WatchID to attempt to get a collector definition from")
 
 	cmd.Flags().MarkDeprecated("customer-id", "This argument is no longer supported. Consider using \"channel-id\"")
 

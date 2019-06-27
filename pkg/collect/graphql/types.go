@@ -24,12 +24,21 @@ type SupportBundleResult struct {
 }
 
 type ChannelCollectorsResponse struct {
-	Data   *ChannelCollectorsResult `json:"data,omitempty"`
-	Errors []Error                  `json:"errors,omitempty"`
+	Data   ChannelCollectorsResult `json:"data,omitempty"`
+	Errors []Error                 `json:"errors,omitempty"`
 }
 
 type ChannelCollectorsResult struct {
 	SupportBundle `json:"channelCollectors,omitempty"`
+}
+
+type WatchCollectorsResponse struct {
+	Data   WatchCollectorsResult `json:"data,omitempty"`
+	Errors []Error               `json:"errors,omitempty"`
+}
+
+type WatchCollectorsResult struct {
+	SupportBundle `json:"watchCollectors,omitempty"`
 }
 
 type SupportBundle struct {
@@ -38,17 +47,26 @@ type SupportBundle struct {
 }
 
 type SupportBundleChannelUploadResponse struct {
-	Data   *SupportBundleChannelRequestResult `json:"data,omitempty"`
-	Errors []Error                            `json:"errors,omitempty"`
+	Data   SupportBundleChannelRequestResult `json:"data,omitempty"`
+	Errors []Error                           `json:"errors,omitempty"`
 }
 
 type SupportBundleChannelRequestResult struct {
 	UploadSupportBundle `json:"uploadChannelSupportBundle,omitempty"`
 }
 
+type SupportBundleWatchUploadResponse struct {
+	Data   SupportBundleWatchRequestResult `json:"data,omitempty"`
+	Errors []Error                         `json:"errors,omitempty"`
+}
+
+type SupportBundleWatchRequestResult struct {
+	UploadSupportBundle `json:"uploadSupportBundle,omitempty"`
+}
+
 type SupportBundleUploadResponse struct {
-	Data   *SupportBundleRequestResult `json:"data,omitempty"`
-	Errors []Error                     `json:"errors,omitempty"`
+	Data   SupportBundleRequestResult `json:"data,omitempty"`
+	Errors []Error                    `json:"errors,omitempty"`
 }
 
 type SupportBundleRequestResult struct {

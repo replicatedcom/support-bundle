@@ -46,7 +46,8 @@ export function shouldSkipKey(schemaKey: string) {
     schemaKey === "timeout_seconds" ||
     schemaKey === "include_empty" ||
     schemaKey === "meta.customer" ||
-    schemaKey === "meta.channel";
+    schemaKey === "meta.channel" ||
+    schemaKey === "meta.watch";
 }
 
 export function shouldValidateExamples(path: string) {

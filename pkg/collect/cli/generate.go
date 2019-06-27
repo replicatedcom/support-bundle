@@ -32,6 +32,7 @@ type GenerateOptions struct {
 	Quiet               bool
 	Endpoint            string
 	ChannelID           string
+	WatchID             string
 
 	CustomerID string // Deprecated
 
@@ -65,6 +66,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	var customerDoc *types.Doc
 	var channelDoc *types.Doc
+	var watchDoc *types.Doc
 	expectedDefaultTasks := 1 // there is always at least 1 for the version
 
 	// this next if statement and included scope is deprecated
@@ -85,9 +87,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		}
 
 		expectedDefaultTasks++
-	}
-
-	if opts.ChannelID != "" {
+	} else if opts.ChannelID != "" {
 		channelDoc, err = getChannelDoc(graphQLClient, opts.ChannelID)
 		if err != nil {
 			return errors.Wrap(err, "get channel spec")
@@ -96,6 +96,24 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, bundle.ChannelJSONSpec(opts.ChannelID))
 
 		if types.GetUseDefaults(channelDoc.Lifecycle) {
+			defaultSpecs, err := bundle.DefaultSpecs()
+			if err != nil {
+				return errors.Wrap(err, "get default spec")
+			}
+			specs = append(specs, defaultSpecs...)
+		}
+
+		expectedDefaultTasks++
+	} else if opts.WatchID != "" {
+		watchDoc, err = getWatchDoc(graphQLClient, opts.WatchID)
+		if err != nil {
+			return errors.Wrap(err, "get watch spec")
+		}
+
+		specs = append(specs, watchDoc.Collect.V1...)
+		specs = append(specs, bundle.WatchJSONSpec(opts.WatchID))
+
+		if types.GetUseDefaults(watchDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")
@@ -123,19 +141,27 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		GraphQLClient:       graphQLClient,
 		UploadCustomerID:    opts.CustomerID,
 		UploadChannelID:     opts.ChannelID,
+		UploadWatchID:       opts.WatchID,
 		ConfirmUploadPrompt: opts.ConfirmUploadPrompt,
 		DenyUploadPrompt:    opts.DenyUploadPrompt,
 		Quiet:               opts.Quiet,
 	}
 
 	lifecycleTasks := types.DefaultLifecycleTasks
+
+	if opts.WatchID != "" {
+		lifecycleTasks = types.DefaultWatchLifecycleTasks
+	}
+
 	if channelDoc != nil && channelDoc.Lifecycle != nil {
 		lifecycleTasks = channelDoc.Lifecycle
 	} else if customerDoc != nil && customerDoc.Lifecycle != nil {
 		lifecycleTasks = customerDoc.Lifecycle
+	} else if watchDoc != nil && watchDoc.Lifecycle != nil {
+		lifecycleTasks = watchDoc.Lifecycle
 	}
 
-	if opts.CustomerID == "" && opts.ChannelID == "" {
+	if opts.CustomerID == "" && opts.ChannelID == "" && opts.WatchID == "" {
 		lifecycleTasks = types.GenerateOnlyLifecycleTasks
 	}
 
@@ -214,4 +240,18 @@ func getChannelDoc(gqlClient *graphql.Client, channelID string) (*types.Doc, err
 	}
 
 	return channelDoc, nil
+}
+
+func getWatchDoc(gqlClient *graphql.Client, watchID string) (*types.Doc, error) {
+	remoteSpecBody, err := gqlClient.GetWatchSpec(watchID)
+	if err != nil {
+		return nil, errors.Wrap(err, "get remote spec")
+	}
+
+	watchDoc, err := spec.Unmarshal(remoteSpecBody)
+	if err != nil {
+		return nil, errors.Wrap(err, "parse watch spec")
+	}
+
+	return watchDoc, nil
 }
