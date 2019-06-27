@@ -62,7 +62,7 @@ mutation GetChannelPresignedURI($channelId: String!, $size: Int, $notes: String)
 
 const startWatchUploadMutation = `
 mutation GetWatchPresignedURI($watchId: String!, $size: Int, $notes: String) {
-  uploadWAtchSupportBundle(watchId: $watchId, size: $size, notes: $notes) {
+  uploadWatchSupportBundle(watchId: $watchId, size: $size, notes: $notes) {
     uploadUri,
     supportBundle {
       id
