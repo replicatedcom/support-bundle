@@ -84,7 +84,7 @@ jobs:
           command: curl -sL https://git.io/goreleaser | bash -s -- --snapshot --config .goreleaser.unstable.yml
       - run: docker login -u="$DOCKERHUB_DOCKER_USER" -p="$DOCKERHUB_DOCKER_PASS"
       - deploy:
-          command: docker push replicated/support-bundle:alpha
+          command: docker push replicated/support-bundle:alpha && docker push replicated/analyze:alpha
 
 workflows:
   version: 2
