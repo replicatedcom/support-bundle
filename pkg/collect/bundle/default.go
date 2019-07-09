@@ -60,7 +60,7 @@ func SupportBundleSpecs() []types.Spec {
 func CustomerJSONSpec(customerID string) types.Spec {
 	return types.Spec{
 		SpecShared: types.SpecShared{
-			Description: "Support Bundle Customer Metadata",
+			Description: "Troubleshoot Customer Metadata",
 			OutputDir:   "/",
 		},
 		CustomerMeta: &types.CustomerMetaOptions{
@@ -72,7 +72,7 @@ func CustomerJSONSpec(customerID string) types.Spec {
 func ChannelJSONSpec(channelID string) types.Spec {
 	return types.Spec{
 		SpecShared: types.SpecShared{
-			Description: "Troubleshoot Channel Collectors",
+			Description: "Troubleshoot Channel Metadata",
 			OutputDir:   "/",
 		},
 		ChannelMeta: &types.ChannelMetaOptions{
@@ -84,7 +84,7 @@ func ChannelJSONSpec(channelID string) types.Spec {
 func WatchJSONSpec(watchID string) types.Spec {
 	return types.Spec{
 		SpecShared: types.SpecShared{
-			Description: "Troubleshoot Watch Collectors",
+			Description: "Troubleshoot Watch Metadata",
 			OutputDir:   "/",
 		},
 		WatchMeta: &types.WatchMetaOptions{
