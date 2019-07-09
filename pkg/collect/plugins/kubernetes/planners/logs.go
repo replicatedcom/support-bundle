@@ -14,16 +14,14 @@ import (
 func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	var err error
 	podNameProvided := spec.KubernetesLogs.Pod != ""
-	labelSelectorProvided :=
-		spec.KubernetesLogs.ListOptions != nil &&
-			spec.KubernetesLogs.ListOptions.LabelSelector != ""
+	podListOptionsProvided := spec.KubernetesLogs.ListOptions != nil
 	namespaceProvided := spec.KubernetesLogs.Namespace != ""
 
 	if spec.KubernetesLogs == nil {
 		err = errors.New("spec for kubernetes.logs required")
 	}
 
-	if !podNameProvided && !labelSelectorProvided {
+	if !podNameProvided && !podListOptionsProvided {
 		err = errors.New("spec for kubernetes.logs pod or list_options required")
 	}
 
@@ -33,8 +31,9 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	}
 
 	type podLocation struct {
-		PodName   string
-		Namespace string
+		PodName       string
+		ContainerName string
+		Namespace     string
 	}
 
 	var podLocations []podLocation
@@ -56,7 +55,22 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	pods := podList.Items
 	for _, pod := range pods {
 		if !podNameProvided || spec.KubernetesLogs.Pod == pod.Name {
-			podLocations = append(podLocations, podLocation{PodName: pod.Name, Namespace: pod.Namespace})
+			if spec.KubernetesLogs.PodLogOptions != nil && spec.KubernetesLogs.PodLogOptions.Container != "" {
+				podLocations = append(podLocations, podLocation{
+					PodName:       pod.Name,
+					Namespace:     pod.Namespace,
+					ContainerName: spec.KubernetesLogs.PodLogOptions.Container,
+				})
+			} else {
+				// get logs for all containers in the pod
+				for _, container := range pod.Spec.Containers {
+					podLocations = append(podLocations, podLocation{
+						PodName:       pod.Name,
+						Namespace:     pod.Namespace,
+						ContainerName: container.Name,
+					})
+				}
+			}
 		}
 	}
 
@@ -70,6 +84,10 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	for _, podLocation := range podLocations {
 		currentLogOptions := *spec.KubernetesLogs
 		currentLogOptions.Pod = podLocation.PodName
+		if currentLogOptions.PodLogOptions == nil {
+			currentLogOptions.PodLogOptions = new(types.PodLogOptions)
+		}
+		currentLogOptions.PodLogOptions.Container = podLocation.ContainerName
 		currentLogOptions.Namespace = podLocation.Namespace
 
 		rawPath := spec.Shared().OutputDir
@@ -79,7 +97,7 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 
 		task := plans.StreamSource{
 			Producer: k.producers.Logs(currentLogOptions),
-			RawPath:  filepath.Join(rawPath, fmt.Sprintf("%s.log", podLocation.PodName)),
+			RawPath:  filepath.Join(rawPath, fmt.Sprintf("%s-%s.log", podLocation.PodName, podLocation.ContainerName)),
 		}
 
 		task, err = plans.SetCommonFieldsStreamSource(task, spec)

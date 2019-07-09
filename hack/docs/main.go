@@ -12,8 +12,8 @@ import (
 )
 
 type collectDoc struct {
-	Collect   collectapi.Collect         `json:"collect,omitempty"`
-	Lifecycle []collectapi.LifecycleTask `json:"lifecycle,omitempty"`
+	Collect   collectapi.Collect   `json:"collect,omitempty"`
+	Lifecycle collectapi.Lifecycle `json:"lifecycle,omitempty"`
 }
 
 type analyzeDoc struct {

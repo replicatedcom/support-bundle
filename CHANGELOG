@@ -210,3 +210,9 @@
 
 0.26.0 /2019-06-20
     * Added "watch-id" flag used to use a spec from ship
+
+0.27.0 /2019-07-09
+    * kubernetes.logs and kubernetes.container-cp now allow for listing all pods with empty pod_list_options
+    * kubernetes.logs will now get logs for all containers in a pod if no container name is specified
+    * kubernetes.container-cp will now select the first container in a pod by default if no container name is specified
+    * --skip-default flag was ignored when lifecycle empty

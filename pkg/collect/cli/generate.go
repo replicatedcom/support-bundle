@@ -71,6 +71,8 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	// this next if statement and included scope is deprecated
 	if opts.CustomerID != "" {
+		jww.DEBUG.Printf("Getting spec with customer id %s", opts.CustomerID)
+
 		customerDoc, err = getCustomerDoc(graphQLClient, opts.CustomerID)
 		if err != nil {
 			return errors.Wrap(err, "get customer specs")
@@ -78,7 +80,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, customerDoc.Collect.V1...)
 		specs = append(specs, bundle.CustomerJSONSpec(opts.CustomerID))
 
-		if types.GetUseDefaults(customerDoc.Lifecycle) {
+		if !opts.SkipDefault && types.GetUseDefaults(customerDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")
@@ -88,6 +90,8 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 		expectedDefaultTasks++
 	} else if opts.ChannelID != "" {
+		jww.DEBUG.Printf("Getting spec with channel id %s", opts.ChannelID)
+
 		channelDoc, err = getChannelDoc(graphQLClient, opts.ChannelID)
 		if err != nil {
 			return errors.Wrap(err, "get channel spec")
@@ -95,7 +99,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, channelDoc.Collect.V1...)
 		specs = append(specs, bundle.ChannelJSONSpec(opts.ChannelID))
 
-		if types.GetUseDefaults(channelDoc.Lifecycle) {
+		if !opts.SkipDefault && types.GetUseDefaults(channelDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")
@@ -105,6 +109,8 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 		expectedDefaultTasks++
 	} else if opts.WatchID != "" {
+		jww.DEBUG.Printf("Getting spec with watch id %s", opts.WatchID)
+
 		watchDoc, err = getWatchDoc(graphQLClient, opts.WatchID)
 		if err != nil {
 			return errors.Wrap(err, "get watch spec")
@@ -113,7 +119,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, watchDoc.Collect.V1...)
 		specs = append(specs, bundle.WatchJSONSpec(opts.WatchID))
 
-		if types.GetUseDefaults(watchDoc.Lifecycle) {
+		if !opts.SkipDefault && types.GetUseDefaults(watchDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")

@@ -13,16 +13,14 @@ import (
 func (k *Kubernetes) ContainerCp(spec types.Spec) []types.Task {
 	var err error
 	podNameProvided := spec.KubernetesContainerCp.Pod != ""
-	labelSelectorProvided :=
-		spec.KubernetesContainerCp.PodListOptions != nil &&
-			spec.KubernetesContainerCp.PodListOptions.LabelSelector != ""
+	podListOptionsProvided := spec.KubernetesContainerCp.PodListOptions != nil
 	namespaceProvided := spec.KubernetesContainerCp.Namespace != ""
 
 	if spec.KubernetesContainerCp == nil {
 		err = errors.New("spec for kubernetes.ContainerCp required")
 	}
 
-	if !podNameProvided && !labelSelectorProvided {
+	if !podNameProvided && !podListOptionsProvided {
 		err = errors.New("spec for kubernetes.ContainerCp pod or list_options required")
 	}
 
@@ -32,8 +30,9 @@ func (k *Kubernetes) ContainerCp(spec types.Spec) []types.Task {
 	}
 
 	type podLocation struct {
-		PodName   string
-		Namespace string
+		PodName       string
+		ContainerName string
+		Namespace     string
 	}
 
 	var podLocations []podLocation
@@ -55,7 +54,14 @@ func (k *Kubernetes) ContainerCp(spec types.Spec) []types.Task {
 	pods := podList.Items
 	for _, pod := range pods {
 		if !podNameProvided || spec.KubernetesContainerCp.Pod == pod.Name {
-			podLocations = append(podLocations, podLocation{PodName: pod.Name, Namespace: pod.Namespace})
+			l := podLocation{PodName: pod.Name, Namespace: pod.Namespace}
+			if spec.KubernetesContainerCp.Container != "" {
+				l.ContainerName = spec.KubernetesContainerCp.Container
+			} else if len(pod.Spec.Containers) > 1 {
+				// choose first container in pod
+				l.ContainerName = pod.Spec.Containers[0].Name
+			}
+			podLocations = append(podLocations, l)
 		}
 	}
 
@@ -80,7 +86,7 @@ func (k *Kubernetes) ContainerCp(spec types.Spec) []types.Task {
 			StreamFormat: plans.StreamFormatTar,
 			Producer: k.producers.ContainerCp(
 				podLocation.PodName,
-				spec.KubernetesContainerCp.Container,
+				podLocation.ContainerName,
 				podLocation.Namespace,
 				filepath.Clean(spec.KubernetesContainerCp.SrcPath)),
 		}
