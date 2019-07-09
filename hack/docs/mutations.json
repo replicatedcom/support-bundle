@@ -1,18 +1,24 @@
 [
   {
-    "path": "properties.lifecycle.items",
-    "merge": {
-      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles"
-    }
-  },
-  {
     "path": "properties.lifecycle",
     "merge": {
       "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles"
     }
   },
   {
-    "path": "properties.lifecycle.items.properties.message",
+    "path": "properties.lifecycle.properties.v1",
+    "merge": {
+      "description": "The v1 lifecycle definition"
+    }
+  },
+  {
+    "path": "properties.lifecycle.properties.v1.items",
+    "merge": {
+      "description": "`lifecycle` can be used to customize the end-customer's experience when generating/uploading support bundles"
+    }
+  },
+  {
+    "path": "properties.lifecycle.properties.v1.items.properties.message",
     "merge": {
       "description": "Adds a step to print a message to the end customer",
       "examples": [
@@ -28,13 +34,13 @@
     }
   },
   {
-    "path": "properties.lifecycle.items.properties.message.properties.contents",
+    "path": "properties.lifecycle.properties.v1.items.properties.message.properties.contents",
     "merge": {
       "description": "is the message"
     }
   },
   {
-    "path": "properties.lifecycle.items.properties.generate",
+    "path": "properties.lifecycle.properties.v1.items.properties.generate",
     "merge": {
       "description": "Adds a step that will generate a support bundle. It has one argument, use_defaults",
       "examples": [
@@ -45,13 +51,13 @@
     }
   },
   {
-    "path": "properties.lifecycle.items.properties.generate.properties.use_defaults",
+    "path": "properties.lifecycle.properties.v1.items.properties.generate.properties.use_defaults",
     "merge": {
       "description": "Whether to include the default support bundle files - cpu info, docker ps, etc"
     }
   },
   {
-    "path": "properties.lifecycle.items.properties[\"upload\"]",
+    "path": "properties.lifecycle.properties.v1.items.properties[\"upload\"]",
     "merge": {
       "description": "Adds a step in which the end customer can upload a bundle to https://vendor.replicated.com for review by the vendor",
       "examples": [
@@ -72,37 +78,37 @@
     }
   },
   {
-    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"]",
+    "path": "properties.lifecycle.properties.v1.items.properties[\"upload\"].properties[\"prompt\"]",
     "merge": {
       "description": "Allows configuring an interactive prompt for the user to confirm before uploading"
     }
   },
   {
-    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"accept\"]",
+    "path": "properties.lifecycle.properties.v1.items.properties[\"upload\"].properties[\"prompt\"].properties[\"accept\"]",
     "merge": {
       "description": "A message to display if the user accepts the upload prompt"
     }
   },
   {
-    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"decline\"]",
+    "path": "properties.lifecycle.properties.v1.items.properties[\"upload\"].properties[\"prompt\"].properties[\"decline\"]",
     "merge": {
       "description": "A message to display if the user declines the upload prompt"
     }
   },
   {
-    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"default\"]",
+    "path": "properties.lifecycle.properties.v1.items.properties[\"upload\"].properties[\"prompt\"].properties[\"default\"]",
     "merge": {
       "description": "The default answer to the prompt"
     }
   },
   {
-    "path": "properties.lifecycle.items.properties[\"upload\"].properties[\"prompt\"].properties[\"message\"]",
+    "path": "properties.lifecycle.properties.v1.items.properties[\"upload\"].properties[\"prompt\"].properties[\"message\"]",
     "merge": {
       "description": "Message to display before prompting"
     }
   },
   {
-    "path": "properties.lifecycle.items.properties[\"notes\"]",
+    "path": "properties.lifecycle.properties.v1.items.properties[\"notes\"]",
     "merge": {
       "description": "Adds a step to prompt the end customer to enter a note to be uploaded with the support bundle",
       "examples": [
@@ -113,7 +119,7 @@
     }
   },
   {
-    "path": "properties.lifecycle.items.properties[\"notes\"].properties.prompt",
+    "path": "properties.lifecycle.properties.v1.items.properties[\"notes\"].properties.prompt",
     "merge": {
       "description": "the message prompt to display to the end customer for entering a note"
     }

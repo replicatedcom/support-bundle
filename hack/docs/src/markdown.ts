@@ -163,7 +163,7 @@ export const handler = (argv) => {
 
   if (schema.properties.collect) {
     const specTypes = schema.properties.collect.properties.v1.items.properties;
-    const lifecycleSpecTypes = schema.properties.lifecycle.items.properties;
+    const lifecycleSpecTypes = schema.properties.lifecycle.properties.v1.items.properties;
 
     const generateDocSpecTypes = generateDoc(`${output}/collect`, specTypes, "support-bundle-yaml-specs");
     const generateDocLifecycleSpecTypes = generateDoc(`${output}/lifecycle`, lifecycleSpecTypes, "support-bundle-yaml-lifecycle");
