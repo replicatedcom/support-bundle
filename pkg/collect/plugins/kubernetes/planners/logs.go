@@ -55,14 +55,22 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 	pods := podList.Items
 	for _, pod := range pods {
 		if !podNameProvided || spec.KubernetesLogs.Pod == pod.Name {
-			l := podLocation{PodName: pod.Name, Namespace: pod.Namespace}
 			if spec.KubernetesLogs.PodLogOptions != nil && spec.KubernetesLogs.PodLogOptions.Container != "" {
-				l.ContainerName = spec.KubernetesLogs.PodLogOptions.Container
-			} else if len(pod.Spec.Containers) > 1 {
-				// choose first container in pod
-				l.ContainerName = pod.Spec.Containers[0].Name
+				podLocations = append(podLocations, podLocation{
+					PodName:       pod.Name,
+					Namespace:     pod.Namespace,
+					ContainerName: spec.KubernetesLogs.PodLogOptions.Container,
+				})
+			} else {
+				// get logs for all containers in the pod
+				for _, container := range pod.Spec.Containers {
+					podLocations = append(podLocations, podLocation{
+						PodName:       pod.Name,
+						Namespace:     pod.Namespace,
+						ContainerName: container.Name,
+					})
+				}
 			}
-			podLocations = append(podLocations, l)
 		}
 	}
 
@@ -89,7 +97,7 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 
 		task := plans.StreamSource{
 			Producer: k.producers.Logs(currentLogOptions),
-			RawPath:  filepath.Join(rawPath, fmt.Sprintf("%s.log", podLocation.PodName)),
+			RawPath:  filepath.Join(rawPath, fmt.Sprintf("%s-%s.log", podLocation.PodName, podLocation.ContainerName)),
 		}
 
 		task, err = plans.SetCommonFieldsStreamSource(task, spec)
