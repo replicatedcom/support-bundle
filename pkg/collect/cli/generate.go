@@ -78,7 +78,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, customerDoc.Collect.V1...)
 		specs = append(specs, bundle.CustomerJSONSpec(opts.CustomerID))
 
-		if types.GetUseDefaults(customerDoc.Lifecycle) {
+		if !opts.SkipDefault && types.GetUseDefaults(customerDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")
@@ -95,7 +95,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, channelDoc.Collect.V1...)
 		specs = append(specs, bundle.ChannelJSONSpec(opts.ChannelID))
 
-		if types.GetUseDefaults(channelDoc.Lifecycle) {
+		if !opts.SkipDefault && types.GetUseDefaults(channelDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")
@@ -113,7 +113,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, watchDoc.Collect.V1...)
 		specs = append(specs, bundle.WatchJSONSpec(opts.WatchID))
 
-		if types.GetUseDefaults(watchDoc.Lifecycle) {
+		if !opts.SkipDefault && types.GetUseDefaults(watchDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")
