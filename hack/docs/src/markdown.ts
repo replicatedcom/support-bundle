@@ -87,7 +87,7 @@ function maybeRenderExamples(specTypes: any, specType: string, schemaType: SCHEM
     "support-bundle-yaml-specs": "properties.collect.properties.v1.items",
     "analyze-yaml-variable-specs": "properties.analyze.properties.v1.items.properties.registerVariables.items",
     "analyze-yaml-condition-specs": "definitions.analyzeCondition",
-    "support-bundle-yaml-lifecycle": "properties.lifecycle.items",
+    "support-bundle-yaml-lifecycle": "properties.lifecycle.properties.v1.items",
   };
 
   let doc = "";
