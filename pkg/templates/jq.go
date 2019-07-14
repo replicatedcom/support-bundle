@@ -16,7 +16,7 @@ func init() {
 }
 
 func JSONQuery(obj, exp string) []interface{} {
-	seq, err := jqpipe.Eval(obj, exp)
+	seq, err := jqpipe.Eval(exp, obj)
 	if err != nil {
 		Panic("jq", err)
 	}
@@ -39,6 +39,12 @@ func JqMessagesToString(msgs []interface{}) string {
 	switch e := msgs[0].(type) {
 	case string:
 		return e
+	case int:
+		return fmt.Sprintf("%d", e)
+	case float32, float64:
+		return fmt.Sprintf("%f", e)
+	case bool:
+		return fmt.Sprintf("%v", e)
 	default:
 		Panic("jqMessagesToString", fmt.Errorf("type %T unsupported, must be of type string", msgs[0]))
 		return "" // panic above

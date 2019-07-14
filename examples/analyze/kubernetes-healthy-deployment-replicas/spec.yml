@@ -1,0 +1,34 @@
+analyze:
+  v1:
+    - name: availableReplicas
+      insight:
+        primary: '{{repl .availableReplicas}} Replicas'
+        detail: '{{repl .availableReplicas}} Foo Service Replicas are available'
+        severity: info
+      registerVariables:
+        - name: deployments
+          fileMatch:
+            pathRegexps:
+              - scheduler/kubernetes/resources/deployments/resource\.json
+            identity: {}
+        - name: availableReplicas
+          eval: '{{repl .deployments | jq ".items[] | select(.metadata.name==\"foo-deployment\") | .status.replicas" | jqMessagesToString | float64 | int }}'
+      evaluateConditions:
+        - condition:
+            numberCompare:
+              gte: 1
+            variableRef: availableReplicas
+          insightOnFalse:
+            primary: Foo Service Down
+            detail: '{{repl .availableReplicas}} Foo Service Replicas are available'
+            severity: error
+        - condition:
+            numberCompare:
+              gte: 2
+            variableRef: aiHelperAvailableReplicas
+          insightOnFalse:
+            primary: Foo Service Degraded
+            detail: '{{repl .availableReplicas}} Foo Service Replicas are available'
+            severity: warn
+
+

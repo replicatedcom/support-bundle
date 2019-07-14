@@ -1,0 +1,26 @@
+analyze:
+  v1:
+    - name: nodeDiskPressure
+      insight:
+        primary: 'Disk OK'
+        detail: 'No Nodes have disk pressure'
+        severity: debug
+      registerVariables:
+        - name: nodes
+          fileMatch:
+            pathRegexps:
+              - scheduler/kubernetes/resources/nodes/resource\.json
+            identity: {}
+        - name: diskPressureNodeName
+          # need to JQ better to make sure we're selecting the right condition, but this is a start
+          eval: '{{repl .nodes | jq ".items[] | select(.status.conditions[2].status==\"True\") | .metadata.name" }}'
+      evaluateConditions:
+        - condition:
+            stringCompare:
+              eq: "[]"
+            variableRef: diskPressureNodeName
+          insightOnFalse:
+            primary: Disk Pressure
+            detail: 'Nodes {{repl .diskPressureNodeName}} experiencing Disk Pressure. Workloads will be degraded or evicted. Consider increasing disk size.'
+            severity: error
+

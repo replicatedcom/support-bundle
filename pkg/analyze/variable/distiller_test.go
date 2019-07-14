@@ -9,7 +9,7 @@ import (
 )
 
 func TestDistiller_Distill(t *testing.T) {
-	evalDistiller := distiller.Eval(`{{repl jq . ".key" | jqMessagesToString}}`)
+	evalDistiller := distiller.Eval(`{{repl jq ".key" . | jqMessagesToString}}`)
 
 	tests := []struct {
 		name      string
