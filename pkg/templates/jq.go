@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 
-	jqpipe "github.com/andrewchambers/go-jqpipe"
+	"github.com/andrewchambers/go-jqpipe"
 )
 
 func init() {
@@ -40,11 +41,11 @@ func JqMessagesToString(msgs []interface{}) string {
 	case string:
 		return e
 	case int:
-		return fmt.Sprintf("%d", e)
+		return strconv.Itoa(e)
+	case bool:
+		return strconv.FormatBool(e)
 	case float32, float64:
 		return fmt.Sprintf("%f", e)
-	case bool:
-		return fmt.Sprintf("%v", e)
 	default:
 		Panic("jqMessagesToString", fmt.Errorf("type %T unsupported, must be of type string", msgs[0]))
 		return "" // panic above
