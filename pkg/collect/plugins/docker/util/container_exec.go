@@ -19,7 +19,7 @@ func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container
 		return nil, nil, nil, errors.Wrap(err, "exec create")
 	}
 
-	startConfig := dockertypes.ExecStartCheck{
+	startConfig := dockertypes.ExecConfig{
 		Detach: config.Detach,
 		Tty:    config.Tty,
 	}
@@ -28,7 +28,11 @@ func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container
 		return nil, nil, nil, errors.Wrap(err, "exec attach")
 	}
 
-	if err := client.ContainerExecStart(ctx, exec.ID, startConfig); err != nil {
+	startExecConfig := dockertypes.ExecStartCheck{
+		Detach: config.Detach,
+		Tty:    config.Tty,
+	}
+	if err := client.ContainerExecStart(ctx, exec.ID, startExecConfig); err != nil {
 		resp.Close()
 		return nil, nil, nil, errors.Wrap(err, "exec start")
 	}
