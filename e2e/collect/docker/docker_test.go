@@ -1,8 +1,6 @@
 package docker
 
 import (
-	"context"
-
 	"github.com/docker/docker/client"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -17,7 +15,6 @@ var _ = Describe("docker container select", func() {
 	if err != nil {
 		panic(err)
 	}
-	dockerClient.NegotiateAPIVersion(context.Background())
 
 	var containerID1, containerName1 string
 	var containerID2, containerName2 string
