@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"time"
@@ -10,7 +9,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/replicatedcom/support-bundle/e2e/collect/ginkgo"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 var _ = Describe("docker.container-logs", func() {
@@ -18,7 +17,6 @@ var _ = Describe("docker.container-logs", func() {
 	if err != nil {
 		panic(err)
 	}
-	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(LogResultsFromBundle)
