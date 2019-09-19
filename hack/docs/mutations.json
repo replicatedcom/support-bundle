@@ -664,12 +664,6 @@
     }
   },
   {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.container-logs\"].properties.container_logs_options.properties.Until",
-    "merge": {
-      "description": "Same as would be passed to `docker logs`"
-    }
-  },
-  {
     "path": "properties.collect.properties.v1.items.properties[\"docker.container-ls\"]",
     "replace": {
       "required": []
@@ -901,12 +895,6 @@
   },
   {
     "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Retries",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.StartPeriod",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
     }
@@ -1209,18 +1197,6 @@
     }
   },
   {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DeviceCgroupRules",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DeviceCgroupRules.items",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
     "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Devices",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
@@ -1432,12 +1408,6 @@
   },
   {
     "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.BindOptions.properties.Propagation",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Consistency",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
     }
@@ -2125,12 +2095,6 @@
     }
   },
   {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.logs\"].properties.container_logs_options.properties.Until",
-    "merge": {
-      "description": "Same as would be passed to `docker logs`"
-    }
-  },
-  {
     "path": "properties.collect.properties.v1.items.properties[\"docker.node-ls\"]",
     "replace": {
       "required": []
@@ -2395,12 +2359,6 @@
   },
   {
     "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.Retries",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.Config.properties.Healthcheck.properties.StartPeriod",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
     }
@@ -2703,18 +2661,6 @@
     }
   },
   {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DeviceCgroupRules",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DeviceCgroupRules.items",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
     "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Devices",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
@@ -2926,12 +2872,6 @@
   },
   {
     "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.BindOptions.properties.Propagation",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Mounts.items.properties.Consistency",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
     }
@@ -3325,12 +3265,6 @@
     }
   },
   {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.service-logs\"].properties.container_logs_options.properties.Until",
-    "merge": {
-      "description": "Same as would be passed to `docker logs`"
-    }
-  },
-  {
     "path": "properties.collect.properties.v1.items.properties[\"docker.service-logs\"].properties.service",
     "merge": {
       "description": "A single docker swarm service for which to collect logs"
@@ -3512,12 +3446,6 @@
   },
   {
     "path": "properties.collect.properties.v1.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Timestamps",
-    "merge": {
-      "description": "Same as would be passed to `docker logs`"
-    }
-  },
-  {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.stack-service-logs\"].properties.container_logs_options.properties.Until",
     "merge": {
       "description": "Same as would be passed to `docker logs`"
     }
