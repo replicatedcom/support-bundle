@@ -102,7 +102,7 @@ specs:
 	})
 })
 
-var _ = Describe("os.read-file docker", func() {
+var _ = XDescribe("os.read-file docker", func() {
 
 	inContainer := os.Getenv("IN_CONTAINER")
 	BeforeEach(func() {
