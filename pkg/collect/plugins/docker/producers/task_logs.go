@@ -28,7 +28,7 @@ func (d *Docker) TaskLogs(taskID string, opts *dockertypes.ContainerLogsOptions)
 		opts.Timestamps = true
 		opts.Follow = false
 
-		reader, err := d.client.ContainerLogs(ctx, taskID, *opts)
+		reader, err := d.client.TaskLogs(ctx, taskID, *opts)
 		if err != nil {
 			return nil, err
 		}

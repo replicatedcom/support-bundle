@@ -593,6 +593,10 @@
                       "Timestamps": {
                         "description": "Same as would be passed to `docker logs`",
                         "type": "boolean"
+                      },
+                      "Until": {
+                        "description": "Same as would be passed to `docker logs`",
+                        "type": "string"
                       }
                     },
                     "additionalProperties": false,
@@ -888,6 +892,10 @@
                                 "type": "integer"
                               },
                               "Retries": {
+                                "description": "Container create options as would be passed to `docker run`",
+                                "type": "integer"
+                              },
+                              "StartPeriod": {
                                 "description": "Container create options as would be passed to `docker run`",
                                 "type": "integer"
                               },
@@ -1189,6 +1197,14 @@
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "string"
                           },
+                          "DeviceCgroupRules": {
+                            "description": "Container create options as would be passed to `docker run`",
+                            "items": {
+                              "description": "Container create options as would be passed to `docker run`",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "Devices": {
                             "description": "Container create options as would be passed to `docker run`",
                             "items": {
@@ -1274,9 +1290,6 @@
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "boolean"
                           },
-                          "InitPath": {
-                            "type": "string"
-                          },
                           "IpcMode": {
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "string"
@@ -1356,6 +1369,10 @@
                                   },
                                   "additionalProperties": false,
                                   "type": "object"
+                                },
+                                "Consistency": {
+                                  "description": "Container create options as would be passed to `docker run`",
+                                  "type": "string"
                                 },
                                 "ReadOnly": {
                                   "description": "Container create options as would be passed to `docker run`",
@@ -1645,7 +1662,8 @@
                                   "IPv6Gateway",
                                   "GlobalIPv6Address",
                                   "GlobalIPv6PrefixLen",
-                                  "MacAddress"
+                                  "MacAddress",
+                                  "DriverOpts"
                                 ],
                                 "properties": {
                                   "Aliases": {
@@ -1653,6 +1671,14 @@
                                       "type": "string"
                                     },
                                     "type": "array"
+                                  },
+                                  "DriverOpts": {
+                                    "patternProperties": {
+                                      ".*": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "type": "object"
                                   },
                                   "EndpointID": {
                                     "type": "string"
@@ -2326,6 +2352,10 @@
                       "Timestamps": {
                         "description": "Same as would be passed to `docker logs`",
                         "type": "boolean"
+                      },
+                      "Until": {
+                        "description": "Same as would be passed to `docker logs`",
+                        "type": "string"
                       }
                     },
                     "additionalProperties": false,
@@ -2708,6 +2738,10 @@
                                 "description": "Container create options as would be passed to `docker run`",
                                 "type": "integer"
                               },
+                              "StartPeriod": {
+                                "description": "Container create options as would be passed to `docker run`",
+                                "type": "integer"
+                              },
                               "Test": {
                                 "description": "Container create options as would be passed to `docker run`",
                                 "items": {
@@ -3006,6 +3040,14 @@
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "string"
                           },
+                          "DeviceCgroupRules": {
+                            "description": "Container create options as would be passed to `docker run`",
+                            "items": {
+                              "description": "Container create options as would be passed to `docker run`",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "Devices": {
                             "description": "Container create options as would be passed to `docker run`",
                             "items": {
@@ -3091,9 +3133,6 @@
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "boolean"
                           },
-                          "InitPath": {
-                            "type": "string"
-                          },
                           "IpcMode": {
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "string"
@@ -3173,6 +3212,10 @@
                                   },
                                   "additionalProperties": false,
                                   "type": "object"
+                                },
+                                "Consistency": {
+                                  "description": "Container create options as would be passed to `docker run`",
+                                  "type": "string"
                                 },
                                 "ReadOnly": {
                                   "description": "Container create options as would be passed to `docker run`",
@@ -3460,7 +3503,8 @@
                                   "IPv6Gateway",
                                   "GlobalIPv6Address",
                                   "GlobalIPv6PrefixLen",
-                                  "MacAddress"
+                                  "MacAddress",
+                                  "DriverOpts"
                                 ],
                                 "properties": {
                                   "Aliases": {
@@ -3468,6 +3512,14 @@
                                       "type": "string"
                                     },
                                     "type": "array"
+                                  },
+                                  "DriverOpts": {
+                                    "patternProperties": {
+                                      ".*": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "type": "object"
                                   },
                                   "EndpointID": {
                                     "type": "string"
@@ -3633,6 +3685,7 @@
                       "ShowStdout",
                       "ShowStderr",
                       "Since",
+                      "Until",
                       "Timestamps",
                       "Follow",
                       "Tail",
@@ -3666,6 +3719,10 @@
                       "Timestamps": {
                         "description": "Same as would be passed to `docker logs`",
                         "type": "boolean"
+                      },
+                      "Until": {
+                        "description": "Same as would be passed to `docker logs`",
+                        "type": "string"
                       }
                     },
                     "additionalProperties": false,
@@ -3996,6 +4053,7 @@
                       "ShowStdout",
                       "ShowStderr",
                       "Since",
+                      "Until",
                       "Timestamps",
                       "Follow",
                       "Tail",
@@ -4029,6 +4087,10 @@
                       "Timestamps": {
                         "description": "Same as would be passed to `docker logs`",
                         "type": "boolean"
+                      },
+                      "Until": {
+                        "description": "Same as would be passed to `docker logs`",
+                        "type": "string"
                       }
                     },
                     "additionalProperties": false,
@@ -4492,6 +4554,7 @@
                       "ShowStdout",
                       "ShowStderr",
                       "Since",
+                      "Until",
                       "Timestamps",
                       "Follow",
                       "Tail",
@@ -4518,6 +4581,9 @@
                       },
                       "Timestamps": {
                         "type": "boolean"
+                      },
+                      "Until": {
+                        "type": "string"
                       }
                     },
                     "additionalProperties": false,
@@ -4656,6 +4722,7 @@
                       "ShowStdout",
                       "ShowStderr",
                       "Since",
+                      "Until",
                       "Timestamps",
                       "Follow",
                       "Tail",
@@ -4682,6 +4749,9 @@
                       },
                       "Timestamps": {
                         "type": "boolean"
+                      },
+                      "Until": {
+                        "type": "string"
                       }
                     },
                     "additionalProperties": false,

@@ -6,7 +6,7 @@ import (
 	. "github.com/replicatedcom/support-bundle/e2e/collect/ginkgo"
 )
 
-var _ = XDescribe("docker.container-run", func() {
+var _ = Describe("docker.container-run", func() {
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(LogResultsFromBundle)

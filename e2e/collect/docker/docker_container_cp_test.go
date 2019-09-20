@@ -1,13 +1,14 @@
 package docker
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/docker/docker/client"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/replicatedcom/support-bundle/e2e/collect/ginkgo"
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 )
 
 var _ = Describe("docker.container-cp", func() {
@@ -15,6 +16,7 @@ var _ = Describe("docker.container-cp", func() {
 	if err != nil {
 		panic(err)
 	}
+	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(LogResultsFromBundle)
@@ -68,6 +70,7 @@ var _ = Describe("docker.container-cp-by-label", func() {
 	if err != nil {
 		panic(err)
 	}
+	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(LogResultsFromBundle)
