@@ -4,6 +4,7 @@ import (
 	"context"
 	"regexp"
 
+	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -18,6 +19,8 @@ func NewEnvClient(ctx context.Context, logger log.Logger) (docker.CommonAPIClien
 	if err != nil {
 		return nil, err
 	}
+
+	client.NegotiateAPIVersion(ctx)
 
 	if client.ClientVersion() != "1.24" {
 		return client, nil
@@ -44,6 +47,15 @@ func NewEnvClient(ctx context.Context, logger log.Logger) (docker.CommonAPIClien
 		info.Log(
 			"version-fallback", client.ClientVersion(),
 			"err", "version negotiation failed",
+		)
+	} else {
+		var fakePing types.Ping
+		fakePing.APIVersion = matches[1]
+		client.NegotiateAPIVersionPing(fakePing)
+
+		debug := level.Info(log.With(logger, "method", "docker.NewEnvClient"))
+		debug.Log(
+			"version-fallback", client.ClientVersion(),
 		)
 	}
 	return client, nil

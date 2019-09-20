@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 
 	dockertypes "github.com/docker/docker/api/types"
+	dockercontainertypes "github.com/docker/docker/api/types/container"
 	docker "github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/pkg/errors"
@@ -53,16 +54,7 @@ func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config doc
 		return nil, nil, nil, errors.Wrap(err, "container attach")
 	}
 
-	okCh := make(chan int64)
-	errCh := make(chan error)
-	go func() {
-		status, err := client.ContainerWait(ctx, containerInstance.ID)
-		if err != nil {
-			errCh <- err
-		} else {
-			okCh <- status
-		}
-	}()
+	okCh, errCh := client.ContainerWait(ctx, containerInstance.ID, dockercontainertypes.WaitConditionNextExit)
 
 	if err := client.ContainerStart(ctx, containerInstance.ID, dockertypes.ContainerStartOptions{}); err != nil {
 		resp.Close()
@@ -72,8 +64,12 @@ func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config doc
 	errorCh := make(chan ContainerCmdError, 1)
 	go func() {
 		select {
-		case status := <-okCh:
-			errorCh <- ContainerCmdError{int(status), nil}
+		case body := <-okCh:
+			var err error
+			if body.Error != nil {
+				err = errors.New(body.Error.Message)
+			}
+			errorCh <- ContainerCmdError{int(body.StatusCode), err}
 
 		case err := <-errCh:
 			errorCh <- ContainerCmdError{0, err}

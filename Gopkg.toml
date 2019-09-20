@@ -52,7 +52,3 @@
   name = "github.com/alecthomas/jsonschema"
   branch = "master"
   source = "github.com/emosbaugh/jsonschema"
-
-[[constraint]]
-  name = "github.com/docker/docker"
-  version = "v1.13.1"
