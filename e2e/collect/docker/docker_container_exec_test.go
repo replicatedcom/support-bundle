@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/docker/docker/client"
@@ -15,6 +16,7 @@ var _ = Describe("docker.container-exec", func() {
 	if err != nil {
 		panic(err)
 	}
+	dockerClient.NegotiateAPIVersion(context.Background())
 
 	BeforeEach(EnterNewTempDir)
 	AfterEach(LogResultsFromBundle)
