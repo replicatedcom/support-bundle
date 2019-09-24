@@ -28,16 +28,16 @@ specs:
       description: Logs from services in the replicated stack
       output_dir: default/replicated/swarm/replicated/service-logs
   - docker.stack-service-logs:
-      namespace: replicated-retraced
+      namespace: retraced
       description: Logs from services in the retraced stack
       output_dir: default/replicated/swarm/replicated-retraced/logs
-  - docker.stack-service-logs:
-      namespace: replicated-premkit
-      description: Logs from services in the premkit stack
+  - docker.service-logs:
+      service: premkit_replicated
+      description: Logs from the replicated premkit service
       output_dir: default/replicated/swarm/replicated-premkit/logs
-  - docker.stack-service-logs:
-      namespace: replicated-statsd
-      description: Logs from services in the statsd stack
+  - docker.service-logs:
+      service: statsd_replicated
+      description: Logs from the replicated statsd service
       output_dir: default/replicated/swarm/replicated-statsd/logs
 
 # kubernetes
