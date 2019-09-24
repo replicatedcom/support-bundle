@@ -216,3 +216,6 @@
     * kubernetes.logs will now get logs for all containers in a pod if no container name is specified
     * kubernetes.container-cp will now select the first container in a pod by default if no container name is specified
     * --skip-default flag was ignored when lifecycle empty
+
+0.27.4 /2019-09-23
+    * Fix Swarm built-in stack and service logs for Replicated Platform
