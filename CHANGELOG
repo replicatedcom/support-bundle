@@ -222,3 +222,6 @@
 
 0.27.6 /2019-09-30
     * Patch CVE-2019-5094 e2fslibs-1.43.4-2 e2fsprogs-1.43.4-2 libcomerr2-1.43.4-2 libss2-1.43.4-2
+
+0.27.7/2019-10-17
+    * Patch CVE-2019-1563 and CVE-2019-1547 libssl1.1-1.1.0k-1 libssl1.0.2-1.0.2s-1 openssl-1.1.0k-1
