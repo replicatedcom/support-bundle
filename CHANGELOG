@@ -225,3 +225,6 @@
 
 0.27.7/2019-10-17
     * Patch CVE-2019-1563 and CVE-2019-1547 libssl1.1-1.1.0k-1 libssl1.0.2-1.0.2s-1 openssl-1.1.0k-1
+
+0.27.8/2020-01-02
+    * Patch CVE-2019-19906 and CVE-2019-1551 libsasl2-2-2.1.27~101-g0780600+dfsg-3 libssl1.0.2-1.0.2t-1~deb9u1
