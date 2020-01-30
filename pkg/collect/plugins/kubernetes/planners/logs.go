@@ -85,7 +85,7 @@ func (k *Kubernetes) Logs(spec types.Spec) []types.Task {
 		currentLogOptions := *spec.KubernetesLogs
 		currentLogOptions.Pod = podLocation.PodName
 		if currentLogOptions.PodLogOptions == nil {
-			currentLogOptions.PodLogOptions = new(types.PodLogOptions)
+			currentLogOptions.PodLogOptions = new(v1.PodLogOptions)
 		}
 		currentLogOptions.PodLogOptions.Container = podLocation.ContainerName
 		currentLogOptions.Namespace = podLocation.Namespace
