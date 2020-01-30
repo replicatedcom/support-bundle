@@ -34,8 +34,8 @@ builds:
       -X github.com/replicatedcom/support-bundle/pkg/version.buildTime={{.Date}}
     binary: support-bundle
     hooks: {}
-archive:
-  format: tar.gz
+archives:
+- format: tar.gz
   files:
     - licence*
     - LICENCE*
