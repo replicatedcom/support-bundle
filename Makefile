@@ -1,4 +1,4 @@
-.PHONY: docs docker deps fmt vet _vet lint _lint test _test build _build bindata _mockgen mockgen build-deps dep-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
+.PHONY: docs docker fmt vet _vet lint _lint test _test build _build bindata _mockgen mockgen build-deps ci-test ci-upload-coverage e2e e2e-analyze e2e-supportbundle e2e-supportbundle-core e2e-supportbundle-docker e2e-supportbundle-swarm ci-e2e ci-e2e-supportbundle ci-e2e-supportbundle-core ci-e2e-supportbundle-docker ci-e2e-supportbundle-swarm goreleaser
 
 SHELL := /bin/bash
 SRC = $(shell find . -name "*.go")
@@ -32,9 +32,6 @@ shell:
 		-v `pwd`:/go/src/github.com/replicatedcom/support-bundle \
 		support-bundle \
 		bash
-
-deps:
-	dep ensure -v
 
 fmt:
 	goimports -w pkg
@@ -128,9 +125,6 @@ build-deps:
 	go get github.com/jteeuwen/go-bindata/go-bindata
 	go get github.com/onsi/ginkgo/ginkgo
 	go get github.com/golang/mock/mockgen
-
-dep-deps:
-	go get github.com/golang/dep/cmd/dep
 
 .state/coverage.out: $(SRC)
 	@mkdir -p .state/

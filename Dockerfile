@@ -1,4 +1,4 @@
-FROM golang:1.10
+FROM golang:1.13
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y \
     jq \
@@ -9,6 +9,6 @@ ENV PROJECTPATH=/go/src/github.com/replicatedcom/support-bundle
 WORKDIR $PROJECTPATH
 
 ADD Makefile .
-RUN make build-deps dep-deps
+RUN make build-deps
 
 CMD ["/bin/bash"]
