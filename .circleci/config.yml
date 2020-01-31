@@ -7,7 +7,7 @@ jobs:
 
   docs:
     docker:
-      - image: replicated/gitops-builder:node8-go12
+      - image: replicated/gitops-builder:node8-go13
     working_directory: /go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
