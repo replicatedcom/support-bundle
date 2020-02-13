@@ -122,7 +122,7 @@ bin/support-bundle: $(SRC) pkg/collect/bundle/defaultspec/asset.go
 build-deps:
 	go get golang.org/x/lint/golint
 	go get golang.org/x/tools/cmd/goimports
-	go get github.com/jteeuwen/go-bindata/go-bindata
+	go get github.com/a-urth/go-bindata/go-bindata
 	go get github.com/onsi/ginkgo/ginkgo
 	go get github.com/golang/mock/mockgen
 

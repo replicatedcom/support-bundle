@@ -232,3 +232,6 @@
 0.28.0/2020-01-30
     * Update golang version to 1.13
     * Update kubernetes libraries to 1.17.2
+
+0.28.1/2020-02-13
+    * Patch CVE-2017-14062 libidn11-1.33-1-1.33-1+deb9u1
