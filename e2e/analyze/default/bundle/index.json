@@ -77,6 +77,17 @@
     }
   },
   {
+    "path": "default/proc/loadavg",
+    "format": "",
+    "size": 27,
+    "spec": {
+      "os.read-file": {
+        "output_dir": "default/proc",
+        "filepath": "/proc/loadavg"
+      }
+    }
+  },
+  {
     "path": "default/commands/loadavg/loadavg",
     "format": "",
     "size": 27,
