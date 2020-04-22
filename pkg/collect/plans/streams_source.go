@@ -117,8 +117,9 @@ func (task *StreamsSource) Exec(ctx context.Context, rootDir string) []*types.Re
 
 	readerGroup.Wait()
 	if !task.Spec.Shared().IncludeEmpty {
-		task.cleanupResults(ctx, rootDir, results)
+		task.excludeEmptyResults(ctx, rootDir, results)
 	}
+	task.redactFiles(ctx, rootDir, results)
 	return results
 }
 
@@ -236,7 +237,7 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 				return results
 			}
 		} else {
-			writeResultJSON(ctx, rootDir, task.JSONPath, jsonResult, structured)
+			writeResultJSON(ctx, rootDir, jsonPath, jsonResult, structured)
 		}
 	}
 
@@ -260,11 +261,11 @@ func (task *StreamsSource) execStream(ctx context.Context, rootDir string, fileP
 	}
 
 	if humanTemplated {
-		writeResultTemplate(ctx, rootDir, task.HumanPath, humanResult, task.Template, structured)
+		writeResultTemplate(ctx, rootDir, humanPath, humanResult, task.Template, structured)
 	}
 
 	if humanYAML {
-		writeResultYAML(ctx, rootDir, task.HumanPath, humanResult, structured)
+		writeResultYAML(ctx, rootDir, humanPath, humanResult, structured)
 	}
 
 	if raw && humanRaw {
@@ -314,12 +315,30 @@ func (task *StreamsSource) resultsWithErr(err error, filePath string) []*types.R
 	return resultsWithErr(err, results)
 }
 
-func (task *StreamsSource) cleanupResults(ctx context.Context, rootDir string, results []*types.Result) {
+func (task *StreamsSource) excludeEmptyResults(ctx context.Context, rootDir string, results []*types.Result) {
 	for _, result := range results {
 		if result.Size == 0 {
 			err := os.Remove(path.Join(rootDir, result.Path))
 			if err != nil {
-				jww.DEBUG.Printf("Unable to remove empty file %s within %s because of %s", result.Path, rootDir, err.Error())
+				jww.DEBUG.Printf("Unable to remove empty file %s within %s because of %v", result.Path, rootDir, err)
+			}
+		}
+	}
+}
+
+func (task *StreamsSource) redactFiles(ctx context.Context, rootDir string, results []*types.Result) {
+	if len(GlobalFileRedactors) == 0 {
+		return
+	}
+	for _, result := range results {
+		for _, fileRedactor := range GlobalFileRedactors {
+			if fileRedactor(result.Path) {
+				err := os.Remove(path.Join(rootDir, result.Path))
+				if err != nil {
+					jww.DEBUG.Printf("Unable to remove redacted file %s within %s because of %v", result.Path, rootDir, err)
+				} else {
+					result.Redacted = true
+				}
 			}
 		}
 	}

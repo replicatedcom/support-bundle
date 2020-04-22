@@ -151,7 +151,8 @@ type CustomerMetaOptions struct {
 // meta.redact
 type GlobalRedactionOptions struct {
 	SpecShared `json:",inline,omitempty"`
-	Scrubs     []Scrub `json:"scrubs,omitempty"`
+	Scrubs     []Scrub  `json:"scrubs,omitempty"`
+	Files      []string `json:"files,omitempty"`
 }
 
 // meta.channel

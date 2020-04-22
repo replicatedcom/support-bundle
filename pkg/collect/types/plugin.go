@@ -19,3 +19,5 @@ type StreamProducer func(context.Context) (io.Reader, error)
 type StreamsProducer func(context.Context) (map[string]io.Reader, error)
 
 type BytesScrubber func([]byte) []byte
+
+type FileRedactor func(string) bool

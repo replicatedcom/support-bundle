@@ -156,7 +156,7 @@ e2e-supportbundle-core:
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
-		golang:1.10                                                         \
+		golang:1.13                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -171,7 +171,7 @@ e2e-supportbundle-docker:
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
 		-e DOCKER=1                                                         \
-		golang:1.10                                                         \
+		golang:1.13                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -185,7 +185,7 @@ e2e-supportbundle-swarm:
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
 		-e SWARM=1                                                          \
-		golang:1.10                                                         \
+		golang:1.13                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
