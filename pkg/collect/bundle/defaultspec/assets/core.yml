@@ -85,6 +85,9 @@ specs:
       filepath: /proc/uptime
       output_dir: default/proc
   - os.read-file:
+      filepath: /proc/loadavg
+      output_dir: default/proc
+  - os.read-file:
       filepath: /proc/version
       output_dir: default/proc
   - os.read-file:
