@@ -7,14 +7,15 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gobwas/glob"
 	"github.com/pkg/errors"
-
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
 	jww "github.com/spf13/jwalterweatherman"
 )
 
 var GlobalScrubbers []types.BytesScrubber
-var GlobalScrubbersLock sync.Mutex
+var GlobalFileRedactors []types.FileRedactor
+var GlobalLock sync.Mutex
 
 func SetCommonFieldsStreamsSource(task StreamsSource, spec types.Spec) (StreamsSource, error) {
 	task.Spec = spec
@@ -96,6 +97,35 @@ func RawScrubber(scrubSpec *types.Scrub) (types.BytesScrubber, error) {
 
 	return func(in []byte) []byte {
 		return regex.ReplaceAll(in, []byte(scrubSpec.Replace))
+	}, nil
+}
+
+// FileRedactor creates a file redactor function from a list of files
+func FileRedactor(patterns []string) (types.FileRedactor, error) {
+	type globPattern struct {
+		glob    glob.Glob
+		pattern string
+	}
+	globs := []globPattern{}
+
+	for _, pattern := range patterns {
+		g, err := glob.Compile(pattern)
+		if err != nil {
+			return nil, errors.Wrapf(err, "compile glob %s", pattern)
+		}
+		globs = append(globs, globPattern{
+			glob:    g,
+			pattern: pattern,
+		})
+	}
+	return func(name string) bool {
+		for _, g := range globs {
+			if g.glob.Match(name) {
+				jww.DEBUG.Printf("FileRedactor pattern %s found match for path %s", g.pattern, name)
+				return true
+			}
+		}
+		return false
 	}, nil
 }
 

@@ -3,11 +3,11 @@ package plans
 import (
 	"bytes"
 	"math/rand"
+	"reflect"
 	"regexp"
 	"testing"
 
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -137,4 +137,62 @@ func randStringBytes(n int, letterBytes string) []byte {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
 	return b
+}
+
+func TestFileRedactor(t *testing.T) {
+	type args struct {
+		files    []string
+		patterns []string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []string
+		wantErr bool
+	}{
+		{
+			name: "basic",
+			args: args{
+				files: []string{
+					"a/b/c.txt",
+					"a/b/c.log",
+					"a/b/c.zip",
+					"a/b/c.tar",
+					"/d/e.txt",
+					"/d/e.log",
+					"/d/e.zip",
+					"/d/e.tar",
+				},
+				patterns: []string{
+					"**/*.zip",
+					"/d/e.txt",
+					"*/e.tar",
+				},
+			},
+			want: []string{
+				"a/b/c.txt",
+				"a/b/c.log",
+				"a/b/c.tar",
+				"/d/e.log",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fileRedactor, err := FileRedactor(tt.args.patterns)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FileRedactor() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			got := []string{}
+			for _, name := range tt.args.files {
+				if !fileRedactor(name) {
+					got = append(got, name)
+				}
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FileRedactor() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

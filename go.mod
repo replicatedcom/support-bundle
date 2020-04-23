@@ -29,6 +29,7 @@ require (
 	github.com/go-kit/kit v0.8.0
 	github.com/go-logfmt/logfmt v0.3.0 // indirect
 	github.com/go-stack/stack v1.8.0
+	github.com/gobwas/glob v0.2.3
 	github.com/golang/mock v1.2.0
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
 	github.com/googleapis/gnostic v0.2.0 // indirect
@@ -47,8 +48,8 @@ require (
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/mitchellh/mapstructure v0.0.0-20180511142126-bb74f1db0675 // indirect
 	github.com/nwaples/rardecode v0.0.0-20171029023500-e06696f847ae // indirect
-	github.com/onsi/ginkgo v1.10.1
-	github.com/onsi/gomega v1.7.0
+	github.com/onsi/ginkgo v1.12.0
+	github.com/onsi/gomega v1.7.1
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
@@ -68,6 +69,7 @@ require (
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
 	golang.org/x/net v0.0.0-20191004110552-13f9640d40b9
 	google.golang.org/grpc v1.20.0 // indirect
+	gopkg.in/square/go-jose.v2 v2.5.0
 	gopkg.in/yaml.v2 v2.2.8
 	k8s.io/api v0.17.2
 	k8s.io/apimachinery v0.17.2

@@ -4270,7 +4270,7 @@
       "required": ["scrubs", "output_dir"]
     },
     "merge": {
-      "description": "A list of scrubbers to apply to all assets. If multiple 'meta.redact' specs are specified, all lists will be used. If a spec specifies a scrubber, it will be run in addition to the global scrubbers.",
+      "description": "Redaction to apply to all assets. If multiple 'meta.redact' specs are specified, all lists will be used. If a spec specifies a scrubber, it will be run in addition to the global scrubbers.",
       "examples": [
         {
           "scrubs": [
@@ -4279,6 +4279,9 @@
               "replace": "xyz"
             }
           ],
+          "files": [
+            "**/secret.json"
+          ],
           "output_dir": "redact/"
         }
       ],
@@ -4286,6 +4289,10 @@
         {
           "path": "scrubs.json",
           "description": "A list of scrubs that were added globally by this item"
+        },
+        {
+          "path": "file_redactions.json",
+          "description": "A list of file redaction patterns that were added globally by this item"
         }
       ]
     }
@@ -4294,6 +4301,12 @@
     "path": "properties.collect.properties.v1.items.properties[\"meta.redact\"].properties.scrubs",
     "merge": {
       "description": "the list of scrubbers to apply to all outputs"
+    }
+  },
+  {
+    "path": "properties.collect.properties.v1.items.properties[\"meta.redact\"].properties.files",
+    "merge": {
+      "description": "the list of file patterns to redact"
     }
   },
   {

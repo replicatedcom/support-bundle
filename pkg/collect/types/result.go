@@ -10,28 +10,31 @@ import (
 // both a Pathname and an Error if the file written was corrupted or incomplete.
 type Result struct {
 	// The subpath within the bundle
-	Path   string `json:"path"`
-	Format string `json:"format"`
-	Size   int64  `json:"size"`
-	Spec   Spec   `json:"spec"`
-	Error  error  `json:"error,omitempty"`
+	Path     string `json:"path"`
+	Format   string `json:"format"`
+	Size     int64  `json:"size"`
+	Spec     Spec   `json:"spec"`
+	Redacted bool   `json:"redacted"`
+	Error    error  `json:"error,omitempty"`
 }
 
 type resultIntermediate struct {
-	Path   string `json:"path"`
-	Format string `json:"format"`
-	Size   int64  `json:"size"`
-	Spec   Spec   `json:"spec"`
-	Error  string `json:"error,omitempty"`
+	Path     string `json:"path"`
+	Format   string `json:"format"`
+	Size     int64  `json:"size"`
+	Spec     Spec   `json:"spec"`
+	Redacted bool   `json:"redacted"`
+	Error    string `json:"error,omitempty"`
 }
 
 // MarshalJSON .Error will be {} if it has no exported fields, so replace it with a string.
 func (r *Result) MarshalJSON() ([]byte, error) {
 	intermediate := resultIntermediate{
-		Path:   r.Path,
-		Format: r.Format,
-		Spec:   r.Spec,
-		Size:   r.Size,
+		Path:     r.Path,
+		Format:   r.Format,
+		Spec:     r.Spec,
+		Size:     r.Size,
+		Redacted: r.Redacted,
 	}
 	if r.Error != nil {
 		intermediate.Error = r.Error.Error()
@@ -50,6 +53,7 @@ func (r *Result) UnmarshalJSON(raw []byte) error {
 	r.Format = intermediate.Format
 	r.Spec = intermediate.Spec
 	r.Size = intermediate.Size
+	r.Redacted = intermediate.Redacted
 	if intermediate.Error != "" {
 		r.Error = errors.New(intermediate.Error)
 	}
