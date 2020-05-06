@@ -242,3 +242,6 @@
 0.29.0/2020-04-22
     * Added support for global file redaction `meta.redact.files`
     * Added /proc/loadavg to the default bundle
+
+0.29.1/2020-05-05
+    * patch CVE-2020-12243 in libldap-2.4-2-2.4.44+dfsg-5+deb9u3 and libldap-common-2.4.44+dfsg-5+deb9u3
