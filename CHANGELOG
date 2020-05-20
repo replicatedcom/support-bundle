@@ -245,3 +245,6 @@
 
 0.29.1/2020-05-05
     * patch CVE-2020-12243 in libldap-2.4-2-2.4.44+dfsg-5+deb9u3 and libldap-common-2.4.44+dfsg-5+deb9u3
+
+0.29.2/2020-05-20
+    * patch CVE-2020-3810 in apt and libapt-pkg5.0
