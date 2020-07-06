@@ -23,14 +23,14 @@ func ContainerExec(ctx context.Context, client docker.CommonAPIClient, container
 		Detach: config.Detach,
 		Tty:    config.Tty,
 	}
+	if config.Detach {
+		err := client.ContainerExecStart(ctx, exec.ID, startConfig)
+		return nil, nil, nil, errors.Wrap(err, "exec start")
+	}
+
 	resp, err := client.ContainerExecAttach(ctx, exec.ID, startConfig)
 	if err != nil {
 		return nil, nil, nil, errors.Wrap(err, "exec attach")
-	}
-
-	if err := client.ContainerExecStart(ctx, exec.ID, startConfig); err != nil {
-		resp.Close()
-		return nil, nil, nil, errors.Wrap(err, "exec start")
 	}
 
 	doneCh := make(chan struct{})
