@@ -320,251 +320,251 @@ func (k *Kubernetes) ResourceList(opts types.KubernetesResourceListOptions) type
 }
 
 func resourceCertificateSigningRequestsCertificatesV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CertificatesV1beta1().CertificateSigningRequests().List(opts)
+	return c.CertificatesV1beta1().CertificateSigningRequests().List(context.TODO(), opts)
 }
 
 func resourceListClusterRoleBindingsRbacV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1().ClusterRoleBindings().List(opts)
+	return c.RbacV1().ClusterRoleBindings().List(context.TODO(), opts)
 }
 
 func resourceListClusterRoleBindingsRbacV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1beta1().ClusterRoleBindings().List(opts)
+	return c.RbacV1beta1().ClusterRoleBindings().List(context.TODO(), opts)
 }
 
 func resourceListClusterRoleBindingsRbacV1alpha1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1alpha1().ClusterRoleBindings().List(opts)
+	return c.RbacV1alpha1().ClusterRoleBindings().List(context.TODO(), opts)
 }
 
 func resourceListClusterRolesRbacV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1().ClusterRoles().List(opts)
+	return c.RbacV1().ClusterRoles().List(context.TODO(), opts)
 }
 
 func resourceListClusterRolesRbacV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1beta1().ClusterRoles().List(opts)
+	return c.RbacV1beta1().ClusterRoles().List(context.TODO(), opts)
 }
 
 func resourceListClusterRolesRbacV1alpha1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1alpha1().ClusterRoles().List(opts)
+	return c.RbacV1alpha1().ClusterRoles().List(context.TODO(), opts)
 }
 
 func resourceListComponentStatusesCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().ComponentStatuses().List(opts)
+	return c.CoreV1().ComponentStatuses().List(context.TODO(), opts)
 }
 
 func resourceListConfigMapsCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().ConfigMaps(ns).List(opts)
+	return c.CoreV1().ConfigMaps(ns).List(context.TODO(), opts)
 }
 
 func resourceListControllerRevisionsAppsV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1().ControllerRevisions(ns).List(opts)
+	return c.AppsV1().ControllerRevisions(ns).List(context.TODO(), opts)
 }
 
 func resourceListControllerRevisionsAppsV1beta2(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1beta2().ControllerRevisions(ns).List(opts)
+	return c.AppsV1beta2().ControllerRevisions(ns).List(context.TODO(), opts)
 }
 
 func resourceListControllerRevisionsAppsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1beta1().ControllerRevisions(ns).List(opts)
+	return c.AppsV1beta1().ControllerRevisions(ns).List(context.TODO(), opts)
 }
 
 func resourceListCronJobsBatchV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.BatchV1beta1().CronJobs(ns).List(opts)
+	return c.BatchV1beta1().CronJobs(ns).List(context.TODO(), opts)
 }
 
 func resourceListCronJobsBatchV2alpha1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.BatchV2alpha1().CronJobs(ns).List(opts)
+	return c.BatchV2alpha1().CronJobs(ns).List(context.TODO(), opts)
 }
 
 func resourceListDaemonSetsAppsV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1().DaemonSets(ns).List(opts)
+	return c.AppsV1().DaemonSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListDaemonSetsAppsV1beta2(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1beta2().DaemonSets(ns).List(opts)
+	return c.AppsV1beta2().DaemonSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListDaemonSetsExtensionsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.ExtensionsV1beta1().DaemonSets(ns).List(opts)
+	return c.ExtensionsV1beta1().DaemonSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListDeploymentsAppsV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1().Deployments(ns).List(opts)
+	return c.AppsV1().Deployments(ns).List(context.TODO(), opts)
 }
 
 func resourceListDeploymentsAppsV1beta2(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1beta2().Deployments(ns).List(opts)
+	return c.AppsV1beta2().Deployments(ns).List(context.TODO(), opts)
 }
 
 func resourceListDeploymentsAppsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1beta1().Deployments(ns).List(opts)
+	return c.AppsV1beta1().Deployments(ns).List(context.TODO(), opts)
 }
 
 func resourceListDeploymentsExtensionsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.ExtensionsV1beta1().Deployments(ns).List(opts)
+	return c.ExtensionsV1beta1().Deployments(ns).List(context.TODO(), opts)
 }
 
 func resourceListEndpointsCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().Endpoints(ns).List(opts)
+	return c.CoreV1().Endpoints(ns).List(context.TODO(), opts)
 }
 
 func resourceListEventsCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().Events(ns).List(opts)
+	return c.CoreV1().Events(ns).List(context.TODO(), opts)
 }
 
 func resourceListEventsEventsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.EventsV1beta1().Events(ns).List(opts)
+	return c.EventsV1beta1().Events(ns).List(context.TODO(), opts)
 }
 
 func resourceListHorizontalPodAutoscalersAutoscalingV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AutoscalingV1().HorizontalPodAutoscalers(ns).List(opts)
+	return c.AutoscalingV1().HorizontalPodAutoscalers(ns).List(context.TODO(), opts)
 }
 
 func resourceListHorizontalPodAutoscalersAutoscalingV2beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AutoscalingV2beta1().HorizontalPodAutoscalers(ns).List(opts)
+	return c.AutoscalingV2beta1().HorizontalPodAutoscalers(ns).List(context.TODO(), opts)
 }
 
 func resourceListIngressesExtensionsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.ExtensionsV1beta1().Ingresses(ns).List(opts)
+	return c.ExtensionsV1beta1().Ingresses(ns).List(context.TODO(), opts)
 }
 
 func resourceListJobsBatchV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.BatchV1().Jobs(ns).List(opts)
+	return c.BatchV1().Jobs(ns).List(context.TODO(), opts)
 }
 
 func resourceListLimitRangesCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().LimitRanges(ns).List(opts)
+	return c.CoreV1().LimitRanges(ns).List(context.TODO(), opts)
 }
 
 func resourceListMutatingWebhookConfigurationsAdmissionregistrationV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AdmissionregistrationV1beta1().MutatingWebhookConfigurations().List(opts)
+	return c.AdmissionregistrationV1beta1().MutatingWebhookConfigurations().List(context.TODO(), opts)
 }
 
 func resourceListNamespacesCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().Namespaces().List(opts)
+	return c.CoreV1().Namespaces().List(context.TODO(), opts)
 }
 
 func resourceListNetworkPoliciesNetworkingV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.NetworkingV1().NetworkPolicies(ns).List(opts)
+	return c.NetworkingV1().NetworkPolicies(ns).List(context.TODO(), opts)
 }
 
 func resourceListNodesCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().Nodes().List(opts)
+	return c.CoreV1().Nodes().List(context.TODO(), opts)
 }
 
 func resourceListPersistentVolumeClaimsCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().PersistentVolumeClaims(ns).List(opts)
+	return c.CoreV1().PersistentVolumeClaims(ns).List(context.TODO(), opts)
 }
 
 func resourceListPersistentVolumesCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().PersistentVolumes().List(opts)
+	return c.CoreV1().PersistentVolumes().List(context.TODO(), opts)
 }
 
 func resourceListPodDisruptionBudgetsPolicyV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.PolicyV1beta1().PodDisruptionBudgets(ns).List(opts)
+	return c.PolicyV1beta1().PodDisruptionBudgets(ns).List(context.TODO(), opts)
 }
 
 func resourceListPodsCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().Pods(ns).List(opts)
+	return c.CoreV1().Pods(ns).List(context.TODO(), opts)
 }
 
 func resourceListPodSecurityPoliciesPolicyV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.PolicyV1beta1().PodSecurityPolicies().List(opts)
+	return c.PolicyV1beta1().PodSecurityPolicies().List(context.TODO(), opts)
 }
 
 func resourceListPodSecurityPoliciesExtensionsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.ExtensionsV1beta1().PodSecurityPolicies().List(opts)
+	return c.ExtensionsV1beta1().PodSecurityPolicies().List(context.TODO(), opts)
 }
 
 func resourceListPodTemplatesCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().PodTemplates(ns).List(opts)
+	return c.CoreV1().PodTemplates(ns).List(context.TODO(), opts)
 }
 
 func resourceListReplicaSetsAppsV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1().ReplicaSets(ns).List(opts)
+	return c.AppsV1().ReplicaSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListReplicaSetsAppsV1beta2(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1beta2().ReplicaSets(ns).List(opts)
+	return c.AppsV1beta2().ReplicaSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListReplicaSetsExtensionsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.ExtensionsV1beta1().ReplicaSets(ns).List(opts)
+	return c.ExtensionsV1beta1().ReplicaSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListReplicationControllersCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().ReplicationControllers(ns).List(opts)
+	return c.CoreV1().ReplicationControllers(ns).List(context.TODO(), opts)
 }
 
 func resourceListResourceQuotasCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().ResourceQuotas(ns).List(opts)
+	return c.CoreV1().ResourceQuotas(ns).List(context.TODO(), opts)
 }
 
 func resourceListRoleBindingsRbacV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1().RoleBindings(ns).List(opts)
+	return c.RbacV1().RoleBindings(ns).List(context.TODO(), opts)
 }
 
 func resourceListRoleBindingsRbacV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1beta1().RoleBindings(ns).List(opts)
+	return c.RbacV1beta1().RoleBindings(ns).List(context.TODO(), opts)
 }
 
 func resourceListRoleBindingsRbacV1alpha1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1alpha1().RoleBindings(ns).List(opts)
+	return c.RbacV1alpha1().RoleBindings(ns).List(context.TODO(), opts)
 }
 
 func resourceListRolesRbacV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1().Roles(ns).List(opts)
+	return c.RbacV1().Roles(ns).List(context.TODO(), opts)
 }
 
 func resourceListRolesRbacV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1beta1().Roles(ns).List(opts)
+	return c.RbacV1beta1().Roles(ns).List(context.TODO(), opts)
 }
 
 func resourceListRolesRbacV1alpha1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.RbacV1alpha1().Roles(ns).List(opts)
+	return c.RbacV1alpha1().Roles(ns).List(context.TODO(), opts)
 }
 
 func resourceListSecretsCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().Secrets(ns).List(opts)
+	return c.CoreV1().Secrets(ns).List(context.TODO(), opts)
 }
 
 func resourceListServiceAccountsCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().ServiceAccounts(ns).List(opts)
+	return c.CoreV1().ServiceAccounts(ns).List(context.TODO(), opts)
 }
 
 func resourceListServicesCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.CoreV1().Services(ns).List(opts)
+	return c.CoreV1().Services(ns).List(context.TODO(), opts)
 }
 
 func resourceListStatefulSetsAppsV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1().StatefulSets(ns).List(opts)
+	return c.AppsV1().StatefulSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListStatefulSetsAppsV1beta2(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1beta2().StatefulSets(ns).List(opts)
+	return c.AppsV1beta2().StatefulSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListStatefulSetsAppsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AppsV1beta1().StatefulSets(ns).List(opts)
+	return c.AppsV1beta1().StatefulSets(ns).List(context.TODO(), opts)
 }
 
 func resourceListStorageClassesStorageV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.StorageV1().StorageClasses().List(opts)
+	return c.StorageV1().StorageClasses().List(context.TODO(), opts)
 }
 
 func resourceListStorageClassesStorageV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.StorageV1beta1().StorageClasses().List(opts)
+	return c.StorageV1beta1().StorageClasses().List(context.TODO(), opts)
 }
 
 func resourceListValidatingWebhookConfigurationsAdmissionregistrationV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.AdmissionregistrationV1beta1().ValidatingWebhookConfigurations().List(opts)
+	return c.AdmissionregistrationV1beta1().ValidatingWebhookConfigurations().List(context.TODO(), opts)
 }
 
 func resourceListVolumeAttachmentsStorageV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.StorageV1beta1().VolumeAttachments().List(opts)
+	return c.StorageV1beta1().VolumeAttachments().List(context.TODO(), opts)
 }
 
 func resourceListVolumeAttachmentsStorageV1alpha1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.StorageV1alpha1().VolumeAttachments().List(opts)
+	return c.StorageV1alpha1().VolumeAttachments().List(context.TODO(), opts)
 }
 
 func resourceListKinds() []string {

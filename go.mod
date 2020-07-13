@@ -66,14 +66,15 @@ require (
 	github.com/spf13/viper v1.0.2
 	github.com/stretchr/testify v1.4.0
 	go.uber.org/dig v1.8.0
-	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
+	golang.org/dl v0.0.0-20200611200201-72429b14455f // indirect
+	golang.org/x/crypto v0.0.0-20200220183623-bac4c82f6975
 	golang.org/x/net v0.0.0-20191004110552-13f9640d40b9
 	google.golang.org/grpc v1.20.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.0
 	gopkg.in/yaml.v2 v2.2.8
-	k8s.io/api v0.17.2
-	k8s.io/apimachinery v0.17.2
-	k8s.io/client-go v0.17.2
+	k8s.io/api v0.18.4
+	k8s.io/apimachinery v0.18.4
+	k8s.io/client-go v0.18.4
 )
 
 replace github.com/alecthomas/jsonschema => github.com/emosbaugh/jsonschema v0.0.0-20200130190411-0a8db23df698

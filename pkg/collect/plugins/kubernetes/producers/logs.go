@@ -18,6 +18,6 @@ func (k *Kubernetes) Logs(opts types.KubernetesLogsOptions) types.StreamProducer
 		req := k.client.CoreV1().
 			Pods(ns).
 			GetLogs(opts.Pod, opts.PodLogOptions)
-		return req.Stream()
+		return req.Stream(ctx)
 	}
 }
