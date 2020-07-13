@@ -32,7 +32,7 @@ func (k *Kubernetes) ContainerCp(pod, container, namespace, path string) types.S
 		if containerNameProvided {
 			containers = []string{container}
 		} else {
-			thisPod, err := k.client.CoreV1().Pods(ns).Get(pod, metav1.GetOptions{})
+			thisPod, err := k.client.CoreV1().Pods(ns).Get(ctx, pod, metav1.GetOptions{})
 			if err != nil {
 				return nil, errors.Wrap(err, "get containers in pod")
 			}
