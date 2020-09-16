@@ -260,3 +260,6 @@
 
 0.29.6/2020-07-29
     * patch CVE-2020-8177 and CVE-2019-5188 in curl-7.52.1-5+deb9u10, e2fslibs-1.43.4-2+deb9u1, e2fsprogs-1.43.4-2+deb9u1, libcomerr2-1.43.4-2+deb9u1, libcurl3-7.52.1-5+deb9u10 and libss2-1.43.4-2+deb9u1
+
+0.29.7/2020-09-15
+    * patch CVE-2020-10878, CVE-2020-8492, CVE-2019-20907, CVE-2020-10543, CVE-2020-12723, CVE-2020-12762, and CVE-2020-14422 in perl-base-5.28.1-6, libpython3.7-minimal-3.7.3-2+deb10u1, libpython3.7-stdlib-3.7.3-2+deb10u1, python3.7-3.7.3-2+deb10u1, python3.7-minimal-3.7.3-2+deb10u1, and libjson-c3-0.12.1+ds-2
