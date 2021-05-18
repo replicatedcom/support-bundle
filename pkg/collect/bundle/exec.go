@@ -3,6 +3,7 @@ package bundle
 import (
 	"context"
 	"encoding/json"
+	"math"
 	"runtime"
 	"time"
 
@@ -32,7 +33,7 @@ func Exec(ctx context.Context, rootDir string, tasks []types.Task, opts ...Optio
 		}
 	}
 
-	concurrency := runtime.NumCPU()
+	concurrency := int(math.Min(float64(runtime.NumCPU()), 4))
 
 	jww.DEBUG.Printf("Running tasks with a concurrency of %d", concurrency)
 
