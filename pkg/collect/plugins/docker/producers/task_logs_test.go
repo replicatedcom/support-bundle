@@ -29,16 +29,16 @@ func Test_logsReaderWithTimeoutTimeout(t *testing.T) {
 	pr, pw := io.Pipe()
 	go func() {
 		for i := 0; i < 10; i++ {
-			time.Sleep(time.Duration(11*i) * time.Millisecond)
+			time.Sleep(time.Duration(110*i) * time.Millisecond)
 			pw.Write([]byte(fmt.Sprintf("%d\n", i)))
 		}
 		pw.Close()
 	}()
-	ppr := logsReaderWithTimeout(pr, 50*time.Millisecond)
+	ppr := logsReaderWithTimeout(pr, 500*time.Millisecond)
 	start := time.Now()
 	b, err := ioutil.ReadAll(ppr)
 	end := time.Now().Sub(start)
-	assert.Equal(t, fmt.Errorf("reader timeout after %s", 50*time.Millisecond), err)
+	assert.Equal(t, fmt.Errorf("reader timeout after %s", 500*time.Millisecond), err)
 	assert.Equal(t, "0\n1\n2\n3\n4\n", string(b))
 	assert.Condition(t, func() bool {
 		return end > 160*time.Millisecond
