@@ -10,7 +10,6 @@ RUN apt-get update -y && apt-get install --no-install-recommends -y \
     gnupg \
     \
     \
-    libp11-kit0 \
   && apt-get clean \
   && apt-get autoremove -y \
   && rm -rf /var/lib/apt/lists/* \
