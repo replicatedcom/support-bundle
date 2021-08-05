@@ -269,3 +269,6 @@
 
 0.29.9/2021-05-18
     * Limit concurrency to number of CPU cores up to a maximum of 4 parallel tasks. Previously this limit was set to the number of CPU cores.
+
+0.29.10/2021-08-05
+    * Patched CVE-2021-3520 CVE-2021-3580 CVE-2021-20231 CVE-2021-20232 CVE-2021-20305 CVE-2020-24659 CVE-2021-33560 CVE-2021-33910 CVE-2021-36222 in os packages libk5crypto3 systemd libudev1 libsystemd0 libgssapi-krb5-2 libhogweed4 libgcrypt20 liblz4-1 libkrb5-3 libgnutls30 libnettle6 libkrb5support0
