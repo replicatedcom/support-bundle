@@ -51,14 +51,14 @@ dockers:
     dockerfile: deploy/Dockerfile-analyze
     goos: linux
     goarch: amd64
-    binaries:
+    ids:
       - analyze
   - image_templates:
       - replicated/support-bundle:alpha
     dockerfile: deploy/Dockerfile-collect
     goos: linux
     goarch: amd64
-    binaries:
+    ids:
       - support-bundle
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
