@@ -70,8 +70,7 @@ var resourceListFnMappings = []resourceListFnMapping{
 		aliases: []string{"cronjobs", "cj"},
 		fn:      resourceListCronJobsBatchV1beta1,
 		gvfns: map[string]resourceListFn{
-			"batch/v1beta1":  resourceListCronJobsBatchV1beta1,
-			"batch/v2alpha1": resourceListCronJobsBatchV2alpha1,
+			"batch/v1beta1": resourceListCronJobsBatchV1beta1,
 		},
 	},
 	{
@@ -369,10 +368,6 @@ func resourceListControllerRevisionsAppsV1beta1(c kubernetes.Interface, ns strin
 
 func resourceListCronJobsBatchV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
 	return c.BatchV1beta1().CronJobs(ns).List(context.TODO(), opts)
-}
-
-func resourceListCronJobsBatchV2alpha1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.BatchV2alpha1().CronJobs(ns).List(context.TODO(), opts)
 }
 
 func resourceListDaemonSetsAppsV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
