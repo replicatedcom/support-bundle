@@ -98,7 +98,7 @@ func assetsConfigmanagementYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/configManagement.yml", size: 1629, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/configManagement.yml", size: 1629, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -118,7 +118,7 @@ func assetsCpucoresYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/cpuCores.yml", size: 647, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/cpuCores.yml", size: 647, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -138,7 +138,7 @@ func assetsDatacenterYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/datacenter.yml", size: 3770, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/datacenter.yml", size: 3770, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -158,7 +158,7 @@ func assetsDockercontainersYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/dockerContainers.yml", size: 865, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/dockerContainers.yml", size: 865, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -178,7 +178,7 @@ func assetsDockerdevicemapperloopbackYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/dockerDevicemapperLoopback.yml", size: 1103, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/dockerDevicemapperLoopback.yml", size: 1103, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -198,7 +198,7 @@ func assetsDockericcfalseYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/dockerIccFalse.yml", size: 1142, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/dockerIccFalse.yml", size: 1142, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -218,7 +218,7 @@ func assetsDockerloggingdriverYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/dockerLoggingDriver.yml", size: 1005, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/dockerLoggingDriver.yml", size: 1005, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -238,7 +238,7 @@ func assetsDockernoproxyYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/dockerNoProxy.yml", size: 1378, mode: os.FileMode(420), modTime: time.Unix(1557271758, 0)}
+	info := bindataFileInfo{name: "assets/dockerNoProxy.yml", size: 1378, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -258,7 +258,7 @@ func assetsDockerproxyYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/dockerProxy.yml", size: 1109, mode: os.FileMode(420), modTime: time.Unix(1557271778, 0)}
+	info := bindataFileInfo{name: "assets/dockerProxy.yml", size: 1109, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -278,7 +278,7 @@ func assetsDockerversionYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/dockerVersion.yml", size: 795, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/dockerVersion.yml", size: 795, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -298,7 +298,7 @@ func assetsLoadavgYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/loadavg.yml", size: 1065, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/loadavg.yml", size: 1065, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -318,7 +318,7 @@ func assetsMemoryusageYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/memoryUsage.yml", size: 1611, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/memoryUsage.yml", size: 1611, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -338,7 +338,7 @@ func assetsOsYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/os.yml", size: 2526, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/os.yml", size: 2526, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -358,7 +358,7 @@ func assetsOsuptimeYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/osUptime.yml", size: 678, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/osUptime.yml", size: 678, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -378,7 +378,7 @@ func assetsReplicatedconfformatYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/replicatedConfFormat.yml", size: 1403, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/replicatedConfFormat.yml", size: 1403, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -398,7 +398,7 @@ func assetsReplicateddiskpressureYml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "assets/replicatedDiskPressure.yml", size: 2134, mode: os.FileMode(420), modTime: time.Unix(1557187041, 0)}
+	info := bindataFileInfo{name: "assets/replicatedDiskPressure.yml", size: 2134, mode: os.FileMode(436), modTime: time.Unix(1635534598, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

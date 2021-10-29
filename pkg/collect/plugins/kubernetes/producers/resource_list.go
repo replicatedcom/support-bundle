@@ -70,8 +70,7 @@ var resourceListFnMappings = []resourceListFnMapping{
 		aliases: []string{"cronjobs", "cj"},
 		fn:      resourceListCronJobsBatchV1beta1,
 		gvfns: map[string]resourceListFn{
-			"batch/v1beta1":  resourceListCronJobsBatchV1beta1,
-			"batch/v2alpha1": resourceListCronJobsBatchV2alpha1,
+			"batch/v1beta1": resourceListCronJobsBatchV1beta1,
 		},
 	},
 	{

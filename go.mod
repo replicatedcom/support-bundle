@@ -6,6 +6,7 @@ require (
 	github.com/Masterminds/semver v1.4.2 // indirect
 	github.com/Masterminds/sprig v2.15.0+incompatible
 	github.com/Microsoft/go-winio v0.4.8 // indirect
+	github.com/a-urth/go-bindata v0.0.0-20180209162145-df38da164efc // indirect
 	github.com/alecthomas/jsonschema v0.0.0-00010101000000-000000000000
 	github.com/andrewchambers/go-jqpipe v0.0.0-20180509223707-2d54cef8cd94
 	github.com/aokoli/goutils v1.0.1 // indirect
@@ -27,7 +28,7 @@ require (
 	github.com/go-logfmt/logfmt v0.3.0 // indirect
 	github.com/go-stack/stack v1.8.0
 	github.com/gobwas/glob v0.2.3
-	github.com/golang/mock v1.4.1
+	github.com/golang/mock v1.6.0
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
 	github.com/hashicorp/errwrap v0.0.0-20141028054710-7554cd9344ce // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
@@ -43,7 +44,7 @@ require (
 	github.com/mitchellh/cli v0.0.0-20180414170447-c48282d14eba
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/nwaples/rardecode v0.0.0-20171029023500-e06696f847ae // indirect
-	github.com/onsi/ginkgo v1.14.0
+	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.10.1
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
@@ -62,7 +63,10 @@ require (
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/dig v1.8.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
-	golang.org/x/net v0.0.0-20210520170846-37e1c6afe023
+	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
+	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d
+	golang.org/x/tools v0.1.7 // indirect
+	google.golang.org/grpc v1.41.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.22.2
 	k8s.io/apimachinery v0.22.2
