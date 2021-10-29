@@ -371,10 +371,6 @@ func resourceListCronJobsBatchV1beta1(c kubernetes.Interface, ns string, opts me
 	return c.BatchV1beta1().CronJobs(ns).List(context.TODO(), opts)
 }
 
-func resourceListCronJobsBatchV2alpha1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.BatchV2alpha1().CronJobs(ns).List(context.TODO(), opts)
-}
-
 func resourceListDaemonSetsAppsV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
 	return c.AppsV1().DaemonSets(ns).List(context.TODO(), opts)
 }
