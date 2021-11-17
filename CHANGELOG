@@ -275,3 +275,6 @@
 
 0.29.11/2021-09-22
     * Patched CVE-2021-3711 CVE-2021-3712 in os packages libssl1.1 openssl
+
+0.29.12/2021-11-17
+    * Patched CVE-2021-37750 in os packages libkrb5support0 libkrb5-3 libk5crypto3 libgssapi-krb5-2
