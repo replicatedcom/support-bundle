@@ -1,7 +1,10 @@
-# Golang CircleCI 2.0 configuration file
+# Golang CircleCI 2.1 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
+# Check https://circleci.com/docs/2.1/language-go/ for more details
+version: 2.1
+
+orbs:
+  anchore: anchore/anchore-engine@1
 
 jobs:
 
@@ -21,6 +24,22 @@ jobs:
     steps:
       - checkout
       - run: make build-deps ci-test # ci-upload-coverage
+
+  scan:
+    executor: anchore/anchore_engine
+    working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker build --pull -t replicated/support-bundle:base -f deploy/Dockerfile-base deploy/
+      - anchore/analyze_local_image:
+          image_name: replicated/support-bundle:base
+          dockerfile_path: ./deploy/Dockerfile
+          policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
+          policy_failure: true
+      - anchore/parse_reports
+      - store_artifacts:
+          path: anchore-reports
 
   e2e:
     # Use machine for volume binding support in Docker
@@ -66,9 +85,9 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: docker build --pull -t replicated/support-bundle:base -f deploy/Dockerfile-base deploy/
       - run: docker login -u="$DOCKER_USER" -p="$DOCKER_PASS" registry.replicated.com
       - run: docker login -u="$DOCKERHUB_DOCKER_USER" -p="$DOCKERHUB_DOCKER_PASS"
-      - run: docker build --pull -t replicated/support-bundle:base -f deploy/Dockerfile-base deploy/
       - deploy:
           command: curl -sL https://git.io/goreleaser | bash
 
@@ -92,6 +111,10 @@ workflows:
     jobs:
       - docs
       - test:
+          filters:
+            tags:
+              only: /.*/
+      - scan:
           filters:
             tags:
               only: /.*/
