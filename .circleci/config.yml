@@ -34,7 +34,7 @@ jobs:
       - run: docker build --pull -t replicated/support-bundle:base -f deploy/Dockerfile-base deploy/
       - anchore/analyze_local_image:
           image_name: replicated/support-bundle:base
-          dockerfile_path: ./deploy/Dockerfile
+          dockerfile_path: ./deploy/Dockerfile-base
           policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
           policy_failure: true
       - anchore/parse_reports
