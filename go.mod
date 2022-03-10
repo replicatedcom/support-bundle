@@ -6,7 +6,6 @@ require (
 	github.com/Masterminds/semver v1.4.2 // indirect
 	github.com/Masterminds/sprig v2.15.0+incompatible
 	github.com/Microsoft/go-winio v0.4.8 // indirect
-	github.com/a-urth/go-bindata v0.0.0-20180209162145-df38da164efc // indirect
 	github.com/alecthomas/jsonschema v0.0.0-00010101000000-000000000000
 	github.com/andrewchambers/go-jqpipe v0.0.0-20180509223707-2d54cef8cd94
 	github.com/aokoli/goutils v1.0.1 // indirect
@@ -64,8 +63,8 @@ require (
 	go.uber.org/dig v1.8.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
-	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d
-	golang.org/x/tools v0.1.7 // indirect
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f
+	golang.org/x/tools v0.1.9 // indirect
 	google.golang.org/grpc v1.41.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.22.2
