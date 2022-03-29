@@ -37,6 +37,7 @@ jobs:
           dockerfile_path: ./deploy/Dockerfile-base
           policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
           policy_failure: true
+          timeout: '600'
       - anchore/parse_reports
       - store_artifacts:
           path: anchore-reports
@@ -139,4 +140,4 @@ workflows:
             - docs
           filters:
             branches:
-              only: /master/
+              only: /main/
