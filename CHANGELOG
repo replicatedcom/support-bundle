@@ -284,3 +284,6 @@
 
 0.29.15/2022-03-30
     * Patched CVE-2021-43618, CVE-2022-0778, CVE-2021-4160, CVE-2021-4160, CVE-2022-0778 in os packages openssl, libgmp10, libssl1.1
+
+0.30.0/2022-05-26
+    * Upgraded Docker dependency to v20.10.12. Upgraded go to 1.17.
