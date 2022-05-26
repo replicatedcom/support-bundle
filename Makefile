@@ -40,17 +40,12 @@ fmt:
 vet: fmt _vet
 
 _vet:
-	go vet ./pkg/...
-	go vet ./cmd/...
+	go vet ./pkg/... ./cmd/...
 
 lint: vet _lint
 
 _lint:
-	golint ./pkg/... \
-		| grep -v "should have comment" \
-		| grep -v "comment on exported" \
-		|| :
-	golint ./cmd/... \
+	golint ./pkg/... ./cmd/... \
 		| grep -v "should have comment" \
 		| grep -v "comment on exported" \
 		|| :
@@ -58,7 +53,7 @@ _lint:
 test: lint _test
 
 _test: bindata
-	go test -race ./pkg/...
+	go test -race ./pkg/... ./cmd/...
 
 build: test _build
 
@@ -102,7 +97,6 @@ bin/analyze: $(SRC) pkg/analyze/api/v1/defaultspec/asset.go
 		-X $(PKG)/pkg/version.gitSHA=$(SHA) \
 		-X $(PKG)/pkg/version.buildTime=$(BUILD_TIME) \
 		" \
-		-i \
 		-o bin/analyze \
 		./cmd/analyze
 	@echo built bin/analyze
@@ -114,7 +108,6 @@ bin/support-bundle: $(SRC) pkg/collect/bundle/defaultspec/asset.go
 		-X $(PKG)/pkg/version.gitSHA=$(SHA) \
 		-X $(PKG)/pkg/version.buildTime=$(BUILD_TIME) \
 		" \
-		-i \
 		-o bin/support-bundle \
 		./cmd/support-bundle
 	@echo built bin/support-bundle
@@ -156,7 +149,7 @@ e2e-supportbundle-core:
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
-		golang:1.16                                                         \
+		golang:1.17                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -171,7 +164,7 @@ e2e-supportbundle-docker:
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
 		-e DOCKER=1                                                         \
-		golang:1.16                                                         \
+		golang:1.17                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -185,7 +178,7 @@ e2e-supportbundle-swarm:
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
 		-e SWARM=1                                                          \
-		golang:1.16                                                         \
+		golang:1.17                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"

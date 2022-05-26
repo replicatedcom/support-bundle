@@ -1251,12 +1251,6 @@
     }
   },
   {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.DiskQuota",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
     "path": "properties.collect.properties.v1.items.properties[\"docker.container-run\"].properties.container_create_config.properties.HostConfig.properties.Dns",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
@@ -2740,12 +2734,6 @@
   },
   {
     "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.Devices.items.properties.PathOnHost",
-    "merge": {
-      "description": "Container create options as would be passed to `docker run`"
-    }
-  },
-  {
-    "path": "properties.collect.properties.v1.items.properties[\"docker.run\"].properties.container_create_config.properties.HostConfig.properties.DiskQuota",
     "merge": {
       "description": "Container create options as would be passed to `docker run`"
     }

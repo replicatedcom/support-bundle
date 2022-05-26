@@ -7,16 +7,20 @@ jobs:
 
   docs:
     docker:
-      - image: replicated/gitops-builder:node8-go16
+      - image: cimg/go:1.17
     working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
+      - run: |
+          curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+      - run: sudo npm install -g yarn
       - run: |
           cd hack/docs
           make pipeline-nointegration
   test:
     docker:
-      - image: cimg/go:1.16
+      - image: cimg/go:1.17
     working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
@@ -24,7 +28,7 @@ jobs:
 
   scan:
     docker:
-      - image: cimg/go:1.16
+      - image: cimg/go:1.17
     steps:
       - checkout
       - setup_remote_docker
@@ -44,7 +48,7 @@ jobs:
     working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
     environment:
       GOPATH: /home/circleci/go
-      GO_SHA256SUM: 013a489ebb3e24ef3d915abe5b94c3286c070dfe0818d5bca8108f1d6e8440d2
+      GO_SHA256SUM: 87fc728c9c731e2f74e4a999ef53cf07302d7ed3504b0839027bd9c10edaa3fd
       GO: /usr/local/go/bin/go
       GOCACHE: "/tmp/go/cache"
     steps:
@@ -53,7 +57,7 @@ jobs:
           keys:
             - support-bundle-e2e-build-cache-base
       - run: |
-          export GO_DOWNLOAD_URL=https://dl.google.com/go/go1.16.linux-amd64.tar.gz
+          export GO_DOWNLOAD_URL=https://go.dev/dl/go1.17.10.linux-amd64.tar.gz
           export GOPATH=/home/circleci/go
           export GOROOT=/usr/local/go
           export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
@@ -64,7 +68,7 @@ jobs:
           tar -zxvf golang.tar.gz -C /tmp
           sudo rm -rf ${GOROOT}
           sudo mv /tmp/go ${GOROOT}
-      - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true cimg/go:1.16 -c "sleep infinity"
+      - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true cimg/go:1.17 -c "sleep infinity"
       - run: |
           export GOPATH=/home/circleci/go
           export GOROOT=/usr/local/go
@@ -77,7 +81,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/go:1.16
+      - image: cimg/go:1.17
     working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout
@@ -90,7 +94,7 @@ jobs:
 
   deploy_unstable:
     docker:
-      - image: cimg/go:1.16
+      - image: cimg/go:1.17
     working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
     steps:
       - checkout

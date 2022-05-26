@@ -33,7 +33,7 @@ func ContainerRun(ctx context.Context, client docker.CommonAPIClient, config doc
 
 	config.Config.AttachStdout = true
 	config.Config.AttachStderr = true
-	containerInstance, err := client.ContainerCreate(ctx, config.Config, config.HostConfig, config.NetworkingConfig, config.Name)
+	containerInstance, err := client.ContainerCreate(ctx, config.Config, config.HostConfig, config.NetworkingConfig, nil, config.Name)
 	if err != nil {
 		return nil, nil, nil, errors.Wrap(err, "container create")
 	}

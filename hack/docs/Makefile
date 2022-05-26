@@ -23,7 +23,7 @@ prebuild:
 	mkdir -p build/lifecycle
 
 build: prebuild
-	GO111MODULE=on go build -o $(HACK_DOCS) .
+	go build -o $(HACK_DOCS) .
 
 gen-schema:
 	$(HACK_DOCS) > $(SCHEMA_JSON)

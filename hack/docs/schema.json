@@ -269,6 +269,9 @@
                       "User": {
                         "description": "Same as would be passed to `docker exec`",
                         "type": "string"
+                      },
+                      "WorkingDir": {
+                        "type": "string"
                       }
                     },
                     "additionalProperties": false,
@@ -1148,6 +1151,9 @@
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "string"
                           },
+                          "CgroupnsMode": {
+                            "type": "string"
+                          },
                           "ConsoleSize": {
                             "description": "Container create options as would be passed to `docker run`",
                             "items": {
@@ -1205,6 +1211,52 @@
                             },
                             "type": "array"
                           },
+                          "DeviceRequests": {
+                            "items": {
+                              "$schema": "http://json-schema.org/draft-04/schema#",
+                              "required": [
+                                "Driver",
+                                "Count",
+                                "DeviceIDs",
+                                "Capabilities",
+                                "Options"
+                              ],
+                              "properties": {
+                                "Capabilities": {
+                                  "items": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
+                                  "type": "array"
+                                },
+                                "Count": {
+                                  "type": "integer"
+                                },
+                                "DeviceIDs": {
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "type": "array"
+                                },
+                                "Driver": {
+                                  "type": "string"
+                                },
+                                "Options": {
+                                  "patternProperties": {
+                                    ".*": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "type": "object"
+                                }
+                              },
+                              "additionalProperties": false,
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
                           "Devices": {
                             "description": "Container create options as would be passed to `docker run`",
                             "items": {
@@ -1233,10 +1285,6 @@
                               "type": "object"
                             },
                             "type": "array"
-                          },
-                          "DiskQuota": {
-                            "description": "Container create options as would be passed to `docker run`",
-                            "type": "integer"
                           },
                           "Dns": {
                             "description": "Container create options as would be passed to `docker run`",
@@ -1302,6 +1350,9 @@
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "integer"
                           },
+                          "KernelMemoryTCP": {
+                            "type": "integer"
+                          },
                           "Links": {
                             "description": "Container create options as would be passed to `docker run`",
                             "items": {
@@ -1336,6 +1387,12 @@
                             "additionalProperties": false,
                             "type": "object"
                           },
+                          "MaskedPaths": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "Memory": {
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "integer"
@@ -1362,6 +1419,9 @@
                                   "description": "Container create options as would be passed to `docker run`",
                                   "$schema": "http://json-schema.org/draft-04/schema#",
                                   "properties": {
+                                    "NonRecursive": {
+                                      "type": "boolean"
+                                    },
                                     "Propagation": {
                                       "description": "Container create options as would be passed to `docker run`",
                                       "type": "string"
@@ -1514,6 +1574,12 @@
                           "PublishAllPorts": {
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "boolean"
+                          },
+                          "ReadonlyPaths": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "ReadonlyRootfs": {
                             "description": "Container create options as would be passed to `docker run`",
@@ -1742,6 +1808,35 @@
                         },
                         "additionalProperties": false,
                         "type": "object"
+                      },
+                      "Platform": {
+                        "$schema": "http://json-schema.org/draft-04/schema#",
+                        "required": [
+                          "architecture",
+                          "os"
+                        ],
+                        "properties": {
+                          "architecture": {
+                            "type": "string"
+                          },
+                          "os": {
+                            "type": "string"
+                          },
+                          "os.features": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "os.version": {
+                            "type": "string"
+                          },
+                          "variant": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "type": "object"
                       }
                     },
                     "additionalProperties": false,
@@ -1898,6 +1993,9 @@
                       },
                       "User": {
                         "description": "Same as would be passed to `docker exec`",
+                        "type": "string"
+                      },
+                      "WorkingDir": {
                         "type": "string"
                       }
                     },
@@ -2991,6 +3089,9 @@
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "string"
                           },
+                          "CgroupnsMode": {
+                            "type": "string"
+                          },
                           "ConsoleSize": {
                             "description": "Container create options as would be passed to `docker run`",
                             "items": {
@@ -3048,6 +3149,52 @@
                             },
                             "type": "array"
                           },
+                          "DeviceRequests": {
+                            "items": {
+                              "$schema": "http://json-schema.org/draft-04/schema#",
+                              "required": [
+                                "Driver",
+                                "Count",
+                                "DeviceIDs",
+                                "Capabilities",
+                                "Options"
+                              ],
+                              "properties": {
+                                "Capabilities": {
+                                  "items": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
+                                  "type": "array"
+                                },
+                                "Count": {
+                                  "type": "integer"
+                                },
+                                "DeviceIDs": {
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "type": "array"
+                                },
+                                "Driver": {
+                                  "type": "string"
+                                },
+                                "Options": {
+                                  "patternProperties": {
+                                    ".*": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "type": "object"
+                                }
+                              },
+                              "additionalProperties": false,
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
                           "Devices": {
                             "description": "Container create options as would be passed to `docker run`",
                             "items": {
@@ -3076,10 +3223,6 @@
                               "type": "object"
                             },
                             "type": "array"
-                          },
-                          "DiskQuota": {
-                            "description": "Container create options as would be passed to `docker run`",
-                            "type": "integer"
                           },
                           "Dns": {
                             "description": "Container create options as would be passed to `docker run`",
@@ -3145,6 +3288,9 @@
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "integer"
                           },
+                          "KernelMemoryTCP": {
+                            "type": "integer"
+                          },
                           "Links": {
                             "description": "Container create options as would be passed to `docker run`",
                             "items": {
@@ -3179,6 +3325,12 @@
                             "additionalProperties": false,
                             "type": "object"
                           },
+                          "MaskedPaths": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "Memory": {
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "integer"
@@ -3205,6 +3357,9 @@
                                   "description": "Container create options as would be passed to `docker run`",
                                   "$schema": "http://json-schema.org/draft-04/schema#",
                                   "properties": {
+                                    "NonRecursive": {
+                                      "type": "boolean"
+                                    },
                                     "Propagation": {
                                       "description": "Container create options as would be passed to `docker run`",
                                       "type": "string"
@@ -3357,6 +3512,12 @@
                           "PublishAllPorts": {
                             "description": "Container create options as would be passed to `docker run`",
                             "type": "boolean"
+                          },
+                          "ReadonlyPaths": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "ReadonlyRootfs": {
                             "description": "Container create options as would be passed to `docker run`",
@@ -3579,6 +3740,35 @@
                               }
                             },
                             "type": "object"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "type": "object"
+                      },
+                      "Platform": {
+                        "$schema": "http://json-schema.org/draft-04/schema#",
+                        "required": [
+                          "architecture",
+                          "os"
+                        ],
+                        "properties": {
+                          "architecture": {
+                            "type": "string"
+                          },
+                          "os": {
+                            "type": "string"
+                          },
+                          "os.features": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "os.version": {
+                            "type": "string"
+                          },
+                          "variant": {
+                            "type": "string"
                           }
                         },
                         "additionalProperties": false,
@@ -5431,6 +5621,9 @@
                       "resourceVersion": {
                         "type": "string"
                       },
+                      "resourceVersionMatch": {
+                        "type": "string"
+                      },
                       "timeoutSeconds": {
                         "type": "integer"
                       },
@@ -5573,6 +5766,9 @@
                         "type": "integer"
                       },
                       "resourceVersion": {
+                        "type": "string"
+                      },
+                      "resourceVersionMatch": {
                         "type": "string"
                       },
                       "timeoutSeconds": {
@@ -5822,6 +6018,9 @@
                         "type": "integer"
                       },
                       "resourceVersion": {
+                        "type": "string"
+                      },
+                      "resourceVersionMatch": {
                         "type": "string"
                       },
                       "timeoutSeconds": {
