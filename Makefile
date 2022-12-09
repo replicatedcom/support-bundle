@@ -113,11 +113,11 @@ bin/support-bundle: $(SRC) pkg/collect/bundle/defaultspec/asset.go
 	@echo built bin/support-bundle
 
 build-deps:
-	go get golang.org/x/lint/golint
-	go get golang.org/x/tools/cmd/goimports
-	go get github.com/a-urth/go-bindata/go-bindata
-	go get github.com/onsi/ginkgo/ginkgo
-	go get github.com/golang/mock/mockgen
+	go get golang.org/x/lint/golint@v0.0.0-20210508222113-6edffad5e616
+	go get golang.org/x/tools/cmd/goimports@v0.1.12
+	go get github.com/a-urth/go-bindata/go-bindata@v0.0.0-20180209162145-df38da164efc
+	go get github.com/onsi/ginkgo/ginkgo@v1.16.5
+	go get github.com/golang/mock/mockgen@v1.6.0
 
 .state/coverage.out: $(SRC)
 	@mkdir -p .state/
