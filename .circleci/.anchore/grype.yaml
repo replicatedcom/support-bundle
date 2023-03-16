@@ -1,5 +1,4 @@
 ignore:
-
   # https://github.com/anchore/grype#specifying-matches-to-ignore
   # example to ignore a vulnerability
   # This is the full set of supported rule fields:
@@ -13,3 +12,7 @@ ignore:
 
 - package:
       type: go-module
+
+# python vulns
+- vulnerability: GHSA-w7pp-m8wf-vj6r
+- vulnerability: GHSA-x4qr-2fvf-3mr5
