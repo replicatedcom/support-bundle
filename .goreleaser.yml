@@ -27,6 +27,8 @@ builds:
     goarch:
       - amd64
       - "386"
+    env:
+      - CGO_ENABLED=0
     main: cmd/support-bundle/main.go
     ldflags: -s -w
       -X github.com/replicatedcom/support-bundle/pkg/version.version={{.Version}}
