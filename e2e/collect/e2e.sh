@@ -3,7 +3,7 @@
 set -o errexit
 set -o nounset
 
-go get github.com/onsi/ginkgo/ginkgo
+go install github.com/onsi/ginkgo/ginkgo@latest
 
 if [ -n "${DOCKER+x}" ]; then
     echo "Running e2e tests (docker enabled):"
