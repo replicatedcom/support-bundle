@@ -91,8 +91,8 @@ _mockgen:
 mockgen: _mockgen fmt
 
 bin/analyze: $(SRC) pkg/analyze/api/v1/defaultspec/asset.go
-	go build \
-		-ldflags " \
+	CGO_ENABLED=0 go build \
+		-ldflags " -s -w \
 		-X $(PKG)/pkg/version.version=$(VERSION) \
 		-X $(PKG)/pkg/version.gitSHA=$(SHA) \
 		-X $(PKG)/pkg/version.buildTime=$(BUILD_TIME) \
@@ -102,8 +102,8 @@ bin/analyze: $(SRC) pkg/analyze/api/v1/defaultspec/asset.go
 	@echo built bin/analyze
 
 bin/support-bundle: $(SRC) pkg/collect/bundle/defaultspec/asset.go
-	go build \
-		-ldflags " \
+	CGO_ENABLED=0 go build \
+		-ldflags " -s -w \
 		-X $(PKG)/pkg/version.version=$(VERSION) \
 		-X $(PKG)/pkg/version.gitSHA=$(SHA) \
 		-X $(PKG)/pkg/version.buildTime=$(BUILD_TIME) \
