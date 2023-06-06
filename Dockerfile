@@ -1,4 +1,4 @@
-FROM golang:1.17
+FROM golang:1.20
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y \
     jq \

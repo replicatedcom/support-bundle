@@ -7,8 +7,7 @@ jobs:
 
   docs:
     docker:
-      - image: cimg/go:1.17
-    working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
+      - image: cimg/go:1.20
     steps:
       - checkout
       - run: |
@@ -20,15 +19,14 @@ jobs:
           make pipeline-nointegration
   test:
     docker:
-      - image: cimg/go:1.17
-    working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
+      - image: cimg/go:1.20
     steps:
       - checkout
       - run: make build-deps ci-test # ci-upload-coverage
 
   scan:
     docker:
-      - image: cimg/go:1.17
+      - image: cimg/go:1.20
     steps:
       - checkout
       - setup_remote_docker
@@ -45,7 +43,6 @@ jobs:
   e2e:
     # Use machine for volume binding support in Docker
     machine: true
-    working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
     environment:
       GOPATH: /home/circleci/go
       GO_SHA256SUM: 87fc728c9c731e2f74e4a999ef53cf07302d7ed3504b0839027bd9c10edaa3fd
@@ -68,7 +65,7 @@ jobs:
           tar -zxvf golang.tar.gz -C /tmp
           sudo rm -rf ${GOROOT}
           sudo mv /tmp/go ${GOROOT}
-      - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true cimg/go:1.17 -c "sleep infinity"
+      - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true cimg/go:1.20 -c "sleep infinity"
       - run: |
           export GOPATH=/home/circleci/go
           export GOROOT=/usr/local/go
@@ -81,8 +78,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/go:1.17
-    working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
+      - image: cimg/go:1.20
     steps:
       - checkout
       - setup_remote_docker
@@ -94,8 +90,7 @@ jobs:
 
   deploy_unstable:
     docker:
-      - image: cimg/go:1.17
-    working_directory: /home/circleci/go/src/github.com/replicatedcom/support-bundle
+      - image: cimg/go:1.20
     steps:
       - checkout
       - setup_remote_docker
