@@ -18,6 +18,12 @@ make test
 make e2e-supportbundle-core e2e-supportbundle-docker
 ```
 
+## Scanning image prior to release
+
+```
+make scan-base
+```
+
 ## Releases
 
 Releases are created on CircleCI when a tag is pushed.

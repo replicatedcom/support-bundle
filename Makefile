@@ -221,3 +221,12 @@ support-bundle-generate: goreleaser
 	@mkdir -p .state
 	docker build --pull -t replicated/support-bundle:base -f deploy/Dockerfile-base deploy/
 	@touch .state/base
+
+grype:
+	curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b .
+
+build-base:
+	docker build --pull -t replicated/support-bundle:base -f deploy/Dockerfile-base deploy/
+
+scan-base: build-base grype
+	./grype --fail-on=medium --only-fixed --config=.circleci/.anchore/grype.yaml -vv replicated/support-bundle:base
