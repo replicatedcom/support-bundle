@@ -31,14 +31,9 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Build image
-          command: |
-            docker build --pull -t replicated/support-bundle:base -f deploy/Dockerfile-base deploy/
-      - run:
           name: Run local image vulnerability scan
           command: |
-            curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b .
-            ./grype --fail-on=medium --only-fixed --config=.circleci/.anchore/grype.yaml -vv replicated/support-bundle:base
+            make scan-base
 
   e2e:
     # Use machine for volume binding support in Docker
