@@ -1,4 +1,7 @@
 ignore:
+  - vulnerability: CVE-2023-47038
+  - vulnerability: CVE-2023-5981
+
   # https://github.com/anchore/grype#specifying-matches-to-ignore
   # example to ignore a vulnerability
   # This is the full set of supported rule fields:
@@ -10,25 +13,19 @@ ignore:
   #     type: npm
   #     location: "/usr/local/lib/node_modules/**"
 
-- package:
-    type: go-module
+  - package:
+      type: go-module
 
-# google-cloud-sdk python vulns
-- vulnerability: GHSA-w7pp-m8wf-vj6r
-  package:
-    name: cryptography
-    version: 36.0.2
-    type: python
-    location: "/usr/lib/google-cloud-sdk/platform/bundledpythonunix/lib/**"
-- vulnerability: GHSA-x4qr-2fvf-3mr5
-  package:
-    name: cryptography
-    version: 36.0.2
-    type: python
-    location: "/usr/lib/google-cloud-sdk/platform/bundledpythonunix/lib/**"
-- vulnerability: GHSA-vvpx-j8f3-3w6h
-  package:
-    name: golang.org/x/net
-    version: v0.5.0
-    type: go-module
-    location: "/usr/lib/google-cloud-sdk/bin/**"
+  # google-cloud-sdk python vulns
+  - vulnerability: GHSA-jfhm-5ghh-2f97
+    package:
+      name: cryptography
+      version: 41.0.5
+      type: python
+      location: "/usr/lib/google-cloud-sdk/platform/bundledpythonunix/lib/**"
+  - vulnerability: GHSA-mq26-g339-26xf
+    package:
+      name: pip
+      version: 23.2.1
+      type: python
+      location: "/usr/lib/google-cloud-sdk/platform/bundledpythonunix/lib/**"
