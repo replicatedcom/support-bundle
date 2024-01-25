@@ -41,13 +41,13 @@ require (
 	github.com/pivotal-golang/archiver v0.0.0-20200129012029-d46e448f0c5d // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/posener/complete v1.1.1 // indirect
-	github.com/retracedhq/retraced-go v0.0.0-20181101191425-1bfee2c53bc8
+	github.com/retracedhq/retraced-go v0.0.0-20230918111004-20688ab81037
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/afero v1.2.2
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/jwalterweatherman v1.0.0
 	github.com/spf13/viper v1.7.0
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.8.1
 	go.uber.org/dig v1.8.0
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
@@ -127,7 +127,7 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.51.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools v2.2.0+incompatible // indirect
 	k8s.io/klog/v2 v2.30.0 // indirect
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
