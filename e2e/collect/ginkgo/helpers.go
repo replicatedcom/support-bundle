@@ -235,7 +235,7 @@ func MakeDockerContainer(client docker.CommonAPIClient, name string, labels map[
 	hostConfig := dockercontainertypes.HostConfig{}
 	networkConfig := dockernetworktypes.NetworkingConfig{}
 
-	container, err := client.ContainerCreate(context.Background(), &config, &hostConfig, &networkConfig, nil, name)
+	container, err := client.ContainerCreate(context.Background(), &config, &hostConfig, &networkConfig, name)
 	Expect(err).NotTo(HaveOccurred())
 	Expect(container.Warnings).To(BeEmpty())
 

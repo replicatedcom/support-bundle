@@ -192,14 +192,6 @@ var resourceListFnMappings = []resourceListFnMapping{
 		},
 	},
 	{
-		aliases: []string{"podsecuritypolicies", "psp"},
-		fn:      resourceListPodSecurityPoliciesPolicyV1beta1,
-		gvfns: map[string]resourceListFn{
-			"policy/v1beta1":     resourceListPodSecurityPoliciesPolicyV1beta1,
-			"extensions/v1beta1": resourceListPodSecurityPoliciesExtensionsV1beta1,
-		},
-	},
-	{
 		aliases: []string{"podtemplates"},
 		fn:      resourceListPodTemplatesCoreV1,
 		gvfns: map[string]resourceListFn{
@@ -464,10 +456,6 @@ func resourceListPodsCoreV1(c kubernetes.Interface, ns string, opts metav1.ListO
 
 func resourceListPodSecurityPoliciesPolicyV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
 	return c.PolicyV1beta1().PodSecurityPolicies().List(context.TODO(), opts)
-}
-
-func resourceListPodSecurityPoliciesExtensionsV1beta1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {
-	return c.ExtensionsV1beta1().PodSecurityPolicies().List(context.TODO(), opts)
 }
 
 func resourceListPodTemplatesCoreV1(c kubernetes.Interface, ns string, opts metav1.ListOptions) (interface{}, error) {

@@ -20,7 +20,7 @@ func New(retraced *producers.Retraced) *Retraced {
 }
 
 func getClient(opts types.RetracedAPIClientOptions) (*retraced.Client, error) {
-	client, err := retraced.NewClient(opts.ProjectID, opts.APIToken)
+	client, err := retraced.NewClient("", opts.ProjectID, opts.APIToken)
 	if err != nil {
 		return nil, err
 	}

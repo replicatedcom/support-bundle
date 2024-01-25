@@ -397,30 +397,30 @@ type Scrub struct {
 // Shared gets the shared stuff for a spec
 // TODO: maybe cache this or something
 //
-//  ideally we want to move to
+//	ideally we want to move to
 //
-//  - docker.container-inspect:
-//      container_name: ...
-//      output_dir: ...
-//      description: ...
+//	- docker.container-inspect:
+//	    container_name: ...
+//	    output_dir: ...
+//	    description: ...
 //
-//  but for now its more like
+//	but for now its more like
 //
-//  - docker.container-inspect:
-//      container_name: ...
-//    output_dir: ...
-//    description: ...
+//	- docker.container-inspect:
+//	    container_name: ...
+//	  output_dir: ...
+//	  description: ...
 //
-//  This method allows you to use either or both,
-//  giving priority to the first, nested version
+//	This method allows you to use either or both,
+//	giving priority to the first, nested version
 //
-//  i.e. if you have
+//	i.e. if you have
 //
-//  - docker.container-inspect:
-//      output_dir: /foo
-//    output_dir: /bar
+//	- docker.container-inspect:
+//	    output_dir: /foo
+//	  output_dir: /bar
 //
-//  then /foo will be used
+//	then /foo will be used
 func (s Spec) Shared() SpecShared {
 	shared := func() SpecShared {
 		switch {
