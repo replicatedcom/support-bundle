@@ -29,7 +29,8 @@ type Lifecycle struct {
 }
 
 // Executor is a thing that can be executed.
-//                                                    ...and I still think Rob is wrong
+//
+//	...and I still think Rob is wrong
 type Executor interface {
 	Execute(lifecycle *Lifecycle) (bool, error)
 }
