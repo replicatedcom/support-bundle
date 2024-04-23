@@ -2,11 +2,11 @@ package types
 
 import (
 	dockertypes "github.com/docker/docker/api/types"
+	dockercontainertypes "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
 )
 
 type ContainerListOptions struct {
-	Quiet   bool
 	Size    bool
 	All     bool
 	Latest  bool
@@ -16,9 +16,8 @@ type ContainerListOptions struct {
 	Filters map[string][]string
 }
 
-func (opts *ContainerListOptions) ToDockerContainerListOptions() dockertypes.ContainerListOptions {
-	return dockertypes.ContainerListOptions{
-		Quiet:   opts.Quiet,
+func (opts *ContainerListOptions) ToDockerContainerListOptions() dockercontainertypes.ListOptions {
+	return dockercontainertypes.ListOptions{
 		Size:    opts.Size,
 		All:     opts.All,
 		Latest:  opts.Latest,

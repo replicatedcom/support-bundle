@@ -6,7 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 
-	dockertypes "github.com/docker/docker/api/types"
+	dockerbackendtypes "github.com/docker/docker/api/types/backend"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	"github.com/pkg/errors"
 	coreutil "github.com/replicatedcom/support-bundle/pkg/collect/plugins/core/util"
@@ -51,7 +51,7 @@ func (j *Journald) DockerLogs(opts types.JournaldLogsOptions) types.StreamProduc
 			dir = "/run/log/journal"
 		}
 
-		config := dockertypes.ContainerCreateConfig{
+		config := dockerbackendtypes.ContainerCreateConfig{
 			Config: &dockercontainertypes.Config{
 				Image:      container.Image,
 				Entrypoint: []string{"journalctl"},

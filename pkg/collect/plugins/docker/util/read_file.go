@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	dockertypes "github.com/docker/docker/api/types"
+	dockerbackendtypes "github.com/docker/docker/api/types/backend"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	docker "github.com/docker/docker/client"
 	"github.com/pkg/errors"
@@ -21,7 +21,7 @@ func ReadFile(ctx context.Context, client docker.CommonAPIClient, image, filenam
 
 	dir := filepath.Dir(filename)
 	base := filepath.Base(filename)
-	config := dockertypes.ContainerCreateConfig{
+	config := dockerbackendtypes.ContainerCreateConfig{
 		Config: &dockercontainertypes.Config{
 			Image:      image,
 			Entrypoint: []string{"tar"},

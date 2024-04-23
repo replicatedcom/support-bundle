@@ -2,6 +2,8 @@ package types
 
 import (
 	dockertypes "github.com/docker/docker/api/types"
+	dockerbackendtypes "github.com/docker/docker/api/types/backend"
+	dockercontainertypes "github.com/docker/docker/api/types/container"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	retraced "github.com/retracedhq/retraced-go"
 )
@@ -232,7 +234,7 @@ type DockerContainerInspectOptions struct {
 type DockerContainerLogsOptions struct {
 	SpecShared           `json:",inline,omitempty"`
 	Container            string                            `json:"container,omitempty"`
-	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerLogsOptions *dockercontainertypes.LogsOptions `json:"container_logs_options,omitempty"`
 	ContainerListOptions *ContainerListOptions             `json:"container_list_options,omitempty"`
 }
 
@@ -243,8 +245,8 @@ type DockerContainerLsOptions struct {
 
 type DockerContainerRunOptions struct {
 	SpecShared            `json:",inline,omitempty"`
-	ContainerCreateConfig dockertypes.ContainerCreateConfig `json:"container_create_config"`
-	EnablePull            bool                              `json:"enable_pull,omitempty"`
+	ContainerCreateConfig dockerbackendtypes.ContainerCreateConfig `json:"container_create_config"`
+	EnablePull            bool                                     `json:"enable_pull,omitempty"`
 }
 
 type DockerImageLsOptions struct {
@@ -264,7 +266,7 @@ type DockerNodeLsOptions struct {
 type DockerServiceLogsOptions struct {
 	SpecShared           `json:",inline,omitempty"`
 	Service              string                            `json:"service,omitempty"`
-	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerLogsOptions *dockercontainertypes.LogsOptions `json:"container_logs_options,omitempty"`
 	ServiceListOptions   *ServiceListOptions               `json:"service_list_options,omitempty"`
 }
 
@@ -302,14 +304,14 @@ type DockerStackTaskLogsOptions struct {
 	SpecShared             `json:",inline,omitempty"`
 	LabelsFilter           `json:",inline,omitempty"`
 	Namespace              string                            `json:"namespace"`
-	ContainerLogsOptions   *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerLogsOptions   *dockercontainertypes.LogsOptions `json:"container_logs_options,omitempty"`
 	DockerServicePsOptions *DockerServicePsOptions           `json:"task_list_options,omitempty"`
 }
 
 type DockerTaskLogsOptions struct {
 	SpecShared           `json:",inline,omitempty"`
 	ID                   string                            `json:"id,omitempty"`
-	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerLogsOptions *dockercontainertypes.LogsOptions `json:"container_logs_options,omitempty"`
 	TaskListOptions      *TaskListOptions                  `json:"task_list_options,omitempty"`
 }
 
