@@ -31,64 +31,6 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 		wantErr    bool
 	}{
 		{
-			name:       "basic",
-			bundlePath: "bundle",
-			variables: []v1.Variable{
-				{
-					Meta: meta.Meta{
-						Name: "majorVersion",
-					},
-					FileMatch: &variable.FileMatch{
-						PathRegexps: []string{`kubernetes/version/server_version\.json`},
-						Distiller: variable.Distiller{
-							RegexpCapture: &distiller.RegexpCapture{
-								Regexp: `"major": "([^"]+)"`,
-								Index:  1,
-							},
-						},
-					},
-				},
-				{
-					Meta: meta.Meta{
-						Name: "minorVersion",
-					},
-					CollectRef: &variable.CollectRef{
-						Ref: meta.Ref{
-							Selector: meta.Selector{"analyze": "kubernetes-version"},
-						},
-						Distiller: variable.Distiller{
-							RegexpCapture: &distiller.RegexpCapture{
-								Regexp: `"minor": "([^"]+)"`,
-								Index:  1,
-							},
-						},
-					},
-				},
-			},
-			want: map[string][]interface{}{
-				"majorVersion": []interface{}{"1"},
-				"minorVersion": []interface{}{"8+"},
-			},
-		},
-		{
-			name:       "no name",
-			bundlePath: "bundle",
-			variables: []v1.Variable{
-				{
-					FileMatch: &variable.FileMatch{
-						PathRegexps: []string{`kubernetes/version/server_version\.json`},
-						Distiller: variable.Distiller{
-							RegexpCapture: &distiller.RegexpCapture{
-								Regexp: `"gitCommit": "([^"]+)"`,
-								Index:  1,
-							},
-						},
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
 			name:       "no variable",
 			bundlePath: "bundle",
 			variables: []v1.Variable{
@@ -117,45 +59,6 @@ func TestAnalyzer_distillBundle(t *testing.T) {
 				},
 			},
 			want: map[string][]interface{}{},
-		},
-		{
-			name:       "no distiller",
-			bundlePath: "bundle",
-			variables: []v1.Variable{
-				{
-					Meta: meta.Meta{
-						Name: "serverVersionJson",
-					},
-					FileMatch: &variable.FileMatch{
-						PathRegexps: []string{`kubernetes/version/server_version\.json`},
-					},
-				},
-			},
-			want: map[string][]interface{}{
-				"serverVersionJson": []interface{}{"{\n  \"major\": \"1\",\n  \"minor\": \"8+\",\n  \"gitVersion\": \"v1.8.10-gke.0\",\n  \"gitCommit\": \"16ebd0de8e0ab2d1ef86d5b16ab1899b624a77cd\",\n  \"gitTreeState\": \"clean\",\n  \"buildDate\": \"2018-03-20T20:21:01Z\",\n  \"goVersion\": \"go1.8.3b4\",\n  \"compiler\": \"gc\",\n  \"platform\": \"linux/amd64\"\n}\n"},
-			},
-		},
-		{
-			name:       "distill error",
-			bundlePath: "bundle",
-			variables: []v1.Variable{
-				{
-					Meta: meta.Meta{
-						Name: "gitCommit",
-					},
-					FileMatch: &variable.FileMatch{
-						PathRegexps: []string{`kubernetes/version/server_version\.json`},
-						Distiller: variable.Distiller{
-							RegexpCapture: &distiller.RegexpCapture{
-								Regexp: `(`,
-								Index:  1,
-							},
-						},
-					},
-				},
-			},
-			wantErr: true,
-			want:    map[string][]interface{}{},
 		},
 	}
 	for _, tt := range tests {

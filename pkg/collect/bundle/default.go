@@ -10,7 +10,6 @@ import (
 var (
 	defaultCoreYml       = defaultspec.MustAsset("assets/core.yml")
 	defaultDockerYml     = defaultspec.MustAsset("assets/docker.yml")
-	defaultKubernetesYml = defaultspec.MustAsset("assets/kubernetes.yml")
 	defaultReplicatedYml = defaultspec.MustAsset("assets/replicated.yml")
 )
 
@@ -28,12 +27,6 @@ func DefaultSpecs() ([]types.Spec, error) {
 		return nil, errors.Wrap(err, "parse docker spec")
 	}
 	defaultSpec = append(defaultSpec, defaultDockerSpec...)
-
-	defaultKubernetesSpec, err := spec.Parse(defaultKubernetesYml)
-	if err != nil {
-		return nil, errors.Wrap(err, "parse kubernetes spec")
-	}
-	defaultSpec = append(defaultSpec, defaultKubernetesSpec...)
 
 	defaultReplicatedSpec, err := spec.Parse(defaultReplicatedYml)
 	if err != nil {

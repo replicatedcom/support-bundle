@@ -25,8 +25,6 @@ func NewGenerateCommand(supportBundle *cli.Cli) *cobra.Command {
 	cmd.Flags().BoolVar(&opts.EnableDocker, "docker", true, "Enable Docker plugin")
 	cmd.Flags().BoolVar(&opts.EnableJournald, "journald", true, "Enable Journald plugin")
 	cmd.Flags().BoolVar(&opts.RequireJournald, "require-journald", false, "Require Journald plugin")
-	cmd.Flags().BoolVar(&opts.EnableKubernetes, "kubernetes", true, "Enable Kubernetes plugin")
-	cmd.Flags().BoolVar(&opts.RequireKubernetes, "require-kubernetes", false, "Require Kubernetes plugin")
 	cmd.Flags().BoolVar(&opts.EnableRetraced, "retraced", true, "Enable Retraced plugin")
 	cmd.Flags().BoolVar(&opts.RequireRetraced, "require-retraced", false, "Require Retraced plugin")
 	cmd.Flags().BoolVar(&opts.SkipDefault, "skip-default", false, "If present, skip the default support bundle files")
