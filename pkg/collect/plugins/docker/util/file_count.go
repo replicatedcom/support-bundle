@@ -8,14 +8,14 @@ import (
 	"strconv"
 	"strings"
 
-	dockertypes "github.com/docker/docker/api/types"
+	dockerbackendtypes "github.com/docker/docker/api/types/backend"
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	docker "github.com/docker/docker/client"
 	"github.com/pkg/errors"
 )
 
 func FileCount(ctx context.Context, client docker.CommonAPIClient, image string, dirname string, securityOpt []string) (int, error) {
-	config := dockertypes.ContainerCreateConfig{
+	config := dockerbackendtypes.ContainerCreateConfig{
 		Config: &dockercontainertypes.Config{
 			Image:      image,
 			Entrypoint: []string{},

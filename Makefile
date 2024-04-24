@@ -21,6 +21,9 @@ else
 endif
 DOCKER_REPO ?= replicated
 
+# docker dependency only builds on linux and windows
+export GOOS := linux
+
 docs:
 	make -C hack/docs pipeline-nointegration
 
@@ -53,7 +56,7 @@ _lint:
 test: lint _test
 
 _test: bindata
-	go test -race ./pkg/... ./cmd/...
+	CGO_ENABLED=1 go test -race ./pkg/... ./cmd/...
 
 build: test _build
 
@@ -121,7 +124,7 @@ build-deps:
 
 .state/coverage.out: $(SRC)
 	@mkdir -p .state/
-	go test -race -coverprofile=.state/coverage.out -v ./pkg/...
+	CGO_ENABLED=1 go test -race -coverprofile=.state/coverage.out -v ./pkg/...
 
 ci-test: lint .state/coverage.out
 

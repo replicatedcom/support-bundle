@@ -2,10 +2,10 @@ package types
 
 import (
 	dockertypes "github.com/docker/docker/api/types"
+	dockerbackendtypes "github.com/docker/docker/api/types/backend"
+	dockercontainertypes "github.com/docker/docker/api/types/container"
 	"github.com/replicatedcom/support-bundle/pkg/meta"
 	retraced "github.com/retracedhq/retraced-go"
-	apiv1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type Doc struct {
@@ -115,13 +115,6 @@ type Spec struct {
 	DockerTaskLogs         *DockerTaskLogsOptions         `json:"docker.task-logs,omitempty"`
 	DockerTaskLs           *DockerTaskLsOptions           `json:"docker.task-ls,omitempty"`
 	DockerVersion          *DockerVersionOptions          `json:"docker.version,omitempty"`
-
-	KubernetesAPIVersions  *KubernetesAPIVersionsOptions  `json:"kubernetes.api-versions,omitempty"`
-	KubernetesClusterInfo  *KubernetesClusterInfoOptions  `json:"kubernetes.cluster-info,omitempty"`
-	KubernetesContainerCp  *KubernetesContainerCpOptions  `json:"kubernetes.container-cp,omitempty"`
-	KubernetesLogs         *KubernetesLogsOptions         `json:"kubernetes.logs,omitempty"`
-	KubernetesResourceList *KubernetesResourceListOptions `json:"kubernetes.resource-list,omitempty"`
-	KubernetesVersion      *KubernetesVersionOptions      `json:"kubernetes.version,omitempty"`
 
 	RetracedEvents *RetracedEventsOptions `json:"retraced.events,omitempty"`
 }
@@ -241,7 +234,7 @@ type DockerContainerInspectOptions struct {
 type DockerContainerLogsOptions struct {
 	SpecShared           `json:",inline,omitempty"`
 	Container            string                            `json:"container,omitempty"`
-	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerLogsOptions *dockercontainertypes.LogsOptions `json:"container_logs_options,omitempty"`
 	ContainerListOptions *ContainerListOptions             `json:"container_list_options,omitempty"`
 }
 
@@ -252,8 +245,8 @@ type DockerContainerLsOptions struct {
 
 type DockerContainerRunOptions struct {
 	SpecShared            `json:",inline,omitempty"`
-	ContainerCreateConfig dockertypes.ContainerCreateConfig `json:"container_create_config"`
-	EnablePull            bool                              `json:"enable_pull,omitempty"`
+	ContainerCreateConfig dockerbackendtypes.ContainerCreateConfig `json:"container_create_config"`
+	EnablePull            bool                                     `json:"enable_pull,omitempty"`
 }
 
 type DockerImageLsOptions struct {
@@ -273,7 +266,7 @@ type DockerNodeLsOptions struct {
 type DockerServiceLogsOptions struct {
 	SpecShared           `json:",inline,omitempty"`
 	Service              string                            `json:"service,omitempty"`
-	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerLogsOptions *dockercontainertypes.LogsOptions `json:"container_logs_options,omitempty"`
 	ServiceListOptions   *ServiceListOptions               `json:"service_list_options,omitempty"`
 }
 
@@ -311,14 +304,14 @@ type DockerStackTaskLogsOptions struct {
 	SpecShared             `json:",inline,omitempty"`
 	LabelsFilter           `json:",inline,omitempty"`
 	Namespace              string                            `json:"namespace"`
-	ContainerLogsOptions   *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerLogsOptions   *dockercontainertypes.LogsOptions `json:"container_logs_options,omitempty"`
 	DockerServicePsOptions *DockerServicePsOptions           `json:"task_list_options,omitempty"`
 }
 
 type DockerTaskLogsOptions struct {
 	SpecShared           `json:",inline,omitempty"`
 	ID                   string                            `json:"id,omitempty"`
-	ContainerLogsOptions *dockertypes.ContainerLogsOptions `json:"container_logs_options,omitempty"`
+	ContainerLogsOptions *dockercontainertypes.LogsOptions `json:"container_logs_options,omitempty"`
 	TaskListOptions      *TaskListOptions                  `json:"task_list_options,omitempty"`
 }
 
@@ -329,45 +322,6 @@ type DockerTaskLsOptions struct {
 
 type DockerVersionOptions struct {
 	SpecShared `json:",inline,omitempty"`
-}
-
-// plugin.kubernetes options
-
-type KubernetesAPIVersionsOptions struct {
-	SpecShared `json:",inline,omitempty"`
-}
-
-type KubernetesClusterInfoOptions struct {
-	SpecShared `json:",inline,omitempty"`
-}
-
-type KubernetesVersionOptions struct {
-	SpecShared `json:",inline,omitempty"`
-}
-
-type KubernetesLogsOptions struct {
-	SpecShared    `json:",inline,omitempty"`
-	Pod           string               `json:"pod,omitempty"`
-	Namespace     string               `json:"namespace,omitempty"`
-	PodLogOptions *apiv1.PodLogOptions `json:"pod_log_options,omitempty"`
-	ListOptions   *metav1.ListOptions  `json:"list_options,omitempty"`
-}
-
-type KubernetesContainerCpOptions struct {
-	SpecShared     `json:",inline,omitempty"`
-	Pod            string              `json:"pod,omitempty"`
-	PodListOptions *metav1.ListOptions `json:"pod_list_options,omitempty"`
-	Container      string              `json:"container,omitempty"`
-	Namespace      string              `json:"namespace,omitempty"`
-	SrcPath        string              `json:"src_path,omitempty"`
-}
-
-type KubernetesResourceListOptions struct {
-	SpecShared   `json:",inline,omitempty"`
-	Kind         string              `json:"kind"`
-	GroupVersion string              `json:"group_version,omitempty"`
-	Namespace    string              `json:"namespace,omitempty"`
-	ListOptions  *metav1.ListOptions `json:"resource_list_options,omitempty"`
 }
 
 type RetracedEventsOptions struct {
@@ -502,19 +456,6 @@ func (s Spec) Shared() SpecShared {
 			return s.DockerTaskLs.SpecShared
 		case s.DockerVersion != nil:
 			return s.DockerVersion.SpecShared
-
-		case s.KubernetesAPIVersions != nil:
-			return s.KubernetesAPIVersions.SpecShared
-		case s.KubernetesClusterInfo != nil:
-			return s.KubernetesClusterInfo.SpecShared
-		case s.KubernetesContainerCp != nil:
-			return s.KubernetesContainerCp.SpecShared
-		case s.KubernetesLogs != nil:
-			return s.KubernetesLogs.SpecShared
-		case s.KubernetesResourceList != nil:
-			return s.KubernetesResourceList.SpecShared
-		case s.KubernetesVersion != nil:
-			return s.KubernetesVersion.SpecShared
 
 		case s.RetracedEvents != nil:
 			return s.RetracedEvents.SpecShared
