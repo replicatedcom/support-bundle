@@ -39,7 +39,6 @@ type Analyze struct {
 	Specs             []string
 	SkipDefault       bool
 	BundleRootSubpath string
-	CustomerID        string // deprecated
 	ChannelID         string
 	Endpoint          string
 
@@ -60,7 +59,6 @@ func New(v *viper.Viper, logger log.Logger, resolver *resolver.Resolver, getter 
 		Specs:             v.GetStringSlice("spec"),
 		SkipDefault:       v.GetBool("skip-default"),
 		BundleRootSubpath: v.GetString("bundle-root-subpath"),
-		CustomerID:        v.GetString("customer-id"),
 		Endpoint:          v.GetString("endpoint"),
 
 		// analyze
@@ -133,18 +131,16 @@ func (a *Analyze) Execute(ctx context.Context, bundlePath string) ([]api.Result,
 	}
 
 	input := resolver.Input{
-		Files:      a.SpecFiles,
-		Inline:     a.Specs,
-		CustomerID: a.CustomerID,
-		ChannelID:  a.ChannelID,
-		Endpoint:   endpoint,
+		Files:     a.SpecFiles,
+		Inline:    a.Specs,
+		ChannelID: a.ChannelID,
+		Endpoint:  endpoint,
 	}
 	spec, err := a.Resolver.ResolveSpec(ctx, input, a.SkipDefault)
 	debug.Log(
 		"phase", "resolve",
 		"files", a.SpecFiles,
 		"inline", a.Specs,
-		"customerID", a.CustomerID,
 		"channelID", a.ChannelID,
 		"endpoint", endpoint,
 		"error", err)

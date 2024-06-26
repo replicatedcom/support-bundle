@@ -61,37 +61,23 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		}
 	}
 
-	if l.UploadCustomerID == "" && l.UploadChannelID == "" && l.UploadWatchID == "" {
-		return false, errors.New("upload with no watch id, channel id, or customer id")
+	if l.UploadChannelID == "" {
+		return false, errors.New("upload with no channel id")
 	}
 
 	var bundleID string
 	var url *url.URL
 
 	if l.UploadChannelID != "" {
-		channelBundleID, channelURL, err := l.GraphQLClient.GetSupportBundleChannelUploadURI(l.UploadChannelID, l.FileInfo.Size(), l.Notes)
+		channelBundleID, channelURL, err := l.MarketAPIClient.GetSupportBundleChannelUploadURI(l.UploadChannelID, l.FileInfo.Size(), l.Notes)
 		if err != nil {
 			return false, errors.Wrap(err, "get presigned URL for channel upload")
 		}
 
 		bundleID = channelBundleID
 		url = channelURL
-	} else if l.UploadWatchID != "" {
-		watchBundleID, watchURL, err := l.GraphQLClient.GetSupportBundleWatchUploadURI(l.UploadWatchID, l.FileInfo.Size())
-		if err != nil {
-			return false, errors.Wrap(err, "get presigned URL for watch upload")
-		}
-
-		bundleID = watchBundleID
-		url = watchURL
-	} else if l.UploadCustomerID != "" {
-		customerBundleID, customerURL, err := l.GraphQLClient.GetSupportBundleCustomerUploadURI(l.UploadCustomerID, l.FileInfo.Size(), l.Notes)
-		if err != nil {
-			return false, errors.Wrap(err, "get presigned URL for customer upload")
-		}
-
-		bundleID = customerBundleID
-		url = customerURL
+	} else {
+		return false, errors.New("upload with no channel id")
 	}
 
 	err = putObject(l.FileInfo, l.RealGeneratedBundlePath, url)
@@ -99,8 +85,8 @@ func (task *UploadTask) Execute(l *Lifecycle) (bool, error) {
 		return false, errors.Wrap(err, "uploading to presigned URL")
 	}
 
-	if err = l.GraphQLClient.MarkSupportBundleUploaded(bundleID); err != nil {
-		return false, errors.Wrap(err, "mark support bundle uploaded")
+	if err = l.MarketAPIClient.MarkChannelSupportBundleUploaded(bundleID, l.UploadChannelID); err != nil {
+		return false, errors.Wrap(err, "mark channel support bundle uploaded")
 	}
 
 	return true, nil

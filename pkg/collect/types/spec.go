@@ -74,7 +74,6 @@ type Spec struct {
 	SupportBundleLogs       *SupportBundleLogsOptions       `json:"logs,omitempty"`
 	CustomerMeta            *CustomerMetaOptions            `json:"meta.customer,omitempty"` // deprecated
 	ChannelMeta             *ChannelMetaOptions             `json:"meta.channel,omitempty"`
-	WatchMeta               *WatchMetaOptions               `json:"meta.watch,omitempty"`
 
 	// undocumented hack to add global redaction
 	GlobalRedaction *GlobalRedactionOptions `json:"meta.redact,omitempty"`
@@ -160,13 +159,6 @@ type ChannelMetaOptions struct {
 	SpecShared  `json:",inline,omitempty"`
 	ChannelID   string `json:"channel_id,omitempty"`
 	ChannelName string `json:"channel_name,omitempty"`
-}
-
-// meta.watch
-type WatchMetaOptions struct {
-	SpecShared `json:",inline,omitempty"`
-	WatchID    string `json:"watch_id,omitempty"`
-	WatchName  string `json:"watch_name,omitempty"`
 }
 
 // plugin.core options
