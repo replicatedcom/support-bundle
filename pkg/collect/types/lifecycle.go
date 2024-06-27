@@ -32,21 +32,6 @@ var DefaultLifecycleTasks = []LifecycleTask{
 	},
 }
 
-var DefaultWatchLifecycleTasks = []LifecycleTask{
-	{
-		Message: &MessageOptions{"Starting support bundle collection..."},
-	},
-	{
-		Generate: &GenerateOptions{UseDefaults: true},
-	},
-	{
-		Upload: &UploadOptions{},
-	},
-	{
-		Message: &MessageOptions{"Upload complete! Visit the Troubleshoot page in Ship to view the results"},
-	},
-}
-
 func GetUseDefaults(tasks []LifecycleTask) bool {
 	for _, task := range tasks {
 		if task.Generate != nil && task.Generate.UseDefaults {

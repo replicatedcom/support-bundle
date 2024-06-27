@@ -61,9 +61,6 @@ func RunCmd() *cobra.Command {
 	cmd.Flags().Bool("skip-default", false, "Skip the default analyze spec")
 	cmd.Flags().String("bundle-root-subpath", "", "The subpath within the archive at which the bundle root resides")
 
-	cmd.Flags().String("customer-id", "", "Replicated Customer ID")
-	cmd.Flags().MarkDeprecated("customer-id", "This argument is no longer supported. Consider using \"channel-id\"")
-
 	cmd.Flags().String("channel-id", "", "Replicated ChannelID to attempt to get a collector definition from")
 	cmd.Flags().String("endpoint", collectcli.DefaultEndpoint, "Endpoint to fetch collector definitions fom")
 

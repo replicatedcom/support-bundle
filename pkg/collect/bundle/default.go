@@ -80,15 +80,3 @@ func ChannelJSONSpec(channelID string) types.Spec {
 		},
 	}
 }
-
-func WatchJSONSpec(watchID string) types.Spec {
-	return types.Spec{
-		SpecShared: types.SpecShared{
-			Description: "Troubleshoot Watch Metadata",
-			OutputDir:   "/",
-		},
-		WatchMeta: &types.WatchMetaOptions{
-			WatchID: watchID,
-		},
-	}
-}

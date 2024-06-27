@@ -10,7 +10,7 @@ import (
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/analyze/api"
-	"github.com/replicatedcom/support-bundle/pkg/collect/graphql"
+	"github.com/replicatedcom/support-bundle/pkg/collect/marketapi"
 	"github.com/spf13/afero"
 )
 
@@ -20,11 +20,10 @@ type Resolver struct {
 }
 
 type Input struct {
-	Files      []string
-	Inline     []string
-	CustomerID string
-	ChannelID  string
-	Endpoint   string
+	Files     []string
+	Inline    []string
+	ChannelID string
+	Endpoint  string
 }
 
 func New(logger log.Logger, fs afero.Fs) *Resolver {
@@ -77,29 +76,8 @@ func (r *Resolver) ResolveSpec(ctx context.Context, input Input, skipDefault boo
 		}
 	}
 
-	if input.CustomerID != "" {
-		client := graphql.NewClient(input.Endpoint, http.DefaultClient)
-		inline, errI := client.GetCustomerSpec(input.CustomerID)
-		debug.Log(
-			"phase", "doc.customer.retrieve",
-			"error", errI)
-		if errI != nil {
-			err = multierror.Append(err, errors.Wrap(errI, "retrieve customer doc"))
-		} else {
-			doc, errI := api.DeserializeDoc([]byte(inline))
-			debug.Log(
-				"phase", "doc.customer.deserialize",
-				"error", errI)
-			if errI != nil {
-				err = multierror.Append(err, errors.Wrap(errI, "deserialize customer doc"))
-			} else {
-				resolved = mergeDocs(resolved, doc)
-			}
-		}
-	}
-
 	if input.ChannelID != "" {
-		client := graphql.NewClient(input.Endpoint, http.DefaultClient)
+		client := marketapi.NewClient(input.Endpoint, http.DefaultClient)
 		inline, errI := client.GetChannelSpec(input.ChannelID)
 		debug.Log(
 			"phase", "doc.channel.retrieve",

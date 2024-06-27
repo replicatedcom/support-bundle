@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"github.com/replicatedcom/support-bundle/pkg/collect/graphql"
+	"github.com/replicatedcom/support-bundle/pkg/collect/marketapi"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
 )
 
@@ -14,10 +14,8 @@ type Lifecycle struct {
 	DenyUploadPrompt    bool
 	Quiet               bool
 	GenerateBundlePath  string
-	UploadCustomerID    string // deprecated
 	UploadChannelID     string
-	UploadWatchID       string
-	GraphQLClient       *graphql.Client
+	MarketAPIClient     *marketapi.Client
 	FileInfo            os.FileInfo
 	// RealGeneratedBundlePath is the actual path the bundle was written to.
 	// it will be different from GenerateBundlePath if a URL or `-` (stdout)

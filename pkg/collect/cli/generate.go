@@ -8,8 +8,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/replicatedcom/support-bundle/pkg/collect/bundle"
-	"github.com/replicatedcom/support-bundle/pkg/collect/graphql"
 	"github.com/replicatedcom/support-bundle/pkg/collect/lifecycle"
+	"github.com/replicatedcom/support-bundle/pkg/collect/marketapi"
 	"github.com/replicatedcom/support-bundle/pkg/collect/spec"
 	"github.com/replicatedcom/support-bundle/pkg/collect/types"
 	"github.com/replicatedcom/support-bundle/pkg/util"
@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	DefaultEndpoint               = "https://pg.replicated.com/graphql"
+	DefaultEndpoint               = "https://api.replicated.com/market"
 	DefaultGenerateTimeoutSeconds = 60
 )
 
@@ -32,7 +32,6 @@ type GenerateOptions struct {
 	Quiet               bool
 	Endpoint            string
 	ChannelID           string
-	WatchID             string
 
 	CustomerID string // Deprecated
 
@@ -58,7 +57,7 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		endpoint = DefaultEndpoint
 	}
 
-	graphQLClient := graphql.NewClient(endpoint, http.DefaultClient)
+	marketapiClient := marketapi.NewClient(endpoint, http.DefaultClient)
 	specs, err := resolveLocalSpecs(opts)
 	if err != nil {
 		return errors.Wrap(err, "resolve specs")
@@ -66,33 +65,12 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	var customerDoc *types.Doc
 	var channelDoc *types.Doc
-	var watchDoc *types.Doc
 	expectedDefaultTasks := 1 // there is always at least 1 for the version
 
-	// this next if statement and included scope is deprecated
-	if opts.CustomerID != "" {
-		jww.DEBUG.Printf("Getting spec with customer id %s", opts.CustomerID)
-
-		customerDoc, err = getCustomerDoc(graphQLClient, opts.CustomerID)
-		if err != nil {
-			return errors.Wrap(err, "get customer specs")
-		}
-		specs = append(specs, customerDoc.Collect.V1...)
-		specs = append(specs, bundle.CustomerJSONSpec(opts.CustomerID))
-
-		if !opts.SkipDefault && types.GetUseDefaults(customerDoc.Lifecycle) {
-			defaultSpecs, err := bundle.DefaultSpecs()
-			if err != nil {
-				return errors.Wrap(err, "get default spec")
-			}
-			specs = append(specs, defaultSpecs...)
-		}
-
-		expectedDefaultTasks++
-	} else if opts.ChannelID != "" {
+	if opts.ChannelID != "" {
 		jww.DEBUG.Printf("Getting spec with channel id %s", opts.ChannelID)
 
-		channelDoc, err = getChannelDoc(graphQLClient, opts.ChannelID)
+		channelDoc, err = getChannelDoc(marketapiClient, opts.ChannelID)
 		if err != nil {
 			return errors.Wrap(err, "get channel spec")
 		}
@@ -100,26 +78,6 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		specs = append(specs, bundle.ChannelJSONSpec(opts.ChannelID))
 
 		if !opts.SkipDefault && types.GetUseDefaults(channelDoc.Lifecycle) {
-			defaultSpecs, err := bundle.DefaultSpecs()
-			if err != nil {
-				return errors.Wrap(err, "get default spec")
-			}
-			specs = append(specs, defaultSpecs...)
-		}
-
-		expectedDefaultTasks++
-	} else if opts.WatchID != "" {
-		jww.DEBUG.Printf("Getting spec with watch id %s", opts.WatchID)
-
-		watchDoc, err = getWatchDoc(graphQLClient, opts.WatchID)
-		if err != nil {
-			return errors.Wrap(err, "get watch spec")
-		}
-
-		specs = append(specs, watchDoc.Collect.V1...)
-		specs = append(specs, bundle.WatchJSONSpec(opts.WatchID))
-
-		if !opts.SkipDefault && types.GetUseDefaults(watchDoc.Lifecycle) {
 			defaultSpecs, err := bundle.DefaultSpecs()
 			if err != nil {
 				return errors.Wrap(err, "get default spec")
@@ -144,10 +102,8 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 		BundleTasks:         tasks,
 		GenerateTimeout:     timeoutSeconds,
 		GenerateBundlePath:  opts.BundlePath,
-		GraphQLClient:       graphQLClient,
-		UploadCustomerID:    opts.CustomerID,
+		MarketAPIClient:     marketapiClient,
 		UploadChannelID:     opts.ChannelID,
-		UploadWatchID:       opts.WatchID,
 		ConfirmUploadPrompt: opts.ConfirmUploadPrompt,
 		DenyUploadPrompt:    opts.DenyUploadPrompt,
 		Quiet:               opts.Quiet,
@@ -155,19 +111,13 @@ func (cli *Cli) Generate(opts GenerateOptions) error {
 
 	lifecycleTasks := types.DefaultLifecycleTasks
 
-	if opts.WatchID != "" {
-		lifecycleTasks = types.DefaultWatchLifecycleTasks
-	}
-
 	if channelDoc != nil && channelDoc.Lifecycle != nil {
 		lifecycleTasks = channelDoc.Lifecycle
 	} else if customerDoc != nil && customerDoc.Lifecycle != nil {
 		lifecycleTasks = customerDoc.Lifecycle
-	} else if watchDoc != nil && watchDoc.Lifecycle != nil {
-		lifecycleTasks = watchDoc.Lifecycle
 	}
 
-	if opts.CustomerID == "" && opts.ChannelID == "" && opts.WatchID == "" {
+	if opts.CustomerID == "" && opts.ChannelID == "" {
 		lifecycleTasks = types.GenerateOnlyLifecycleTasks
 	}
 
@@ -219,23 +169,8 @@ func resolveLocalSpecs(opts GenerateOptions) ([]types.Spec, error) {
 	return specs, nil
 }
 
-// getCustomerDoc is deprecated
-func getCustomerDoc(gqlClient *graphql.Client, customerID string) (*types.Doc, error) {
-	remoteSpecBody, err := gqlClient.GetCustomerSpec(customerID)
-	if err != nil {
-		return nil, errors.Wrap(err, "get remote spec")
-	}
-
-	customerDoc, err := spec.Unmarshal(remoteSpecBody)
-	if err != nil {
-		return nil, errors.Wrap(err, "parse customer spec")
-	}
-
-	return customerDoc, nil
-}
-
-func getChannelDoc(gqlClient *graphql.Client, channelID string) (*types.Doc, error) {
-	remoteSpecBody, err := gqlClient.GetChannelSpec(channelID)
+func getChannelDoc(client *marketapi.Client, channelID string) (*types.Doc, error) {
+	remoteSpecBody, err := client.GetChannelSpec(channelID)
 	if err != nil {
 		return nil, errors.Wrap(err, "get remote spec")
 	}
@@ -246,18 +181,4 @@ func getChannelDoc(gqlClient *graphql.Client, channelID string) (*types.Doc, err
 	}
 
 	return channelDoc, nil
-}
-
-func getWatchDoc(gqlClient *graphql.Client, watchID string) (*types.Doc, error) {
-	remoteSpecBody, err := gqlClient.GetWatchSpec(watchID)
-	if err != nil {
-		return nil, errors.Wrap(err, "get remote spec")
-	}
-
-	watchDoc, err := spec.Unmarshal(remoteSpecBody)
-	if err != nil {
-		return nil, errors.Wrap(err, "parse watch spec")
-	}
-
-	return watchDoc, nil
 }
