@@ -114,9 +114,9 @@ bin/support-bundle: $(SRC) pkg/collect/bundle/defaultspec/asset.go
 
 build-deps:
 	go install golang.org/x/lint/golint@latest
-	go install golang.org/x/tools/cmd/goimports@latest
+	go install golang.org/x/tools/cmd/goimports@v0.25.0
 	go install github.com/a-urth/go-bindata/go-bindata@latest
-	go install github.com/onsi/ginkgo/ginkgo@latest
+	go install github.com/onsi/ginkgo/ginkgo@v1.16.5
 	go install github.com/golang/mock/mockgen@latest
 
 .state/coverage.out: $(SRC)
@@ -149,7 +149,7 @@ e2e-supportbundle-core:
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
-		golang:1.20                                                         \
+		golang:1.22                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -164,7 +164,7 @@ e2e-supportbundle-docker:
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
 		-e DOCKER=1                                                         \
-		golang:1.20                                                         \
+		golang:1.22                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -178,7 +178,7 @@ e2e-supportbundle-swarm:
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
 		-e SWARM=1                                                          \
-		golang:1.20                                                         \
+		golang:1.22                                                         \
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
