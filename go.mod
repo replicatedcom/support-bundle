@@ -1,6 +1,6 @@
 module github.com/replicatedcom/support-bundle
 
-go 1.23
+go 1.25
 
 require (
 	github.com/Masterminds/semver v1.4.2 // indirect
