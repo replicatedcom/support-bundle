@@ -16,7 +16,7 @@ func SemverCompare(a, b string) int {
 	}
 	bV, err := semver.Parse(b)
 	if err != nil {
-		Panic("semverCompare", errors.Wrapf(err, b))
+		Panic("semverCompare", errors.Wrap(err, b))
 	}
 	return aV.Compare(bV)
 }
