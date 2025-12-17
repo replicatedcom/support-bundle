@@ -7,7 +7,7 @@ jobs:
 
   docs:
     docker:
-      - image: cimg/go:1.23
+      - image: cimg/go:1.25
     steps:
       - checkout
       - run: |
@@ -19,14 +19,14 @@ jobs:
           make pipeline-nointegration
   test:
     docker:
-      - image: cimg/go:1.23
+      - image: cimg/go:1.25
     steps:
       - checkout
       - run: make build-deps ci-test # ci-upload-coverage
 
   scan:
     docker:
-      - image: cimg/go:1.23
+      - image: cimg/go:1.25
     steps:
       - checkout
       - setup_remote_docker
@@ -40,7 +40,7 @@ jobs:
     machine: true
     environment:
       GOPATH: /home/circleci/go
-      GO_SHA256SUM: d3847fef834e9db11bf64e3fb34db9c04db14e068eeb064f49af747010454f90
+      GO_SHA256SUM: 9e9b755d63b36acf30c12a9a3fc379243714c1c6d3dd72861da637f336ebb35b
       GO: /usr/local/go/bin/go
       GOCACHE: "/tmp/go/cache"
     steps:
@@ -49,7 +49,7 @@ jobs:
           keys:
             - support-bundle-e2e-build-cache-base
       - run: |
-          export GO_DOWNLOAD_URL=https://go.dev/dl/go1.23.12.linux-amd64.tar.gz
+          export GO_DOWNLOAD_URL=https://go.dev/dl/go1.25.5.linux-amd64.tar.gz
           export GOPATH=/home/circleci/go
           export GOROOT=/usr/local/go
           export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
@@ -60,7 +60,7 @@ jobs:
           tar -zxvf golang.tar.gz -C /tmp
           sudo rm -rf ${GOROOT}
           sudo mv /tmp/go ${GOROOT}
-      - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true cimg/go:1.23 -c "sleep infinity"
+      - run: docker run -d --entrypoint sh --label com.replicated.support-bundle=true cimg/go:1.25 -c "sleep infinity"
       - run: |
           export GOPATH=/home/circleci/go
           export GOROOT=/usr/local/go
@@ -73,7 +73,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/go:1.23
+      - image: cimg/go:1.25
     steps:
       - checkout
       - setup_remote_docker
@@ -85,7 +85,7 @@ jobs:
 
   deploy_unstable:
     docker:
-      - image: cimg/go:1.23
+      - image: cimg/go:1.25
     steps:
       - checkout
       - setup_remote_docker

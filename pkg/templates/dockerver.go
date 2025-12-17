@@ -16,7 +16,7 @@ func DockerServerVersionCompare(a, b string) int {
 	}
 	bV, err := docker.ParseServerVersion(b)
 	if err != nil {
-		Panic("dockerServerVersionCompare", errors.Wrapf(err, b))
+		Panic("dockerServerVersionCompare", errors.Wrap(err, b))
 	}
 	return aV.Compare(bV)
 }
