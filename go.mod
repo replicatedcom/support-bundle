@@ -15,26 +15,21 @@ require (
 	github.com/docker/docker v0.0.0-20180522102801-da99009bbb11
 	github.com/docker/go-connections v0.6.0
 	github.com/docker/go-units v0.5.0
-	github.com/dsnet/compress v0.0.0-20171208185109-cc9eb1d7ad76 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-kit/kit v0.13.0
 	github.com/go-stack/stack v1.8.1
 	github.com/gobwas/glob v0.2.3
 	github.com/golang/mock v1.6.0
-	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-getter v1.8.5
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kylelemons/godebug v1.1.0
-	github.com/mholt/archiver v2.0.1-0.20180417220235-e4ef56d48eb0+incompatible
 	github.com/mitchellh/cli v1.1.5
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/nwaples/rardecode v0.0.0-20171029023500-e06696f847ae // indirect
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.39.1
-	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
 	github.com/pivotal-golang/archiver v0.0.0-20200129012029-d46e448f0c5d // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/posener/complete v1.1.1 // indirect
