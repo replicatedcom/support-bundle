@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"testing"
 
 	"github.com/kylelemons/godebug/pretty"
