@@ -146,21 +146,22 @@ func makeBundle(fs afero.Fs, src, dest string) (os.FileInfo, error) {
 		tw := tar.NewWriter(gw)
 		defer tw.Close()
 
-		entries, err := os.ReadDir(src)
-		if err != nil {
-			return err
-		}
-		for _, entry := range entries {
-			filePath := path.Join(src, entry.Name())
-			info, err := entry.Info()
+		return filepath.Walk(src, func(filePath string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
+			}
+			rel, err := filepath.Rel(src, filePath)
+			if err != nil {
+				return err
+			}
+			if rel == "." {
+				return nil
 			}
 			hdr, err := tar.FileInfoHeader(info, "")
 			if err != nil {
 				return err
 			}
-			hdr.Name = entry.Name()
+			hdr.Name = rel
 			if err := tw.WriteHeader(hdr); err != nil {
 				return err
 			}
@@ -169,14 +170,13 @@ func makeBundle(fs afero.Fs, src, dest string) (os.FileInfo, error) {
 				if err != nil {
 					return err
 				}
+				defer ef.Close()
 				if _, err := io.Copy(tw, ef); err != nil {
-					ef.Close()
 					return err
 				}
-				ef.Close()
 			}
-		}
-		return nil
+			return nil
+		})
 	}()
 	if err != nil {
 		return nil, errors.Wrapf(err, "create archive from %s", src)

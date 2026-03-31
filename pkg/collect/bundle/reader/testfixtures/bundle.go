@@ -19,21 +19,22 @@ func WriteBundle(w io.Writer, bundlePath string) error {
 	tw := tar.NewWriter(gw)
 	defer tw.Close()
 
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-	for _, entry := range entries {
-		path := filepath.Join(dir, entry.Name())
-		info, err := entry.Info()
+	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+		rel, err := filepath.Rel(dir, path)
+		if err != nil {
+			return err
+		}
+		if rel == "." {
+			return nil
 		}
 		hdr, err := tar.FileInfoHeader(info, "")
 		if err != nil {
 			return err
 		}
-		hdr.Name = entry.Name()
+		hdr.Name = rel
 		if err := tw.WriteHeader(hdr); err != nil {
 			return err
 		}
@@ -42,12 +43,11 @@ func WriteBundle(w io.Writer, bundlePath string) error {
 			if err != nil {
 				return err
 			}
+			defer f.Close()
 			if _, err := io.Copy(tw, f); err != nil {
-				f.Close()
 				return err
 			}
-			f.Close()
 		}
-	}
-	return nil
+		return nil
+	})
 }
