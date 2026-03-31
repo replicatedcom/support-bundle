@@ -1,36 +1,53 @@
 package testfixtures
 
 import (
+	"archive/tar"
+	"compress/gzip"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
-
-	"github.com/mholt/archiver"
 )
 
 func WriteBundle(w io.Writer, bundlePath string) error {
 	_, filename, _, _ := runtime.Caller(0)
 	basePath := filepath.Dir(filename)
+	dir := filepath.Join(basePath, bundlePath)
 
-	cwd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	if err := os.Chdir(filepath.Join(basePath, bundlePath)); err != nil {
-		return err
-	}
-	defer os.Chdir(cwd)
+	gw := gzip.NewWriter(w)
+	defer gw.Close()
+	tw := tar.NewWriter(gw)
+	defer tw.Close()
 
-	var filePaths []string
-	files, err := ioutil.ReadDir(".")
-	if err != nil {
-		return err
-	}
-	for _, info := range files {
-		filePaths = append(filePaths, info.Name())
-	}
-
-	return archiver.TarGz.Write(w, filePaths)
+	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		rel, err := filepath.Rel(dir, path)
+		if err != nil {
+			return err
+		}
+		if rel == "." {
+			return nil
+		}
+		hdr, err := tar.FileInfoHeader(info, "")
+		if err != nil {
+			return err
+		}
+		hdr.Name = rel
+		if err := tw.WriteHeader(hdr); err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			f, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+			if _, err := io.Copy(tw, f); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 }

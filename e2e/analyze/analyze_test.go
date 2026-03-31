@@ -1,15 +1,18 @@
 package analyze_test
 
 import (
+	"archive/tar"
 	"bytes"
+	"compress/gzip"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"testing"
 
 	"github.com/kylelemons/godebug/pretty"
-	"github.com/mholt/archiver"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pkg/errors"
@@ -139,25 +142,42 @@ func makeBundle(fs afero.Fs, src, dest string) (os.FileInfo, error) {
 	err = func() error {
 		defer f.Close()
 
-		cwd, err := os.Getwd()
-		if err != nil {
-			return err
-		}
-		if err := os.Chdir(src); err != nil {
-			return err
-		}
-		defer os.Chdir(cwd)
+		gw := gzip.NewWriter(f)
+		defer gw.Close()
+		tw := tar.NewWriter(gw)
+		defer tw.Close()
 
-		var filePaths []string
-		files, err := ioutil.ReadDir(src)
-		if err != nil {
-			return err
-		}
-		for _, info := range files {
-			filePaths = append(filePaths, info.Name())
-		}
-
-		return archiver.TarGz.Write(f, filePaths)
+		return filepath.Walk(src, func(filePath string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			rel, err := filepath.Rel(src, filePath)
+			if err != nil {
+				return err
+			}
+			if rel == "." {
+				return nil
+			}
+			hdr, err := tar.FileInfoHeader(info, "")
+			if err != nil {
+				return err
+			}
+			hdr.Name = rel
+			if err := tw.WriteHeader(hdr); err != nil {
+				return err
+			}
+			if !info.IsDir() {
+				ef, err := os.Open(filePath)
+				if err != nil {
+					return err
+				}
+				defer ef.Close()
+				if _, err := io.Copy(tw, ef); err != nil {
+					return err
+				}
+			}
+			return nil
+		})
 	}()
 	if err != nil {
 		return nil, errors.Wrapf(err, "create archive from %s", src)
