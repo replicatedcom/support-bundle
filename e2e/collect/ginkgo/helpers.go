@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 
@@ -64,10 +65,72 @@ func CleanupDir() {
 }
 
 func LogResultsFromBundle() {
-	contents := GetFileFromBundle("index.json")
-	jww.DEBUG.Printf("Index: %s", contents)
-	contents = GetFileFromBundle("error.json")
-	jww.DEBUG.Printf("Errors: %s", contents)
+	src := filepath.Join(GetTempDir(), "bundle.tar.gz")
+	if _, err := os.Stat(src); err != nil {
+		fmt.Fprintf(GinkgoWriter, "bundle.tar.gz not found for log results: %v\n", err)
+		return
+	}
+	contents, err := ReadFileFromBundle(src, "index.json")
+	if err != nil {
+		fmt.Fprintf(GinkgoWriter, "Failed to read index.json: %v\n", err)
+	} else {
+		jww.DEBUG.Printf("Index: %s", contents)
+	}
+	contents, err = ReadFileFromBundle(src, "error.json")
+	if err != nil {
+		fmt.Fprintf(GinkgoWriter, "Failed to read error.json: %v\n", err)
+	} else {
+		jww.DEBUG.Printf("Errors: %s", contents)
+	}
+}
+
+func LogDockerInfo() {
+	commands := [][]string{
+		{"docker", "version"},
+		{"docker", "info"},
+		{"docker", "ps", "-a"},
+		{"docker", "images", "--format", "table {{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}"},
+	}
+	for _, cmdArgs := range commands {
+		out, err := exec.Command(cmdArgs[0], cmdArgs[1:]...).CombinedOutput()
+		label := cmdArgs[0] + " " + cmdArgs[1]
+		if err != nil {
+			fmt.Fprintf(GinkgoWriter, "%s failed: %v\n%s\n", label, err, string(out))
+		} else {
+			fmt.Fprintf(GinkgoWriter, "%s output:\n%s\n", label, string(out))
+		}
+	}
+}
+
+func PreserveBundleArtifact() {
+	src := filepath.Join(GetTempDir(), "bundle.tar.gz")
+	if _, err := os.Stat(src); err != nil {
+		fmt.Fprintf(GinkgoWriter, "bundle.tar.gz stat error: %v\n", err)
+		files, _ := filepath.Glob(filepath.Join(GetTempDir(), "*"))
+		fmt.Fprintf(GinkgoWriter, "Files in temp dir %s: %v\n", GetTempDir(), files)
+		return
+	}
+	artifactsDir := "/tmp/e2e-artifacts"
+	_ = os.MkdirAll(artifactsDir, 0755)
+	dst := filepath.Join(artifactsDir, fmt.Sprintf("bundle-%s.tar.gz", filepath.Base(GetTempDir())))
+	in, err := os.Open(src)
+	if err != nil {
+		fmt.Fprintf(GinkgoWriter, "Failed to open bundle for preservation: %v\n", err)
+		return
+	}
+	defer CloseLogErr(in)
+	out, err := os.Create(dst)
+	if err != nil {
+		fmt.Fprintf(GinkgoWriter, "Failed to create artifact file: %v\n", err)
+		return
+	}
+	defer CloseLogErr(out)
+	_, err = io.Copy(out, in)
+	if err != nil {
+		fmt.Fprintf(GinkgoWriter, "Failed to copy bundle artifact: %v\n", err)
+		return
+	}
+	fmt.Fprintf(GinkgoWriter, "Preserved bundle artifact to %s\n", dst)
 }
 
 func WriteFile(path string, contents string) {

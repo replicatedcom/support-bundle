@@ -113,8 +113,10 @@ var _ = Describe("os.read-file docker", func() {
 	})
 
 	BeforeEach(EnterNewTempDir)
-	AfterEach(LogResultsFromBundle)
+	BeforeEach(LogDockerInfo)
 	AfterEach(CleanupDir)
+	AfterEach(PreserveBundleArtifact)
+	AfterEach(LogResultsFromBundle)
 
 	Context("When the spec is run", func() {
 
