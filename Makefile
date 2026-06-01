@@ -192,7 +192,12 @@ ci-e2e-supportbundle-core:
 
 ci-e2e-supportbundle-docker:
 	docker pull ubuntu:16.04
-	DOCKER=true ./e2e/collect/e2e.sh
+	-docker rm -f support-bundle-test-container 2>/dev/null || true
+	docker run -d --name support-bundle-test-container --entrypoint sh --label com.replicated.support-bundle=true ubuntu:16.04 -c "sleep infinity"
+	DOCKER=true ./e2e/collect/e2e.sh; \
+		EXIT_CODE=$$?; \
+		docker rm -f support-bundle-test-container 2>/dev/null || true; \
+		exit $$EXIT_CODE
 
 ci-e2e-supportbundle-swarm:
 	SWARM=true ./e2e/collect/e2e.sh
