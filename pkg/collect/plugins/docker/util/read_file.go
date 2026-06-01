@@ -12,10 +12,13 @@ import (
 	dockercontainertypes "github.com/docker/docker/api/types/container"
 	docker "github.com/docker/docker/client"
 	"github.com/pkg/errors"
+	jww "github.com/spf13/jwalterweatherman"
 )
 
 func ReadFile(ctx context.Context, client docker.CommonAPIClient, image, filename string, securityOpt []string) (io.ReadCloser, error) {
+	jww.DEBUG.Printf("ReadFile: image=%s filename=%s securityOpt=%v", image, filename, securityOpt)
 	if _, err := FileExists(ctx, client, image, filename, securityOpt); err != nil {
+		jww.DEBUG.Printf("ReadFile: FileExists error: %v", err)
 		return nil, err
 	}
 
@@ -36,6 +39,7 @@ func ReadFile(ctx context.Context, client docker.CommonAPIClient, image, filenam
 	}
 	stdoutR, stderrR, cmdErrCh, err := ContainerRun(ctx, client, config, false)
 	if err != nil {
+		jww.DEBUG.Printf("ReadFile: ContainerRun error: %v", err)
 		return nil, errors.Wrap(err, "container run")
 	}
 
@@ -53,6 +57,7 @@ func ReadFile(ctx context.Context, client docker.CommonAPIClient, image, filenam
 		io.Copy(ioutil.Discard, stderrR)
 		stderrR.Close()
 	}()
+	jww.DEBUG.Printf("ReadFile: cmdErr status=%d error=%v", cmdErr.StatusCode, cmdErr.Error)
 	if cmdErr.Error != nil {
 		return stdoutR, cmdErr.Error
 	} else if cmdErr.StatusCode == 2 {
