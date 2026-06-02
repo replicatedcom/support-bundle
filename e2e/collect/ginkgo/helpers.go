@@ -65,23 +65,10 @@ func CleanupDir() {
 }
 
 func LogResultsFromBundle() {
-	src := filepath.Join(GetTempDir(), "bundle.tar.gz")
-	if _, err := os.Stat(src); err != nil {
-		fmt.Fprintf(GinkgoWriter, "bundle.tar.gz not found for log results: %v\n", err)
-		return
-	}
-	contents, err := ReadFileFromBundle(src, "index.json")
-	if err != nil {
-		fmt.Fprintf(GinkgoWriter, "Failed to read index.json: %v\n", err)
-	} else {
-		jww.DEBUG.Printf("Index: %s", contents)
-	}
-	contents, err = ReadFileFromBundle(src, "error.json")
-	if err != nil {
-		fmt.Fprintf(GinkgoWriter, "Failed to read error.json: %v\n", err)
-	} else {
-		jww.DEBUG.Printf("Errors: %s", contents)
-	}
+	contents := GetFileFromBundle("index.json")
+	jww.DEBUG.Printf("Index: %s", contents)
+	contents = GetFileFromBundle("error.json")
+	jww.DEBUG.Printf("Errors: %s", contents)
 }
 
 func LogDockerInfo() {
@@ -104,13 +91,11 @@ func LogDockerInfo() {
 
 func PreserveBundleArtifact() {
 	src := filepath.Join(GetTempDir(), "bundle.tar.gz")
-	if _, err := os.Stat(src); err != nil {
-		fmt.Fprintf(GinkgoWriter, "bundle.tar.gz stat error: %v\n", err)
-		files, _ := filepath.Glob(filepath.Join(GetTempDir(), "*"))
-		fmt.Fprintf(GinkgoWriter, "Files in temp dir %s: %v\n", GetTempDir(), files)
+	if _, err := os.Stat(src); os.IsNotExist(err) {
+		fmt.Fprintln(GinkgoWriter, "No bundle.tar.gz to preserve")
 		return
 	}
-	artifactsDir := "/tmp/e2e-artifacts"
+	artifactsDir := filepath.Join(cwd, "e2e-artifacts")
 	_ = os.MkdirAll(artifactsDir, 0755)
 	dst := filepath.Join(artifactsDir, fmt.Sprintf("bundle-%s.tar.gz", filepath.Base(GetTempDir())))
 	in, err := os.Open(src)

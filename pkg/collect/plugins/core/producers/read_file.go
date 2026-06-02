@@ -68,14 +68,7 @@ func (c *Core) DockerReadFile(opts types.CoreReadFileOptions) types.StreamsProdu
 			return nil, errors.Wrap(err, "this container")
 		}
 
-		image := container.Config.Image
-		if image == "" {
-			image = container.Image
-		}
-		jww.DEBUG.Printf("DockerReadFile: container=%s imageID=%s imageName=%s filepath=%s securityOpt=%v",
-			container.ID, container.Image, container.Config.Image, opts.Filepath, container.HostConfig.SecurityOpt)
-
-		r, err := dockerutil.ReadFile(ctx, c.dockerClient, image, opts.Filepath, container.HostConfig.SecurityOpt)
+		r, err := dockerutil.ReadFile(ctx, c.dockerClient, container.Image, opts.Filepath, container.HostConfig.SecurityOpt)
 		// FIXME: r is never closed
 		if err != nil {
 			return nil, errors.Wrap(err, "docker read file")

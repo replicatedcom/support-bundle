@@ -68,7 +68,7 @@ jobs:
           export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
           make build-deps ci-e2e
       - store_artifacts:
-          path: /tmp/e2e-artifacts
+          path: e2e-artifacts
           destination: e2e-artifacts
       - save_cache:
           paths:
