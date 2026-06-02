@@ -37,7 +37,9 @@ jobs:
 
   e2e:
     # Use machine for volume binding support in Docker
-    machine: true
+    machine:
+      image: ubuntu-2004:2022.10.1
+    resource_class: large
     environment:
       GOPATH: /home/circleci/go
       GO_SHA256SUM: 2b2cfc7148493da5e73981bffbf3353af381d5f93e789c82c79aff64962eb556
