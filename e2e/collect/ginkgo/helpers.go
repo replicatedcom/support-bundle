@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 
@@ -68,6 +69,53 @@ func LogResultsFromBundle() {
 	jww.DEBUG.Printf("Index: %s", contents)
 	contents = GetFileFromBundle("error.json")
 	jww.DEBUG.Printf("Errors: %s", contents)
+}
+
+func LogDockerInfo() {
+	commands := [][]string{
+		{"docker", "version"},
+		{"docker", "info"},
+		{"docker", "ps", "-a"},
+		{"docker", "images", "--format", "table {{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedAt}}\t{{.Size}}"},
+	}
+	for _, cmdArgs := range commands {
+		out, err := exec.Command(cmdArgs[0], cmdArgs[1:]...).CombinedOutput()
+		label := cmdArgs[0] + " " + cmdArgs[1]
+		if err != nil {
+			fmt.Fprintf(GinkgoWriter, "%s failed: %v\n%s\n", label, err, string(out))
+		} else {
+			fmt.Fprintf(GinkgoWriter, "%s output:\n%s\n", label, string(out))
+		}
+	}
+}
+
+func PreserveBundleArtifact() {
+	src := filepath.Join(GetTempDir(), "bundle.tar.gz")
+	if _, err := os.Stat(src); os.IsNotExist(err) {
+		fmt.Fprintln(GinkgoWriter, "No bundle.tar.gz to preserve")
+		return
+	}
+	artifactsDir := filepath.Join(cwd, "e2e-artifacts")
+	_ = os.MkdirAll(artifactsDir, 0755)
+	dst := filepath.Join(artifactsDir, fmt.Sprintf("bundle-%s.tar.gz", filepath.Base(GetTempDir())))
+	in, err := os.Open(src)
+	if err != nil {
+		fmt.Fprintf(GinkgoWriter, "Failed to open bundle for preservation: %v\n", err)
+		return
+	}
+	defer CloseLogErr(in)
+	out, err := os.Create(dst)
+	if err != nil {
+		fmt.Fprintf(GinkgoWriter, "Failed to create artifact file: %v\n", err)
+		return
+	}
+	defer CloseLogErr(out)
+	_, err = io.Copy(out, in)
+	if err != nil {
+		fmt.Fprintf(GinkgoWriter, "Failed to copy bundle artifact: %v\n", err)
+		return
+	}
+	fmt.Fprintf(GinkgoWriter, "Preserved bundle artifact to %s\n", dst)
 }
 
 func WriteFile(path string, contents string) {

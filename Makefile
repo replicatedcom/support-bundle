@@ -149,7 +149,7 @@ e2e-supportbundle-core:
 		-v /var/run/docker.sock:/var/run/docker.sock                        \
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
-		golang:1.25                                                         \
+		golang:1.26
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -164,7 +164,7 @@ e2e-supportbundle-docker:
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
 		-e DOCKER=1                                                         \
-		golang:1.25                                                         \
+		golang:1.26
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -178,7 +178,7 @@ e2e-supportbundle-swarm:
 		-w /go/src/$(PKG)                                                   \
 		-l com.replicated.support-bundle=true                               \
 		-e SWARM=1                                                          \
-		golang:1.25                                                         \
+		golang:1.26
 		/bin/sh -c "                                                        \
 			./e2e/collect/e2e.sh                                            \
 		"
@@ -192,7 +192,12 @@ ci-e2e-supportbundle-core:
 
 ci-e2e-supportbundle-docker:
 	docker pull ubuntu:16.04
-	DOCKER=true ./e2e/collect/e2e.sh
+	-docker rm -f support-bundle-test-container 2>/dev/null || true
+	docker run -d --name support-bundle-test-container --entrypoint sh --label com.replicated.support-bundle=true ubuntu:16.04 -c "sleep infinity"
+	DOCKER=true ./e2e/collect/e2e.sh; \
+		EXIT_CODE=$$?; \
+		docker rm -f support-bundle-test-container 2>/dev/null || true; \
+		exit $$EXIT_CODE
 
 ci-e2e-supportbundle-swarm:
 	SWARM=true ./e2e/collect/e2e.sh
